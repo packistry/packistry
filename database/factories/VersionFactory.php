@@ -6,6 +6,8 @@ namespace Database\Factories;
 
 use App\Models\Version;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
+use function PHPUnit\Framework\assertNotFalse;
 
 /**
  * @extends Factory<Version>
@@ -33,8 +35,8 @@ class VersionFactory extends Factory
             'metadata' => [
                 'authors' => [
                     [
-                        'name' => fake()->name,
-                        'email' => fake()->email,
+                        'name' => $this->faker->name,
+                        'email' => $this->faker->email,
                     ],
                 ],
                 'autoload' => [
@@ -46,6 +48,47 @@ class VersionFactory extends Factory
                     './bin/script',
                 ],
             ],
+            'shasum' => $this->faker->sha256(),
         ];
+    }
+
+    public function fromZip(string $path, ?string $version = null): static
+    {
+        Storage::fake();
+
+        /** @var string $content */
+        $content = file_get_contents("zip://$path#composer.json");
+
+        /** @var array<string, mixed> $decoded */
+        $decoded = json_decode($content, true);
+        $version ??= $decoded['version'];
+
+        [$vendor, $name] = explode('/', (string) $decoded['name']);
+        $archiveName = "$vendor-$name-$version.zip";
+
+        /** @var string $archiveContent */
+        $archiveContent = file_get_contents($path);
+        Storage::put($archiveName, $archiveContent);
+
+        return $this->state(fn (array $attributes) => [
+            'name' => $version,
+            'shasum' => hash_file('sha1', $path),
+            'metadata' => collect($decoded)->only([
+                'description',
+                'readme',
+                'keywords',
+                'homepage',
+                'license',
+                'authors',
+                'bin',
+                'autoload',
+                'autoload-dev',
+                'extra',
+                'require',
+                'require-dev',
+                'suggest',
+                'provide',
+            ])->toArray(),
+        ]);
     }
 }

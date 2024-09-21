@@ -12,11 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         health: '/up',
         apiPrefix: '',
-        then: function () {
+        then: function (): void {
             Route::middleware('web')
-                ->get('{any?}', function () {
-                    return response()->file(public_path('index.html'));
-                })->where('any', '.*');
+                ->get('{any?}', fn () => response()->file(public_path('index.html')))->where('any', '.*');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

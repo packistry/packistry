@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -16,6 +18,7 @@ readonly class OrderScope implements Scope
     }
 
     /**
+     * @phpstan-ignore-next-line
      * Apply the scope to a given Eloquent query builder.
      */
     public function apply(Builder $builder, Model $model): void

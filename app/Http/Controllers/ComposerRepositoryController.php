@@ -7,7 +7,11 @@ namespace App\Http\Controllers;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ComposerRepositoryController extends Controller
 {
@@ -20,16 +24,16 @@ class ComposerRepositoryController extends Controller
             ->firstOrFail();
     }
 
-    public function packages(): array
+    public function packages(): JsonResponse
     {
-        return [
+        return response()->json([
             'search' => url('/search.json?q=%query%&type=%type%'),
             'metadata-url' => url('/p2/%package%.json'),
             'list' => url('/list.json'),
-        ];
+        ]);
     }
 
-    public function search(Request $request): array
+    public function search(Request $request): JsonResponse
     {
         $query = $request->input('q');
 
@@ -37,38 +41,37 @@ class ComposerRepositoryController extends Controller
             ->packages()
             ->where('name', 'like', "$query%");
 
-        return [
+        return response()->json([
             'total' => $packagesQuery->count(),
-            'results' => $packagesQuery->chunkMap(function (Package $package) {
-                return [
-                    'name' => $package->name,
-                    'description' => '',
-                    'downloads' => 0,
-                ];
-            }),
-        ];
+            'results' => $packagesQuery->chunkMap(fn (Package $package) => [
+                'name' => $package->name,
+                'description' => '',
+                'downloads' => 0,
+            ]),
+        ]);
     }
 
-    public function list(): array
+    public function list(): JsonResponse
     {
         $names = $this->repository()
             ->packages()
             ->pluck('name');
 
-        return [
+        return response()->json([
             'packageNames' => $names,
-        ];
+        ]);
     }
 
-    public function package(string $vendor, string $name): array
+    public function package(string $vendor, string $name): JsonResponse
     {
+        /** @var Package $package */
         $package = $this
             ->repository()
             ->packages()
             ->where('name', "$vendor/$name")
             ->firstOrFail();
 
-        return [
+        return response()->json([
             'minified' => 'composer/2.0',
             'packages' => [
                 $package->name => $package->versions->map(fn (Version $version) => [
@@ -79,26 +82,101 @@ class ComposerRepositoryController extends Controller
                     'time' => $version->created_at,
                     'dist' => [
                         'type' => 'zip',
-                        'url' => 'https://git.qlic.nl/api/packages/qlic/composer/files/qlic%2Fquality/0.13.5/qlic-quality.0.13.5.zip',
-                        'shasum' => '91647ebf517448c75898413b3da71de6e372f6df',
+                        'url' => url("$package->name/$version->name"),
+                        'shasum' => $version->shasum,
                     ],
                 ]),
             ],
-        ];
+        ]);
     }
 
-    public function packageDev(): string
+    public function packageDev(string $vendor, string $name): JsonResponse
     {
-        return 'welcome';
+        // @todo fix dev
+        return $this->package($vendor, $name);
     }
 
-    public function download(): string
+    public function download(string $vendor, string $name, string $version): string
     {
-        return 'welcome';
+        $content = Storage::get("$vendor-$name-$version.zip");
+
+        if (is_null($content)) {
+            abort(404);
+        }
+
+        return $content;
     }
 
-    public function upload(): string
+    public function upload(Request $request, string $vendor, string $name): JsonResponse
     {
-        return 'welcome';
+        /** @var Package|null $package */
+        $package = $this
+            ->repository()
+            ->packages()
+            ->where('name', "$vendor/$name")
+            ->first();
+
+        if (is_null($package)) {
+            return response()->json(['error' => 'package not found'], 404);
+        }
+
+        try {
+            $request->validate([
+                'file' => ['required', 'file', 'mimes:zip'],
+                'version' => ['string'],
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->file('file');
+        $content = @file_get_contents("zip://{$file->getRealPath()}#composer.json");
+
+        if ($content === false) {
+            return response()->json([
+                'file' => ['composer.json not found in archive'],
+            ], 422);
+        }
+
+        /** @var array<string, mixed> $decoded */
+        $decoded = json_decode($content, true);
+        $version = $request->input('version', $decoded['version'] ?? null);
+
+        if ($version === null) {
+            return response()->json([
+                'version' => ['no version provided'],
+            ], 422);
+        }
+
+        $archiveName = "$vendor-$name-$version.zip";
+
+        $newVersion = new Version;
+
+        $newVersion->package_id = $package->id;
+        $newVersion->name = $version;
+        $newVersion->shasum = hash('sha1', $file->getContent());
+        $newVersion->metadata = collect($decoded)->only([
+            'description',
+            'readme',
+            'keywords',
+            'homepage',
+            'license',
+            'authors',
+            'bin',
+            'autoload',
+            'autoload-dev',
+            'extra',
+            'require',
+            'require-dev',
+            'suggest',
+            'provide',
+        ])->toArray();
+
+        $newVersion->save();
+
+        $file->storeAs($archiveName);
+
+        return response()->json($newVersion, 201);
     }
 }
