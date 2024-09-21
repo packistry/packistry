@@ -43,7 +43,6 @@ class ComposerRepositoryController extends Controller
         });
     }
 
-
     private function authorize(Ability $ability): void
     {
         $user = $this->user();
@@ -52,19 +51,20 @@ class ComposerRepositoryController extends Controller
             return;
         }
 
-        if (! $user?->tokenCan($ability->value)) {
+        if (is_null($user) || ! $user->tokenCan($ability->value)) {
             abort(401);
         }
     }
 
-    public function packages(): JsonResponse
+    public function packages(Request $request): JsonResponse
     {
         $this->authorize(Ability::REPOSITORY_READ);
+        $base = $this->repository()->name.'/';
 
         return response()->json([
-            'search' => url('/search.json?q=%query%&type=%type%'),
-            'metadata-url' => url('/p2/%package%.json'),
-            'list' => url('/list.json'),
+            'search' => url("{$base}search.json?q=%query%&type=%type%"),
+            'metadata-url' => url("{$base}p2/%package%.json"),
+            'list' => url("{$base}list.json"),
         ]);
     }
 
@@ -105,9 +105,16 @@ class ComposerRepositoryController extends Controller
         ]);
     }
 
-    public function package(string $vendor, string $name): JsonResponse
+    public function package(Request $request): JsonResponse
     {
         $this->authorize(Ability::REPOSITORY_READ);
+
+        $vendor = $request->route('vendor');
+        $name = $request->route('name');
+
+        if (! is_string($vendor) || ! is_string($name)) {
+            abort(404);
+        }
 
         /** @var Package $package */
         $package = $this
@@ -135,15 +142,22 @@ class ComposerRepositoryController extends Controller
         ]);
     }
 
-    public function packageDev(string $vendor, string $name): JsonResponse
+    public function packageDev(Request $request): JsonResponse
     {
-        // @todo fix dev
-        return $this->package($vendor, $name);
+        return $this->package($request);
     }
 
-    public function download(string $vendor, string $name, string $version): string
+    public function download(Request $request): string
     {
         $this->authorize(Ability::REPOSITORY_READ);
+
+        $vendor = $request->route('vendor');
+        $name = $request->route('name');
+        $version = $request->route('version');
+
+        if (! is_string($vendor) || ! is_string($name) || ! is_string($version)) {
+            abort(404);
+        }
 
         $content = Storage::get("$vendor-$name-$version.zip");
 
@@ -154,9 +168,16 @@ class ComposerRepositoryController extends Controller
         return $content;
     }
 
-    public function upload(Request $request, string $vendor, string $name): JsonResponse
+    public function upload(Request $request): JsonResponse
     {
         $this->authorize(Ability::REPOSITORY_WRITE);
+
+        $vendor = $request->route('vendor');
+        $name = $request->route('name');
+
+        if (! is_string($vendor) || ! is_string($name)) {
+            abort(404);
+        }
 
         /** @var Package|null $package */
         $package = $this

@@ -22,6 +22,20 @@ it('lists packages', function (): void {
         ]);
 });
 
+it('lists sub repository packages', function (): void {
+    $repository = repository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()->count(10))
+    );
+
+    getJson('/sub/list.json')
+        ->assertOk()
+        ->assertJsonContent([
+            'packageNames' => $repository->packages->pluck('name'),
+        ]);
+});
+
 it('requires authentication', function (): void {
     rootRepository();
 

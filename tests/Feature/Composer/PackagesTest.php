@@ -32,3 +32,15 @@ it('requires ability', function (): void {
     getJson('/packages.json')
         ->assertOk();
 });
+
+it('provides urls for sub', function (): void {
+    repository(public: true);
+
+    getJson('/sub/packages.json')
+        ->assertOk()
+        ->assertJsonContent([
+            'search' => url('/sub/search.json?q=%query%&type=%type%'),
+            'metadata-url' => url('/sub/p2/%package%.json'),
+            'list' => url('/sub/list.json'),
+        ]);
+});

@@ -32,3 +32,13 @@ it('requires ability', function (): void {
     getJson('/test/test/1.0.0')
         ->assertOk();
 });
+
+it('downloads a version from sub', function (): void {
+    repositoryWithPackageFromZip(
+        public: true,
+    );
+
+    getJson('/sub/test/test/1.0.0')
+        ->assertOk()
+        ->assertContent((string) file_get_contents(__DIR__.'/../../Fixtures/project.zip'));
+});

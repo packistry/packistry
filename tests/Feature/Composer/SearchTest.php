@@ -113,3 +113,22 @@ it('requires ability', function (): void {
     getJson('/search.json?type=composer-plugin')
         ->assertOk();
 });
+
+it('searches sub repository', function (): void {
+    $repository = repository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()->count(10))
+    );
+
+    getJson('/sub/search.json')
+        ->assertOk()
+        ->assertJsonContent([
+            'total' => 10,
+            'results' => $repository->packages->map(fn (Package $package) => [
+                'name' => $package->name,
+                'description' => '',
+                'downloads' => 0,
+            ]),
+        ]);
+});

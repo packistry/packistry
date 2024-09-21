@@ -49,6 +49,36 @@ function actingAs(User $user, Ability|array $abilities = []): void
     Sanctum::actingAs($user, $abilities);
 }
 
+function repository(string $name = 'sub', bool $public = false, ?Closure $closure = null): Repository
+{
+    return Repository::factory()
+        ->state([
+            'name' => $name,
+        ])
+        ->when($public, fn (RepositoryFactory $factory) => $factory->public())
+        ->when(! is_null($closure), $closure)
+        ->create();
+}
+
+function repositoryWithPackageFromZip(string $name = 'sub', bool $public = false, string $packageName = 'test/test', string $zip = __DIR__.'/Fixtures/project.zip'): Repository
+{
+    return repository(
+        name: $name,
+        public: $public,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(
+                Package::factory()
+                    ->state([
+                        'name' => $packageName,
+                    ])
+                    ->has(
+                        Version::factory()
+                            ->fromZip($zip)
+                    )
+            )
+    );
+}
+
 function rootRepository(bool $public = false, ?Closure $closure = null): Repository
 {
     return Repository::factory()
