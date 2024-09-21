@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
+use App\Enums\Ability;
 use App\Models\Package;
-use App\Models\Repository;
 use App\Models\Version;
+use Database\Factories\RepositoryFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
 use function Pest\Laravel\getJson;
 use function PHPUnit\Framework\assertNotNull;
 
 it('lists package versions', function (): void {
-    /** @var Repository $repository */
-    $repository = Repository::factory()
-        ->root()
-        ->has(
-            Package::factory()
+    $repository = rootRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
                 ->has(Version::factory()
                     ->state(new Sequence(
                         fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
@@ -25,8 +25,8 @@ it('lists package versions', function (): void {
                 ->state([
                     'name' => 'test/test',
                 ])
-        )
-        ->create();
+            )
+    );
 
     $package = $repository->packages->first();
 
@@ -51,4 +51,41 @@ it('lists package versions', function (): void {
                 ]),
             ],
         ]);
+});
+
+it('requires authentication', function (): void {
+    rootRepository(closure: fn (RepositoryFactory $factory) => $factory
+        ->has(Package::factory()
+            ->has(Version::factory()
+                ->state(new Sequence(
+                    fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
+                ))
+                ->count(10)
+            )
+            ->state([
+                'name' => 'test/test',
+            ])
+        ));
+
+    getJson('/p2/test/test.json')
+        ->assertUnauthorized();
+});
+
+it('requires ability', function (): void {
+    rootRepository(closure: fn (RepositoryFactory $factory) => $factory
+        ->has(Package::factory()
+            ->has(Version::factory()
+                ->state(new Sequence(
+                    fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
+                ))
+                ->count(10)
+            )
+            ->state([
+                'name' => 'test/test',
+            ])
+        ));
+
+    user(Ability::REPOSITORY_READ);
+    getJson('/p2/test/test.json')
+        ->assertOk();
 });

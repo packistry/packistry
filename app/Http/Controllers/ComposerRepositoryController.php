@@ -4,32 +4,63 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\Ability;
 use App\Enums\PackageType;
 use App\Models\Package;
 use App\Models\Repository;
+use App\Models\User;
 use App\Models\Version;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ComposerRepositoryController extends Controller
 {
+    public function user(): ?User
+    {
+        /** @var User $user */
+        $user = Auth::guard('sanctum')->user();
+
+        return $user;
+    }
+
     public function repository(): Repository
     {
         return once(function () {
             $name = request()->route('repository');
 
             return Repository::query()
-                ->where('name', $name)
+                ->when(
+                    $name,
+                    fn (BuilderContract $query) => $query->where('name', $name),
+                    fn (BuilderContract $query) => $query->whereNull('name')
+                )
                 ->firstOrFail();
         });
     }
 
+
+    private function authorize(Ability $ability): void
+    {
+        $user = $this->user();
+
+        if (is_null($user) && $this->repository()->public && in_array($ability, Ability::readAbilities())) {
+            return;
+        }
+
+        if (! $user?->tokenCan($ability->value)) {
+            abort(401);
+        }
+    }
+
     public function packages(): JsonResponse
     {
+        $this->authorize(Ability::REPOSITORY_READ);
+
         return response()->json([
             'search' => url('/search.json?q=%query%&type=%type%'),
             'metadata-url' => url('/p2/%package%.json'),
@@ -39,6 +70,8 @@ class ComposerRepositoryController extends Controller
 
     public function search(Request $request): JsonResponse
     {
+        $this->authorize(Ability::REPOSITORY_READ);
+
         $q = $request->input('q');
         $type = $request->input('type');
 
@@ -61,6 +94,8 @@ class ComposerRepositoryController extends Controller
 
     public function list(): JsonResponse
     {
+        $this->authorize(Ability::REPOSITORY_READ);
+
         $names = $this->repository()
             ->packages()
             ->pluck('name');
@@ -72,6 +107,8 @@ class ComposerRepositoryController extends Controller
 
     public function package(string $vendor, string $name): JsonResponse
     {
+        $this->authorize(Ability::REPOSITORY_READ);
+
         /** @var Package $package */
         $package = $this
             ->repository()
@@ -106,6 +143,8 @@ class ComposerRepositoryController extends Controller
 
     public function download(string $vendor, string $name, string $version): string
     {
+        $this->authorize(Ability::REPOSITORY_READ);
+
         $content = Storage::get("$vendor-$name-$version.zip");
 
         if (is_null($content)) {
@@ -117,6 +156,8 @@ class ComposerRepositoryController extends Controller
 
     public function upload(Request $request, string $vendor, string $name): JsonResponse
     {
+        $this->authorize(Ability::REPOSITORY_WRITE);
+
         /** @var Package|null $package */
         $package = $this
             ->repository()

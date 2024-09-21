@@ -2,21 +2,37 @@
 
 declare(strict_types=1);
 
+use App\Enums\Ability;
 use App\Models\Package;
-use App\Models\Repository;
+use Database\Factories\RepositoryFactory;
 
 use function Pest\Laravel\getJson;
 
 it('lists packages', function (): void {
-    /** @var Repository $repository */
-    $repository = Repository::factory()
-        ->root()
-        ->has(Package::factory()->count(10))
-        ->create();
+    $repository = rootRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()->count(10))
+    );
 
     getJson('/list.json')
         ->assertOk()
         ->assertJsonContent([
             'packageNames' => $repository->packages->pluck('name'),
         ]);
+});
+
+it('requires authentication', function (): void {
+    rootRepository();
+
+    getJson('/list.json')
+        ->assertUnauthorized();
+});
+
+it('requires ability', function (): void {
+    rootRepository();
+
+    user(Ability::REPOSITORY_READ);
+    getJson('/list.json')
+        ->assertOk();
 });

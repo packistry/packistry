@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Enums\Ability;
 use App\Models\Package;
-use App\Models\Repository;
 use App\Models\Version;
+use Database\Factories\RepositoryFactory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,24 +21,27 @@ it('creates new version for existing package', function (): void {
             content: (string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')
         );
 
-    /** @var Repository $repository */
-    $repository = Repository::factory()
-        ->root()
-        ->has(
+    $repository = rootRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory->has(
             Package::factory()
                 ->state([
                     'name' => 'test/test',
                 ])
         )
-        ->create();
+    );
 
     $package = $repository->packages->first();
 
     assertNotNull($package);
 
-    $response = post("/$package->name", [
+    $attributes = [
         'file' => $file,
-    ])
+    ];
+
+    user(Ability::REPOSITORY_WRITE);
+
+    $response = post("/$package->name", $attributes)
         ->assertCreated();
 
     /** @var Version $version */
@@ -89,9 +93,9 @@ it('creates new package and version when non exists', function (): void {
             content: (string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')
         );
 
-    Repository::factory()
-        ->root()
-        ->create();
+    rootRepository(public: true);
+
+    user(Ability::REPOSITORY_WRITE);
 
     $response = post('/test/test', [
         'file' => $file,
@@ -139,4 +143,19 @@ it('creates new package and version when non exists', function (): void {
             ],
             'require' => [],
         ]);
+});
+
+it('requires authentication', function (): void {
+    rootRepository(public: true);
+
+    post('/test/test', [])
+        ->assertUnauthorized();
+});
+
+it('requires ability', function (): void {
+    rootRepository(public: true);
+
+    user(Ability::REPOSITORY_WRITE);
+    post('/test/test', [])
+        ->assertUnprocessable();
 });

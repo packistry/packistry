@@ -13,10 +13,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('repositories', function (Blueprint $table): void {
+        Schema::create('personal_access_tokens', function (Blueprint $table): void {
             $table->id();
-            $table->string('name')->nullable()->unique();
-            $table->boolean('public')->default(false);
+            $table->morphs('tokenable');
+            $table->string('name');
+            $table->string('token', 64)->unique();
+            $table->text('abilities')->nullable();
+            $table->timestamp('last_used_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('repositories');
+        Schema::dropIfExists('personal_access_tokens');
     }
 };

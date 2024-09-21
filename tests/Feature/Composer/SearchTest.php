@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
+use App\Enums\Ability;
 use App\Enums\PackageType;
 use App\Models\Package;
 use App\Models\Repository;
+use Database\Factories\RepositoryFactory;
 
 use function Pest\Laravel\getJson;
 
 it('searches empty repository', function (): void {
-    Repository::factory()
-        ->root()
-        ->create();
+    rootRepository(public: true);
 
     getJson('/search.json')
         ->assertOk()
@@ -22,10 +22,11 @@ it('searches empty repository', function (): void {
 });
 
 it('searches filled repository', function (): void {
-    $repository = Repository::factory()
-        ->root()
-        ->has(Package::factory()->count(10))
-        ->create();
+    $repository = rootRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()->count(10))
+    );
 
     getJson('/search.json')
         ->assertOk()
@@ -40,13 +41,16 @@ it('searches filled repository', function (): void {
 });
 
 it('searches by query', function (): void {
-    Repository::factory()
-        ->root()
-        ->has(Package::factory()->state([
-            'name' => 'test/test',
-        ]))
-        ->has(Package::factory()->count(9))
-        ->create();
+    rootRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()->state([
+                'name' => 'test/test',
+            ]))
+            ->has(Package::factory()->state([
+                'type' => PackageType::LIBRARY,
+            ])->count(9))
+    );
 
     getJson('/search.json?q=test')
         ->assertOk()
@@ -63,13 +67,22 @@ it('searches by query', function (): void {
 });
 
 it('searches by type', function (): void {
+    rootRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()->state([
+                'name' => 'test/test',
+                'type' => PackageType::COMPOSER_PLUGIN,
+            ]))
+            ->has(Package::factory()->state([
+                'type' => PackageType::LIBRARY,
+            ])->count(9))
+    );
+
     Repository::factory()
+        ->public()
         ->root()
-        ->has(Package::factory()->state([
-            'name' => 'test/test',
-            'type' => PackageType::COMPOSER_PLUGIN,
-        ]))
-        ->has(Package::factory()->state(['type' => PackageType::LIBRARY])->count(9))
+
         ->create();
 
     getJson('/search.json?type=composer-plugin')
@@ -84,4 +97,19 @@ it('searches by type', function (): void {
                 ],
             ],
         ]);
+});
+
+it('requires authentication', function (): void {
+    rootRepository();
+
+    getJson('/search.json?type=composer-plugin')
+        ->assertUnauthorized();
+});
+
+it('requires ability', function (): void {
+    rootRepository();
+
+    user(Ability::REPOSITORY_READ);
+    getJson('/search.json?type=composer-plugin')
+        ->assertOk();
 });

@@ -23,9 +23,9 @@ use Illuminate\Support\Str;
  * @property string $order
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\Models\Package $package
+ * @property-read Package $package
  *
- * @method static \Database\Factories\VersionFactory factory($count = null, $state = [])
+ * @method static VersionFactory factory($count = null, $state = [])
  * @method static Builder|Version newModelQuery()
  * @method static Builder|Version newQuery()
  * @method static Builder|Version query()
