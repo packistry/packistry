@@ -1,5 +1,7 @@
 FROM php:8.3-fpm-alpine AS base
 
+LABEL org.opencontainers.image.source=https://github.com/maantje/conductorodkc
+
 RUN apk add --no-cache \
     $PHPIZE_DEPS \
     linux-headers ca-certificates curl gnupg git unzip \
