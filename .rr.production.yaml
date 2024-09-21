@@ -1,0 +1,28 @@
+version: '3'
+
+http:
+  address: 0.0.0.0:80
+  pool:
+    num_workers: 0
+    max_jobs: 0
+    supervisor:
+      exec_ttl: 30s
+  static:
+    dir: public
+  middleware: [ "static" ]
+
+server:
+  command: "php ./vendor/bin/roadrunner-worker"
+  env:
+    - APP_BASE_PATH: "/var/www/html"
+    - LARAVEL_OCTANE: "1"
+    - OCTANE_SERVER: "roadrunner"
+
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+logs:
+  mode: production
+  level: debug
+  output: stdout
+  encoding: json
