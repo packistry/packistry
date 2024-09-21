@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
+ *
+ *
  * @property int $id
  * @property int $repository_id
  * @property string $name
