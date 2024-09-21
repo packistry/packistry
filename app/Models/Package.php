@@ -5,32 +5,29 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\PackageFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $repository_id
  * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Repository $repository
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Version> $versions
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Repository $repository
+ * @property-read Collection<int, Version> $versions
  * @property-read int|null $versions_count
- *
- * @method static \Database\Factories\PackageFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Package newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Package newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Package query()
- * @method static \Illuminate\Database\Eloquent\Builder|Package whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Package whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Package whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Package whereRepositoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Package whereUpdatedAt($value)
- *
- * @mixin \Eloquent
+ * @method static PackageFactory factory($count = null, $state = [])
+ * @method static Builder|Package newModelQuery()
+ * @method static Builder|Package newQuery()
+ * @method static Builder|Package query()
+ * @mixin Eloquent
  */
 class Package extends Model
 {
