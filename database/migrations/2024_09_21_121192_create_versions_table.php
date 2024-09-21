@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('versions', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
-            $table->string('version');
+            $table->string('name');
             $table->json('metadata');
+            $table->string('order')->index();
 
             $table->timestamps();
         });

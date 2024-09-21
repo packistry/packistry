@@ -29,7 +29,7 @@ class VersionFactory extends Factory
         $version = "$major.$minor.$patch";
 
         return [
-            'version' => $version,
+            'name' => $version,
             'metadata' => [
                 'authors' => [
                     [
