@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('repository_id')->constrained()->onDelete('cascade');
             $table->string('name')->unique();
+            $table->string('type')->index();
             $table->timestamps();
         });
     }

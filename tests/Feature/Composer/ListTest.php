@@ -16,7 +16,7 @@ it('lists packages', function (): void {
 
     getJson('/list.json')
         ->assertOk()
-        ->assertExactJson([
+        ->assertJsonContent([
             'packageNames' => $repository->packages->pluck('name'),
         ]);
 });

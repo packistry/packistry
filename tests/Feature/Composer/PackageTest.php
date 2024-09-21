@@ -34,7 +34,7 @@ it('lists package versions', function (): void {
 
     getJson('/p2/test/test.json')
         ->assertOk()
-        ->assertContent((string) json_encode([
+        ->assertJsonContent([
             'minified' => 'composer/2.0',
             'packages' => [
                 $package->name => $package->versions->map(fn (Version $version) => [
@@ -50,5 +50,5 @@ it('lists package versions', function (): void {
                     ],
                 ]),
             ],
-        ]));
+        ]);
 });

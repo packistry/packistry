@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PackageType;
 use App\Models\Package;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,6 +25,7 @@ class PackageFactory extends Factory
 
         return [
             'name' => "$vendor/$name",
+            'type' => $this->faker->randomElement(PackageType::cases()),
         ];
     }
 }

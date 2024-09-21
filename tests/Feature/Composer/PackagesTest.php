@@ -7,7 +7,7 @@ use function Pest\Laravel\getJson;
 it('provides urls', function (): void {
     getJson('/packages.json')
         ->assertOk()
-        ->assertExactJson([
+        ->assertJsonContent([
             'search' => url('/search.json?q=%query%&type=%type%'),
             'metadata-url' => url('/p2/%package%.json'),
             'list' => url('/list.json'),

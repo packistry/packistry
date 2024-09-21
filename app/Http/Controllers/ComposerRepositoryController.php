@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\PackageType;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
+use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -17,11 +19,13 @@ class ComposerRepositoryController extends Controller
 {
     public function repository(): Repository
     {
-        $name = request()->route('repository');
+        return once(function () {
+            $name = request()->route('repository');
 
-        return Repository::query()
-            ->where('name', $name)
-            ->firstOrFail();
+            return Repository::query()
+                ->where('name', $name)
+                ->firstOrFail();
+        });
     }
 
     public function packages(): JsonResponse
@@ -35,11 +39,15 @@ class ComposerRepositoryController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        $query = $request->input('q');
+        $q = $request->input('q');
+        $type = $request->input('type');
 
         $packagesQuery = $this->repository()
             ->packages()
-            ->where('name', 'like', "$query%");
+            ->when($q, fn (BuilderContract $query) => $query
+                ->where('name', 'like', "$q%"))
+            ->when($type, fn (BuilderContract $query) => $query
+                ->where('type', "$type"));
 
         return response()->json([
             'total' => $packagesQuery->count(),
@@ -116,10 +124,6 @@ class ComposerRepositoryController extends Controller
             ->where('name', "$vendor/$name")
             ->first();
 
-        if (is_null($package)) {
-            return response()->json(['error' => 'package not found'], 404);
-        }
-
         try {
             $request->validate([
                 'file' => ['required', 'file', 'mimes:zip'],
@@ -147,6 +151,18 @@ class ComposerRepositoryController extends Controller
             return response()->json([
                 'version' => ['no version provided'],
             ], 422);
+        }
+
+        $package ??= new Package;
+
+        if (! $package->exists) {
+            $package->name = "$vendor/$name";
+            $package->type = array_key_exists('type', $decoded)
+                ? PackageType::tryFrom($decoded['type']) ?? PackageType::LIBRARY
+                : PackageType::LIBRARY;
+
+            $this->repository()->packages()->save($package);
+            $package->save();
         }
 
         $archiveName = "$vendor-$name-$version.zip";

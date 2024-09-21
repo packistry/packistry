@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Http\Controllers\ComposerRepositoryController;
 use Illuminate\Support\Facades\Route;
 
-
 if (! function_exists('composerRoutes')) {
     function composerRoutes(): void
     {

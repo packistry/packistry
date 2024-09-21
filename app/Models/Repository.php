@@ -14,18 +14,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- *
- *
  * @property int $id
  * @property string|null $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, Package> $packages
+ * @property-read Collection<int, \App\Models\Package> $packages
  * @property-read int|null $packages_count
+ *
  * @method static \Database\Factories\RepositoryFactory factory($count = null, $state = [])
  * @method static Builder|Repository newModelQuery()
  * @method static Builder|Repository newQuery()
  * @method static Builder|Repository query()
+ *
  * @mixin Eloquent
  */
 class Repository extends Model
