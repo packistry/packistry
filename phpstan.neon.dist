@@ -1,0 +1,22 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
+rules:
+    - Spatie\Ray\PHPStan\RemainingRayCallRule
+    - Ergebnis\PHPStan\Rules\Expressions\NoCompactRule
+    - Ergebnis\PHPStan\Rules\Statements\NoSwitchRule
+    - Ergebnis\PHPStan\Rules\Files\DeclareStrictTypesRule
+
+parameters:
+    customRulesetUsed: true
+    strictRules:
+        strictCalls: false
+    level: 8
+    paths:
+        - app/
+        - tests/
+        - config/
+        - database/
+        - bootstrap/app.php
