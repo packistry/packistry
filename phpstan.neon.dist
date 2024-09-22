@@ -2,6 +2,7 @@ includes:
     - vendor/larastan/larastan/extension.neon
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/tomasvotruba/type-coverage/config/extension.neon
 
 rules:
     - Spatie\Ray\PHPStan\RemainingRayCallRule
@@ -10,6 +11,11 @@ rules:
     - Ergebnis\PHPStan\Rules\Files\DeclareStrictTypesRule
 
 parameters:
+    type_coverage:
+        return: 50
+        param: 35.5
+        property: 70
+        constant: 85
     customRulesetUsed: true
     strictRules:
         strictCalls: false

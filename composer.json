@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "driftingly/rector-laravel": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/octane": "^2.5",
         "laravel/sanctum": "^4.0",
@@ -27,7 +28,8 @@
         "phpstan/phpstan-deprecation-rules": "^1.2",
         "phpstan/phpstan-strict-rules": "^1.6",
         "rector/rector": "^1.2",
-        "spatie/laravel-ray": "^1.37"
+        "spatie/laravel-ray": "^1.37",
+        "tomasvotruba/type-coverage": "^0.3.1"
     },
     "autoload": {
         "psr-4": {

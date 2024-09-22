@@ -21,6 +21,19 @@ use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
+use RectorLaravel\Rector\Class_\ModelCastsPropertyToCastsMethodRector;
+use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
+use RectorLaravel\Rector\ClassMethod\MigrateToSimplifiedAttributeRector;
+use RectorLaravel\Rector\FuncCall\RemoveDumpDataDeadCodeRector;
+use RectorLaravel\Rector\If_\AbortIfRector;
+use RectorLaravel\Rector\MethodCall\AssertStatusToAssertMethodRector;
+use RectorLaravel\Rector\MethodCall\EloquentWhereRelationTypeHintingParameterRector;
+use RectorLaravel\Rector\MethodCall\EloquentWhereTypeHintClosureParameterRector;
+use RectorLaravel\Rector\MethodCall\ValidationRuleArrayStringValueToArrayRector;
+use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
+use RectorLaravel\Rector\StaticCall\DispatchToHelperFunctionsRector;
+use RectorLaravel\Rector\StaticCall\EloquentMagicMethodToQueryBuilderRector;
+use RectorLaravel\Rector\StaticCall\RouteActionCallableRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -35,7 +48,9 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     ->withPhpSets(php83: true)
-    ->withTypeCoverageLevel(0)
+    ->withPreparedSets(
+        typeDeclarations: true,
+    )
     ->withRules([
         ChangeIfElseValueAssignToEarlyReturnRector::class,
         ChangeNestedForeachIfsToEarlyContinueRector::class,
@@ -57,4 +72,18 @@ return RectorConfig::configure()
         RemoveDeadConditionAboveReturnRector::class,
 
         DeclareStrictTypesRector::class,
+
+        AddGenericReturnTypeToRelationsRector::class,
+        AssertStatusToAssertMethodRector::class,
+        DispatchToHelperFunctionsRector::class,
+        EloquentMagicMethodToQueryBuilderRector::class,
+        EloquentWhereRelationTypeHintingParameterRector::class,
+        EloquentWhereTypeHintClosureParameterRector::class,
+
+        MigrateToSimplifiedAttributeRector::class,
+        ModelCastsPropertyToCastsMethodRector::class,
+        RemoveDumpDataDeadCodeRector::class,
+        ReplaceFakerInstanceWithHelperRector::class,
+        RouteActionCallableRector::class,
+        ValidationRuleArrayStringValueToArrayRector::class,
     ]);
