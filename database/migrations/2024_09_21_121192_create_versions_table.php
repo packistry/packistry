@@ -22,6 +22,8 @@ return new class extends Migration
 
             $table->string('order')->index();
             $table->timestamps();
+
+            $table->unique(['package_id', 'name']);
         });
     }
 

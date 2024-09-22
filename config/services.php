@@ -37,4 +37,9 @@ return [
         ],
     ],
 
+    'gitea' => [
+        'webhook' => [
+            'secret' => env('GITEA_WEBHOOK_SECRET', 'secret'),
+        ],
+    ],
 ];

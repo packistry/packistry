@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Package;
 use App\Models\Repository;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
-use App\Models\Version;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,9 +23,13 @@ class DatabaseSeeder extends Seeder
             ])
             ->create();
 
+        $public = $this->command->confirm('Create public root repository?');
+
         Repository::factory()
             ->root()
-            ->has(Package::factory()->has(Version::factory()->count(10))->count(10))
+            ->state([
+                'public' => $public,
+            ])
             ->create();
     }
 }

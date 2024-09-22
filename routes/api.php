@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\ComposerRepositoryController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GiteaWebhookController;
+use App\Http\Middleware\ForceJson;
+use App\Http\Middleware\GiteaWebhookSecret;
 
 if (! function_exists('composerRoutes')) {
     function composerRoutes(): void
@@ -18,8 +20,15 @@ if (! function_exists('composerRoutes')) {
     }
 }
 
-Route::prefix('/{repository}')->group(function (): void {
-    composerRoutes();
-});
+Route::middleware(ForceJson::class)->group(function (): void {
+    Route::prefix('/incoming')->group(function (): void {
+        Route::post('/gitea', GiteaWebhookController::class)
+            ->middleware(GiteaWebhookSecret::class);
+    });
 
-composerRoutes();
+    composerRoutes();
+
+    Route::prefix('/{repository}')->group(function (): void {
+        composerRoutes();
+    });
+});

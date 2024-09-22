@@ -4,59 +4,24 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\CreateFromZip;
 use App\Enums\Ability;
-use App\Enums\PackageType;
+use App\Exceptions\ComposerJsonNotFoundException;
+use App\Exceptions\VersionNotFoundException;
+use App\Http\Resources\PackageResource;
 use App\Models\Package;
-use App\Models\Repository;
-use App\Models\User;
-use App\Models\Version;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ComposerRepositoryController extends Controller
 {
-    public function user(): ?User
-    {
-        /** @var User $user */
-        $user = Auth::guard('sanctum')->user();
+    public function __construct(private readonly CreateFromZip $createFromZip) {}
 
-        return $user;
-    }
-
-    public function repository(): Repository
-    {
-        return once(function () {
-            $name = request()->route('repository');
-
-            return Repository::query()
-                ->when(
-                    $name,
-                    fn (BuilderContract $query) => $query->where('name', $name),
-                    fn (BuilderContract $query) => $query->whereNull('name')
-                )
-                ->firstOrFail();
-        });
-    }
-
-    private function authorize(Ability $ability): void
-    {
-        $user = $this->user();
-
-        if (is_null($user) && $this->repository()->public && in_array($ability, Ability::readAbilities())) {
-            return;
-        }
-
-        if (is_null($user) || ! $user->tokenCan($ability->value)) {
-            abort(401);
-        }
-    }
-
-    public function packages(Request $request): JsonResponse
+    public function packages(): JsonResponse
     {
         $this->authorize(Ability::REPOSITORY_READ);
         $base = $this->repository()->name.'/';
@@ -121,30 +86,38 @@ class ComposerRepositoryController extends Controller
             ->repository()
             ->packages()
             ->where('name', "$vendor/$name")
+            ->with([
+                'versions' => fn (BuilderContract $query) => $query
+                    ->where('name', 'not like', 'dev-%'),
+            ])
             ->firstOrFail();
 
-        return response()->json([
-            'minified' => 'composer/2.0',
-            'packages' => [
-                $package->name => $package->versions->map(fn (Version $version) => [
-                    ...$version->metadata,
-                    'name' => $package->name,
-                    'version' => $version->name,
-                    'type' => 'library',
-                    'time' => $version->created_at,
-                    'dist' => [
-                        'type' => 'zip',
-                        'url' => url("$package->name/$version->name"),
-                        'shasum' => $version->shasum,
-                    ],
-                ]),
-            ],
-        ]);
+        return response()->json(new PackageResource($package));
     }
 
     public function packageDev(Request $request): JsonResponse
     {
-        return $this->package($request);
+        $this->authorize(Ability::REPOSITORY_READ);
+
+        $vendor = $request->route('vendor');
+        $name = $request->route('name');
+
+        if (! is_string($vendor) || ! is_string($name)) {
+            abort(404);
+        }
+
+        /** @var Package $package */
+        $package = $this
+            ->repository()
+            ->packages()
+            ->where('name', "$vendor/$name")
+            ->with([
+                'versions' => fn (BuilderContract $query) => $query
+                    ->where('name', 'like', 'dev-%'),
+            ])
+            ->firstOrFail();
+
+        return response()->json(new PackageResource($package));
     }
 
     public function download(Request $request): string
@@ -179,13 +152,6 @@ class ComposerRepositoryController extends Controller
             abort(404);
         }
 
-        /** @var Package|null $package */
-        $package = $this
-            ->repository()
-            ->packages()
-            ->where('name', "$vendor/$name")
-            ->first();
-
         try {
             $request->validate([
                 'file' => ['required', 'file', 'mimes:zip'],
@@ -197,64 +163,24 @@ class ComposerRepositoryController extends Controller
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
-        $content = @file_get_contents("zip://{$file->getRealPath()}#composer.json");
 
-        if ($content === false) {
+        try {
+            $version = $this->createFromZip->create(
+                repository: $this->repository(),
+                path: $file->getRealPath(),
+                name: "$vendor/$name",
+                version: $request->input('version')
+            );
+        } catch (ComposerJsonNotFoundException) {
             return response()->json([
                 'file' => ['composer.json not found in archive'],
             ], 422);
-        }
-
-        /** @var array<string, mixed> $decoded */
-        $decoded = json_decode($content, true);
-        $version = $request->input('version', $decoded['version'] ?? null);
-
-        if ($version === null) {
+        } catch (VersionNotFoundException) {
             return response()->json([
                 'version' => ['no version provided'],
             ], 422);
         }
 
-        $package ??= new Package;
-
-        if (! $package->exists) {
-            $package->name = "$vendor/$name";
-            $package->type = array_key_exists('type', $decoded)
-                ? PackageType::tryFrom($decoded['type']) ?? PackageType::LIBRARY
-                : PackageType::LIBRARY;
-
-            $this->repository()->packages()->save($package);
-            $package->save();
-        }
-
-        $archiveName = "$vendor-$name-$version.zip";
-
-        $newVersion = new Version;
-
-        $newVersion->package_id = $package->id;
-        $newVersion->name = $version;
-        $newVersion->shasum = hash('sha1', $file->getContent());
-        $newVersion->metadata = collect($decoded)->only([
-            'description',
-            'readme',
-            'keywords',
-            'homepage',
-            'license',
-            'authors',
-            'bin',
-            'autoload',
-            'autoload-dev',
-            'extra',
-            'require',
-            'require-dev',
-            'suggest',
-            'provide',
-        ])->toArray();
-
-        $newVersion->save();
-
-        $file->storeAs($archiveName);
-
-        return response()->json($newVersion, 201);
+        return response()->json($version, 201);
     }
 }
