@@ -28,8 +28,8 @@ COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.2 /usr/bin/rr /usr/local/b
 
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-ENV USER="composer"
-ENV GROUP="composer"
+ENV USER="conductor"
+ENV GROUP="conductor"
 WORKDIR /var/www/html
 
 COPY .env.example .env
