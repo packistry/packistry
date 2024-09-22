@@ -18,6 +18,7 @@ $event = new DeleteEvent(
         name: 'test',
         fullName: 'vendor/test',
         htmlUrl: 'http://localhost:3000/jamie/test',
+        url: 'http://localhost:3000/api/v1/repos/group/test',
     )
 );
 

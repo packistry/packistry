@@ -9,6 +9,7 @@ use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Incoming\Gitea\Event\DeleteEvent;
 use App\Incoming\Gitea\Event\PushEvent;
+use App\Models\Package;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -33,7 +34,20 @@ class GiteaWebhookController extends Controller
         $temp = tmpfile();
         $path = stream_get_meta_data($temp)['uri'];
 
-        $response = Http::get($event->archiveUrl());
+        /** @var Package|null $package */
+        $package = $this->repository()
+            ->packages()
+            ->where('name', $event->repository->fullName)
+            ->first();
+
+        $client = Http::withHeaders([]);
+
+        if (! is_null($package) && ! is_null($package->source)) {
+            $token = decrypt($package->source->token);
+            $client = Http::withHeader('Authorization', "Bearer $token");
+        }
+
+        $response = $client->get($event->archiveUrl());
 
         if ($response->failed()) {
             return response()->json([

@@ -16,6 +16,7 @@ $event = new PushEvent(
         name: 'test',
         fullName: 'group/test',
         htmlUrl: 'http://localhost:3000/group/test',
+        url: 'http://localhost:3000/api/v1/repos/group/test',
     )
 );
 

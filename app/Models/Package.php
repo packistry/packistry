@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $repository_id
+ * @property int|null $source_id
  * @property string $name
  * @property PackageType $type
  * @property string|null $description
@@ -25,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Repository $repository
+ * @property-read PackageSource|null $source
  * @property-read Collection<int, Version> $versions
  * @property-read int|null $versions_count
  *
@@ -50,6 +52,14 @@ class Package extends Model
     public function repository(): BelongsTo
     {
         return $this->belongsTo(Repository::class);
+    }
+
+    /**
+     * @return BelongsTo<PackageSource, Package>
+     */
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(PackageSource::class);
     }
 
     /**

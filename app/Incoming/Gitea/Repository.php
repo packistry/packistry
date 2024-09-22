@@ -11,5 +11,6 @@ class Repository extends Input
         public string $name,
         public string $fullName,
         public string $htmlUrl,
+        public string $url,
     ) {}
 }

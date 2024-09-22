@@ -48,7 +48,7 @@ class Version extends Model
 
     protected $guarded = [];
 
-    protected $hidden = ['order'];
+    protected $hidden = ['order', 'original'];
 
     /**
      * @return BelongsTo<Package, Version>
@@ -76,7 +76,7 @@ class Version extends Model
                 return;
             }
 
-            if (preg_match('/\d+\.\d+\.\d+/', $version->name, $matches) === 0 || preg_match('/\d+\.\d+\.\d+/', $version->name, $matches) === false) {
+            if (preg_match('/\d+\.\d+\.\d+/', $version->name, $matches) === false) {
                 throw new VersionNotFoundException;
             }
 

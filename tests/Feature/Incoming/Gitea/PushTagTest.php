@@ -17,6 +17,7 @@ it('creates version for new tag', function (Repository $repository, string $tag,
             name: 'test',
             fullName: 'group/test',
             htmlUrl: 'http://localhost:3000/group/test',
+            url: 'http://localhost:3000/api/v1/repos/group/test',
         )
     );
 
@@ -63,6 +64,7 @@ it('overwrites version for same tag', function (Repository $repository): void {
             name: 'test',
             fullName: 'group/test',
             htmlUrl: 'http://localhost:3000/group/test',
+            url: 'http://localhost:3000/api/v1/repos/group/test',
         )
     );
 

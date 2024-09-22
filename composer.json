@@ -9,6 +9,7 @@
         "driftingly/rector-laravel": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/octane": "^2.5",
+        "laravel/prompts": "^0.1.25",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "spatie/laravel-data": "^4.9",

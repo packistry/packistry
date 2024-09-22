@@ -54,6 +54,14 @@ class CreateFromZip
 
         $archiveName = str_replace('/', '-', $name)."-$version.zip";
 
+        if (! str_starts_with((string) $version, 'dev-')) {
+            if (preg_match('/\d+\.\d+\.\d+/', (string) $version, $matches) === false) {
+                throw new VersionNotFoundException;
+            }
+
+            $version = $matches[0];
+        }
+
         $newVersion = $package
             ->versions()
             ->where('name', $version)
