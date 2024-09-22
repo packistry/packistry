@@ -20,6 +20,8 @@ use Illuminate\Support\Carbon;
  * @property int $repository_id
  * @property string $name
  * @property PackageType $type
+ * @property string|null $description
+ * @property int $downloads
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Repository $repository

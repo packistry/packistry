@@ -108,16 +108,18 @@ function repositoryWithPackageFromZip(bool $public = false, string $name = 'test
 }
 
 /**
- * @return array{root: Closure(): Repository, sub: Closure(): Repository}
+ * @return array<string, mixed>
  */
 function rootAndSubRepository(bool $public = false, ?Closure $closure = null): array
 {
+    $prefix = $public ? 'public' : 'private';
+
     return [
-        'root' => fn (): Repository => rootRepository(
+        "$prefix repository (root)" => fn (): Repository => rootRepository(
             public: $public,
             closure: $closure
         ),
-        'sub' => fn (): Repository => repository(
+        "$prefix repository (sub)" => fn (): Repository => repository(
             public: $public,
             closure: $closure
         ),
@@ -125,19 +127,21 @@ function rootAndSubRepository(bool $public = false, ?Closure $closure = null): a
 }
 
 /**
- * @return array{root: Closure(): Repository, sub: Closure(): Repository}
+ * @return array<string, mixed>
  */
 function rootAndSubRepositoryFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): array
 {
+    $prefix = $public ? 'public' : 'private';
+
     return [
-        'root' => fn (): Repository => rootWithPackageFromZip(
+        "$prefix repository (root)" => fn (): Repository => rootWithPackageFromZip(
             public: $public,
             name: $name,
             version: $version,
             zip: $zip,
             subDirectory: $subDirectory
         ),
-        'sub' => fn (): Repository => repositoryWithPackageFromZip(
+        "$prefix repository (sub)" => fn (): Repository => repositoryWithPackageFromZip(
             public: $public,
             name: $name,
             version: $version,
@@ -170,4 +174,29 @@ function eventSignature(mixed $event, string $secret): string
     }
 
     return 'sha256='.hash_hmac('sha256', $json, $secret);
+}
+
+/**
+ * @param  Ability|Ability[]  $abilities
+ * @param  array{int, int}  $statuses
+ * @return array<string, mixed>
+ */
+function guestAnd(Ability|array $abilities, array $statuses = [200, 200]): array
+{
+    $values = is_array($abilities)
+        ? array_map(fn (Ability $ability) => $ability->value, $abilities)
+        : [$abilities->value];
+
+    $imploded = implode(',', $values);
+
+    return [
+        "$statuses[0] guest" => [
+            fn (): null => null,
+            $statuses[0],
+        ],
+        "$statuses[1] user ($imploded)" => [
+            fn (): User => user($abilities),
+            $statuses[1],
+        ],
+    ];
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\Ability;
 use App\Models\Package;
 use App\Models\Repository;
+use App\Models\User;
 use App\Models\Version;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -12,13 +13,13 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use function Pest\Laravel\getJson;
 use function PHPUnit\Framework\assertNotNull;
 
-it('lists package versions', function (Repository $repository): void {
+it('lists package versions', function (Repository $repository, ?User $user, int $status): void {
     $package = $repository->packages->first();
 
     assertNotNull($package);
 
     getJson($repository->url('/p2/test/test.json'))
-        ->assertOk()
+        ->assertStatus($status)
         ->assertJsonContent([
             'minified' => 'composer/2.0',
             'packages' => [
@@ -36,43 +37,34 @@ it('lists package versions', function (Repository $repository): void {
                 ]),
             ],
         ]);
-})->with(rootAndSubRepository(
-    public: true,
-    closure: fn (RepositoryFactory $factory) => $factory
-        ->has(Package::factory()
-            ->has(Version::factory()
-                ->state(new Sequence(
-                    fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
-                ))
-                ->count(10)
+})
+    ->with(rootAndSubRepository(
+        public: true,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()
+                    ->state(new Sequence(
+                        fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
+                    ))
+                    ->count(10)
+                )
+                ->state([
+                    'name' => 'test/test',
+                ])
             )
-            ->state([
-                'name' => 'test/test',
-            ])
-        )
-));
+    ))
+    ->with(guestAnd(Ability::REPOSITORY_READ));
 
-it('requires authentication', function (Repository $repository): void {
+it('requires ability', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/p2/test/test.json'))
-        ->assertUnauthorized();
-})->with(rootAndSubRepository(
-    closure: fn (RepositoryFactory $factory) => $factory
-        ->has(Package::factory()
-            ->state([
-                'name' => 'test/test',
-            ])
-        )
-));
-
-it('requires ability', function (Repository $repository): void {
-    user(Ability::REPOSITORY_READ);
-    getJson($repository->url('/p2/test/test.json'))
-        ->assertOk();
-})->with(rootAndSubRepository(
-    closure: fn (RepositoryFactory $factory) => $factory
-        ->has(Package::factory()
-            ->state([
-                'name' => 'test/test',
-            ])
-        )
-));
+        ->assertStatus($status);
+})
+    ->with(rootAndSubRepository(
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->state([
+                    'name' => 'test/test',
+                ])
+            )
+    ))
+    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));

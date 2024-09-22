@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\CreateFromZip;
 use App\Enums\Ability;
+use App\Events\PackageDownloadEvent;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Http\Resources\PackageResource;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class ComposerRepositoryController extends Controller
 {
@@ -51,8 +53,8 @@ class ComposerRepositoryController extends Controller
             'total' => $packagesQuery->count(),
             'results' => $packagesQuery->chunkMap(fn (Package $package): array => [
                 'name' => $package->name,
-                'description' => '',
-                'downloads' => 0,
+                'description' => $package->description,
+                'downloads' => $package->downloads,
             ]),
         ]);
     }
@@ -120,6 +122,9 @@ class ComposerRepositoryController extends Controller
         return response()->json(new PackageResource($package));
     }
 
+    /**
+     * @throws Throwable
+     */
     public function download(Request $request): string
     {
         $this->authorize(Ability::REPOSITORY_READ);
@@ -137,6 +142,15 @@ class ComposerRepositoryController extends Controller
         if (is_null($content)) {
             abort(404);
         }
+
+        event(new PackageDownloadEvent(
+            repository: $this->repository(),
+            vendor: $vendor,
+            name: $name,
+            version: $version,
+            ip: $request->ip() ?? 'unknown',
+            user: $this->user()
+        ));
 
         return $content;
     }

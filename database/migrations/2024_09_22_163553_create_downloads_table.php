@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('packages', function (Blueprint $table): void {
+        Schema::create('downloads', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('repository_id')->constrained()->onDelete('cascade');
 
-            $table->string('name')->unique();
-            $table->string('type')->index();
-            $table->string('description')->nullable();
-            $table->unsignedBigInteger('downloads')->default(0);
+            $table->foreignId('version_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->ipAddress('ip');
 
             $table->timestamps();
         });
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('packages');
+        Schema::dropIfExists('downloads');
     }
 };

@@ -22,8 +22,8 @@ class PackageFactory extends Factory
      */
     public function definition(): array
     {
-        $vendor = fake()->word();
-        $name = fake()->word();
+        $vendor = fake()->unique()->word();
+        $name = fake()->unique()->word();
 
         return [
             'name' => "$vendor/$name",
