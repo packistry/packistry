@@ -18,9 +18,6 @@ Conductor is a self-hosted Composer repository server designed to handle your Co
 
 - **Deploy With Docker**
   - Conductor is **dockerized**, making it extremely easy to deploy. Get your server running in seconds:
-    ```bash
-    docker run -p 80:80 ghcr.io/maantje/conductor
-    ```
 
 ### Getting Started
 
@@ -30,17 +27,27 @@ Conductor is a self-hosted Composer repository server designed to handle your Co
    docker run -p 80:80 ghcr.io/maantje/conductor
    ```
 
-2. **Add Package Sources**:
+2. **[Add Package Sources](#adding-a-new-package-source)**:
    Use package sources to connect your repositories from GitHub, GitLab, or Gitea, and let Conductor handle the rest.
 
-3. **Import Package**:
+3. **[Import Package](#importing-packages-from-a-source)**:
    Import a repository from your package source as package, once set-up conductor will create the necessary webhooks to keep your package up to date with the latest tags and branches
 
-4. **Add repository to composer.json**
+4. **Add repository to composer.json**  
+    Replace `[url]` with e.g. `http://localhost`, `https://domain.com`, `https://sub.domain.com:1234`
    ```bash
-   composer config repositories.conductor composer http://localhost 
+   composer config repositories.conductor composer [url]
    ```
-5. **Install package from repository**
+5. **Optionally, Authenticate with repository**  
+    Replace `[url]` with e.g. `localhost`, `domain.com`, `sub.domain.com:1234`
+    ```bash
+    composer config bearer.[url] "1|Q38MkoeJYOqTRgNlbn0M78Ktjxu77YRiG7MvlITO25d5ff86"  
+    ```
+6. **Optionally, allow insecure http connection**
+    ```bash
+    composer config secure-http false  
+    ```
+7. **Install package from repository**
    ```bash
    composer require vendor/name
    ```
@@ -91,5 +98,3 @@ php artisan app:import-package
    Once the import is successful, Conductor will display the name of the imported repository along with a list of:
     - **Branches**: All branches detected from the package source.
     - **Tags**: All tags associated with the package in the selected source.
-
-
