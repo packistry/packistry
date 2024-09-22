@@ -27,14 +27,14 @@ class RepositoryFactory extends Factory
 
     public function root(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'name' => null,
         ]);
     }
 
     public function public(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'public' => true,
         ]);
     }

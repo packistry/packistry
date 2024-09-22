@@ -32,7 +32,7 @@ it('searches filled repository', function (): void {
         ->assertOk()
         ->assertJsonContent([
             'total' => 10,
-            'results' => $repository->packages->map(fn (Package $package) => [
+            'results' => $repository->packages->map(fn (Package $package): array => [
                 'name' => $package->name,
                 'description' => '',
                 'downloads' => 0,
@@ -125,7 +125,7 @@ it('searches sub repository', function (): void {
         ->assertOk()
         ->assertJsonContent([
             'total' => 10,
-            'results' => $repository->packages->map(fn (Package $package) => [
+            'results' => $repository->packages->map(fn (Package $package): array => [
                 'name' => $package->name,
                 'description' => '',
                 'downloads' => 0,

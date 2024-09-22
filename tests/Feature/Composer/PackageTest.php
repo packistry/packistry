@@ -18,7 +18,7 @@ it('lists package versions', function (): void {
             ->has(Package::factory()
                 ->has(Version::factory()
                     ->state(new Sequence(
-                        fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
+                        fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
                     ))
                     ->count(10)
                 )
@@ -58,7 +58,7 @@ it('requires authentication', function (): void {
         ->has(Package::factory()
             ->has(Version::factory()
                 ->state(new Sequence(
-                    fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
+                    fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
                 ))
                 ->count(10)
             )
@@ -76,7 +76,7 @@ it('requires ability', function (): void {
         ->has(Package::factory()
             ->has(Version::factory()
                 ->state(new Sequence(
-                    fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
+                    fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
                 ))
                 ->count(10)
             )
@@ -97,7 +97,7 @@ it('lists package versions for sub', function (): void {
             ->has(Package::factory()
                 ->has(Version::factory()
                     ->state(new Sequence(
-                        fn (Sequence $sequence) => ['name' => '0.1.'.$sequence->index],
+                        fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
                     ))
                     ->count(10)
                 )

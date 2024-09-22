@@ -84,7 +84,7 @@ class ComposerRepositoryController extends Controller
 
         return response()->json([
             'total' => $packagesQuery->count(),
-            'results' => $packagesQuery->chunkMap(fn (Package $package) => [
+            'results' => $packagesQuery->chunkMap(fn (Package $package): array => [
                 'name' => $package->name,
                 'description' => '',
                 'downloads' => 0,

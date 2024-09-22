@@ -20,12 +20,12 @@ class PackageFactory extends Factory
      */
     public function definition(): array
     {
-        $vendor = $this->faker->word();
-        $name = $this->faker->word();
+        $vendor = fake()->word();
+        $name = fake()->word();
 
         return [
             'name' => "$vendor/$name",
-            'type' => $this->faker->randomElement(PackageType::cases()),
+            'type' => fake()->randomElement(PackageType::cases()),
         ];
     }
 }

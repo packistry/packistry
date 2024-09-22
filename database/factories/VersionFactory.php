@@ -20,12 +20,12 @@ class VersionFactory extends Factory
      */
     public function definition(): array
     {
-        $vendor = $this->faker->word();
-        $name = $this->faker->word();
+        $vendor = fake()->word();
+        $name = fake()->word();
 
-        $major = $this->faker->numberBetween(0, 10);
-        $minor = $this->faker->numberBetween(0, 10);
-        $patch = $this->faker->numberBetween(0, 10);
+        $major = fake()->numberBetween(0, 10);
+        $minor = fake()->numberBetween(0, 10);
+        $patch = fake()->numberBetween(0, 10);
 
         $version = "$major.$minor.$patch";
 
@@ -34,8 +34,8 @@ class VersionFactory extends Factory
             'metadata' => [
                 'authors' => [
                     [
-                        'name' => $this->faker->name,
-                        'email' => $this->faker->email,
+                        'name' => fake()->name,
+                        'email' => fake()->email,
                     ],
                 ],
                 'autoload' => [
@@ -47,7 +47,7 @@ class VersionFactory extends Factory
                     './bin/script',
                 ],
             ],
-            'shasum' => $this->faker->sha256(),
+            'shasum' => fake()->sha256(),
         ];
     }
 
@@ -69,7 +69,7 @@ class VersionFactory extends Factory
         $archiveContent = file_get_contents($path);
         Storage::put($archiveName, $archiveContent);
 
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'name' => $version,
             'shasum' => hash_file('sha1', $path),
             'metadata' => collect($decoded)->only([

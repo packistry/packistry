@@ -59,7 +59,7 @@ class Version extends Model
         static::creating(function (Version $version): void {
             $version->order = Str::of($version->name)
                 ->explode('.')
-                ->map(fn ($part) => Str::padLeft($part, 3, '0'))
+                ->map(fn (string $part) => Str::padLeft($part, 3, '0'))
                 ->implode('.');
         });
     }

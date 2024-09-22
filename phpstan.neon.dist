@@ -12,10 +12,10 @@ rules:
 
 parameters:
     type_coverage:
-        return: 50
-        param: 35.5
-        property: 70
-        constant: 85
+        return: 100
+        param: 100
+        property: 100
+        constant: 100
     customRulesetUsed: true
     strictRules:
         strictCalls: false

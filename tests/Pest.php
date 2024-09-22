@@ -55,7 +55,7 @@ function repository(string $name = 'sub', bool $public = false, ?Closure $closur
         ->state([
             'name' => $name,
         ])
-        ->when($public, fn (RepositoryFactory $factory) => $factory->public())
+        ->when($public, fn (RepositoryFactory $factory): RepositoryFactory => $factory->public())
         ->when(! is_null($closure), $closure)
         ->create();
 }
@@ -82,7 +82,7 @@ function repositoryWithPackageFromZip(string $name = 'sub', bool $public = false
 function rootRepository(bool $public = false, ?Closure $closure = null): Repository
 {
     return Repository::factory()
-        ->when($public, fn (RepositoryFactory $factory) => $factory->public())
+        ->when($public, fn (RepositoryFactory $factory): RepositoryFactory => $factory->public())
         ->when(! is_null($closure), $closure)
         ->root()
         ->create();
