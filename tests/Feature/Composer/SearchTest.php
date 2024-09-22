@@ -10,25 +10,19 @@ use Database\Factories\RepositoryFactory;
 
 use function Pest\Laravel\getJson;
 
-it('searches empty repository', function (): void {
-    rootRepository(public: true);
-
-    getJson('/search.json')
+it('searches empty repository', function (Repository $repository): void {
+    getJson($repository->url('/search.json'))
         ->assertOk()
         ->assertExactJson([
             'total' => 0,
             'results' => [],
         ]);
-});
+})->with(rootAndSubRepository(
+    public: true,
+));
 
-it('searches filled repository', function (): void {
-    $repository = rootRepository(
-        public: true,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->count(10))
-    );
-
-    getJson('/search.json')
+it('searches filled repository', function (Repository $repository): void {
+    getJson($repository->url('/search.json'))
         ->assertOk()
         ->assertJsonContent([
             'total' => 10,
@@ -38,21 +32,14 @@ it('searches filled repository', function (): void {
                 'downloads' => 0,
             ]),
         ]);
-});
+})->with(rootAndSubRepository(
+    public: true,
+    closure: fn (RepositoryFactory $factory) => $factory
+        ->has(Package::factory()->count(10))
+));
 
-it('searches by query', function (): void {
-    rootRepository(
-        public: true,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->state([
-                'name' => 'test/test',
-            ]))
-            ->has(Package::factory()->state([
-                'type' => PackageType::LIBRARY,
-            ])->count(9))
-    );
-
-    getJson('/search.json?q=test')
+it('searches by query', function (Repository $repository): void {
+    getJson($repository->url('/search.json?q=test'))
         ->assertOk()
         ->assertJsonContent([
             'total' => 1,
@@ -64,28 +51,25 @@ it('searches by query', function (): void {
                 ],
             ],
         ]);
-});
+})->with(rootAndSubRepository(
+    public: true,
+    closure: fn (RepositoryFactory $factory) => $factory
+        ->has(Package::factory()->state([
+            'name' => 'test/test',
+        ]))
+        ->has(Package::factory()->state([
+            'type' => PackageType::LIBRARY,
+        ])->count(9))
+));
 
-it('searches by type', function (): void {
-    rootRepository(
-        public: true,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->state([
-                'name' => 'test/test',
-                'type' => PackageType::COMPOSER_PLUGIN,
-            ]))
-            ->has(Package::factory()->state([
-                'type' => PackageType::LIBRARY,
-            ])->count(9))
-    );
-
+it('searches by type', function (Repository $repository): void {
     Repository::factory()
         ->public()
         ->root()
 
         ->create();
 
-    getJson('/search.json?type=composer-plugin')
+    getJson($repository->url('/search.json?type=composer-plugin'))
         ->assertOk()
         ->assertJsonContent([
             'total' => 1,
@@ -97,38 +81,26 @@ it('searches by type', function (): void {
                 ],
             ],
         ]);
-});
+})->with(rootAndSubRepository(
+    public: true,
+    closure: fn (RepositoryFactory $factory) => $factory
+        ->has(Package::factory()->state([
+            'name' => 'test/test',
+            'type' => PackageType::COMPOSER_PLUGIN,
+        ]))
+        ->has(Package::factory()->state([
+            'type' => PackageType::LIBRARY,
+        ])->count(9))
+));
 
-it('requires authentication', function (): void {
-    rootRepository();
-
-    getJson('/search.json?type=composer-plugin')
+it('requires authentication', function (Repository $repository): void {
+    getJson($repository->url('/search.json?type=composer-plugin'))
         ->assertUnauthorized();
-});
+})->with(rootAndSubRepository());
 
-it('requires ability', function (): void {
-    rootRepository();
-
+it('requires ability', function (Repository $repository): void {
     user(Ability::REPOSITORY_READ);
-    getJson('/search.json?type=composer-plugin')
+
+    getJson($repository->url('/search.json?type=composer-plugin'))
         ->assertOk();
-});
-
-it('searches sub repository', function (): void {
-    $repository = repository(
-        public: true,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->count(10))
-    );
-
-    getJson('/sub/search.json')
-        ->assertOk()
-        ->assertJsonContent([
-            'total' => 10,
-            'results' => $repository->packages->map(fn (Package $package): array => [
-                'name' => $package->name,
-                'description' => '',
-                'downloads' => 0,
-            ]),
-        ]);
-});
+})->with(rootAndSubRepository());

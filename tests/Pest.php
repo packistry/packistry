@@ -14,6 +14,8 @@ declare(strict_types=1);
 */
 
 use App\Enums\Ability;
+use App\Incoming\Gitea\Event\DeleteEvent;
+use App\Incoming\Gitea\Event\PushEvent;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
@@ -60,25 +62,6 @@ function repository(string $name = 'sub', bool $public = false, ?Closure $closur
         ->create();
 }
 
-function repositoryWithPackageFromZip(string $name = 'sub', bool $public = false, string $packageName = 'test/test', string $zip = __DIR__.'/Fixtures/project.zip'): Repository
-{
-    return repository(
-        name: $name,
-        public: $public,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(
-                Package::factory()
-                    ->state([
-                        'name' => $packageName,
-                    ])
-                    ->has(
-                        Version::factory()
-                            ->fromZip($zip)
-                    )
-            )
-    );
-}
-
 function rootRepository(bool $public = false, ?Closure $closure = null): Repository
 {
     return Repository::factory()
@@ -88,7 +71,7 @@ function rootRepository(bool $public = false, ?Closure $closure = null): Reposit
         ->create();
 }
 
-function rootWithPackageFromZip(bool $public = false, string $name = 'test/test', string $zip = __DIR__.'/Fixtures/project.zip'): Repository
+function rootWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): Repository
 {
     return rootRepository(
         public: $public,
@@ -100,8 +83,91 @@ function rootWithPackageFromZip(bool $public = false, string $name = 'test/test'
                     ])
                     ->has(
                         Version::factory()
-                            ->fromZip($zip)
+                            ->fromZip($zip, $subDirectory, $version)
                     )
             )
     );
+}
+
+function repositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): Repository
+{
+    return repository(
+        public: $public,
+        closure: fn (RepositoryFactory $factory) => $factory
+            ->has(
+                Package::factory()
+                    ->state([
+                        'name' => $name,
+                    ])
+                    ->has(
+                        Version::factory()
+                            ->fromZip($zip, $subDirectory, $version)
+                    )
+            )
+    );
+}
+
+/**
+ * @return array{root: Closure(): Repository, sub: Closure(): Repository}
+ */
+function rootAndSubRepository(bool $public = false, ?Closure $closure = null): array
+{
+    return [
+        'root' => fn (): Repository => rootRepository(
+            public: $public,
+            closure: $closure
+        ),
+        'sub' => fn (): Repository => repository(
+            public: $public,
+            closure: $closure
+        ),
+    ];
+}
+
+/**
+ * @return array{root: Closure(): Repository, sub: Closure(): Repository}
+ */
+function rootAndSubRepositoryFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): array
+{
+    return [
+        'root' => fn (): Repository => rootWithPackageFromZip(
+            public: $public,
+            name: $name,
+            version: $version,
+            zip: $zip,
+            subDirectory: $subDirectory
+        ),
+        'sub' => fn (): Repository => repositoryWithPackageFromZip(
+            public: $public,
+            name: $name,
+            version: $version,
+            zip: $zip,
+            subDirectory: $subDirectory
+        ),
+    ];
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function eventHeaders(PushEvent|DeleteEvent $event, string $secret = 'secret'): array
+{
+    $eventType = match ($event::class) {
+        PushEvent::class => 'push',
+        DeleteEvent::class => 'delete',
+        default => throw new RuntimeException('unknown event')
+    };
+
+    return ['X-Hub-Signature-256' => eventSignature($event, $secret), 'X-Gitea-Event' => $eventType];
+}
+
+function eventSignature(mixed $event, string $secret): string
+{
+    $json = json_encode($event);
+
+    if ($json === false) {
+        throw new RuntimeException('failed to decode json');
+    }
+
+    return 'sha256='.hash_hmac('sha256', $json, $secret);
 }

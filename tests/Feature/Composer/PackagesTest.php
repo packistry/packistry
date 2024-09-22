@@ -3,44 +3,31 @@
 declare(strict_types=1);
 
 use App\Enums\Ability;
+use App\Models\Repository;
 
 use function Pest\Laravel\getJson;
 
-it('provides urls', function (): void {
-    rootRepository(public: true);
+it('provides urls', function (Repository $repository): void {
+    $prefix = is_null($repository->name) ? '' : $repository->name.'/';
 
-    getJson('/packages.json')
+    getJson($repository->url('/packages.json'))
         ->assertOk()
         ->assertJsonContent([
-            'search' => url('/search.json?q=%query%&type=%type%'),
-            'metadata-url' => url('/p2/%package%.json'),
-            'list' => url('/list.json'),
+            'search' => url($prefix.'search.json?q=%query%&type=%type%'),
+            'metadata-url' => url($prefix.'p2/%package%.json'),
+            'list' => url($prefix.'list.json'),
         ]);
-});
+})->with(rootAndSubRepository(
+    public: true
+));
 
-it('requires authentication', function (): void {
-    rootRepository();
-
-    getJson('/packages.json')
+it('requires authentication', function (Repository $repository): void {
+    getJson($repository->url('/packages.json'))
         ->assertUnauthorized();
-});
+})->with(rootAndSubRepository());
 
-it('requires ability', function (): void {
-    rootRepository();
-
+it('requires ability', function (Repository $repository): void {
     user(Ability::REPOSITORY_READ);
-    getJson('/packages.json')
+    getJson($repository->url('/packages.json'))
         ->assertOk();
-});
-
-it('provides urls for sub', function (): void {
-    repository(public: true);
-
-    getJson('/sub/packages.json')
-        ->assertOk()
-        ->assertJsonContent([
-            'search' => url('/sub/search.json?q=%query%&type=%type%'),
-            'metadata-url' => url('/sub/p2/%package%.json'),
-            'list' => url('/sub/list.json'),
-        ]);
-});
+})->with(rootAndSubRepository());

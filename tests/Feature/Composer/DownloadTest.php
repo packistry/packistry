@@ -3,42 +3,25 @@
 declare(strict_types=1);
 
 use App\Enums\Ability;
+use App\Models\Repository;
 
 use function Pest\Laravel\getJson;
 
-it('downloads a version', function (): void {
-    rootWithPackageFromZip(
-        public: true,
-    );
-
-    getJson('/test/test/1.0.0')
+it('downloads a version', function (Repository $repository): void {
+    getJson($repository->url('/test/test/1.0.0'))
         ->assertOk()
         ->assertContent((string) file_get_contents(__DIR__.'/../../Fixtures/project.zip'));
-});
+})->with(rootAndSubRepositoryFromZip(
+    public: true
+));
 
-it('requires authentication', function (): void {
-    rootWithPackageFromZip();
-
-    getJson('/test/test/1.0.0')
+it('requires authentication', function (Repository $repository): void {
+    getJson($repository->url('/test/test/1.0.0'))
         ->assertUnauthorized();
-});
+})->with(rootAndSubRepositoryFromZip());
 
-it('requires ability', function (): void {
-    rootWithPackageFromZip(
-        public: true,
-    );
-
+it('requires ability', function (Repository $repository): void {
     user(Ability::REPOSITORY_READ);
-    getJson('/test/test/1.0.0')
+    getJson($repository->url('/test/test/1.0.0'))
         ->assertOk();
-});
-
-it('downloads a version from sub', function (): void {
-    repositoryWithPackageFromZip(
-        public: true,
-    );
-
-    getJson('/sub/test/test/1.0.0')
-        ->assertOk()
-        ->assertContent((string) file_get_contents(__DIR__.'/../../Fixtures/project.zip'));
-});
+})->with(rootAndSubRepositoryFromZip());

@@ -6,7 +6,6 @@ namespace App\Incoming\Gitea\Event;
 
 use App\Incoming\Gitea\Input;
 use App\Incoming\Gitea\Repository;
-use App\Incoming\Gitea\User;
 
 class DeleteEvent extends Input
 {
@@ -15,6 +14,5 @@ class DeleteEvent extends Input
         public string $refType,
         public string $pusherType,
         public Repository $repository,
-        public User $sender
     ) {}
 }

@@ -11,6 +11,7 @@ use App\Incoming\Gitea\Event\DeleteEvent;
 use App\Incoming\Gitea\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class GiteaWebhookController extends Controller
 {
@@ -32,7 +33,15 @@ class GiteaWebhookController extends Controller
         $temp = tmpfile();
         $path = stream_get_meta_data($temp)['uri'];
 
-        file_put_contents($path, file_get_contents($event->archiveUrl()));
+        $response = Http::get($event->archiveUrl());
+
+        if ($response->failed()) {
+            return response()->json([
+                'archive' => ['failed to fetch archive'],
+            ], 422);
+        }
+
+        file_put_contents($path, $response->body());
 
         try {
             $version = $this->createFromZip->create(

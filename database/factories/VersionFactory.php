@@ -51,12 +51,12 @@ class VersionFactory extends Factory
         ];
     }
 
-    public function fromZip(string $path, ?string $version = null): static
+    public function fromZip(string $path, string $subDirectory = '', ?string $version = null): static
     {
         Storage::fake();
 
         /** @var string $content */
-        $content = file_get_contents("zip://$path#composer.json");
+        $content = file_get_contents("zip://$path#{$subDirectory}composer.json");
 
         /** @var array<string, mixed> $decoded */
         $decoded = json_decode($content, true);
