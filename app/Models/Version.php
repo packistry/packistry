@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Exceptions\VersionNotFoundException;
 use App\Models\Scopes\OrderScope;
+use App\Traits\NormalizesVersion;
 use Database\Factories\VersionFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,6 +42,8 @@ class Version extends Model
     /** @use HasFactory<VersionFactory> */
     use HasFactory;
 
+    use NormalizesVersion;
+
     protected $casts = [
         'metadata' => 'json',
     ];
@@ -70,22 +72,16 @@ class Version extends Model
     {
         static::addGlobalScope(new OrderScope('order'));
         static::creating(function (Version $version): void {
-            if (str_starts_with($version->name, 'dev-')) {
-                $version->order = $version->name;
+            $version->name = $version->normalizeVersion($version->name);
 
-                return;
-            }
+            $order = str_starts_with($version->name, 'dev-')
+                ? $version->name
+                : Str::of($version->name)
+                    ->explode('.')
+                    ->map(fn (string $part) => Str::padLeft($part, 3, '0'))
+                    ->implode('.');
 
-            if (preg_match('/\d+\.\d+\.\d+/', $version->name, $matches) === false) {
-                throw new VersionNotFoundException;
-            }
-
-            $version->name = $matches[0];
-
-            $version->order = Str::of($version->name)
-                ->explode('.')
-                ->map(fn (string $part) => Str::padLeft($part, 3, '0'))
-                ->implode('.');
+            $version->order = $order;
         });
     }
 }

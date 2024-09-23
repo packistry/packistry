@@ -10,11 +10,14 @@ use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
+use App\Traits\NormalizesVersion;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 class CreateFromZip
 {
+    use NormalizesVersion;
+
     /**
      * @throws VersionNotFoundException|ComposerJsonNotFoundException
      */
@@ -25,14 +28,14 @@ class CreateFromZip
         ?string $subDirectory = null,
         ?string $version = null,
     ): Version {
-        $content = @file_get_contents("zip://$path#{$subDirectory}composer.json");
+        $contents = @file_get_contents("zip://$path#{$subDirectory}composer.json");
 
-        if ($content === false) {
+        if ($contents === false) {
             return throw new ComposerJsonNotFoundException('composer.json not found in archive');
         }
 
         /** @var array<string, mixed> $decoded */
-        $decoded = json_decode($content, true);
+        $decoded = json_decode($contents, true);
         $version ??= $decoded['version'] ?? throw new VersionNotFoundException('no version provided');
 
         /** @var Package $package */
@@ -52,19 +55,9 @@ class CreateFromZip
             $package->save();
         }
 
-        $archiveName = $repository->archivePath(str_replace('/', '-', $name)."-$version.zip");
-
-        if (! str_starts_with((string) $version, 'dev-')) {
-            if (preg_match('/\d+\.\d+\.\d+/', (string) $version, $matches) === false) {
-                throw new VersionNotFoundException;
-            }
-
-            $version = $matches[0];
-        }
-
-        $newVersion = $package
+        $createdVersion = $package
             ->versions()
-            ->where('name', $version)
+            ->where('name', $this->normalizeVersion($version))
             ->first() ?? new Version;
 
         $hash = hash_file('sha1', $path);
@@ -73,10 +66,10 @@ class CreateFromZip
             throw new RuntimeException('failed to calculate hash');
         }
 
-        $newVersion->package_id = $package->id;
-        $newVersion->name = $version;
-        $newVersion->shasum = $hash;
-        $newVersion->metadata = collect($decoded)->only([
+        $createdVersion->package_id = $package->id;
+        $createdVersion->name = $version;
+        $createdVersion->shasum = $hash;
+        $createdVersion->metadata = collect($decoded)->only([
             'description',
             'readme',
             'keywords',
@@ -93,12 +86,16 @@ class CreateFromZip
             'provide',
         ])->toArray();
 
-        $newVersion->save();
+        $createdVersion->save();
 
-        /** @var string $content */
-        $content = file_get_contents($path);
-        Storage::disk()->put($archiveName, $content);
+        /** @var string $contents */
+        $contents = file_get_contents($path);
 
-        return $newVersion;
+        Storage::disk()->put(
+            path: $repository->archivePath(str_replace('/', '-', $name)."-$version.zip"),
+            contents: $contents
+        );
+
+        return $createdVersion;
     }
 }
