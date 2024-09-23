@@ -53,6 +53,6 @@ class Repository extends Model
     {
         $prefix = is_null($this->name) ? '' : "$this->name/";
 
-        return $prefix.$file;
+        return $prefix.basename($file);
     }
 }

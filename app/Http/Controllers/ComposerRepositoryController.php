@@ -137,7 +137,7 @@ class ComposerRepositoryController extends Controller
             abort(404);
         }
 
-        $path = $this->repository()->archivePath(basename("$vendor-$name-$version.zip"));
+        $path = $this->repository()->archivePath("$vendor-$name-$version.zip");
         $content = Storage::get($path);
 
         if (is_null($content)) {
