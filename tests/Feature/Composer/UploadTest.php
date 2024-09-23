@@ -41,7 +41,7 @@ it('creates new version for existing package', function (Repository $repository,
     /** @var Version $version */
     $version = Version::query()->first();
 
-    $response->assertJsonContent([
+    $response->assertExactJson([
         'package_id' => $package->id,
         'name' => $version->name,
         'shasum' => $version->shasum,
@@ -113,7 +113,7 @@ it('creates new package and version when non existing', function (Repository $re
     /** @var Version $version */
     $version = Version::query()->first();
 
-    $response->assertJsonContent([
+    $response->assertExactJson([
         'package_id' => $package->id,
         'name' => $version->name,
         'shasum' => $version->shasum,

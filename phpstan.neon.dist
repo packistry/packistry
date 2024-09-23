@@ -20,8 +20,6 @@ parameters:
     strictRules:
         strictCalls: false
     level: 8
-    ignoreErrors:
-        - '#Call to an undefined method Illuminate\\Testing\\TestResponse::assertJsonContent\(\).#'
     paths:
         - app/
         - tests/

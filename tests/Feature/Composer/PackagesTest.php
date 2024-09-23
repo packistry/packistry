@@ -13,7 +13,7 @@ it('provides urls', function (Repository $repository, ?User $user, int $status):
 
     getJson($repository->url('/packages.json'))
         ->assertStatus($status)
-        ->assertJsonContent([
+        ->assertExactJson([
             'search' => url($prefix.'search.json?q=%query%&type=%type%'),
             'metadata-url' => url($prefix.'p2/%package%.json'),
             'list' => url($prefix.'list.json'),

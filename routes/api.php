@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use App\Http\Controllers\ComposerRepositoryController;
 use App\Http\Controllers\GiteaWebhookController;
+use App\Http\Controllers\GitlabWebhookController;
 use App\Http\Middleware\ForceJson;
 use App\Http\Middleware\GiteaWebhookSecret;
+use App\Http\Middleware\GitlabWebhookSecret;
 
 if (! function_exists('repeatedRoutes')) {
     function repeatedRoutes(): void
@@ -13,6 +15,8 @@ if (! function_exists('repeatedRoutes')) {
         Route::prefix('/incoming')->group(function (): void {
             Route::post('/gitea', GiteaWebhookController::class)
                 ->middleware(GiteaWebhookSecret::class);
+            Route::post('/gitlab', GitlabWebhookController::class)
+                ->middleware(GitlabWebhookSecret::class);
         });
 
         Route::get('/packages.json', [ComposerRepositoryController::class, 'packages']);

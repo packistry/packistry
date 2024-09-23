@@ -10,7 +10,9 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 /**
  * @property int $id
@@ -36,4 +38,14 @@ class PackageSource extends Model
     protected $casts = [
         'provider' => PackageSourceProvider::class,
     ];
+
+    public function client(): PendingRequest
+    {
+        $token = decrypt($this->token);
+
+        return match ($this->provider) {
+            PackageSourceProvider::GITLAB => Http::withHeader('Private-Token', $token),
+            PackageSourceProvider::GITEA, PackageSourceProvider::GITHUB => Http::withHeader('Authorization', "Bearer $token"),
+        };
+    }
 }

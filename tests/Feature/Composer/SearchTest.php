@@ -27,12 +27,12 @@ it('searches empty repository', function (Repository $repository, ?User $user, i
 it('searches filled repository', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/search.json'))
         ->assertOk()
-        ->assertJsonContent([
+        ->assertExactJson([
             'total' => 10,
             'results' => $repository->packages->map(fn (Package $package): array => [
-                'name' => $package->name,
                 'description' => $package->description,
                 'downloads' => $package->downloads,
+                'name' => $package->name,
             ]),
         ]);
 })
@@ -46,7 +46,7 @@ it('searches filled repository', function (Repository $repository, ?User $user, 
 it('searches by query', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/search.json?q=test'))
         ->assertOk()
-        ->assertJsonContent([
+        ->assertExactJson([
             'total' => 1,
             'results' => [
                 [
@@ -78,7 +78,7 @@ it('searches by type', function (Repository $repository, ?User $user, int $statu
 
     getJson($repository->url('/search.json?type=composer-plugin'))
         ->assertStatus($status)
-        ->assertJsonContent([
+        ->assertExactJson([
             'total' => 1,
             'results' => [
                 [

@@ -6,8 +6,9 @@ namespace App\Incoming\Gitea\Event;
 
 use App\Incoming\Gitea\Input;
 use App\Incoming\Gitea\Repository;
+use App\Incoming\Importable;
 
-class PushEvent extends Input
+class PushEvent extends Input implements Importable
 {
     public function __construct(
         public string $ref,
@@ -26,9 +27,28 @@ class PushEvent extends Input
         return end($parts);
     }
 
-    public function archiveUrl(): string
+    public function zipUrl(): string
     {
         // @todo whitelist
         return "{$this->repository->htmlUrl}/archive/{$this->shortRef()}.zip";
+    }
+
+    public function version(): string
+    {
+        if ($this->isTag()) {
+            return $this->shortRef();
+        }
+
+        return "dev-{$this->shortRef()}";
+    }
+
+    public function name(): string
+    {
+        return $this->repository->fullName;
+    }
+
+    public function subDirectory(): string
+    {
+        return "{$this->repository->name}/";
     }
 }

@@ -13,7 +13,7 @@ use function Pest\Laravel\getJson;
 it('lists packages', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/list.json'))
         ->assertStatus($status)
-        ->assertJsonContent([
+        ->assertExactJson([
             'packageNames' => $repository->packages->pluck('name'),
         ]);
 })

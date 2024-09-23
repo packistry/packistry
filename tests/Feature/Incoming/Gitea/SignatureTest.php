@@ -14,7 +14,7 @@ it('requires valid signature', function (Repository $repository) use ($event): v
 
     postJson($repository->url('/incoming/gitea'), $event)
         ->assertUnauthorized()
-        ->assertJsonContent([
+        ->assertExactJson([
             'message' => 'signature missing',
         ]);
 
@@ -24,7 +24,7 @@ it('requires valid signature', function (Repository $repository) use ($event): v
 
     postJson($repository->url('/incoming/gitea'), $event, ['X-Hub-Signature-256' => 'incorrect'])
         ->assertUnauthorized()
-        ->assertJsonContent([
+        ->assertExactJson([
             'message' => 'signature validation failed',
         ]);
 
@@ -32,7 +32,7 @@ it('requires valid signature', function (Repository $repository) use ($event): v
 
     postJson($repository->url('/incoming/gitea'), $event, ['X-Hub-Signature-256' => $signature])
         ->assertOk()
-        ->assertJsonContent([
+        ->assertExactJson([
             'event' => ['unknown event type'],
         ]);
 })->with(rootAndSubRepository());

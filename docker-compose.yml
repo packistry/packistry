@@ -1,0 +1,26 @@
+services:
+    gitlab:
+        image: gitlab/gitlab-ce:17.4.0-ce.0
+        container_name: gitlab
+        restart: unless-stopped
+        environment:
+            GITLAB_OMNIBUS_CONFIG: |
+                # Add any other gitlab.rb configuration here, each on its own line
+                external_url 'http://localhost'
+        ports:
+            - '80:80'
+        volumes:
+            - 'gitlab-config:/etc/gitlab'
+            - 'gitlab-logs:/var/log/gitlab'
+            - 'gitlab-data:/var/opt/gitlab'
+        shm_size: '256m'
+    gitea:
+        image: gitea/gitea:1.22.2
+        container_name: gitea
+        restart: unless-stopped
+        ports:
+            - '3000:3000'
+volumes:
+    gitlab-config:
+    gitlab-logs:
+    gitlab-data:

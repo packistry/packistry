@@ -20,7 +20,7 @@ it('lists package versions', function (Repository $repository, ?User $user, int 
 
     getJson($repository->url('/p2/test/test.json'))
         ->assertStatus($status)
-        ->assertJsonContent([
+        ->assertExactJson([
             'minified' => 'composer/2.0',
             'packages' => [
                 $package->name => $package->versions->map(fn (Version $version) => [
@@ -34,7 +34,7 @@ it('lists package versions', function (Repository $repository, ?User $user, int 
                         'url' => url("$package->name/$version->name"),
                         'shasum' => $version->shasum,
                     ],
-                ]),
+                ])->toArray(),
             ],
         ]);
 })
