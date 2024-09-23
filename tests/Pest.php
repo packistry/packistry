@@ -101,7 +101,7 @@ function repositoryWithPackageFromZip(bool $public = false, string $name = 'test
                     ])
                     ->has(
                         Version::factory()
-                            ->fromZip($zip, $subDirectory, $version)
+                            ->fromZip($zip, $subDirectory, $version, 'sub/')
                     )
             )
     );

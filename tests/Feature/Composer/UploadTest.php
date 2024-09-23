@@ -51,7 +51,7 @@ it('creates new version for existing package', function (Repository $repository,
         'id' => $version->id,
     ]);
 
-    $fileName = 'test-test-1.0.0.zip';
+    $fileName = $repository->archivePath('test-test-1.0.0.zip');
 
     Storage::disk()->assertExists($fileName, $file->getContent());
 
@@ -123,7 +123,7 @@ it('creates new package and version when non existing', function (Repository $re
         'id' => $version->id,
     ]);
 
-    $fileName = 'test-test-1.0.0.zip';
+    $fileName = $repository->archivePath('test-test-1.0.0.zip');
 
     Storage::disk()->assertExists($fileName, $file->getContent());
 

@@ -48,4 +48,11 @@ class Repository extends Model
 
         return $prefix.$url;
     }
+
+    public function archivePath(string $file): string
+    {
+        $prefix = is_null($this->name) ? '' : "$this->name/";
+
+        return $prefix.$file;
+    }
 }

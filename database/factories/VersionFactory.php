@@ -51,7 +51,7 @@ class VersionFactory extends Factory
         ];
     }
 
-    public function fromZip(string $path, string $subDirectory = '', ?string $version = null): static
+    public function fromZip(string $path, string $subDirectory = '', ?string $version = null, string $dir = ''): static
     {
         Storage::fake();
 
@@ -63,7 +63,7 @@ class VersionFactory extends Factory
         $version ??= $decoded['version'];
 
         [$vendor, $name] = explode('/', (string) $decoded['name']);
-        $archiveName = "$vendor-$name-$version.zip";
+        $archiveName = "$dir$vendor-$name-$version.zip";
 
         /** @var string $archiveContent */
         $archiveContent = file_get_contents($path);

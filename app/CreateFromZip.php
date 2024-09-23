@@ -52,7 +52,7 @@ class CreateFromZip
             $package->save();
         }
 
-        $archiveName = str_replace('/', '-', $name)."-$version.zip";
+        $archiveName = $repository->archivePath(str_replace('/', '-', $name)."-$version.zip");
 
         if (! str_starts_with((string) $version, 'dev-')) {
             if (preg_match('/\d+\.\d+\.\d+/', (string) $version, $matches) === false) {
