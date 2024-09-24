@@ -15,6 +15,7 @@
         </include>
     </source>
     <php>
+        <env name="APP_KEY" value="base64:FHe+FffiKb3Bc0PVCq2GR+k+DSz39ivvgvqLJ98ejB4=" />
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
@@ -27,5 +28,6 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="GITEA_WEBHOOK_SECRET" value="secret"/>
+        <env name="GILAB_WEBHOOK_SECRET" value="secret"/>
     </php>
 </phpunit>
