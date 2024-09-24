@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\Gitlab;
 
+use App\Models\Repository;
 use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
@@ -92,10 +93,10 @@ class GitlabClient extends Client
     /**
      * @throws ConnectionException
      */
-    public function createWebhook(Project $project): void
+    public function createWebhook(Repository $repository, Project $project): void
     {
         $this->http()->post("$project->url/hooks", [
-            'url' => url('incoming/gitlab'),
+            'url' => url($repository->url('/incoming/gitlab')),
             'name' => 'conductor sync',
             'token' => config('services.gitea.webhook.secret'),
             'content_type' => 'json',

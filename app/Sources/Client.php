@@ -57,5 +57,5 @@ abstract class Client
      */
     abstract public function tags(Project $project): array;
 
-    abstract public function createWebhook(Project $project): void;
+    abstract public function createWebhook(Repository $repository, Project $project): void;
 }

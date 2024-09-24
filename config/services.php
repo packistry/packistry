@@ -16,7 +16,7 @@ return [
     'gitlab' => [
         'client' => GitlabClient::class,
         'webhook' => [
-            'secret' => env('GITEA_WEBHOOK_SECRET'),
+            'secret' => env('GITLAB_WEBHOOK_SECRET'),
         ],
     ],
 ];

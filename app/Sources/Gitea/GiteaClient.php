@@ -80,12 +80,12 @@ class GiteaClient extends Client
     /**
      * @throws ConnectionException
      */
-    public function createWebhook(Project $project): void
+    public function createWebhook(\App\Models\Repository $repository, Project $project): void
     {
         $this->http()->post("$project->url/hooks", [
             'type' => 'gitea',
             'config' => [
-                'url' => url('incoming/gitea'),
+                'url' => url($repository->url('/incoming/gitea')),
                 'secret' => config('services.gitea.webhook.secret'),
                 'content_type' => 'json',
             ],

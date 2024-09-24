@@ -179,7 +179,7 @@ class AddPackage extends Command
 
     private function createWebhook(Project $project): void
     {
-        $this->client->createWebhook($project);
+        $this->client->createWebhook($this->repository, $project);
     }
 
     /**
