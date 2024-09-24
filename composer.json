@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "driftingly/rector-laravel": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/octane": "^2.5",
         "laravel/prompts": "^0.1.25",
@@ -19,6 +18,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.1",
+        "driftingly/rector-laravel": "^1.2",
         "ergebnis/phpstan-rules": "^2.2",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^2.9",
