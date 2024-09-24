@@ -15,16 +15,16 @@ declare(strict_types=1);
 
 use App\Enums\Ability;
 use App\Enums\PackageSourceProvider;
-use App\Incoming\Deletable;
-use App\Incoming\Gitea\Event\DeleteEvent;
-use App\Incoming\Gitea\Event\PushEvent;
-use App\Incoming\Gitea\Repository as GiteaRepository;
-use App\Incoming\Gitlab\Project;
-use App\Incoming\Importable;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 use App\Models\Version;
+use App\Sources\Deletable;
+use App\Sources\Gitea\Event\DeleteEvent;
+use App\Sources\Gitea\Event\PushEvent;
+use App\Sources\Gitea\Repository as GiteaRepository;
+use App\Sources\Gitlab\Project;
+use App\Sources\Importable;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
@@ -206,7 +206,7 @@ function eventHeaders(Importable|Deletable $event, string $secret = 'secret'): a
 {
     return match ($event::class) {
         PushEvent::class, DeleteEvent::class => giteaEventHeaders($event, $secret),
-        \App\Incoming\Gitlab\Event\PushEvent::class => gitlabEventHeader($secret),
+        \App\Sources\Gitlab\Event\PushEvent::class => gitlabEventHeader($secret),
         default => throw new RuntimeException('unknown event')
     };
 }
@@ -252,7 +252,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
         ],
         'gitlab' => [
             'provider' => PackageSourceProvider::GITLAB,
-            'event' => new \App\Incoming\Gitlab\Event\PushEvent(
+            'event' => new \App\Sources\Gitlab\Event\PushEvent(
                 ref: "refs/$refType/$ref",
                 after: 'after',
                 before: 'before',
@@ -311,7 +311,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
         ],
         'gitlab' => [
             'provider' => PackageSourceProvider::GITLAB,
-            'event' => new \App\Incoming\Gitlab\Event\PushEvent(
+            'event' => new \App\Sources\Gitlab\Event\PushEvent(
                 ref: "refs/$refType/$ref",
                 after: '0000000000000000000000000000000000000000',
                 before: 'before',

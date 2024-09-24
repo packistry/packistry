@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Incoming\Gitea\Event;
+namespace App\Sources\Gitea\Event;
 
-use App\Incoming\Deletable;
-use App\Incoming\Gitea\Input;
-use App\Incoming\Gitea\Repository;
+use App\Sources\Deletable;
+use App\Sources\Gitea\Input;
+use App\Sources\Gitea\Repository;
 
 class DeleteEvent extends Input implements Deletable
 {

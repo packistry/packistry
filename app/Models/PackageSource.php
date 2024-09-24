@@ -43,9 +43,11 @@ class PackageSource extends Model
     {
         $token = decrypt($this->token);
 
+        $http = Http::baseUrl($this->url);
+
         return match ($this->provider) {
-            PackageSourceProvider::GITLAB => Http::withHeader('Private-Token', $token),
-            PackageSourceProvider::GITEA, PackageSourceProvider::GITHUB => Http::withHeader('Authorization', "Bearer $token"),
+            PackageSourceProvider::GITLAB => $http->withHeader('Private-Token', $token),
+            PackageSourceProvider::GITEA, PackageSourceProvider::GITHUB => $http->withHeader('Authorization', "Bearer $token"),
         };
     }
 }

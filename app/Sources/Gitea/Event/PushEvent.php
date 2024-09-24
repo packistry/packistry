@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Incoming\Gitea\Event;
+namespace App\Sources\Gitea\Event;
 
-use App\Incoming\Gitea\Input;
-use App\Incoming\Gitea\Repository;
-use App\Incoming\Importable;
+use App\Sources\Gitea\Input;
+use App\Sources\Gitea\Repository;
+use App\Sources\Importable;
 
 class PushEvent extends Input implements Importable
 {

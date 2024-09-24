@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Incoming\Gitea;
+namespace App\Sources\Gitea;
 
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapOutputName;

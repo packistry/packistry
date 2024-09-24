@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Incoming\Gitlab\Event\PushEvent;
+use App\Sources\Gitlab\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

@@ -8,11 +8,12 @@ use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\VersionNotFoundException;
-use App\Incoming\Importable;
 use App\Models\Repository;
 use App\Models\Version;
+use App\Sources\Importable;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Str;
 
 readonly class Import
 {
@@ -65,7 +66,7 @@ readonly class Import
 
         $contentType = $response->header('Content-Type');
 
-        if (! str_contains($contentType, 'application/zip')) {
+        if (! Str::contains($contentType, ['application/zip', 'application/octet-stream'])) {
             return throw new ArchiveInvalidContentTypeException("Invalid content-type: $contentType");
         }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Incoming\Gitea;
+namespace App\Sources\Gitea;
 
 class Repository extends Input
 {

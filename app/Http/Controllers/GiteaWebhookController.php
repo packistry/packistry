@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Incoming\Gitea\Event\DeleteEvent;
-use App\Incoming\Gitea\Event\PushEvent;
+use App\Sources\Gitea\Event\DeleteEvent;
+use App\Sources\Gitea\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

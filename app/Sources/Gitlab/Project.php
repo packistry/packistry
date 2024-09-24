@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Incoming\Gitlab;
+namespace App\Sources\Gitlab;
 
-use App\Incoming\Gitea\Input;
+use App\Sources\Gitea\Input;
 
 class Project extends Input
 {

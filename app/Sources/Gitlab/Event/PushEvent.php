@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Incoming\Gitlab\Event;
+namespace App\Sources\Gitlab\Event;
 
-use App\Incoming\Deletable;
-use App\Incoming\Gitea\Input;
-use App\Incoming\Gitlab\Project;
-use App\Incoming\Importable;
+use App\Sources\Deletable;
+use App\Sources\Gitea\Input;
+use App\Sources\Gitlab\Project;
+use App\Sources\Importable;
+use RuntimeException;
 
 class PushEvent extends Input implements Deletable, Importable
 {
@@ -41,7 +42,7 @@ class PushEvent extends Input implements Deletable, Importable
         $parsedUrl = parse_url($this->project->webUrl);
 
         if ($parsedUrl === false || ! array_key_exists('scheme', $parsedUrl) || ! array_key_exists('host', $parsedUrl)) {
-            throw new \RuntimeException("failed to parse url: {$this->project->webUrl}");
+            throw new RuntimeException("failed to parse url: {$this->project->webUrl}");
         }
 
         return "{$parsedUrl['scheme']}://{$parsedUrl['host']}/api/v4/projects/{$this->project->id}/repository/archive.zip?sha=$this->checkoutSha";
