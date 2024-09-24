@@ -101,11 +101,11 @@ class AddPackage extends Command
             $repositories = Repository::query()
                 ->whereNotNull('name')
                 ->get()
-                ->keyBy('id');
+                ->keyBy(fn (Repository $repository): int => $repository->id);
 
             $repositoryId = select(
                 label: 'Select your sub repository',
-                options: $repositories->map(fn (Repository $name): string => (string) $name->name),
+                options: $repositories->map(fn (Repository $name): string => (string) $name->name)->toArray(),
                 required: true,
             );
 
@@ -118,7 +118,7 @@ class AddPackage extends Command
         /** @var Collection<int, Source> $sources */
         $sources = Source::query()
             ->get()
-            ->keyBy('id');
+            ->keyBy(fn (Source $source): int => $source->id);
 
         $sourceId = select(
             label: 'Select your package source',
@@ -133,7 +133,7 @@ class AddPackage extends Command
     }
 
     /**
-     * @return Collection<int, Project>
+     * @return Collection<int|string, Project>
      */
     private function selectProjects(): Collection
     {
