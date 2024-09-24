@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\Ability;
 use App\Models\Repository;
 use App\Models\User;
-use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 abstract class Controller
@@ -28,8 +28,8 @@ abstract class Controller
             return Repository::query()
                 ->when(
                     $name,
-                    fn (BuilderContract $query) => $query->where('name', $name),
-                    fn (BuilderContract $query) => $query->whereNull('name')
+                    fn (Builder $query) => $query->where('name', $name),
+                    fn (Builder $query) => $query->whereNull('name')
                 )
                 ->firstOrFail();
         });

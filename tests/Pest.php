@@ -14,7 +14,7 @@ declare(strict_types=1);
 */
 
 use App\Enums\Ability;
-use App\Enums\PackageSourceProvider;
+use App\Enums\SourceProvider;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
@@ -138,7 +138,7 @@ function rootAndSubRepository(bool $public = false, ?Closure $closure = null): a
 /**
  * @return array<string, mixed>
  */
-function rootAndSubRepositoryFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): array
+function rootAndSubRepositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): array
 {
     $prefix = $public ? 'public' : 'private';
 
@@ -237,7 +237,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
 {
     return [
         'gitea' => [
-            'provider' => PackageSourceProvider::GITEA,
+            'provider' => SourceProvider::GITEA,
             'event' => new PushEvent(
                 ref: "refs/$refType/$ref",
                 repository: new GiteaRepository(
@@ -251,7 +251,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
             'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',
         ],
         'gitlab' => [
-            'provider' => PackageSourceProvider::GITLAB,
+            'provider' => SourceProvider::GITLAB,
             'event' => new \App\Sources\Gitlab\Event\PushEvent(
                 ref: "refs/$refType/$ref",
                 after: 'after',
@@ -279,7 +279,7 @@ function fakeZipArchiveDownload(Importable $event, string $archivePath): void
     ]);
 }
 
-function webhook(Repository $repository, PackageSourceProvider $provider, (Importable&Data)|(Deletable&data) $event, ?string $archivePath = null): TestResponse
+function webhook(Repository $repository, SourceProvider $provider, (Importable&Data)|(Deletable&data) $event, ?string $archivePath = null): TestResponse
 {
     if (! is_null($archivePath) && $event instanceof Importable) {
         fakeZipArchiveDownload($event, $archivePath);
@@ -295,7 +295,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
 {
     return [
         'gitea' => [
-            'provider' => PackageSourceProvider::GITEA,
+            'provider' => SourceProvider::GITEA,
             'event' => new DeleteEvent(
                 ref: $ref,
                 refType: $refType === 'heads' ? 'branch' : 'tag',
@@ -310,7 +310,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
             ),
         ],
         'gitlab' => [
-            'provider' => PackageSourceProvider::GITLAB,
+            'provider' => SourceProvider::GITLAB,
             'event' => new \App\Sources\Gitlab\Event\PushEvent(
                 ref: "refs/$refType/$ref",
                 after: '0000000000000000000000000000000000000000',

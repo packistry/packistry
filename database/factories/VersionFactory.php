@@ -51,6 +51,11 @@ class VersionFactory extends Factory
         ];
     }
 
+    public function fromDefaultZip(string $version): static
+    {
+        return $this->fromZip(__DIR__.'/../../Tests/Fixtures/gitea-jamie-test.zip', 'test/', $version);
+    }
+
     public function fromZip(string $path, string $subDirectory = '', ?string $version = null, string $dir = ''): static
     {
         Storage::fake();

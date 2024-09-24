@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\PackageType;
+use App\Enums\SourceProvider;
 use App\Models\Package;
+use App\Models\Source;
 use App\Models\Version;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -35,6 +37,14 @@ class PackageFactory extends Factory
     {
         return $this
             ->state(['name' => $name]);
+    }
+
+    public function provider(SourceProvider $provider): static
+    {
+        return $this
+            ->for(Source::factory()
+                ->provider($provider)
+            );
     }
 
     public function versions(int $count = 0): static

@@ -1,6 +1,6 @@
 # Conductor
 
-Conductor is a self-hosted Composer repository server designed to handle your Composer package distribution. It supports importing from multiple package sources like GitHub, GitLab, and Gitea, with seamless updates using webhooks. Conductor allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
+Conductor is a self-hosted Composer repository server designed to handle your Composer package distribution. It supports importing from multiple sources like GitHub, GitLab, and Gitea, with seamless updates using webhooks. Conductor allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
 
 ### Features
 
@@ -28,7 +28,7 @@ Conductor is a self-hosted Composer repository server designed to handle your Co
    ```
 
 2. **[Add Package Sources](#adding-a-new-package-source)**:
-   Use package sources to connect your repositories from GitHub, GitLab, or Gitea, and let Conductor handle the rest.
+   Use sources to connect your repositories from GitHub, GitLab, or Gitea, and let Conductor handle the rest.
 
 3. **[Import Package](#importing-packages-from-a-source)**:
    Import a repository from your package source as package, once set-up conductor will create the necessary webhooks to keep your package up to date with the latest tags and branches
@@ -54,7 +54,7 @@ Conductor is a self-hosted Composer repository server designed to handle your Co
 
 #### Adding a New Package Source
 
-Conductor provides a simple and interactive way to add new package sources via an Artisan command. This command allows you to add package sources such as GitHub, GitLab, or Gitea to your Conductor server, ensuring that you can manage your Composer packages from multiple repositories seamlessly.
+Conductor provides a simple and interactive way to add new sources via an Artisan command. This command allows you to add sources such as GitHub, GitLab, or Gitea to your Conductor server, ensuring that you can manage your Composer packages from multiple repositories seamlessly.
 
 To add a new package source, use the following command:
 

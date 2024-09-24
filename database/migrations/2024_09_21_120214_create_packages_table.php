@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('packages', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('repository_id')->constrained()->onDelete('cascade');
-            $table->foreignId('source_id')->nullable()->constrained('package_sources')->onDelete('set null');
+            $table->foreignId('source_id')->nullable()->constrained('sources')->onDelete('set null');
 
             $table->string('name')->unique();
             $table->string('type')->index();

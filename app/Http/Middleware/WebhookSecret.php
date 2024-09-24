@@ -6,13 +6,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use SensitiveParameter;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebhookSecret
 {
     public function __construct(
         protected readonly string $header = 'X-Hub-Signature-256',
-        protected readonly string $secret = ''
+        #[SensitiveParameter] protected readonly string $secret = ''
     ) {}
 
     /**

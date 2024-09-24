@@ -9,41 +9,36 @@ use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\VersionNotFoundException;
-use App\Import;
 use App\Models\Package;
-use App\Models\PackageSource;
 use App\Models\Repository;
+use App\Models\Source;
 use App\Sources\Client;
-use App\Sources\Gitea\GiteaClient;
 use App\Sources\Importable;
 use App\Sources\Project;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 
-class ImportPackage extends Command
+class AddPackage extends Command
 {
     /** @var string */
-    protected $signature = 'app:import-package';
+    protected $signature = 'conductor:add:package';
 
     /** @var string|null */
-    protected $description = 'Add package source';
+    protected $description = 'Add a package from one of your sources';
 
     public Repository $repository;
 
     public Project $project;
 
-    private PendingRequest $http;
-
     private Client $client;
 
-    public function __construct(private readonly Import $import)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -54,10 +49,9 @@ class ImportPackage extends Command
     public function handle(): int
     {
         $this->selectRepository();
-        $source = $this->selectPackageSource();
+        $source = $this->selectSource();
 
-        $this->http = $source->client();
-        $this->client = new GiteaClient($this->http);
+        $this->client = $source->client();
 
         $this->selectProjects()
             ->each(function (Project $project) use ($source): void {
@@ -89,16 +83,16 @@ class ImportPackage extends Command
      */
     public function selectRepository(): void
     {
-        $intoSub = confirm(
-            label: 'Import into sub repository?',
-            default: false,
+        $intoRoot = confirm(
+            label: 'Import into root repository?',
+            default: true,
         );
 
         $this->repository = Repository::query()
             ->whereNull('name')
             ->firstOrFail();
 
-        if ($intoSub) {
+        if (! $intoRoot) {
             $repositories = Repository::query()
                 ->whereNotNull('name')
                 ->get()
@@ -114,20 +108,20 @@ class ImportPackage extends Command
         }
     }
 
-    public function selectPackageSource(): PackageSource
+    public function selectSource(): Source
     {
-        /** @var Collection<int, PackageSource> $sources */
-        $sources = PackageSource::query()
+        /** @var Collection<int, Source> $sources */
+        $sources = Source::query()
             ->get()
             ->keyBy('id');
 
         $sourceId = select(
             label: 'Select your package source',
-            options: $sources->map(fn (PackageSource $source): string => $source->name)->toArray(),
+            options: $sources->map(fn (Source $source): string => $source->name)->toArray(),
             required: true,
         );
 
-        /** @var PackageSource $source */
+        /** @var Source $source */
         $source = $sources[$sourceId];
 
         return $source;
@@ -185,8 +179,6 @@ class ImportPackage extends Command
 
     private function createWebhook(Project $project): void
     {
-        $this->info('Creating webhook');
-
         $this->client->createWebhook($project);
     }
 
@@ -203,7 +195,10 @@ class ImportPackage extends Command
     {
         return array_map(function (Importable $tag): array {
             try {
-                $version = $this->import->import($this->repository, $tag, $this->http);
+                $version = $this->client->import(
+                    repository: $this->repository,
+                    importable: $tag,
+                );
             } catch (ComposerJsonNotFoundException) {
                 return ["{$tag->version()}: failed, composer.json is missing"];
             }

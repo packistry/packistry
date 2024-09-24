@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum PackageSourceProvider: string
+enum SourceProvider: string
 {
     case GITEA = 'gitea';
     case GITHUB = 'github';

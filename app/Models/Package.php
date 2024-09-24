@@ -26,7 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Repository $repository
- * @property-read PackageSource|null $source
+ * @property-read Source|null $source
  * @property-read Collection<int, Version> $versions
  * @property-read int|null $versions_count
  *
@@ -55,11 +55,11 @@ class Package extends Model
     }
 
     /**
-     * @return BelongsTo<PackageSource, Package>
+     * @return BelongsTo<Source, Package>
      */
     public function source(): BelongsTo
     {
-        return $this->belongsTo(PackageSource::class);
+        return $this->belongsTo(Source::class);
     }
 
     /**

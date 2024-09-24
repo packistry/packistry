@@ -6,13 +6,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use SensitiveParameter;
 use Symfony\Component\HttpFoundation\Response;
 
 class GitlabWebhookSecret
 {
     public function __construct(
         protected string $header = 'X-Gitlab-Token',
-        protected string $secret = ''
+        #[SensitiveParameter] protected string $secret = ''
     ) {
         //
     }

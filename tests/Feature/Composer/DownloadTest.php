@@ -26,7 +26,7 @@ it('downloads a version', function (Repository $repository, ?User $user, int $st
     $package = Package::query()->first();
     expect($package->downloads)->toBe(1);
 })
-    ->with(rootAndSubRepositoryFromZip(
+    ->with(rootAndSubRepositoryWithPackageFromZip(
         public: true
     ))
     ->with(guestAnd(Ability::REPOSITORY_READ));
@@ -35,5 +35,5 @@ it('downloads version from private repository', function (Repository $repository
     getJson($repository->url('/test/test/1.0.0'))
         ->assertStatus($status);
 })
-    ->with(rootAndSubRepositoryFromZip())
+    ->with(rootAndSubRepositoryWithPackageFromZip())
     ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));

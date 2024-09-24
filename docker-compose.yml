@@ -20,6 +20,12 @@ services:
         restart: unless-stopped
         ports:
             - '3000:3000'
+    gogs:
+        image: gogs/gogs:latest
+        container_name: gogs
+        restart: unless-stopped
+        ports:
+            - '3001:3000'
 volumes:
     gitlab-config:
     gitlab-logs:

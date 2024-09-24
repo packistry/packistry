@@ -23,7 +23,7 @@ it('deletes tag', function (Repository $repository, ...$args): void {
 
     expect(Version::query()->count())->toBe(0);
 })
-    ->with(rootAndSubRepositoryFromZip(
+    ->with(rootAndSubRepositoryWithPackageFromZip(
         name: 'vendor/test',
         version: '1.0.0',
         zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',

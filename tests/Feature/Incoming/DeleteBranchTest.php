@@ -23,7 +23,7 @@ it('deletes branch', function (Repository $repository, ...$args): void {
 
     expect(Version::query()->count())->toBe(0);
 })
-    ->with(rootAndSubRepositoryFromZip(
+    ->with(rootAndSubRepositoryWithPackageFromZip(
         name: 'vendor/test',
         version: 'dev-feature-something',
         zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',

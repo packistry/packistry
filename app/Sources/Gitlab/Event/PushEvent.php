@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Sources\Gitlab\Event;
 
 use App\Sources\Deletable;
-use App\Sources\Gitea\Input;
+use App\Sources\Gitlab\Input;
 use App\Sources\Gitlab\Project;
 use App\Sources\Importable;
 use RuntimeException;

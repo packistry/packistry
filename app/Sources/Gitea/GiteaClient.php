@@ -8,17 +8,20 @@ use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
+use App\Sources\Traits\BearerAuth;
 use Illuminate\Http\Client\ConnectionException;
 use RuntimeException;
 
 class GiteaClient extends Client
 {
+    use BearerAuth;
+
     /**
      * @throws ConnectionException
      */
     public function projects(): array
     {
-        $response = $this->http->get('/api/v1/repos/search');
+        $response = $this->http()->get('/api/v1/repos/search');
 
         /** @var array<string, mixed> $data */
         $data = $response->json()['data'];
@@ -37,7 +40,7 @@ class GiteaClient extends Client
      */
     public function branches(Project $project): array
     {
-        $response = $this->http->get("$project->url/branches");
+        $response = $this->http()->get("$project->url/branches");
 
         $data = $response->json();
 
@@ -58,7 +61,7 @@ class GiteaClient extends Client
      */
     public function tags(Project $project): array
     {
-        $response = $this->http->get("$project->url/tags");
+        $response = $this->http()->get("$project->url/tags");
 
         $data = $response->json();
 
@@ -79,7 +82,7 @@ class GiteaClient extends Client
      */
     public function createWebhook(Project $project): void
     {
-        $this->http->post("$project->url/hooks", [
+        $this->http()->post("$project->url/hooks", [
             'type' => 'gitea',
             'config' => [
                 'url' => url('incoming/gitea'),

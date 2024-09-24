@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Enums\PackageSourceProvider;
-use App\Models\PackageSource;
+use App\Enums\SourceProvider;
+use App\Models\Source;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
-class AddPackageSource extends Command
+class AddSource extends Command
 {
     /** @var string */
-    protected $signature = 'app:add-package-source';
+    protected $signature = 'conductor:add:source';
 
     /** @var string|null */
-    protected $description = 'Add package source';
+    protected $description = 'Add a source from where you will be providing packages';
 
     public function handle(): int
     {
@@ -29,8 +29,8 @@ class AddPackageSource extends Command
 
         $provider = select(
             label: 'Select your provider',
-            options: array_map(fn (PackageSourceProvider $provider) => $provider->value, PackageSourceProvider::cases()),
-            default: app()->isProduction() ? '' : PackageSourceProvider::GITEA->value
+            options: array_map(fn (SourceProvider $provider) => $provider->value, SourceProvider::cases()),
+            default: app()->isProduction() ? '' : SourceProvider::GITEA->value
         );
 
         $url = text(
@@ -43,10 +43,10 @@ class AddPackageSource extends Command
             label: 'Access token for provider',
         );
 
-        $source = new PackageSource;
+        $source = new Source;
 
         $source->name = $name;
-        $source->provider = PackageSourceProvider::from($provider);
+        $source->provider = SourceProvider::from($provider);
         $source->url = $url;
         $source->token = encrypt($token);
 

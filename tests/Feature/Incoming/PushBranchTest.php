@@ -2,13 +2,19 @@
 
 declare(strict_types=1);
 
+use App\Enums\SourceProvider;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
-use Database\Factories\RepositoryFactory;
 
-it('creates dev version for new branch', function (Repository $repository, ...$args): void {
-    $response = webhook($repository, ...$args)
+it('creates dev version for new branch', function (Repository $repository, SourceProvider $provider, ...$args): void {
+    Package::factory()
+        ->for($repository)
+        ->name('vendor/test')
+        ->provider($provider)
+        ->create();
+
+    $response = webhook($repository, $provider, ...$args)
         ->assertOk();
 
     /** @var Version $version */
@@ -24,19 +30,26 @@ it('creates dev version for new branch', function (Repository $repository, ...$a
         'id' => $version->id,
     ]);
 })
-    ->with(rootAndSubRepository(
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->state(['name' => 'vendor/test']))
-    ))
+    ->with(rootAndSubRepository())
     ->with(providerPushEvents(
         refType: 'heads'
     ));
 
-it('overwrites dev version for same branch', function (Repository $repository, ...$args): void {
-    /** @var Version $originalVersion */
-    $originalVersion = Version::query()->latest('id')->first();
+it('overwrites dev version for same branch', function (Repository $repository, SourceProvider $provider, ...$args): void {
+    $package = Package::factory()
+        ->name('vendor/test')
+        ->for($repository)
+        ->provider($provider)
+        ->create();
 
-    $response = webhook($repository, ...$args)
+    $originalVersion = Version::factory()
+        ->for($package)
+        ->fromDefaultZip(
+            version: 'dev-feature'
+        )
+        ->create();
+
+    $response = webhook($repository, $provider, ...$args)
         ->assertOk();
 
     /** @var Version $version */
@@ -55,12 +68,7 @@ it('overwrites dev version for same branch', function (Repository $repository, .
     expect($version->is($originalVersion))
         ->toBeTrue();
 })
-    ->with(rootAndSubRepositoryFromZip(
-        name: 'vendor/test',
-        version: 'dev-feature',
-        zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',
-        subDirectory: 'test/'
-    ))
+    ->with(rootAndSubRepository())
     ->with(providerPushEvents(
         refType: 'heads',
         ref: 'feature'

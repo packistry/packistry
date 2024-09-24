@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('package_sources', function (Blueprint $table): void {
+        Schema::create('sources', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('provider');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('package_sources');
+        Schema::dropIfExists('sources');
     }
 };

@@ -8,18 +8,14 @@ use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\VersionNotFoundException;
-use App\Import;
 use App\Models\Package;
 use App\Sources\Deletable;
 use App\Sources\Importable;
-use Http;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 
 abstract class WebhookController extends Controller
 {
-    public function __construct(private readonly Import $import) {}
-
     public function push(Importable $event): JsonResponse
     {
         /** @var Package $package */
@@ -28,13 +24,18 @@ abstract class WebhookController extends Controller
             ->where('name', $event->name())
             ->firstOrFail();
 
-        $client = $package->source?->client() ?? Http::withHeaders([]);
+        $client = $package->source?->client();
+
+        if (is_null($client)) {
+            return response()->json([
+                'archive' => ['Failed to resolve client for package'],
+            ], 422);
+        }
 
         try {
-            $version = $this->import->import(
+            $version = $client->import(
                 repository: $this->repository(),
                 importable: $event,
-                client: $client
             );
         } catch (ArchiveInvalidContentTypeException) {
             return response()->json([

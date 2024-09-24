@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Sources\Gitlab;
 
-use App\Sources\Gitea\Input;
-
 class Project extends Input
 {
     public function __construct(

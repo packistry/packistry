@@ -29,9 +29,9 @@ readonly class Import
      * @throws VersionNotFoundException
      * @throws FailedToFetchArchiveException
      */
-    public function import(Repository $repository, Importable $importable, PendingRequest $client): Version
+    public function import(Repository $repository, Importable $importable, PendingRequest $http): Version
     {
-        [$temp, $path] = $this->downloadZip($importable, $client);
+        [$temp, $path] = $this->downloadZip($importable, $http);
 
         try {
             return $this->createFromZip->create(
@@ -53,12 +53,12 @@ readonly class Import
      * @throws ConnectionException
      * @throws FailedToFetchArchiveException
      */
-    private function downloadZip(Importable $importable, PendingRequest $client): array
+    private function downloadZip(Importable $importable, PendingRequest $http): array
     {
         $temp = tmpfile();
         $path = stream_get_meta_data($temp)['uri'];
 
-        $response = $client->get($importable->zipUrl());
+        $response = $http->get($importable->zipUrl());
 
         if ($response->failed()) {
             return throw new FailedToFetchArchiveException($response->body());
