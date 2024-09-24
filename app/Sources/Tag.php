@@ -10,7 +10,6 @@ readonly class Tag implements Importable
         private string $name,
         private string $projectFullName,
         private string $zipUrl,
-        private string $subDirectory,
     ) {
         //
     }
@@ -28,10 +27,5 @@ readonly class Tag implements Importable
     public function name(): string
     {
         return $this->projectFullName;
-    }
-
-    public function subDirectory(): string
-    {
-        return $this->subDirectory;
     }
 }

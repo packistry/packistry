@@ -12,9 +12,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 /**
@@ -42,18 +40,6 @@ class Source extends Model
         'provider' => SourceProvider::class,
     ];
 
-    public function httpClient(): PendingRequest
-    {
-        $token = decrypt($this->token);
-
-        $http = Http::baseUrl($this->url);
-
-        return match ($this->provider) {
-            SourceProvider::GITLAB => $http->withHeader('Private-Token', $token),
-            SourceProvider::GITEA, SourceProvider::GITHUB => $http->withHeader('Authorization', "Bearer $token"),
-        };
-    }
-
     public function client(): Client
     {
         $class = config()->string("services.{$this->provider->value}.client");
@@ -64,6 +50,6 @@ class Source extends Model
 
         $token = decrypt($this->token);
 
-        return new $class($token, app(Import::class));
+        return new $class($this->url, $token, app(Import::class));
     }
 }

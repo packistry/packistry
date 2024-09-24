@@ -7,6 +7,7 @@ namespace App;
 use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
+use App\Exceptions\FailedToOpenArchiveException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Repository;
 use App\Models\Version;
@@ -28,6 +29,7 @@ readonly class Import
      * @throws ComposerJsonNotFoundException
      * @throws VersionNotFoundException
      * @throws FailedToFetchArchiveException
+     * @throws FailedToOpenArchiveException
      */
     public function import(Repository $repository, Importable $importable, PendingRequest $http): Version
     {
@@ -38,7 +40,6 @@ readonly class Import
                 repository: $repository,
                 path: $path,
                 name: $importable->name(),
-                subDirectory: $importable->subDirectory(),
                 version: $importable->version(),
             );
         } finally {

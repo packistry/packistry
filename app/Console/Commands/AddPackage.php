@@ -21,7 +21,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Collection;
 
 use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\multisearch;
 use function Laravel\Prompts\select;
 
 class AddPackage extends Command
@@ -136,9 +136,9 @@ class AddPackage extends Command
             ->keyBy(fn (Project $project): int|string => $project->id)
             ->map(fn (Project $project): Project => $project);
 
-        $projectIds = multiselect(
+        $projectIds = multisearch(
             label: 'Select projects to import',
-            options: $projects->map(fn (Project $project): string => $project->fullName)->toArray(),
+            options: fn (string $value) => $projects->filter(fn (Project $project): bool => str_contains($project->fullName, $value))->map(fn (Project $project): string => $project->fullName)->toArray(),
             required: true,
         );
 

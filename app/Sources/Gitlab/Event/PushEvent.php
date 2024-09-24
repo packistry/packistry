@@ -61,9 +61,4 @@ class PushEvent extends Input implements Deletable, Importable
     {
         return $this->project->pathWithNamespace;
     }
-
-    public function subDirectory(): string
-    {
-        return "{$this->project->name}-$this->checkoutSha-$this->checkoutSha/";
-    }
 }

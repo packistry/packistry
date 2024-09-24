@@ -18,6 +18,7 @@ use SensitiveParameter;
 abstract class Client
 {
     public function __construct(
+        protected string $url,
         #[SensitiveParameter] protected string $token,
         private readonly Import $import,
     ) {

@@ -8,13 +8,13 @@ use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
-use App\Sources\Traits\BearerAuth;
+use App\Sources\Traits\BearerToken;
 use Illuminate\Http\Client\ConnectionException;
 use RuntimeException;
 
 class GiteaClient extends Client
 {
-    use BearerAuth;
+    use BearerToken;
 
     /**
      * @throws ConnectionException
@@ -52,7 +52,6 @@ class GiteaClient extends Client
             name: $item['name'],
             projectFullName: $project->fullName,
             zipUrl: "$project->webUrl/archive/{$item['name']}.zip",
-            subDirectory: "$project->name/",
         ), $data);
     }
 
@@ -70,10 +69,9 @@ class GiteaClient extends Client
         }
 
         return array_map(fn (array $item): Tag => new Tag(
-            name: $project->name,
+            name: $item['name'],
             projectFullName: $project->fullName,
             zipUrl: $item['zipball_url'],
-            subDirectory: "$project->name/",
         ), $data);
     }
 

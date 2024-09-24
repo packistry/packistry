@@ -27,7 +27,6 @@ it('deletes branch', function (Repository $repository, ...$args): void {
         name: 'vendor/test',
         version: 'dev-feature-something',
         zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',
-        subDirectory: 'test/'
     ))
     ->with(providerDeleteEvents(
         refType: 'heads',

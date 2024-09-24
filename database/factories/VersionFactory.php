@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Version;
+use App\Traits\ComposerFromZip;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 /**
  * @extends Factory<Version>
  */
 class VersionFactory extends Factory
 {
+    use ComposerFromZip;
+
     /**
      * Define the model's default state.
      *
@@ -51,20 +55,22 @@ class VersionFactory extends Factory
         ];
     }
 
+    /**
+     * @throws Throwable
+     */
     public function fromDefaultZip(string $version): static
     {
-        return $this->fromZip(__DIR__.'/../../tests/Fixtures/gitea-jamie-test.zip', 'test/', $version);
+        return $this->fromZip(__DIR__.'/../../tests/Fixtures/gitea-jamie-test.zip', $version);
     }
 
-    public function fromZip(string $path, string $subDirectory = '', ?string $version = null, string $dir = ''): static
+    /**
+     * @throws Throwable
+     */
+    public function fromZip(string $path, ?string $version = null, string $dir = ''): static
     {
         Storage::fake();
 
-        /** @var string $content */
-        $content = file_get_contents("zip://$path#{$subDirectory}composer.json");
-
-        /** @var array<string, mixed> $decoded */
-        $decoded = json_decode($content, true);
+        $decoded = $this->decodedComposerJsonFromZip($path);
         $version ??= $decoded['version'];
 
         [$vendor, $name] = explode('/', (string) $decoded['name']);

@@ -11,6 +11,4 @@ interface Importable
     public function version(): string;
 
     public function name(): string;
-
-    public function subDirectory(): string;
 }

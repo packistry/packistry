@@ -80,7 +80,7 @@ function rootRepository(bool $public = false, ?Closure $closure = null): Reposit
         ->create();
 }
 
-function rootWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): Repository
+function rootWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip'): Repository
 {
     return rootRepository(
         public: $public,
@@ -92,13 +92,13 @@ function rootWithPackageFromZip(bool $public = false, string $name = 'test/test'
                     ])
                     ->has(
                         Version::factory()
-                            ->fromZip($zip, $subDirectory, $version)
+                            ->fromZip($zip, $version)
                     )
             )
     );
 }
 
-function repositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): Repository
+function repositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip'): Repository
 {
     return repository(
         public: $public,
@@ -110,7 +110,7 @@ function repositoryWithPackageFromZip(bool $public = false, string $name = 'test
                     ])
                     ->has(
                         Version::factory()
-                            ->fromZip($zip, $subDirectory, $version, 'sub/')
+                            ->fromZip($zip, $version, 'sub/')
                     )
             )
     );
@@ -138,7 +138,7 @@ function rootAndSubRepository(bool $public = false, ?Closure $closure = null): a
 /**
  * @return array<string, mixed>
  */
-function rootAndSubRepositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip', string $subDirectory = ''): array
+function rootAndSubRepositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip'): array
 {
     $prefix = $public ? 'public' : 'private';
 
@@ -148,14 +148,12 @@ function rootAndSubRepositoryWithPackageFromZip(bool $public = false, string $na
             name: $name,
             version: $version,
             zip: $zip,
-            subDirectory: $subDirectory
         ),
         "$prefix repository (sub)" => fn (): Repository => repositoryWithPackageFromZip(
             public: $public,
             name: $name,
             version: $version,
             zip: $zip,
-            subDirectory: $subDirectory
         ),
     ];
 }

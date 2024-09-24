@@ -6,36 +6,34 @@ namespace App;
 
 use App\Enums\PackageType;
 use App\Exceptions\ComposerJsonNotFoundException;
+use App\Exceptions\FailedToOpenArchiveException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
+use App\Traits\ComposerFromZip;
 use App\Traits\NormalizesVersion;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 class CreateFromZip
 {
+    use ComposerFromZip;
     use NormalizesVersion;
 
     /**
-     * @throws VersionNotFoundException|ComposerJsonNotFoundException
+     * @throws VersionNotFoundException
+     * @throws ComposerJsonNotFoundException
+     * @throws FailedToOpenArchiveException
      */
     public function create(
         Repository $repository,
         string $path,
         string $name,
-        ?string $subDirectory = null,
         ?string $version = null,
     ): Version {
-        $contents = @file_get_contents("zip://$path#{$subDirectory}composer.json");
+        $decoded = $this->decodedComposerJsonFromZip($path);
 
-        if ($contents === false) {
-            return throw new ComposerJsonNotFoundException('composer.json not found in archive');
-        }
-
-        /** @var array<string, mixed> $decoded */
-        $decoded = json_decode($contents, true);
         $version ??= $decoded['version'] ?? throw new VersionNotFoundException('no version provided');
 
         /** @var Package $package */

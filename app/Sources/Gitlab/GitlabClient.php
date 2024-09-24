@@ -18,7 +18,8 @@ class GitlabClient extends Client
 {
     public function http(): PendingRequest
     {
-        return Http::withHeader('Private-Token', $this->token);
+        return Http::baseUrl($this->url)
+            ->withHeader('Private-Token', $this->token);
     }
 
     /**
@@ -60,7 +61,6 @@ class GitlabClient extends Client
                 name: $item['name'],
                 projectFullName: $project->fullName,
                 zipUrl: "$project->url/archive.zip?sha=$sha",
-                subDirectory: "$project->name-$sha-$sha/",
             );
         }, $data);
     }
@@ -85,7 +85,6 @@ class GitlabClient extends Client
                 name: $item['name'],
                 projectFullName: $project->fullName,
                 zipUrl: "$project->url/archive.zip?sha=$sha",
-                subDirectory: "$project->name-$sha-$sha/",
             );
         }, $data);
     }

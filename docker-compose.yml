@@ -18,6 +18,8 @@ services:
         image: gitea/gitea:1.22.2
         container_name: gitea
         restart: unless-stopped
+        environment:
+            - GITEA__webhook__ALLOWED_HOST_LIST=*
         ports:
             - '3000:3000'
     gogs:

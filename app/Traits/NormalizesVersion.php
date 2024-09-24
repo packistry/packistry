@@ -14,7 +14,9 @@ trait NormalizesVersion
     public function normalizeVersion(string $version): string
     {
         if (! str_starts_with($version, 'dev-')) {
-            if (preg_match('/\d+\.\d+\.\d+/', $version, $matches) === false) {
+            $result = preg_match('/\d+\.\d+\.\d+/', $version, $matches);
+
+            if ($result === 0 || $result === false) {
                 throw new VersionNotFoundException;
             }
 

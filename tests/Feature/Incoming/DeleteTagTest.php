@@ -27,6 +27,5 @@ it('deletes tag', function (Repository $repository, ...$args): void {
         name: 'vendor/test',
         version: '1.0.0',
         zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',
-        subDirectory: 'test/'
     ))
     ->with(providerDeleteEvents());

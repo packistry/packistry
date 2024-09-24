@@ -46,9 +46,4 @@ class PushEvent extends Input implements Importable
     {
         return $this->repository->fullName;
     }
-
-    public function subDirectory(): string
-    {
-        return "{$this->repository->name}/";
-    }
 }
