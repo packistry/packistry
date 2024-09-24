@@ -42,8 +42,13 @@ class PushEvent extends Input implements Importable
         return "dev-{$this->shortRef()}";
     }
 
-    public function name(): string
+    public function url(): string
     {
-        return $this->repository->fullName;
+        return $this->repository->htmlUrl;
+    }
+
+    public function id(): string
+    {
+        return (string) $this->repository->id;
     }
 }

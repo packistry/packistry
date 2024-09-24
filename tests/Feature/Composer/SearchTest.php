@@ -13,7 +13,7 @@ use function Pest\Laravel\getJson;
 
 it('searches empty repository', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/search.json'))
-        ->assertOk()
+        ->assertStatus($status)
         ->assertExactJson([
             'total' => 0,
             'results' => [],
@@ -26,14 +26,17 @@ it('searches empty repository', function (Repository $repository, ?User $user, i
 
 it('searches filled repository', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/search.json'))
-        ->assertOk()
+        ->assertStatus($status)
         ->assertExactJson([
             'total' => 10,
-            'results' => $repository->packages->map(fn (Package $package): array => [
-                'description' => $package->description,
-                'downloads' => $package->downloads,
-                'name' => $package->name,
-            ]),
+            'results' => $repository->packages()
+                ->orderBy('name')
+                ->get()
+                ->map(fn (Package $package): array => [
+                    'description' => $package->description,
+                    'downloads' => $package->downloads,
+                    'name' => $package->name,
+                ]),
         ]);
 })
     ->with(rootAndSubRepository(
@@ -45,7 +48,7 @@ it('searches filled repository', function (Repository $repository, ?User $user, 
 
 it('searches by query', function (Repository $repository, ?User $user, int $status): void {
     getJson($repository->url('/search.json?q=test'))
-        ->assertOk()
+        ->assertStatus($status)
         ->assertExactJson([
             'total' => 1,
             'results' => [

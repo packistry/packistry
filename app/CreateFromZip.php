@@ -7,55 +7,48 @@ namespace App;
 use App\Enums\PackageType;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
-use App\Models\Repository;
 use App\Models\Version;
 use App\Traits\ComposerFromZip;
-use App\Traits\NormalizesVersion;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 class CreateFromZip
 {
     use ComposerFromZip;
-    use NormalizesVersion;
 
     /**
      * @throws VersionNotFoundException
      * @throws ComposerJsonNotFoundException
      * @throws FailedToOpenArchiveException
+     * @throws NameNotFoundException
      */
     public function create(
-        Repository $repository,
+        Package $package,
         string $path,
-        string $name,
         ?string $version = null,
     ): Version {
         $decoded = $this->decodedComposerJsonFromZip($path);
 
         $version ??= $decoded['version'] ?? throw new VersionNotFoundException('no version provided');
+        $name = $decoded['name'] ?? throw new NameNotFoundException('no name provided');
 
-        /** @var Package $package */
-        $package = $repository
-            ->packages()
-            ->where('name', $name)
-            ->first() ?? new Package;
+        $package->name = $name;
 
-        if (! $package->exists) {
-            $package->name = $name;
-            $package->description = $decoded['description'] ?? null;
-            $package->type = array_key_exists('type', $decoded)
-                ? PackageType::tryFrom($decoded['type']) ?? PackageType::LIBRARY
-                : PackageType::LIBRARY;
+        $package->description = $decoded['description'] ?? null;
+        $package->type = array_key_exists('type', $decoded)
+            ? PackageType::tryFrom($decoded['type']) ?? PackageType::LIBRARY
+            : PackageType::LIBRARY;
 
-            $repository->packages()->save($package);
+        if ($package->isDirty()) {
             $package->save();
         }
 
         $createdVersion = $package
             ->versions()
-            ->where('name', $this->normalizeVersion($version))
+            ->where('name', Normalizer::version($version))
             ->first() ?? new Version;
 
         $hash = hash_file('sha1', $path);
@@ -90,7 +83,8 @@ class CreateFromZip
         $contents = file_get_contents($path);
 
         Storage::disk()->put(
-            path: $repository->archivePath(str_replace('/', '-', $name)."-$version.zip"),
+            path: $package->repository
+                ->archivePath(str_replace('/', '-', $name)."-$version.zip"),
             contents: $contents
         );
 

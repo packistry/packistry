@@ -8,7 +8,9 @@ interface Importable
 {
     public function zipUrl(): string;
 
+    public function url(): string;
+
     public function version(): string;
 
-    public function name(): string;
+    public function id(): string;
 }

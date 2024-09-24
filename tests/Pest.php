@@ -15,10 +15,8 @@ declare(strict_types=1);
 
 use App\Enums\Ability;
 use App\Enums\SourceProvider;
-use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
-use App\Models\Version;
 use App\Sources\Deletable;
 use App\Sources\Gitea\Event\DeleteEvent;
 use App\Sources\Gitea\Event\PushEvent;
@@ -80,42 +78,6 @@ function rootRepository(bool $public = false, ?Closure $closure = null): Reposit
         ->create();
 }
 
-function rootWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip'): Repository
-{
-    return rootRepository(
-        public: $public,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(
-                Package::factory()
-                    ->state([
-                        'name' => $name,
-                    ])
-                    ->has(
-                        Version::factory()
-                            ->fromZip($zip, $version)
-                    )
-            )
-    );
-}
-
-function repositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip'): Repository
-{
-    return repository(
-        public: $public,
-        closure: fn (RepositoryFactory $factory) => $factory
-            ->has(
-                Package::factory()
-                    ->state([
-                        'name' => $name,
-                    ])
-                    ->has(
-                        Version::factory()
-                            ->fromZip($zip, $version, 'sub/')
-                    )
-            )
-    );
-}
-
 /**
  * @return array<string, mixed>
  */
@@ -131,29 +93,6 @@ function rootAndSubRepository(bool $public = false, ?Closure $closure = null): a
         "$prefix repository (sub)" => fn (): Repository => repository(
             public: $public,
             closure: $closure
-        ),
-    ];
-}
-
-/**
- * @return array<string, mixed>
- */
-function rootAndSubRepositoryWithPackageFromZip(bool $public = false, string $name = 'test/test', ?string $version = null, string $zip = __DIR__.'/Fixtures/project.zip'): array
-{
-    $prefix = $public ? 'public' : 'private';
-
-    return [
-        "$prefix repository (root)" => fn (): Repository => rootWithPackageFromZip(
-            public: $public,
-            name: $name,
-            version: $version,
-            zip: $zip,
-        ),
-        "$prefix repository (sub)" => fn (): Repository => repositoryWithPackageFromZip(
-            public: $public,
-            name: $name,
-            version: $version,
-            zip: $zip,
         ),
     ];
 }
@@ -242,8 +181,8 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     id: 1,
                     name: 'test',
                     fullName: 'vendor/test',
-                    htmlUrl: 'http://localhost:3000/vendor/test',
-                    url: 'http://localhost:3000/api/v1/repos/vendor/test',
+                    htmlUrl: 'https://gitea.com/vendor/test',
+                    url: 'https://gitea.com/api/v1/repos/vendor/test',
                 )
             ),
             'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',
@@ -259,7 +198,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     id: 1,
                     name: 'test',
                     pathWithNamespace: 'vendor/test',
-                    webUrl: 'http://localhost/group/test',
+                    webUrl: 'https://gitlab.com/group/test',
                 )
             ),
             'archivePath' => __DIR__.'/Fixtures/gitlab-jamie-test.zip',
@@ -302,8 +241,8 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                     id: 1,
                     name: 'test',
                     fullName: 'vendor/test',
-                    htmlUrl: 'http://localhost/vendor/test',
-                    url: 'http://localhost/api/v1/repos/vendor/test',
+                    htmlUrl: 'https://gitea.com/vendor/test',
+                    url: 'https://gitea.com/api/v1/repos/vendor/test',
                 )
             ),
         ],
@@ -318,7 +257,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                     id: 1,
                     name: 'test',
                     pathWithNamespace: 'vendor/test',
-                    webUrl: 'http://localhost/vendor/test',
+                    webUrl: 'https://gitlab.com',
                 )
             ),
         ],

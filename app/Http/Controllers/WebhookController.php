@@ -9,8 +9,10 @@ use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
+use App\Normalizer;
 use App\Sources\Deletable;
 use App\Sources\Importable;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 
@@ -18,11 +20,18 @@ abstract class WebhookController extends Controller
 {
     public function push(Importable $event): JsonResponse
     {
+        $repository = $this->repository();
+
         /** @var Package $package */
-        $package = $this->repository()
+        $package = $repository
             ->packages()
-            ->where('name', $event->name())
+            ->whereHas('source', function (Builder $query) use ($event): void {
+                $query->where('url', Normalizer::url($event->url()));
+            })
+            ->where('provider_id', $event->id())
             ->firstOrFail();
+
+        $package->setRelation('repository', $repository);
 
         $client = $package->source?->client();
 
@@ -34,7 +43,7 @@ abstract class WebhookController extends Controller
 
         try {
             $version = $client->import(
-                repository: $this->repository(),
+                $package,
                 importable: $event,
             );
         } catch (ArchiveInvalidContentTypeException) {
@@ -64,10 +73,12 @@ abstract class WebhookController extends Controller
 
     public function delete(Deletable $event): JsonResponse
     {
-        $package = $this
-            ->repository()
+        $package = $this->repository()
             ->packages()
-            ->where('name', $event->name())
+            ->whereHas('source', function (Builder $query) use ($event): void {
+                $query->where('url', Normalizer::url($event->url()));
+            })
+            ->where('provider_id', $event->id())
             ->firstOrFail();
 
         $version = $package

@@ -18,12 +18,16 @@ return new class extends Migration
             $table->foreignId('repository_id')->constrained()->onDelete('cascade');
             $table->foreignId('source_id')->nullable()->constrained('sources')->onDelete('set null');
 
-            $table->string('name')->unique();
+            $table->string('provider_id')->nullable()->index();
+
+            $table->string('name');
             $table->string('type')->index();
             $table->string('description')->nullable();
             $table->unsignedBigInteger('downloads')->default(0);
 
             $table->timestamps();
+
+            $table->unique(['repository_id', 'name']);
         });
     }
 

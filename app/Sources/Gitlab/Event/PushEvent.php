@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Sources\Gitlab\Event;
 
+use App\Normalizer;
 use App\Sources\Deletable;
 use App\Sources\Gitlab\Input;
 use App\Sources\Gitlab\Project;
 use App\Sources\Importable;
-use RuntimeException;
 
 class PushEvent extends Input implements Deletable, Importable
 {
@@ -39,13 +39,7 @@ class PushEvent extends Input implements Deletable, Importable
 
     public function zipUrl(): string
     {
-        $parsedUrl = parse_url($this->project->webUrl);
-
-        if ($parsedUrl === false || ! array_key_exists('scheme', $parsedUrl) || ! array_key_exists('host', $parsedUrl)) {
-            throw new RuntimeException("failed to parse url: {$this->project->webUrl}");
-        }
-
-        return "{$parsedUrl['scheme']}://{$parsedUrl['host']}/api/v4/projects/{$this->project->id}/repository/archive.zip?sha=$this->checkoutSha";
+        return "{$this->url()}/api/v4/projects/{$this->project->id}/repository/archive.zip?sha=$this->checkoutSha";
     }
 
     public function version(): string
@@ -57,8 +51,13 @@ class PushEvent extends Input implements Deletable, Importable
         return "dev-{$this->shortRef()}";
     }
 
-    public function name(): string
+    public function url(): string
     {
-        return $this->project->pathWithNamespace;
+        return Normalizer::url($this->project->webUrl);
+    }
+
+    public function id(): string
+    {
+        return (string) $this->project->id;
     }
 }

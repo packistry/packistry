@@ -101,4 +101,11 @@ class VersionFactory extends Factory
             ])->toArray(),
         ]);
     }
+
+    public function name(string $name): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'name' => $name,
+        ]);
+    }
 }

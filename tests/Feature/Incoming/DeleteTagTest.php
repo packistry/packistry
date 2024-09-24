@@ -2,14 +2,24 @@
 
 declare(strict_types=1);
 
+use App\Enums\SourceProvider;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
 
-it('deletes tag', function (Repository $repository, ...$args): void {
-    /** @var Version $version */
-    $version = Version::query()->latest('id')->first();
+it('deletes tag', function (Repository $repository, SourceProvider $provider, ...$args): void {
+    $package = Package::factory()
+        ->for($repository)
+        ->name('vendor/test')
+        ->provider($provider)
+        ->create();
 
-    webhook($repository, ...$args)
+    $version = Version::factory()
+        ->for($package)
+        ->name('1.0.0')
+        ->create();
+
+    webhook($repository, $provider, ...$args)
         ->assertOk()
         ->assertExactJson([
             'id' => $version->id,
@@ -23,9 +33,5 @@ it('deletes tag', function (Repository $repository, ...$args): void {
 
     expect(Version::query()->count())->toBe(0);
 })
-    ->with(rootAndSubRepositoryWithPackageFromZip(
-        name: 'vendor/test',
-        version: '1.0.0',
-        zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',
-    ))
+    ->with(rootAndSubRepository())
     ->with(providerDeleteEvents());

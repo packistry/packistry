@@ -7,8 +7,11 @@ namespace App\Sources;
 use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
+use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Import;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
 use Illuminate\Http\Client\ConnectionException;
@@ -31,11 +34,13 @@ abstract class Client
      * @throws ConnectionException
      * @throws ArchiveInvalidContentTypeException
      * @throws ComposerJsonNotFoundException
+     * @throws FailedToOpenArchiveException
+     * @throws NameNotFoundException
      */
-    public function import(Repository $repository, Importable $importable): Version
+    public function import(Package $package, Importable $importable): Version
     {
         return $this->import->import(
-            repository: $repository,
+            package: $package,
             importable: $importable,
             http: $this->http(),
         );

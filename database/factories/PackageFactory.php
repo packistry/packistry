@@ -29,6 +29,7 @@ class PackageFactory extends Factory
 
         return [
             'name' => "$vendor/$name",
+            'provider_id' => fake()->uuid,
             'type' => fake()->randomElement(PackageType::cases()),
         ];
     }
@@ -39,9 +40,10 @@ class PackageFactory extends Factory
             ->state(['name' => $name]);
     }
 
-    public function provider(SourceProvider $provider): static
+    public function provider(SourceProvider $provider, string $providerId = '1'): static
     {
         return $this
+            ->state(['provider_id' => $providerId])
             ->for(Source::factory()
                 ->provider($provider)
             );

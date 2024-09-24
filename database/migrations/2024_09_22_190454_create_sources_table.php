@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('token');
 
             $table->timestamps();
+
+            $table->index(['provider', 'url']);
         });
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\Gitea;
 
+use App\Normalizer;
 use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
@@ -49,8 +50,9 @@ class GiteaClient extends Client
         }
 
         return array_map(fn (array $item): Branch => new Branch(
+            id: (string) $project->id,
             name: $item['name'],
-            projectFullName: $project->fullName,
+            url: Normalizer::url($project->webUrl),
             zipUrl: "$project->webUrl/archive/{$item['name']}.zip",
         ), $data);
     }
@@ -69,8 +71,9 @@ class GiteaClient extends Client
         }
 
         return array_map(fn (array $item): Tag => new Tag(
+            id: (string) $project->id,
             name: $item['name'],
-            projectFullName: $project->fullName,
+            url: Normalizer::url($project->webUrl),
             zipUrl: $item['zipball_url'],
         ), $data);
     }

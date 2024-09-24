@@ -2,14 +2,23 @@
 
 declare(strict_types=1);
 
+use App\Enums\SourceProvider;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
 
-it('deletes branch', function (Repository $repository, ...$args): void {
+it('deletes branch', function (Repository $repository, SourceProvider $provider, ...$args): void {
+    Package::factory()
+        ->for($repository)
+        ->name('vendor/test')
+        ->has(Version::factory()->name('dev-feature-something'))
+        ->provider($provider)
+        ->create();
+
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
 
-    webhook($repository, ...$args)
+    webhook($repository, $provider, ...$args)
         ->assertOk()
         ->assertExactJson([
             'id' => $version->id,
@@ -23,11 +32,7 @@ it('deletes branch', function (Repository $repository, ...$args): void {
 
     expect(Version::query()->count())->toBe(0);
 })
-    ->with(rootAndSubRepositoryWithPackageFromZip(
-        name: 'vendor/test',
-        version: 'dev-feature-something',
-        zip: __DIR__.'/../../Fixtures/gitea-jamie-test.zip',
-    ))
+    ->with(rootAndSubRepository())
     ->with(providerDeleteEvents(
         refType: 'heads',
         ref: 'feature-something'

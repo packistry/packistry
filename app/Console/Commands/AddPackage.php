@@ -8,6 +8,8 @@ use App\Enums\PackageType;
 use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
+use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
 use App\Models\Repository;
@@ -55,19 +57,22 @@ class AddPackage extends Command
 
         $this->selectProjects()
             ->each(function (Project $project) use ($source): void {
-                $package = Package::query()
-                    ->where('name', $project->fullName)
+                $package = $this->repository
+                    ->packages()
+                    ->where('source_id', $source->id)
+                    ->where('provider_id', $project->id)
                     ->first() ?? new Package;
 
                 $package->repository_id = $this->repository->id;
                 $package->source_id = $source->id;
+                $package->provider_id = (string) $project->id;
                 $package->name = $project->fullName;
                 $package->type = PackageType::LIBRARY;
 
                 $package->save();
 
-                $tags = $this->importTags($project);
-                $branches = $this->importBranches($project);
+                $tags = $this->importTags($package, $project);
+                $branches = $this->importBranches($package, $project);
                 $this->createWebhook($project);
 
                 $this->info("Imported $project->fullName from $source->name");
@@ -138,7 +143,9 @@ class AddPackage extends Command
 
         $projectIds = multisearch(
             label: 'Select projects to import',
-            options: fn (string $value) => $projects->filter(fn (Project $project): bool => str_contains($project->fullName, $value))->map(fn (Project $project): string => $project->fullName)->toArray(),
+            options: fn (string $value) => $projects->filter(fn (Project $project): bool => str_contains($project->fullName, $value))
+                ->map(fn (Project $project): string => $project->fullName)
+                ->toArray(),
             required: true,
         );
 
@@ -153,11 +160,14 @@ class AddPackage extends Command
      * @throws ArchiveInvalidContentTypeException
      * @throws ConnectionException
      * @throws FailedToFetchArchiveException
+     * @throws FailedToOpenArchiveException
+     * @throws NameNotFoundException
      * @throws VersionNotFoundException
      */
-    private function importTags(Project $project): array
+    private function importTags(Package $package, Project $project): array
     {
         return $this->importAll(
+            $package,
             $this->client->tags($project)
         );
     }
@@ -168,11 +178,14 @@ class AddPackage extends Command
      * @throws ArchiveInvalidContentTypeException
      * @throws ConnectionException
      * @throws FailedToFetchArchiveException
+     * @throws FailedToOpenArchiveException
+     * @throws NameNotFoundException
      * @throws VersionNotFoundException
      */
-    private function importBranches(Project $project): array
+    private function importBranches(Package $package, Project $project): array
     {
         return $this->importAll(
+            $package,
             $this->client->branches($project)
         );
     }
@@ -190,13 +203,15 @@ class AddPackage extends Command
      * @throws FailedToFetchArchiveException
      * @throws ConnectionException
      * @throws ArchiveInvalidContentTypeException
+     * @throws FailedToOpenArchiveException
+     * @throws NameNotFoundException
      */
-    private function importAll(array $imports): array
+    private function importAll(Package $package, array $imports): array
     {
-        return array_map(function (Importable $tag): array {
+        return array_map(function (Importable $tag) use ($package): array {
             try {
                 $version = $this->client->import(
-                    repository: $this->repository,
+                    package: $package,
                     importable: $tag,
                 );
             } catch (ComposerJsonNotFoundException) {

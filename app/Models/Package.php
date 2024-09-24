@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $repository_id
  * @property int|null $source_id
+ * @property string $provider_id
  * @property string $name
  * @property PackageType $type
  * @property string|null $description

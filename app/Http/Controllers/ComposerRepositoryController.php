@@ -6,14 +6,17 @@ namespace App\Http\Controllers;
 
 use App\CreateFromZip;
 use App\Enums\Ability;
+use App\Enums\PackageType;
 use App\Events\PackageDownloadEvent;
 use App\Exceptions\ComposerJsonNotFoundException;
+use App\Exceptions\FailedToOpenArchiveException;
 use App\Exceptions\VersionNotFoundException;
 use App\Http\Resources\PackageResource;
 use App\Models\Package;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -44,6 +47,7 @@ class ComposerRepositoryController extends Controller
 
         $packagesQuery = $this->repository()
             ->packages()
+            ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
                 ->where('name', 'like', "$q%"))
             ->when($type, fn (BuilderContract $query) => $query
@@ -125,7 +129,7 @@ class ComposerRepositoryController extends Controller
     /**
      * @throws Throwable
      */
-    public function download(Request $request): string
+    public function download(Request $request): Response
     {
         $this->authorize(Ability::REPOSITORY_READ);
 
@@ -137,8 +141,10 @@ class ComposerRepositoryController extends Controller
             abort(404);
         }
 
-        $path = $this->repository()->archivePath("$vendor-$name-$version.zip");
-        $content = Storage::get($path);
+        $archiveName = "$vendor-$name-$version.zip";
+        $content = Storage::get(
+            $this->repository()->archivePath($archiveName)
+        );
 
         if (is_null($content)) {
             abort(404);
@@ -153,7 +159,9 @@ class ComposerRepositoryController extends Controller
             user: $this->user()
         ));
 
-        return $content;
+        return response($content)
+            ->header('Content-Disposition', 'attachment; filename="'.$archiveName.'"')
+            ->header('Content-Type', 'application/zip');
     }
 
     public function upload(Request $request): JsonResponse
@@ -178,12 +186,24 @@ class ComposerRepositoryController extends Controller
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
+        $package = $this->repository()
+            ->packages()
+            ->where('name', "$vendor/$name")
+            ->first();
+
+        if (is_null($package)) {
+            $package = new Package;
+            $package->repository_id = $this->repository()->id;
+            $package->type = PackageType::LIBRARY;
+            $package->name = "$vendor/$name";
+
+            $package->save();
+        }
 
         try {
             $version = $this->createFromZip->create(
-                repository: $this->repository(),
+                package: $package,
                 path: $file->getRealPath(),
-                name: "$vendor/$name",
                 version: $request->input('version')
             );
         } catch (ComposerJsonNotFoundException) {
@@ -193,6 +213,10 @@ class ComposerRepositoryController extends Controller
         } catch (VersionNotFoundException) {
             return response()->json([
                 'version' => ['no version provided'],
+            ], 422);
+        } catch (FailedToOpenArchiveException) {
+            return response()->json([
+                'archive' => ['failed to open archive'],
             ], 422);
         }
 

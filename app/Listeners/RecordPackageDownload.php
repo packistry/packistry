@@ -8,11 +8,10 @@ use App\Events\PackageDownloadEvent;
 use App\Models\Download;
 use App\Models\Package;
 use App\Models\Version;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class RecordPackageDownload implements ShouldQueue
+class RecordPackageDownload
 {
     /**
      * @throws Throwable

@@ -8,8 +8,9 @@ use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
-use App\Models\Repository;
+use App\Models\Package;
 use App\Models\Version;
 use App\Sources\Importable;
 use Illuminate\Http\Client\ConnectionException;
@@ -30,16 +31,16 @@ readonly class Import
      * @throws VersionNotFoundException
      * @throws FailedToFetchArchiveException
      * @throws FailedToOpenArchiveException
+     * @throws NameNotFoundException
      */
-    public function import(Repository $repository, Importable $importable, PendingRequest $http): Version
+    public function import(Package $package, Importable $importable, PendingRequest $http): Version
     {
         [$temp, $path] = $this->downloadZip($importable, $http);
 
         try {
             return $this->createFromZip->create(
-                repository: $repository,
+                package: $package,
                 path: $path,
-                name: $importable->name(),
                 version: $importable->version(),
             );
         } finally {

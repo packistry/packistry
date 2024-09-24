@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Scopes\OrderScope;
-use App\Traits\NormalizesVersion;
+use App\Normalizer;
 use Database\Factories\VersionFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,8 +42,6 @@ class Version extends Model
     /** @use HasFactory<VersionFactory> */
     use HasFactory;
 
-    use NormalizesVersion;
-
     protected $casts = [
         'metadata' => 'json',
     ];
@@ -72,7 +70,7 @@ class Version extends Model
     {
         static::addGlobalScope(new OrderScope('order'));
         static::creating(function (Version $version): void {
-            $version->name = $version->normalizeVersion($version->name);
+            $version->name = Normalizer::version($version->name);
 
             $order = str_starts_with($version->name, 'dev-')
                 ? $version->name

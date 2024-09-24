@@ -58,8 +58,9 @@ class GitlabClient extends Client
             $sha = $item['commit']['id'];
 
             return new Branch(
+                id: (string) $project->id,
                 name: $item['name'],
-                projectFullName: $project->fullName,
+                url: $project->url,
                 zipUrl: "$project->url/archive.zip?sha=$sha",
             );
         }, $data);
@@ -82,8 +83,9 @@ class GitlabClient extends Client
             $sha = $item['commit']['id'];
 
             return new Tag(
+                id: (string) $project->id,
                 name: $item['name'],
-                projectFullName: $project->fullName,
+                url: $project->url,
                 zipUrl: "$project->url/archive.zip?sha=$sha",
             );
         }, $data);

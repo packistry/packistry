@@ -32,6 +32,13 @@ class SourceFactory extends Factory
     public function provider(SourceProvider $provider): static
     {
         return $this
-            ->state(['provider' => $provider]);
+            ->state([
+                'provider' => $provider,
+                'url' => match ($provider) {
+                    SourceProvider::GITEA => 'https://gitea.com',
+                    SourceProvider::GITLAB => 'https://gitlab.com',
+                    SourceProvider::GITHUB => 'https://github.com',
+                },
+            ]);
     }
 }

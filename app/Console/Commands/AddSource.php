@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Enums\SourceProvider;
 use App\Models\Source;
+use App\Normalizer;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\select;
@@ -23,7 +24,7 @@ class AddSource extends Command
     {
         $name = text(
             label: 'Name of the package source',
-            default: app()->isProduction() ? '' : 'Source',
+            placeholder: 'My package source',
             required: true
         );
 
@@ -34,7 +35,8 @@ class AddSource extends Command
         );
 
         $url = text(
-            label: 'Base url e.g https://github.com',
+            label: 'Base url',
+            placeholder: 'https://github.com',
             default: app()->isProduction() ? '' : 'http://localhost:3000',
             required: true
         );
@@ -47,7 +49,7 @@ class AddSource extends Command
 
         $source->name = $name;
         $source->provider = SourceProvider::from($provider);
-        $source->url = $url;
+        $source->url = Normalizer::url($url);
         $source->token = encrypt($token);
 
         $source->save();

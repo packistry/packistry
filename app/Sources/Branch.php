@@ -7,8 +7,9 @@ namespace App\Sources;
 readonly class Branch implements Importable
 {
     public function __construct(
+        private string $id,
         private string $name,
-        private string $projectFullName,
+        private string $url,
         private string $zipUrl,
     ) {
         //
@@ -24,8 +25,13 @@ readonly class Branch implements Importable
         return "dev-$this->name";
     }
 
-    public function name(): string
+    public function url(): string
     {
-        return $this->projectFullName;
+        return $this->url;
+    }
+
+    public function id(): string
+    {
+        return $this->id;
     }
 }

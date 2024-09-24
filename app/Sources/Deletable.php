@@ -6,7 +6,9 @@ namespace App\Sources;
 
 interface Deletable
 {
+    public function url(): string;
+
     public function version(): string;
 
-    public function name(): string;
+    public function id(): string;
 }
