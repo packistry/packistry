@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Archive;
 use App\CreateFromZip;
 use App\Enums\Ability;
 use App\Enums\PackageType;
@@ -141,19 +142,19 @@ class ComposerRepositoryController extends Controller
             abort(404);
         }
 
-        $archiveName = "$vendor-$name-$version.zip";
-        $content = Storage::get(
-            $this->repository()->archivePath($archiveName)
-        );
+        $repository = $this->repository();
+        $package = $repository
+            ->packageByNameOrFail("$vendor/$name");
+
+        $archiveName = Archive::name($package, $version);
+        $content = Storage::get($archiveName);
 
         if (is_null($content)) {
             abort(404);
         }
 
         event(new PackageDownloadEvent(
-            repository: $this->repository(),
-            vendor: $vendor,
-            name: $name,
+            package: $package,
             version: $version,
             ip: $request->ip() ?? 'unknown',
             user: $this->user()

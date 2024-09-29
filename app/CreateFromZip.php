@@ -83,8 +83,7 @@ class CreateFromZip
         $contents = file_get_contents($path);
 
         Storage::disk()->put(
-            path: $package->repository
-                ->archivePath(str_replace('/', '-', $name)."-$version.zip"),
+            path: Archive::name($package, $version),
             contents: $contents
         );
 

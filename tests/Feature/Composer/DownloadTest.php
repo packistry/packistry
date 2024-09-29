@@ -14,7 +14,6 @@ use function Pest\Laravel\getJson;
 
 it('downloads a version', function (Repository $repository, ?User $user, int $status): void {
     $path = __DIR__.'/../../Fixtures/project.zip';
-
     Package::factory()
         ->for($repository)
         ->name('test/test')

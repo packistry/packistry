@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -54,5 +55,22 @@ class Repository extends Model
         $prefix = is_null($this->name) ? '' : "$this->name/";
 
         return $prefix.basename($file);
+    }
+
+    public function packageByName(string $name): ?Package
+    {
+        /** @var Package|null $package */
+        $package = $this->packages()
+            ->where('name', $name)
+            ->first();
+
+        $package?->setRelation('repository', $this);
+
+        return $package;
+    }
+
+    public function packageByNameOrFail(string $name): Package
+    {
+        return $this->packageByName($name) ?? throw new ModelNotFoundException;
     }
 }

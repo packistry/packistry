@@ -6,7 +6,6 @@ namespace App\Listeners;
 
 use App\Events\PackageDownloadEvent;
 use App\Models\Download;
-use App\Models\Package;
 use App\Models\Version;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -18,19 +17,13 @@ class RecordPackageDownload
      */
     public function handle(PackageDownloadEvent $event): void
     {
-        /** @var Package $package */
-        $package = $event
-            ->repository
-            ->packages()
-            ->where('name', "$event->vendor/$event->name")
-            ->firstOrFail();
-
         /** @var Version $version */
-        $version = $package->versions()
+        $version = $event->package
+            ->versions()
             ->where('name', $event->version)
             ->firstOrFail();
 
-        DB::transaction(function () use ($event, $package, $version): void {
+        DB::transaction(function () use ($event, $version): void {
             $download = new Download;
             $download->ip = $event->ip;
             $download->user_id = $event->user?->id;
@@ -39,8 +32,8 @@ class RecordPackageDownload
                 ->downloads()
                 ->save($download);
 
-            $package->downloads += 1;
-            $package->save();
+            $event->package->downloads += 1;
+            $event->package->save();
         });
     }
 }
