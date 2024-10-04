@@ -47,6 +47,8 @@ COPY --from=builder_frontend /frontend/dist /var/www/html/dist
 COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.2 /usr/bin/rr /usr/local/bin/rr
 
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY ./docker/packistry /usr/bin
+
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN mv dist/* public/
 

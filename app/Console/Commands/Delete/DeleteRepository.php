@@ -15,7 +15,7 @@ use function Laravel\Prompts\multisearch;
 class DeleteRepository extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:delete:repository';
+    protected $signature = 'delete:repository';
 
     /** @var string|null */
     protected $description = 'Delete a repository';

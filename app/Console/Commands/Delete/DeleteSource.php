@@ -15,7 +15,7 @@ use function Laravel\Prompts\multisearch;
 class DeleteSource extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:delete:source';
+    protected $signature = 'delete:source';
 
     /** @var string|null */
     protected $description = 'Delete a source';

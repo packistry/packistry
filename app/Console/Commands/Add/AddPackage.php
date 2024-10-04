@@ -22,7 +22,7 @@ use function Laravel\Prompts\select;
 class AddPackage extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:add:package';
+    protected $signature = 'add:package';
 
     /** @var string|null */
     protected $description = 'Add a package from one of your sources';
