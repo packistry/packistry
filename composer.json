@@ -1,9 +1,9 @@
 {
-    "name": "laravel/laravel",
+    "name": "packistry/packistry",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "description": "Packistry is a Composer repository for PHP packages.",
+    "keywords": ["composer", "registry", "packages", "repository"],
+    "license": "GPL-3.0",
     "require": {
         "php": "^8.2",
         "ext-zip": "*",
