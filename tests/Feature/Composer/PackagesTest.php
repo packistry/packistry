@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
+use App\Enums\TokenAbility;
 use App\Models\Repository;
-use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use function Pest\Laravel\getJson;
 
-it('provides urls', function (Repository $repository, ?User $user, int $status): void {
+it('provides urls', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $prefix = is_null($repository->name) ? '' : $repository->name.'/';
 
     getJson($repository->url('/packages.json'))
@@ -22,11 +22,16 @@ it('provides urls', function (Repository $repository, ?User $user, int $status):
     ->with(rootAndSubRepository(
         public: true
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('provides urls from private repository', function (Repository $repository, ?User $user, int $status): void {
+it('provides urls from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/packages.json'))
         ->assertStatus($status);
 })
     ->with(rootAndSubRepository())
-    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_READ,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 401,
+    ));

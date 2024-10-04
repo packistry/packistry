@@ -11,6 +11,11 @@ rules:
     - Ergebnis\PHPStan\Rules\Files\DeclareStrictTypesRule
 
 parameters:
+    ignoreErrors:
+        - '#Access to an undefined property Pest\\Expectation#'
+        - '#Access to an undefined property Pest\\Mixins\\Expectation#'
+        - '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::withAnyArgs\(\)#'
+        - '#method Pest\\PendingCalls\\TestCall::with\(\) expects array#'
     type_coverage:
         return: 100
         param: 100

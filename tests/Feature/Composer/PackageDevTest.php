@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
+use App\Enums\TokenAbility;
 use App\Models\Package;
 use App\Models\Repository;
-use App\Models\User;
 use App\Models\Version;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use function Pest\Laravel\getJson;
 use function PHPUnit\Framework\assertNotNull;
 
-it('lists package versions', function (Repository $repository, ?User $user, int $status): void {
+it('lists package versions', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $package = $repository->packages->first();
     assertNotNull($package);
 
@@ -49,9 +49,9 @@ it('lists package versions', function (Repository $repository, ?User $user, int 
                     ->devVersions(10)
             )
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('list package versions from private repository', function (Repository $repository, ?User $user, int $status): void {
+it('list package versions from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/p2/test/test~dev.json'))
         ->assertStatus($status);
 })
@@ -63,4 +63,9 @@ it('list package versions from private repository', function (Repository $reposi
                 ])
             )
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_READ,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 401,
+    ));

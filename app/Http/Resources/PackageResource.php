@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\Package;
-use App\Models\Version;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin Package */
+/**
+ * @mixin Package
+ */
 class PackageResource extends JsonResource
 {
     /**
@@ -20,23 +21,17 @@ class PackageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'minified' => 'composer/2.0',
-            'packages' => [
-                $this->name => $this
-                    ->versions
-                    ->map(fn (Version $version) => [
-                        ...$version->metadata,
-                        'name' => $this->name,
-                        'version' => $version->name,
-                        'type' => 'library',
-                        'time' => $version->created_at,
-                        'dist' => [
-                            'type' => 'zip',
-                            'url' => url("$this->name/$version->name"),
-                            'shasum' => $version->shasum,
-                        ],
-                    ]),
-            ],
+            'id' => $this->id,
+            'repository_id' => $this->repository_id,
+            'source_id' => $this->source_id,
+            'provider_id' => $this->provider_id,
+            'name' => $this->name,
+            'type' => $this->type,
+            'latest_version' => $this->latest_version,
+            'description' => $this->description,
+            'downloads' => $this->downloads,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

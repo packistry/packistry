@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('version_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-            $table->ipAddress('ip');
+            $table->foreignId('token_id')->nullable()->constrained()->onDelete('set null');
+            $table->ipAddress('ip')->nullable();
 
             $table->timestamps();
         });

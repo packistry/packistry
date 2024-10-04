@@ -15,7 +15,7 @@ it('creates dev version for new branch', function (Repository $repository, Sourc
         ->create();
 
     $response = webhook($repository, $provider, ...$args)
-        ->assertOk();
+        ->assertCreated();
 
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
@@ -24,7 +24,6 @@ it('creates dev version for new branch', function (Repository $repository, Sourc
         'package_id' => $version->package->id,
         'name' => $version->name,
         'shasum' => $version->shasum,
-        'metadata' => $version->metadata,
         'updated_at' => $version->updated_at,
         'created_at' => $version->created_at,
         'id' => $version->id,
@@ -50,7 +49,7 @@ it('overwrites dev version for same branch', function (Repository $repository, S
         ->create();
 
     $response = webhook($repository, $provider, ...$args)
-        ->assertOk();
+        ->assertCreated();
 
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
@@ -59,7 +58,6 @@ it('overwrites dev version for same branch', function (Repository $repository, S
         'id' => $version->id,
         'package_id' => $version->package->id,
         'name' => $version->name,
-        'metadata' => $version->metadata,
         'shasum' => $version->shasum,
         'created_at' => $version->created_at,
         'updated_at' => $version->updated_at,

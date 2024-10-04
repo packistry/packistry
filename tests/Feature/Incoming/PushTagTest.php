@@ -15,7 +15,7 @@ it('creates version for new tag', function (Repository $repository, SourceProvid
         ->create();
 
     $response = webhook($repository, $provider, ...$args)
-        ->assertOk();
+        ->assertCreated();
 
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
@@ -24,7 +24,6 @@ it('creates version for new tag', function (Repository $repository, SourceProvid
         'package_id' => $version->package->id,
         'name' => '1.0.0',
         'shasum' => $version->shasum,
-        'metadata' => $version->metadata,
         'updated_at' => $version->updated_at,
         'created_at' => $version->created_at,
         'id' => $version->id,
@@ -50,7 +49,7 @@ it('overwrites version for same tag', function (Repository $repository, SourcePr
         ->create();
 
     $response = webhook($repository, $provider, ...$args)
-        ->assertOk();
+        ->assertCreated();
 
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
@@ -59,7 +58,6 @@ it('overwrites version for same tag', function (Repository $repository, SourcePr
         'id' => $version->id,
         'package_id' => $version->package->id,
         'name' => $version->name,
-        'metadata' => $version->metadata,
         'shasum' => $version->shasum,
         'created_at' => $version->created_at,
         'updated_at' => $version->updated_at,

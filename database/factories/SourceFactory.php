@@ -37,7 +37,7 @@ class SourceFactory extends Factory
                 'url' => match ($provider) {
                     SourceProvider::GITEA => 'https://gitea.com',
                     SourceProvider::GITLAB => 'https://gitlab.com',
-                    SourceProvider::GITHUB => 'https://github.com',
+                    //                    SourceProvider::GITHUB => 'https://github.com',
                 },
             ]);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Scopes\UserScope;
 use Database\Factories\RepositoryFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +18,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string|null $name
+ * @property string|null $description
  * @property bool $public
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -34,6 +36,10 @@ class Repository extends Model
 {
     /** @use HasFactory<RepositoryFactory> */
     use HasFactory;
+
+    protected $casts = [
+        'public' => 'bool',
+    ];
 
     /**
      * @return HasMany<Package>
@@ -72,5 +78,36 @@ class Repository extends Model
     public function packageByNameOrFail(string $name): Package
     {
         return $this->packageByName($name) ?? throw new ModelNotFoundException;
+    }
+
+    /**
+     * @return Builder<Repository>
+     */
+    public static function userScoped(?User $user = null): Builder
+    {
+        /** @var User|null $user */
+        $user ??= auth()->user();
+
+        return self::query()
+            ->withGlobalScope('user', new UserScope($user, 'id'));
+    }
+
+    /**
+     * @return Builder<Repository>
+     */
+    public static function queryByName(?string $name): Builder
+    {
+        return self::query()->when(
+            $name,
+            fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('name', $name),
+            fn (Builder $query) => $query->whereNull('name')
+        );
+    }
+
+    public static function isNameInUse(?string $name, ?int $exclude = null): bool
+    {
+        return self::queryByName($name)
+            ->when($exclude, fn (Builder $query) => $query->whereNot('id', $exclude))
+            ->exists();
     }
 }

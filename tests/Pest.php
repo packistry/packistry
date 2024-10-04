@@ -13,8 +13,11 @@ declare(strict_types=1);
 |
 */
 
-use App\Enums\Ability;
+use App\Enums\Permission;
 use App\Enums\SourceProvider;
+use App\Enums\TokenAbility;
+use App\Enums\TokenType;
+use App\Models\DeployToken;
 use App\Models\Repository;
 use App\Models\User;
 use App\Sources\Deletable;
@@ -24,8 +27,12 @@ use App\Sources\Gitea\Repository as GiteaRepository;
 use App\Sources\Gitlab\Project;
 use App\Sources\Importable;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Contracts\HasAbilities;
 use Laravel\Sanctum\Sanctum;
+use Mockery\LegacyMockInterface;
+use Mockery\MockInterface;
 use Spatie\LaravelData\Data;
 
 use function Pest\Laravel\postJson;
@@ -35,27 +42,92 @@ pest()->extend(Tests\TestCase::class)
     ->in('Feature');
 
 /**
- * @param  Ability|Ability[]  $abilities
+ * @param  Permission|Permission[]  $permissions
  */
-function user(Ability|array $abilities = []): User
+function user(Permission|array $permissions = []): User
 {
+    $permissions = is_array($permissions)
+        ? $permissions
+        : [$permissions];
+
     $user = User::factory()->create();
 
-    actingAs($user, $abilities);
+    config()->set("authorization.{$user->role->value}", $permissions);
+
+    app('auth')->guard('sanctum')->setUser($user);
+    app('auth')->shouldUse('sanctum');
 
     return $user;
 }
 
 /**
- * @param  Ability|Ability[]  $abilities
+ * @param  TokenAbility|TokenAbility[]  $abilities
  */
-function actingAs(User $user, Ability|array $abilities = []): void
+function personalToken(TokenAbility|array $abilities = [], bool $withAccess = false): User
+{
+    $user = User::factory()->create();
+
+    actingAs($user, $abilities);
+
+    if ($withAccess) {
+        $user->repositories()->sync([1]);
+    }
+
+    return $user;
+}
+
+/**
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ */
+function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false): DeployToken
+{
+    /** @var DeployToken $token */
+    $token = Deploytoken::factory()->create();
+
+    actingAs($token, $abilities);
+
+    if ($withAccess) {
+        $token->repositories()->sync([1]);
+    }
+
+    return $token;
+}
+
+/**
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ */
+function actingAs(User|DeployToken $subject, TokenAbility|array $abilities = []): void
 {
     $abilities = is_array($abilities)
-        ? array_map(fn (Ability $ability) => $ability->value, $abilities)
+        ? array_map(fn (TokenAbility $ability) => $ability->value, $abilities)
         : [$abilities->value];
 
-    Sanctum::actingAs($user, $abilities);
+    /** @var MockInterface&LegacyMockInterface&HasAbilities $token */
+    $token = Mockery::mock(Sanctum::personalAccessTokenModel())->shouldIgnoreMissing(false);
+
+    if (in_array('*', $abilities)) {
+        /** @phpstan-ignore-next-line  */
+        $token->shouldReceive('can')->withAnyArgs()->andReturn(true);
+    } else {
+        foreach ($abilities as $ability) {
+            /** @phpstan-ignore-next-line  */
+            $token->shouldReceive('can')->with($ability)->andReturn(true);
+        }
+    }
+
+    /** @phpstan-ignore-next-line  */
+    $token->shouldReceive('type')->andReturn(TokenType::PERSONAL_ACCESS);
+    /** @phpstan-ignore-next-line  */
+    $token->shouldReceive('getAttribute')->with('tokenable')->andReturn($subject);
+
+    $subject->withAccessToken($token);
+
+    if (isset($subject->wasRecentlyCreated) && $subject->wasRecentlyCreated) {
+        $subject->wasRecentlyCreated = false;
+    }
+
+    app('auth')->guard('sanctum')->setUser($subject);
+    app('auth')->shouldUse('sanctum');
 }
 
 function repository(string $name = 'sub', bool $public = false, ?Closure $closure = null): Repository
@@ -98,26 +170,88 @@ function rootAndSubRepository(bool $public = false, ?Closure $closure = null): a
 }
 
 /**
- * @param  Ability|Ability[]  $abilities
- * @param  array{int, int}  $statuses
  * @return array<string, mixed>
  */
-function guestAnd(Ability|array $abilities, array $statuses = [200, 200]): array
+function unscopedUser(Permission $permission, int $expectedStatus = 200): array
 {
+    return [
+        "$expectedStatus user (unscoped, $permission->value)" => [
+            fn (): User => user([Permission::UNSCOPED, $permission]),
+            $expectedStatus,
+        ],
+    ];
+}
+
+/**
+ * @param  Permission|Permission[]  $permissions
+ * @return array<string, mixed>
+ */
+function guestAndUsers(
+    Permission|array $permissions,
+    int $guestStatus = 401,
+    int $userWithoutPermission = 403,
+    int $userWithPermission = 200,
+): array {
+    $values = is_array($permissions)
+        ? array_map(fn (Permission $ability) => $ability->value, $permissions)
+        : [$permissions->value];
+
+    $imploded = implode(',', $values);
+
+    return [
+        "$guestStatus guest" => [
+            fn (): null => null,
+            $guestStatus,
+        ],
+        "$userWithoutPermission user" => [
+            fn (): User => user(),
+            $userWithoutPermission,
+        ],
+        "$userWithPermission user ($imploded)" => [
+            fn (): User => user($permissions),
+            $userWithPermission,
+        ],
+    ];
+}
+
+/**
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ * @return array<string, mixed>
+ */
+function guestAndTokens(
+    TokenAbility|array $abilities,
+    int $guestStatus = 200,
+    int $personalTokenWithoutAccessStatus = 200,
+    int $personalTokenWithAccessStatus = 200,
+    int $deployTokenWithoutAccessStatus = 200,
+    int $deployTokenWithAccessStatus = 200,
+): array {
     $values = is_array($abilities)
-        ? array_map(fn (Ability $ability) => $ability->value, $abilities)
+        ? array_map(fn (TokenAbility $ability) => $ability->value, $abilities)
         : [$abilities->value];
 
     $imploded = implode(',', $values);
 
     return [
-        "$statuses[0] guest" => [
+        "$guestStatus guest" => [
             fn (): null => null,
-            $statuses[0],
+            $guestStatus,
         ],
-        "$statuses[1] user ($imploded)" => [
-            fn (): User => user($abilities),
-            $statuses[1],
+        "$personalTokenWithoutAccessStatus user without access ($imploded)" => [
+            fn (): User => personalToken($abilities),
+            $personalTokenWithoutAccessStatus,
+        ],
+        "$personalTokenWithAccessStatus user with access ($imploded)" => [
+            fn (): User => personalToken($abilities, withAccess: true),
+            $personalTokenWithAccessStatus,
+        ],
+        "$deployTokenWithoutAccessStatus deploy token without access ($imploded)" => [
+            fn (): DeployToken => deployToken($abilities),
+            $deployTokenWithoutAccessStatus,
+        ],
+        "$deployTokenWithAccessStatus deploy token with access ($imploded)" => [
+            fn (): DeployToken => deployToken($abilities, withAccess: true),
+            $deployTokenWithAccessStatus,
         ],
     ];
 }
@@ -261,5 +395,36 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                 )
             ),
         ],
+    ];
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function resourceAsJson(JsonResource $resource): array
+{
+    return json_decode($resource->toJson(), true);
+}
+
+/**
+ * @param  array<string, string[]>  $errors
+ * @return array{message: string, errors: array<string, string[]>}
+ */
+function validation(array $errors): array
+{
+    $size = count($errors);
+
+    if ($size === 1) {
+        return [
+            'message' => $errors[array_key_first($errors)][0],
+            'errors' => $errors,
+        ];
+    }
+
+    $count = $size - 1;
+
+    return [
+        'message' => "{$errors[array_key_first($errors)][0]} ".trans_choice('(and :count more errors)', $count),
+        'errors' => $errors,
     ];
 }

@@ -14,7 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: '',
         then: function (): void {
             Route::middleware('web')
-                ->get('{any?}', fn () => response()->file(public_path('index.html')))->where('any', '.*');
+                ->get('{any?}', function () {
+                    if (app()->environment('local')) {
+                        return redirect('http://localhost:3001/');
+                    }
+
+                    return response()->file(public_path('index.html'));
+                })->where('any', '.*');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

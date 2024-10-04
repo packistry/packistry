@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\PackageType;
+use App\Models\Scopes\UserScope;
 use Database\Factories\PackageFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $source_id
  * @property string $provider_id
  * @property string $name
+ * @property string|null $latest_version
  * @property PackageType $type
  * @property string|null $description
  * @property int $downloads
@@ -48,6 +50,13 @@ class Package extends Model
     ];
 
     /**
+     * @phpstan-ignore-next-line
+     */
+    protected $attributes = [
+        'downloads' => 0,
+    ];
+
+    /**
      * @return BelongsTo<Repository, Package>
      */
     public function repository(): BelongsTo
@@ -69,5 +78,17 @@ class Package extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(Version::class);
+    }
+
+    /**
+     * @return Builder<Package>
+     */
+    public static function userScoped(?User $user = null): Builder
+    {
+        /** @var User|null $user */
+        $user ??= auth()->user();
+
+        return self::query()
+            ->withGlobalScope('user', new UserScope($user));
     }
 }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('provider_id')->nullable()->index();
 
             $table->string('name');
+            $table->string('latest_version')->nullable();
             $table->string('type')->index();
             $table->string('description')->nullable();
             $table->unsignedBigInteger('downloads')->default(0);

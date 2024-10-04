@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
+use App\Enums\TokenAbility;
 use App\Models\Package;
 use App\Models\Repository;
-use App\Models\User;
 use App\Models\Version;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
 use function Pest\Laravel\getJson;
 use function PHPUnit\Framework\assertNotNull;
 
-it('lists package versions', function (Repository $repository, ?User $user, int $status): void {
+it('lists package versions', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $package = $repository->packages->first();
 
     assertNotNull($package);
@@ -53,9 +53,9 @@ it('lists package versions', function (Repository $repository, ?User $user, int 
                 ])
             )
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('requires ability', function (Repository $repository, ?User $user, int $status): void {
+it('requires ability', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/p2/test/test.json'))
         ->assertStatus($status);
 })
@@ -67,4 +67,9 @@ it('requires ability', function (Repository $repository, ?User $user, int $statu
                 ])
             )
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_READ,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 401,
+    ));

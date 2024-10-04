@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
 use App\Enums\PackageType;
+use App\Enums\TokenAbility;
 use App\Models\Package;
 use App\Models\Repository;
-use App\Models\User;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use function Pest\Laravel\getJson;
 
-it('searches empty repository', function (Repository $repository, ?User $user, int $status): void {
+it('searches empty repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json'))
         ->assertStatus($status)
         ->assertExactJson([
@@ -22,9 +22,9 @@ it('searches empty repository', function (Repository $repository, ?User $user, i
     ->with(rootAndSubRepository(
         public: true,
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('searches filled repository', function (Repository $repository, ?User $user, int $status): void {
+it('searches filled repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json'))
         ->assertStatus($status)
         ->assertExactJson([
@@ -44,9 +44,9 @@ it('searches filled repository', function (Repository $repository, ?User $user, 
         closure: fn (RepositoryFactory $factory) => $factory
             ->has(Package::factory()->count(10))
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('searches by query', function (Repository $repository, ?User $user, int $status): void {
+it('searches by query', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json?q=test'))
         ->assertStatus($status)
         ->assertExactJson([
@@ -70,9 +70,9 @@ it('searches by query', function (Repository $repository, ?User $user, int $stat
                 'type' => PackageType::LIBRARY,
             ])->count(9))
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('searches by type', function (Repository $repository, ?User $user, int $status): void {
+it('searches by type', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     Repository::factory()
         ->public()
         ->root()
@@ -103,11 +103,16 @@ it('searches by type', function (Repository $repository, ?User $user, int $statu
                 'type' => PackageType::LIBRARY,
             ])->count(9))
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('searches private from private repository', function (Repository $repository, ?User $user, int $status): void {
+it('searches private from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json?type=composer-plugin'))
         ->assertStatus($status);
 })
     ->with(rootAndSubRepository())
-    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_READ,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 401,
+    ));

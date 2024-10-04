@@ -14,8 +14,8 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $version_id
- * @property int|null $user_id
- * @property string $ip
+ * @property int|null $token_id
+ * @property string|null $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *

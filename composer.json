@@ -6,15 +6,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-zip": "*",
         "laravel/framework": "^11.9",
         "laravel/octane": "^2.5",
         "laravel/prompts": "^0.1.25",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "spatie/laravel-data": "^4.9",
+        "spatie/laravel-query-builder": "^6.2",
         "spiral/roadrunner-cli": "^2.6.0",
-        "spiral/roadrunner-http": "^3.3.0",
-        "ext-zip": "*"
+        "spiral/roadrunner-http": "^3.3.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.1",

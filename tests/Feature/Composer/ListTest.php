@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
+use App\Enums\TokenAbility;
 use App\Models\Package;
 use App\Models\Repository;
-use App\Models\User;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use function Pest\Laravel\getJson;
 
-it('lists packages', function (Repository $repository, ?User $user, int $status): void {
+it('lists packages', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/list.json'))
         ->assertStatus($status)
         ->assertExactJson([
@@ -22,9 +22,9 @@ it('lists packages', function (Repository $repository, ?User $user, int $status)
         closure: fn (RepositoryFactory $factory) => $factory
             ->has(Package::factory()->count(10))
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('list packages from private repository', function (Repository $repository, ?User $user, int $status): void {
+it('list packages from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/list.json'))
         ->assertStatus($status);
 })
@@ -32,4 +32,9 @@ it('list packages from private repository', function (Repository $repository, ?U
         closure: fn (RepositoryFactory $factory) => $factory
             ->has(Package::factory()->count(10))
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_READ,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 401,
+    ));

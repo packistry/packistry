@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\Ability;
+use App\Enums\Role;
+use App\Enums\TokenAbility;
 use App\Models\Repository;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         $email = $this->command->ask('Admin email?');
         $name = $this->command->ask('Admin name?');
+        $password = $this->command->ask('Admin password?');
         $public = $this->command->confirm('Create public root repository?');
 
         /** @var User $user */
@@ -27,7 +29,8 @@ class DatabaseSeeder extends Seeder
             ->state([
                 'email' => $email,
                 'name' => $name,
-                'password' => $password = Str::random(),
+                'password' => $password,
+                'role' => Role::ADMIN,
             ])
             ->create();
 
@@ -40,9 +43,8 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Admin created!');
         $this->command->info($email);
-        $this->command->info($password);
 
-        $abilities = array_map(fn (Ability $ability) => $ability->value, Ability::cases());
+        $abilities = array_map(fn (TokenAbility $ability) => $ability->value, TokenAbility::cases());
         $scopes = implode(', ', $abilities);
 
         if ($this->command->confirm("Create token with scopes [$scopes]?")) {

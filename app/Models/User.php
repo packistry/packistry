@@ -5,18 +5,23 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Permission;
+use App\Enums\Role;
+use App\Models\Contracts\Tokenable;
+use App\Models\Traits\HasApiTokens;
 use Database\Factories\UserFactory;
 use Eloquent;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Laravel\Sanctum\HasApiTokens;
-use Laravel\Sanctum\PersonalAccessToken;
 
 /**
  * @property int $id
@@ -27,9 +32,12 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Role $role
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Collection<int, PersonalAccessToken> $tokens
+ * @property-read Collection<int, Repository> $repositories
+ * @property-read int|null $repositories_count
+ * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
  *
  * @method static UserFactory factory($count = null, $state = [])
@@ -39,8 +47,9 @@ use Laravel\Sanctum\PersonalAccessToken;
  *
  * @mixin Eloquent
  */
-class User extends Authenticatable
+class User extends Model implements AuthenticatableContract, Tokenable
 {
+    use Authenticatable;
     use HasApiTokens;
 
     /** @use HasFactory<UserFactory> */
@@ -48,37 +57,57 @@ class User extends Authenticatable
 
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => Role::class,
         ];
+    }
+
+    /**
+     * @return BelongsToMany<Repository>
+     */
+    public function repositories(): BelongsToMany
+    {
+        return $this->belongsToMany(Repository::class);
+    }
+
+    public function can(Permission $permission): bool
+    {
+        return in_array($permission, $this->role->permissions());
+    }
+
+    public function canNot(Permission $permission): bool
+    {
+        return ! $this->can($permission);
+    }
+
+    public function hasAccessToRepository(Repository $repository): bool
+    {
+        return $this->repositories()->where('repositories.id', $repository->id)->exists();
+    }
+
+    public static function isEmailInUse(?string $email, ?int $exclude = null): bool
+    {
+        return self::query()
+            ->where('email', $email)
+            ->when($exclude, fn (Builder $query) => $query->whereNot('id', $exclude))
+            ->exists();
     }
 }

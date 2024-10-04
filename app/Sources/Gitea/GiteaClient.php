@@ -20,9 +20,11 @@ class GiteaClient extends Client
     /**
      * @throws ConnectionException
      */
-    public function projects(): array
+    public function projects(?string $search = null): array
     {
-        $response = $this->http()->get('/api/v1/repos/search');
+        $response = $this->http()->get('/api/v1/repos/search', [
+            'q' => $search,
+        ]);
 
         /** @var array<string, mixed> $data */
         $data = $response->json()['data'];
@@ -93,5 +95,22 @@ class GiteaClient extends Client
             'events' => ['push', 'delete'],
             'active' => true,
         ]);
+    }
+
+    public function project(string $id): Project
+    {
+        throw new RuntimeException('Not implemented yet');
+        //        $response = $this->http()->get('/api/v1/repos/search');
+        //
+        //        /** @var array<string, mixed> $data */
+        //        $data = $response->json()['data'];
+        //
+        //        return new Project(
+        //            id: $item['id'],
+        //            fullName: $item['full_name'],
+        //            name: $item['name'],
+        //            url: $item['url'],
+        //            webUrl: $item['html_url'],
+        //        );
     }
 }

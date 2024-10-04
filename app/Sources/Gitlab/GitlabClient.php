@@ -11,6 +11,7 @@ use App\Sources\Project;
 use App\Sources\Tag;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -18,27 +19,67 @@ class GitlabClient extends Client
 {
     public function http(): PendingRequest
     {
-        return Http::baseUrl($this->url)
+        /** @var PendingRequest $request */
+        $request = $this->requestOptions(Http::createPendingRequest());
+
+        return $request;
+    }
+
+    private function requestOptions(PendingRequest|Pool $request): PendingRequest|Pool
+    {
+        return $request->baseUrl($this->url)
             ->withHeader('Private-Token', $this->token);
     }
 
     /**
      * @throws ConnectionException
      */
-    public function projects(): array
+    public function projects(?string $search = null): array
     {
-        $response = $this->http()->get('/api/v4/projects');
+        $perPage = 100;
 
-        /** @var array<string, mixed> $data */
-        $data = $response->json();
+        $initialResponse = $this->http()->get('/api/v4/projects', [
+            'per_page' => 1,
+            'search' => $search,
+            'search_namespaces' => true,
+        ]);
 
-        return array_map(fn (array $item): Project => new Project(
-            id: $item['id'],
-            fullName: $item['path_with_namespace'],
-            name: $item['name'],
-            url: $item['_links']['self'].'/repository',
-            webUrl: $item['web_url'],
-        ), $data);
+        if (! $initialResponse->successful()) {
+            throw new \Exception('Failed to fetch initial project data: '.$initialResponse->body());
+        }
+
+        $totalProjects = (int) $initialResponse->header('X-Total-Pages');
+        $totalPages = ceil($totalProjects / $perPage);
+
+        $responses = $this->http()
+            ->pool(fn (Pool $pool): array => array_map(
+                fn (float $page) => $this->requestOptions($pool)
+                    ->get('/api/v4/projects', [
+                        'page' => $page,
+                        'per_page' => $perPage,
+                        'search' => $search,
+                    ]), range(1, $totalPages)));
+
+        $allProjects = [];
+
+        foreach ($responses as $response) {
+            if (! $response->successful()) {
+                throw new \Exception('Failed to fetch projects: '.$response->body());
+            }
+
+            $data = $response->json();
+            $projects = array_map(fn (array $item): Project => new Project(
+                id: $item['id'],
+                fullName: $item['path_with_namespace'],
+                name: $item['name'],
+                url: $item['_links']['self'].'/repository',
+                webUrl: $item['web_url'],
+            ), $data);
+
+            $allProjects = array_merge($allProjects, $projects);
+        }
+
+        return $allProjects;
     }
 
     /**
@@ -98,11 +139,25 @@ class GitlabClient extends Client
     {
         $this->http()->post("$project->url/hooks", [
             'url' => url($repository->url('/incoming/gitlab')),
-            'name' => 'conductor sync',
+            'name' => 'packistry sync',
             'token' => config('services.gitea.webhook.secret'),
             'content_type' => 'json',
             'tag_push_events' => true,
             'branch_push_events' => true,
         ]);
+    }
+
+    public function project(string $id): Project
+    {
+        $response = $this->http()->get("/api/v4/projects/$id");
+        $item = $response->json();
+
+        return new Project(
+            id: $item['id'],
+            fullName: $item['path_with_namespace'],
+            name: $item['name'],
+            url: $item['_links']['self'].'/repository',
+            webUrl: $item['web_url'],
+        );
     }
 }

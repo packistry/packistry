@@ -20,12 +20,24 @@ use SensitiveParameter;
 
 abstract class Client
 {
+    protected string $url;
+
+    protected string $token;
+
     public function __construct(
-        protected string $url,
-        #[SensitiveParameter] protected string $token,
         private readonly Import $import,
     ) {
         //
+    }
+
+    public function withOptions(
+        #[SensitiveParameter] string $token,
+        string $url
+    ): static {
+        $this->token = $token;
+        $this->url = $url;
+
+        return $this;
     }
 
     /**
@@ -51,7 +63,9 @@ abstract class Client
     /**
      * @return Project[]
      */
-    abstract public function projects(): array;
+    abstract public function projects(?string $search = null): array;
+
+    abstract public function project(string $id): Project;
 
     /**
      * @return Branch[]

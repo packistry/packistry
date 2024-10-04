@@ -1,6 +1,6 @@
-# Conductor
+# Packistry
 
-Conductor is a self-hosted Composer repository server designed to handle your Composer package distribution. It supports importing from multiple sources like GitHub, GitLab, and Gitea, with seamless updates using webhooks. Conductor allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
+Packistry is a self-hosted Composer repository server designed to handle your Composer package distribution. It supports importing from multiple sources like GitHub, GitLab, and Gitea, with seamless updates using webhooks. Packistry allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
 
 ### Features
 
@@ -10,33 +10,33 @@ Conductor is a self-hosted Composer repository server designed to handle your Co
   - **GitHub**
   - **GitLab**
   - **Gitea**
-  - Conductor stays updated automatically with the latest changes via **webhooks**.
+  - Packistry stays updated automatically with the latest changes via **webhooks**.
 
 - **Multiple Repository Management**
   - **Public/Private Repositories**: Set your repositories as either public or private depending on your needs.
   - **Access Tokens**: Use secure access tokens to manage who can view or contribute to your repositories.
 
 - **Deploy With Docker**
-  - Conductor is **dockerized**, making it extremely easy to deploy. Get your server running in seconds:
+  - Packistry is **dockerized**, making it extremely easy to deploy. Get your server running in seconds:
 
 ### Getting Started
 
 1. **Run the Server:**
-   Start Conductor locally or on your cloud platform with Docker:
+   Start Packistry locally or on your cloud platform with Docker:
    ```bash
-   docker run -p 80:80 ghcr.io/maantje/conductor
+   docker run -p 80:80 ghcr.io/packistry/packistry
    ```
 
 2. **[Add Package Sources](#adding-a-new-package-source)**:
-   Use sources to connect your repositories from GitHub, GitLab, or Gitea, and let Conductor handle the rest.
+   Use sources to connect your repositories from GitHub, GitLab, or Gitea, and let Packistry handle the rest.
 
 3. **[Import Package](#importing-packages-from-a-source)**:
-   Import a repository from your package source as package, once set-up conductor will create the necessary webhooks to keep your package up to date with the latest tags and branches
+   Import a repository from your package source as package, once set-up packistry will create the necessary webhooks to keep your package up to date with the latest tags and branches
 
 4. **Add repository to composer.json**  
     Replace `[url]` with e.g. `http://localhost`, `https://domain.com`, `https://sub.domain.com:1234`
    ```bash
-   composer config repositories.conductor composer [url]
+   composer config repositories.packistry composer [url]
    ```
 5. **Optionally, Authenticate with repository**  
     Replace `[url]` with e.g. `localhost`, `domain.com`, `sub.domain.com:1234`
@@ -54,7 +54,7 @@ Conductor is a self-hosted Composer repository server designed to handle your Co
 
 #### Adding a New Package Source
 
-Conductor provides a simple and interactive way to add new sources via an Artisan command. This command allows you to add sources such as GitHub, GitLab, or Gitea to your Conductor server, ensuring that you can manage your Composer packages from multiple repositories seamlessly.
+Packistry provides a simple and interactive way to add new sources via an Artisan command. This command allows you to add sources such as GitHub, GitLab, or Gitea to your Packistry server, ensuring that you can manage your Composer packages from multiple repositories seamlessly.
 
 To add a new package source, use the following command:
 
@@ -80,7 +80,7 @@ Once you've provided all the required information, the package source will be sa
 
 #### Importing Packages from a Source
 
-Conductor allows you to import packages directly from a package source (e.g., Gitea, GitHub, Gitlab).
+Packistry allows you to import packages directly from a package source (e.g., Gitea, GitHub, Gitlab).
 
 To import packages, you can run the following command:
 
@@ -95,6 +95,6 @@ php artisan app:import-package
    After selecting the repository, you will be prompted to select the package source from which to import packages.
 
 3. **Import Process**:  
-   Once the import is successful, Conductor will display the name of the imported repository along with a list of:
+   Once the import is successful, Packistry will display the name of the imported repository along with a list of:
     - **Branches**: All branches detected from the package source.
     - **Tags**: All tags associated with the package in the selected source.

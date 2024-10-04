@@ -26,7 +26,10 @@ class RecordPackageDownload
         DB::transaction(function () use ($event, $version): void {
             $download = new Download;
             $download->ip = $event->ip;
-            $download->user_id = $event->user?->id;
+
+            if ($event->token instanceof \App\Models\Token && $event->token->id !== false) {
+                $download->token_id = $event->token->id;
+            }
 
             $version
                 ->downloads()

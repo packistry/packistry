@@ -6,9 +6,10 @@ namespace App\Providers;
 
 use App\Http\Middleware\GiteaWebhookSecret;
 use App\Http\Middleware\GitlabWebhookSecret;
+use App\Models\Token;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(GiteaWebhookSecret::class)
             ->needs('$secret')
             ->give(config('services.gitea.webhook.secret'));
+
+        JsonResource::withoutWrapping();
     }
 
     /**
@@ -33,6 +36,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::shouldBeStrict();
-        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        Sanctum::usePersonalAccessTokenModel(Token::class);
     }
 }

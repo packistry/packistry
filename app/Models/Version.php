@@ -81,5 +81,19 @@ class Version extends Model
 
             $version->order = $order;
         });
+
+        static::created(function (Version $version): void {
+            if ($version->isDev()) {
+                return;
+            }
+
+            $version->package->latest_version = $version->name;
+            $version->package->save();
+        });
+    }
+
+    private function isDev(): bool
+    {
+        return str_starts_with($this->package->name, 'dev-');
     }
 }

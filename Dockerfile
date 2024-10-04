@@ -1,6 +1,8 @@
 FROM php:8.3-fpm-alpine AS base
 
-LABEL org.opencontainers.image.source=https://github.com/maantje/conductor
+LABEL org.opencontainers.image.source="https://github.com/packistry/packistry"
+LABEL org.opencontainers.image.description="Packistry is a Composer repository for PHP packages Packistry is a Composer repository for PHP packages"
+LABEL org.opencontainers.image.licenses="GPL-3.0"
 
 RUN apk add --no-cache \
     $PHPIZE_DEPS \
@@ -11,6 +13,22 @@ RUN apk add --no-cache \
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+FROM node:22-slim AS builder_frontend
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+WORKDIR /frontend
+
+COPY frontend/pnpm-lock.yaml frontend/package.json ./
+
+RUN pnpm i --frozen-lockfile
+
+COPY frontend/ .
+
+RUN pnpm build
+
 FROM base AS builder_api
 
 COPY composer.* .
@@ -20,30 +38,31 @@ RUN composer install --verbose --prefer-dist --no-progress --no-interaction --no
 
 COPY . .
 RUN composer dump-autoload --optimize
+RUN rm -rf frontend
 
 FROM base AS runner
 
 COPY --from=builder_api /var/www/html /var/www/html
+COPY --from=builder_frontend /frontend/dist /var/www/html/dist
 COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.2 /usr/bin/rr /usr/local/bin/rr
 
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-ENV USER="conductor"
-ENV GROUP="conductor"
-WORKDIR /var/www/html
+RUN mv dist/* public/
 
-COPY .env.example .env
+ENV USER="packistry"
+ENV GROUP="packistry"
 
+RUN touch /var/www/html/database/database.sqlite
 RUN addgroup -S $GROUP && adduser -S $USER -G $GROUP -H
 RUN chown -R $GROUP:$USER /var/www/html
 
 USER $USER
 
-RUN touch database/database.sqlite
-RUN php artisan key:generate
-RUN php artisan migrate --force
-RUN php artisan app:create-root-repository
-
 EXPOSE 80
 
-CMD ["rr", "serve", "-c", ".rr.production.yaml"]
+CMD ["sh", "-c", "php artisan config:cache \
+    && php artisan event:cache \
+    && php artisan route:cache \
+    && php artisan migrate --force \
+    && rr serve -c .rr.production.yaml"]

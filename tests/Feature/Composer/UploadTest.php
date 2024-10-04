@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
+use App\Enums\TokenAbility;
 use App\Models\Package;
 use App\Models\Repository;
-use App\Models\User;
 use App\Models\Version;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\post;
 use function PHPUnit\Framework\assertNotNull;
 
-it('creates new version for existing package', function (Repository $repository, ?User $user, int $status): void {
+it('creates new version for existing package', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     Storage::fake();
 
     $file = UploadedFile::fake()
@@ -45,7 +45,6 @@ it('creates new version for existing package', function (Repository $repository,
         'package_id' => $package->id,
         'name' => $version->name,
         'shasum' => $version->shasum,
-        'metadata' => $version->metadata,
         'updated_at' => $version->updated_at,
         'created_at' => $version->created_at,
         'id' => $version->id,
@@ -87,9 +86,16 @@ it('creates new version for existing package', function (Repository $repository,
                 ])
         )
     ))
-    ->with(guestAnd(Ability::REPOSITORY_WRITE, [401, 201]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_WRITE,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        personalTokenWithAccessStatus: 201,
+        deployTokenWithoutAccessStatus: 401,
+        deployTokenWithAccessStatus: 201,
+    ));
 
-it('creates new package and version when non existing', function (Repository $repository, ?User $user, int $status): void {
+it('creates new package and version when non existing', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     Storage::fake();
 
     $file = UploadedFile::fake()
@@ -117,7 +123,6 @@ it('creates new package and version when non existing', function (Repository $re
         'package_id' => $package->id,
         'name' => $version->name,
         'shasum' => $version->shasum,
-        'metadata' => $version->metadata,
         'updated_at' => $version->updated_at,
         'created_at' => $version->created_at,
         'id' => $version->id,
@@ -155,13 +160,27 @@ it('creates new package and version when non existing', function (Repository $re
     ->with(rootAndSubRepository(
         public: true,
     ))
-    ->with(guestAnd(Ability::REPOSITORY_WRITE, [401, 201]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_WRITE,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        personalTokenWithAccessStatus: 201,
+        deployTokenWithoutAccessStatus: 401,
+        deployTokenWithAccessStatus: 201,
+    ));
 
-it('creates package in private repository', function (Repository $repository, ?User $user, int $status): void {
+it('creates package in private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     post($repository->url('/test/test'))
         ->assertStatus($status);
 })
     ->with(rootAndSubRepository(
         public: true,
     ))
-    ->with(guestAnd(Ability::REPOSITORY_WRITE, [401, 422]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_WRITE,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        personalTokenWithAccessStatus: 422,
+        deployTokenWithoutAccessStatus: 401,
+        deployTokenWithAccessStatus: 422,
+    ));

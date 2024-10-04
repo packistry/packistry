@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Enums\Ability;
+use App\Enums\TokenAbility;
 use App\Models\Download;
 use App\Models\Package;
 use App\Models\Repository;
-use App\Models\User;
 use App\Models\Version;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\getJson;
 
-it('downloads a version', function (Repository $repository, ?User $user, int $status): void {
+it('downloads a version', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $path = __DIR__.'/../../Fixtures/project.zip';
     Package::factory()
         ->for($repository)
@@ -29,7 +29,7 @@ it('downloads a version', function (Repository $repository, ?User $user, int $st
 
     assertDatabaseHas(Download::class, [
         'version_id' => 1,
-        'user_id' => $user?->id,
+        'token_id' => null,
         'ip' => '127.0.0.1',
     ]);
 
@@ -40,9 +40,9 @@ it('downloads a version', function (Repository $repository, ?User $user, int $st
     ->with(rootAndSubRepository(
         public: true
     ))
-    ->with(guestAnd(Ability::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('downloads version from private repository', function (Repository $repository, ?User $user, int $status): void {
+it('downloads version from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $path = __DIR__.'/../../Fixtures/project.zip';
 
     Package::factory()
@@ -58,4 +58,9 @@ it('downloads version from private repository', function (Repository $repository
         ->assertStatus($status);
 })
     ->with(rootAndSubRepository())
-    ->with(guestAnd(Ability::REPOSITORY_READ, [401, 200]));
+    ->with(guestAndTokens(
+        abilities: TokenAbility::REPOSITORY_READ,
+        guestStatus: 401,
+        personalTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 401,
+    ));

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Exceptions\FailedToParseUrlException;
 use App\Exceptions\VersionNotFoundException;
 use RuntimeException;
 
@@ -21,7 +22,7 @@ class Normalizer
         $parsedUrl = parse_url($url);
 
         if ($parsedUrl === false || ! array_key_exists('host', $parsedUrl)) {
-            throw new RuntimeException("failed to parse url: $url");
+            throw new FailedToParseUrlException("failed to parse url: $url");
         }
 
         $scheme = array_key_exists('scheme', $parsedUrl) ? $parsedUrl['scheme'] : 'https';
