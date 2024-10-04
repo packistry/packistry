@@ -18,7 +18,7 @@ class AddRepository extends Command
      *
      * @var string
      */
-    protected $signature = 'packistry:add:repository {name?}';
+    protected $signature = 'add:repository {name?}';
 
     /**
      * The console command description.

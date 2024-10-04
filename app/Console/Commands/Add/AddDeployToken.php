@@ -17,7 +17,7 @@ use function Laravel\Prompts\text;
 class AddDeployToken extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:add:deploy-token';
+    protected $signature = 'add:deploy-token';
 
     /** @var string|null */
     protected $description = 'Add a deploy token';

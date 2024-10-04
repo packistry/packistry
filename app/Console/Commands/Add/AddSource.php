@@ -15,7 +15,7 @@ use function Laravel\Prompts\text;
 class AddSource extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:add:source';
+    protected $signature = 'add:source';
 
     /** @var string|null */
     protected $description = 'Add a source from where you will be providing packages';

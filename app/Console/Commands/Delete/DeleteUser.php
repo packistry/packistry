@@ -15,7 +15,7 @@ use function Laravel\Prompts\multisearch;
 class DeleteUser extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:delete:user';
+    protected $signature = 'delete:user';
 
     /** @var string|null */
     protected $description = 'Delete a user';

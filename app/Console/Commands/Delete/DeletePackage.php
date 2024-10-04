@@ -15,7 +15,7 @@ use function Laravel\Prompts\multisearch;
 class DeletePackage extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:delete:package';
+    protected $signature = 'delete:package';
 
     /** @var string|null */
     protected $description = 'Delete a package';

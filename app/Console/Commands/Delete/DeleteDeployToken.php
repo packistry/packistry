@@ -15,7 +15,7 @@ use function Laravel\Prompts\multisearch;
 class DeleteDeployToken extends Command
 {
     /** @var string */
-    protected $signature = 'packistry:delete:deploy-token';
+    protected $signature = 'delete:deploy-token';
 
     /** @var string|null */
     protected $description = 'Delete a deploy token';
