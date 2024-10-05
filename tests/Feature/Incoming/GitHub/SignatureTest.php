@@ -12,20 +12,20 @@ $event = ['ref' => 'refs/tags/0.1.3'];
 
 it('requires valid signature', function (Repository $repository) use ($event): void {
     $source = Source::factory()
-        ->provider(SourceProvider::GITEA)
+        ->provider(SourceProvider::GITLAB)
         ->create();
 
     /** @var string $content */
     $content = json_encode($event);
 
-    postJson($repository->url("/incoming/gitea/$source->id"), $event)
+    postJson($repository->url("/incoming/github/$source->id"), $event)
         ->assertUnauthorized();
 
-    postJson($repository->url("/incoming/gitea/$source->id"), $event, ['X-Hub-Signature-256' => 'incorrect'])
+    postJson($repository->url("/incoming/github/$source->id"), $event, ['X-Hub-Signature-256' => 'incorrect'])
         ->assertUnauthorized();
 
     $signature = 'sha256='.hash_hmac('sha256', $content, decrypt($source->secret));
 
-    postJson($repository->url("/incoming/gitea/$source->id"), $event, ['X-Hub-Signature-256' => $signature])
+    postJson($repository->url("/incoming/github/$source->id"), $event, ['X-Hub-Signature-256' => $signature])
         ->assertUnprocessable();
 })->with(rootAndSubRepository());

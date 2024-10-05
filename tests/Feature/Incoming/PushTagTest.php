@@ -8,13 +8,14 @@ use App\Models\Repository;
 use App\Models\Version;
 
 it('creates version for new tag', function (Repository $repository, SourceProvider $provider, ...$args): void {
-    Package::factory()
+    /** @var Package $package */
+    $package = Package::factory()
         ->for($repository)
         ->name('vendor/test')
         ->provider($provider)
         ->create();
 
-    $response = webhook($repository, $provider, ...$args)
+    $response = webhook($repository, $package->source, ...$args)
         ->assertCreated();
 
     /** @var Version $version */
@@ -48,7 +49,7 @@ it('overwrites version for same tag', function (Repository $repository, SourcePr
         )
         ->create();
 
-    $response = webhook($repository, $provider, ...$args)
+    $response = webhook($repository, $package->source, ...$args)
         ->assertCreated();
 
     /** @var Version $version */

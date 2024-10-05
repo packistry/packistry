@@ -38,7 +38,7 @@ export const storePackageInput = z.object({
 })
 
 export function storePackage(input: z.infer<typeof storePackageInput>) {
-    return post(z.string(), '/packages', input)
+    return post(packageSchema.array(), '/packages', input)
 }
 
 export function deletePackage(packageId: string) {

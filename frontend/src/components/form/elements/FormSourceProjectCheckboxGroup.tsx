@@ -23,7 +23,10 @@ export function FormSourceProjectCheckboxGroup(
             name="projects"
             {...props}
             search={searchTerm}
-            onSearch={setSearchTerm}
+            onSearch={(search) => {
+                setSearchTerm(search)
+            }}
+            placeholder="Starts searching after 3 characters"
             loading={query.isPending}
             options={(query.data || [])
                 .map((repository) => ({

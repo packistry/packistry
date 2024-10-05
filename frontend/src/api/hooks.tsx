@@ -176,7 +176,7 @@ export function useSourceProjects(source?: string, search?: string) {
     return useQuery({
         queryFn: () => fetchSourceProjects(source!, search),
         queryKey: [...sourcesKey, source, 'projects', search],
-        enabled: !!source,
+        enabled: !!source && !!search && search.length >= 3,
     })
 }
 

@@ -19,7 +19,7 @@ it('deletes tag', function (Repository $repository, SourceProvider $provider, ..
         ->name('1.0.0')
         ->create();
 
-    webhook($repository, $provider, ...$args)
+    webhook($repository, $package->source, ...$args)
         ->assertOk()
         ->assertExactJson([
             'id' => $version->id,

@@ -26,6 +26,7 @@ class SourceFactory extends Factory
             'provider' => fake()->randomElement(SourceProvider::cases()),
             'url' => fake()->url,
             'token' => encrypt(Str::random()),
+            'secret' => encrypt(Str::random()),
         ];
     }
 
@@ -34,10 +35,11 @@ class SourceFactory extends Factory
         return $this
             ->state([
                 'provider' => $provider,
+                'secret' => encrypt('secret'),
                 'url' => match ($provider) {
                     SourceProvider::GITEA => 'https://gitea.com',
                     SourceProvider::GITLAB => 'https://gitlab.com',
-                    //                    SourceProvider::GITHUB => 'https://github.com',
+                    SourceProvider::GITHUB => 'https://api.github.com',
                 },
             ]);
     }

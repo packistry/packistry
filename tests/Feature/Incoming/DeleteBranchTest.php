@@ -8,7 +8,8 @@ use App\Models\Repository;
 use App\Models\Version;
 
 it('deletes branch', function (Repository $repository, SourceProvider $provider, ...$args): void {
-    Package::factory()
+    /** @var Package $package */
+    $package = Package::factory()
         ->for($repository)
         ->name('vendor/test')
         ->has(Version::factory()->name('dev-feature-something'))
@@ -18,7 +19,7 @@ it('deletes branch', function (Repository $repository, SourceProvider $provider,
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
 
-    webhook($repository, $provider, ...$args)
+    webhook($repository, $package->source, ...$args)
         ->assertOk()
         ->assertExactJson([
             'id' => $version->id,

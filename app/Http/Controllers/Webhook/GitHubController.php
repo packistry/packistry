@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Webhook\Traits\AuthorizeHubSignatureEvent;
-use App\Sources\Gitea\Event\DeleteEvent;
-use App\Sources\Gitea\Event\PushEvent;
+use App\Sources\GitHub\Event\DeleteEvent;
+use App\Sources\GitHub\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class GiteaController extends WebhookController
+class GitHubController extends WebhookController
 {
     use AuthorizeHubSignatureEvent;
 
@@ -18,7 +18,7 @@ class GiteaController extends WebhookController
     {
         $this->authorizeWebhook($request);
 
-        return match ($request->header('X-Gitea-Event')) {
+        return match ($request->header('X-GitHub-Event')) {
             'push' => $this->push(PushEvent::from($request)),
             'delete' => $this->delete(DeleteEvent::from($request)),
             default => response()->json([

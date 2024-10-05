@@ -10,7 +10,7 @@ use RuntimeException;
 enum SourceProvider: string
 {
     case GITEA = 'gitea';
-    //    case GITHUB = 'github';
+    case GITHUB = 'github';
     case GITLAB = 'gitlab';
 
     public function clientClassString(): string

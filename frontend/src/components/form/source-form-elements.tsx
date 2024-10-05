@@ -1,28 +1,35 @@
 import { FormInput } from '@/components/form/elements/FormInput'
 import * as React from 'react'
-import { Control } from 'react-hook-form'
-import { FormSourceProviderSelect } from '@/components/form/elements/FormSourceProviderSelect'
+import { UseFormReturn } from 'react-hook-form'
+import { defaultSourceUrlMap, FormSourceProviderSelect } from '@/components/form/elements/FormSourceProviderSelect'
 
-export function SourceFormElements({ control }: { control: Control<any> }) {
+export function SourceFormElements({ form }: { form: UseFormReturn }) {
     return (
         <>
             <FormInput
                 name="name"
                 label="Name"
-                control={control}
+                control={form.control}
             />
-            <FormSourceProviderSelect control={control} />
+            <FormSourceProviderSelect
+                onChange={(value) => {
+                    if (value in defaultSourceUrlMap) {
+                        form.setValue('url', defaultSourceUrlMap[value])
+                    }
+                }}
+                control={form.control}
+            />
             <FormInput
                 label="URL"
                 name="url"
                 placeholder="e.g. https://sub.domain.com"
-                control={control}
+                control={form.control}
             />
             <FormInput
                 label="Token"
                 name="token"
                 type="password"
-                control={control}
+                control={form.control}
             />
         </>
     )

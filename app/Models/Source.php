@@ -11,6 +11,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -19,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property SourceProvider $provider
  * @property string $url
  * @property string $token
+ * @property string $secret
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -49,5 +51,13 @@ class Source extends Model
             token: $token,
             url: $this->url,
         );
+    }
+
+    /**
+     * @return HasMany<Package>
+     */
+    public function packages(): HasMany
+    {
+        return $this->hasMany(Package::class);
     }
 }

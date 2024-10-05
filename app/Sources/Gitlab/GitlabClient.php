@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Sources\Gitlab;
 
 use App\Models\Repository;
+use App\Models\Source;
 use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
@@ -135,13 +136,12 @@ class GitlabClient extends Client
     /**
      * @throws ConnectionException
      */
-    public function createWebhook(Repository $repository, Project $project): void
+    public function createWebhook(Repository $repository, Project $project, Source $source): void
     {
         $this->http()->post("$project->url/hooks", [
-            'url' => url($repository->url('/incoming/gitlab')),
+            'url' => url($repository->url("/incoming/gitlab/$source->id")),
             'name' => 'packistry sync',
-            // @todo remove secret and generate it instead on source creation?
-            'token' => config('services.gitea.webhook.secret'),
+            'token' => decrypt($source->secret),
             'content_type' => 'json',
             'tag_push_events' => true,
             'branch_push_events' => true,

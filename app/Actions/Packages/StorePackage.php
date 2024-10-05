@@ -18,7 +18,9 @@ use App\Models\Source;
 use App\Sources\Importable;
 use App\Sources\Project;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Validation\ValidationException;
 
 class StorePackage
 {
@@ -49,6 +51,18 @@ class StorePackage
         $packages = [];
 
         foreach ($projects as $project) {
+            if ($input->webhook) {
+                try {
+                    $source->client()->createWebhook($repository, $project, $source);
+                } catch (RequestException $e) {
+                    throw ValidationException::withMessages([
+                        'projects' => [
+                            "Failed to create webhook for $project->fullName: {$e->response->body()}",
+                        ],
+                    ]);
+                }
+            }
+
             /** @var Package $package */
             $package = $repository
                 ->packages()
@@ -66,31 +80,30 @@ class StorePackage
                 $package->save();
             }
 
-            $tags = array_reverse($client->tags($project));
-            $branches = array_reverse($client->branches($project));
+            dispatch(function () use ($package, $source, $project) {
+                $client = $source->client();
+                $tags = array_reverse($client->tags($project));
+                $branches = array_reverse($client->branches($project));
 
-            $imports = array_map(function (Importable $importable) use ($source, $package) {
-                return function () use ($importable, $source, $package) {
-                    return $source->client()->import(
-                        package: $package,
-                        importable: $importable,
-                    );
-                };
-            }, [...$branches, ...$tags]);
+                $imports = array_map(function (Importable $importable) use ($source, $package) {
+                    return function () use ($importable, $source, $package) {
+                        return $source->client()->import(
+                            package: $package,
+                            importable: $importable,
+                        );
+                    };
+                }, [...$branches, ...$tags]);
 
-            Bus::batch($imports)
-                ->finally(function () use ($package) {
-                    if (! str_starts_with($package->name, 'Importing')) {
-                        return;
-                    }
+                Bus::batch($imports)
+                    ->finally(function () use ($package) {
+                        if (! str_starts_with($package->name, 'Importing')) {
+                            return;
+                        }
 
-                    $package->delete();
-                })
-                ->dispatch();
-
-            if ($input->webhook) {
-                $source->client()->createWebhook($repository, $project);
-            }
+                        $package->delete();
+                    })
+                    ->dispatch();
+            });
 
             $packages[] = $package;
         }

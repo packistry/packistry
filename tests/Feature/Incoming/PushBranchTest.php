@@ -8,13 +8,14 @@ use App\Models\Repository;
 use App\Models\Version;
 
 it('creates dev version for new branch', function (Repository $repository, SourceProvider $provider, ...$args): void {
-    Package::factory()
+    /** @var Package $package */
+    $package = Package::factory()
         ->for($repository)
         ->name('vendor/test')
         ->provider($provider)
         ->create();
 
-    $response = webhook($repository, $provider, ...$args)
+    $response = webhook($repository, $package->source, ...$args)
         ->assertCreated();
 
     /** @var Version $version */
@@ -48,7 +49,7 @@ it('overwrites dev version for same branch', function (Repository $repository, S
         )
         ->create();
 
-    $response = webhook($repository, $provider, ...$args)
+    $response = webhook($repository, $package->source, ...$args)
         ->assertCreated();
 
     /** @var Version $version */
