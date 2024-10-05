@@ -29,7 +29,6 @@ class PushEvent extends Input implements Importable
 
     public function zipUrl(): string
     {
-        // @todo whitelist
         return "{$this->repository->htmlUrl}/archive/{$this->shortRef()}.zip";
     }
 
