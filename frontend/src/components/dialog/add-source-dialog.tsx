@@ -49,7 +49,7 @@ export function AddSourceDialog(props: DialogProps) {
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-4"
                     >
-                        <SourceFormElements control={form.control} />
+                        <SourceFormElements form={form} />
                         <Button
                             loading={isPending}
                             type="submit"

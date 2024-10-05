@@ -26,6 +26,7 @@ export function FormSearchCheckboxGroup({
     label,
     name,
     options,
+    placeholder,
     loading = false,
     search,
     onSearch,
@@ -49,7 +50,7 @@ export function FormSearchCheckboxGroup({
                     </div>
                     <Input
                         type="search"
-                        placeholder="Search..."
+                        placeholder={placeholder || "Search..."}
                         value={search}
                         onChange={(e) => (onSearch ? onSearch(e.target.value) : setSearchTerm(e.target.value))}
                     />

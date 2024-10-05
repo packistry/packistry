@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('url');
 
             $table->text('token');
+            $table->text('secret');
 
             $table->timestamps();
 

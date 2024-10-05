@@ -13,9 +13,10 @@ type Option = {
 export type FormSelectProps = {
     options: Option[]
     empty?: EmptyProps
+    onChange?: (value: string) => void
 } & FormElement
 
-export function FormSelect({ control, label, options, name, description, empty }: FormSelectProps) {
+export function FormSelect({ control, label, options, name, description, empty, onChange }: FormSelectProps) {
     return (
         <FormField
             control={control}
@@ -24,7 +25,13 @@ export function FormSelect({ control, label, options, name, description, empty }
                 <FormItem>
                     <FormLabel>{label}</FormLabel>
                     <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                            field.onChange(value)
+
+                            if (onChange) {
+                                onChange(value)
+                            }
+                        }}
                         defaultValue={field.value}
                     >
                         <FormControl>
@@ -39,7 +46,7 @@ export function FormSelect({ control, label, options, name, description, empty }
                                     {...empty}
                                 />
                             ) : (
-                                options.map((option) => <SelectItem value={option.value}>{option.label}</SelectItem>)
+                                options.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)
                             )}
                         </SelectContent>
                     </Select>

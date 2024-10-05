@@ -12,11 +12,13 @@ class GitlabController extends WebhookController
 {
     public function __invoke(Request $request): JsonResponse
     {
+        $this->authorizeWebhook($request);
+
         return match ($request->header('X-Gitlab-Event')) {
             'Push Hook' => $this->pushOrDelete(PushEvent::from($request)),
             default => response()->json([
                 'event' => ['unknown event type'],
-            ])
+            ], 422)
         };
     }
 
@@ -27,5 +29,18 @@ class GitlabController extends WebhookController
         }
 
         return $this->push($event);
+    }
+
+    public function authorizeWebhook(Request $request): void
+    {
+        $secret = $request->header('X-Gitlab-Token');
+
+        if (is_null($secret)) {
+            abort(401, 'secret missing');
+        }
+
+        if ($secret !== decrypt($this->source()->secret)) {
+            abort(401, 'invalid secret');
+        }
     }
 }

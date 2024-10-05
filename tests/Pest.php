@@ -19,6 +19,7 @@ use App\Enums\TokenAbility;
 use App\Enums\TokenType;
 use App\Models\DeployToken;
 use App\Models\Repository;
+use App\Models\Source;
 use App\Models\User;
 use App\Sources\Deletable;
 use App\Sources\Gitea\Event\DeleteEvent;
@@ -37,6 +38,7 @@ use Mockery\MockInterface;
 use Spatie\LaravelData\Data;
 
 use function Pest\Laravel\postJson;
+use function PHPUnit\Framework\assertNotNull;
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
@@ -274,10 +276,25 @@ function giteaEventHeaders(Importable|Deletable $event, string $secret = 'secret
 /**
  * @return array<string, mixed>
  */
+function githubEventHeaders(Importable|Deletable $event, string $secret = 'secret'): array
+{
+    $eventType = match ($event::class) {
+        \App\Sources\GitHub\Event\PushEvent::class => 'push',
+        \App\Sources\GitHub\Event\DeleteEvent::class => 'delete',
+        default => throw new RuntimeException('unknown event')
+    };
+
+    return ['X-Hub-Signature-256' => eventSignature($event, $secret), 'X-GitHub-Event' => $eventType];
+}
+
+/**
+ * @return array<string, mixed>
+ */
 function eventHeaders(Importable|Deletable $event, string $secret = 'secret'): array
 {
     return match ($event::class) {
         PushEvent::class, DeleteEvent::class => giteaEventHeaders($event, $secret),
+        \App\Sources\GitHub\Event\DeleteEvent::class, \App\Sources\GitHub\Event\PushEvent::class => githubEventHeaders($event, $secret),
         \App\Sources\Gitlab\Event\PushEvent::class => gitlabEventHeader($secret),
         default => throw new RuntimeException('unknown event')
     };
@@ -322,6 +339,20 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
             ),
             'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',
         ],
+        'github' => [
+            'provider' => SourceProvider::GITHUB,
+            'event' => new \App\Sources\GitHub\Event\PushEvent(
+                ref: "refs/$refType/$ref",
+                repository: new \App\Sources\GitHub\Repository(
+                    id: 1,
+                    name: 'test',
+                    fullName: 'vendor/test',
+                    htmlUrl: 'https://github.com/vendor/test',
+                    url: 'https://github.com/vendor/test',
+                )
+            ),
+            'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',
+        ],
         'gitlab' => [
             'provider' => SourceProvider::GITLAB,
             'event' => new \App\Sources\Gitlab\Event\PushEvent(
@@ -354,13 +385,15 @@ function fakeZipArchiveDownload(Importable $event, string $archivePath): void
 /**
  * @return TestResponse<JsonResponse>
  */
-function webhook(Repository $repository, SourceProvider $provider, (Importable&Data)|(Deletable&data) $event, ?string $archivePath = null): TestResponse
+function webhook(Repository $repository, ?Source $source, (Importable&Data)|(Deletable&data) $event, ?string $archivePath = null): TestResponse
 {
+    assertNotNull($source);
+
     if (! is_null($archivePath) && $event instanceof Importable) {
         fakeZipArchiveDownload($event, $archivePath);
     }
 
-    return postJson($repository->url("/incoming/$provider->value"), $event->toArray(), eventHeaders($event));
+    return postJson($repository->url("/incoming/{$source->provider->value}/$source->id"), $event->toArray(), eventHeaders($event));
 }
 
 /**
@@ -381,6 +414,21 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                     fullName: 'vendor/test',
                     htmlUrl: 'https://gitea.com/vendor/test',
                     url: 'https://gitea.com/api/v1/repos/vendor/test',
+                )
+            ),
+        ],
+        'github' => [
+            'provider' => SourceProvider::GITHUB,
+            'event' => new \App\Sources\GitHub\Event\DeleteEvent(
+                ref: $ref,
+                refType: $refType === 'heads' ? 'branch' : 'tag',
+                pusherType: 'user',
+                repository: new \App\Sources\GitHub\Repository(
+                    id: 1,
+                    name: 'test',
+                    fullName: 'vendor/test',
+                    htmlUrl: 'https://github.com/vendor/test',
+                    url: 'https://github.com/vendor/test',
                 )
             ),
         ],

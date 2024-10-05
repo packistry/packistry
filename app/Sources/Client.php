@@ -13,9 +13,11 @@ use App\Exceptions\VersionNotFoundException;
 use App\Import;
 use App\Models\Package;
 use App\Models\Repository;
+use App\Models\Source;
 use App\Models\Version;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use SensitiveParameter;
 
 abstract class Client
@@ -77,5 +79,8 @@ abstract class Client
      */
     abstract public function tags(Project $project): array;
 
-    abstract public function createWebhook(Repository $repository, Project $project): void;
+    /**
+     * @throws RequestException
+     */
+    abstract public function createWebhook(Repository $repository, Project $project, Source $source): void;
 }

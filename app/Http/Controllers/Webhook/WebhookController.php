@@ -10,30 +10,36 @@ use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\VersionNotFoundException;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\VersionResource;
-use App\Models\Package;
-use App\Normalizer;
+use App\Models\Source;
 use App\Sources\Deletable;
 use App\Sources\Importable;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 abstract class WebhookController extends RepositoryAwareController
 {
+    abstract public function authorizeWebhook(Request $request): void;
+
+    protected function source(): Source
+    {
+        return once(function () {
+            $sourceId = request()->route('sourceId');
+
+            if (is_object($sourceId)) {
+                abort(401);
+            }
+
+            return Source::query()
+                ->findOrFail($sourceId);
+        });
+    }
+
     public function push(Importable $event): JsonResponse
     {
-        $repository = $this->repository();
-
-        /** @var Package $package */
-        $package = $repository
-            ->packages()
-            ->whereHas('source', function (Builder $query) use ($event): void {
-                $query->where('url', Normalizer::url($event->url()));
-            })
+        $package = $this->source()->packages()
             ->where('provider_id', $event->id())
             ->firstOrFail();
-
-        $package->setRelation('repository', $repository);
 
         $client = $package->source?->client();
 
@@ -78,11 +84,7 @@ abstract class WebhookController extends RepositoryAwareController
 
     public function delete(Deletable $event): JsonResponse
     {
-        $package = $this->repository()
-            ->packages()
-            ->whereHas('source', function (Builder $query) use ($event): void {
-                $query->where('url', Normalizer::url($event->url()));
-            })
+        $package = $this->source()->packages()
             ->where('provider_id', $event->id())
             ->firstOrFail();
 

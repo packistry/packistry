@@ -13,17 +13,15 @@ use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Webhook;
 use App\Http\Middleware\AcceptsJsonOrRedirectApp;
-use App\Http\Middleware\GiteaWebhookSecret;
-use App\Http\Middleware\GitlabWebhookSecret;
+use App\Http\Middleware\ForceJson;
 
 if (! function_exists('repositoryRoutes')) {
     function repositoryRoutes(): void
     {
-        Route::prefix('/incoming')->group(function (): void {
-            Route::post('/gitea', Webhook\GiteaController::class)
-                ->middleware(GiteaWebhookSecret::class);
-            Route::post('/gitlab', Webhook\GitlabController::class)
-                ->middleware(GitlabWebhookSecret::class);
+        Route::prefix('/incoming')->middleware(ForceJson::class)->group(function (): void {
+            Route::post('/gitea/{sourceId}', Webhook\GiteaController::class);
+            Route::post('/github/{sourceId}', Webhook\GitHubController::class);
+            Route::post('/gitlab/{sourceId}', Webhook\GitlabController::class);
         });
 
         Route::get('/packages.json', [Composer\RepositoryController::class, 'packages']);
