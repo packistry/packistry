@@ -12,7 +12,7 @@ use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Webhook;
-use App\Http\Middleware\ForceJson;
+use App\Http\Middleware\AcceptsJsonOrRedirectApp;
 use App\Http\Middleware\GiteaWebhookSecret;
 use App\Http\Middleware\GitlabWebhookSecret;
 
@@ -36,38 +36,36 @@ if (! function_exists('repositoryRoutes')) {
     }
 }
 
-Route::middleware(ForceJson::class)->group(function (): void {
-    Route::middleware('web')->group(function (): void {
-        Route::post('/login', [AuthController::class, 'login']);
+Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): void {
+    Route::post('/login', [AuthController::class, 'login']);
 
-        Route::middleware('auth:sanctum')->group(function (): void {
-            Route::get('/dashboard', DashboardController::class);
-            Route::apiResource('/personal-tokens', PersonalTokenController::class)
-                ->only(['index', 'store', 'destroy']);
+    Route::middleware('auth:sanctum')->group(function (): void {
+        Route::get('/dashboard', DashboardController::class);
+        Route::apiResource('/personal-tokens', PersonalTokenController::class)
+            ->only(['index', 'store', 'destroy']);
 
-            Route::apiResource('/deploy-tokens', DeployTokenController::class)
-                ->only(['index', 'store', 'destroy']);
+        Route::apiResource('/deploy-tokens', DeployTokenController::class)
+            ->only(['index', 'store', 'destroy']);
 
-            Route::apiResource('/users', UserController::class)
-                ->only(['index', 'store', 'update', 'destroy']);
+        Route::apiResource('/users', UserController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
-            Route::get('/sources/{source}/projects', [SourceController::class, 'projects']);
-            Route::apiResource('/sources', SourceController::class)
-                ->only(['index', 'store', 'update', 'destroy']);
+        Route::get('/sources/{source}/projects', [SourceController::class, 'projects']);
+        Route::apiResource('/sources', SourceController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
-            Route::apiResource('/repositories', RepositoryController::class)
-                ->only(['index', 'store', 'destroy', 'update']);
+        Route::apiResource('/repositories', RepositoryController::class)
+            ->only(['index', 'store', 'destroy', 'update']);
 
-            Route::apiResource('/packages', PackageController::class)
-                ->only(['index', 'store', 'destroy']);
+        Route::apiResource('/packages', PackageController::class)
+            ->only(['index', 'store', 'destroy']);
 
-            Route::post('/logout', [AuthController::class, 'logout']);
-        });
+        Route::post('/logout', [AuthController::class, 'logout']);
     });
+});
 
+repositoryRoutes();
+
+Route::prefix('/{repository}')->group(function (): void {
     repositoryRoutes();
-
-    Route::prefix('/{repository}')->group(function (): void {
-        repositoryRoutes();
-    });
 });

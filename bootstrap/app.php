@@ -15,10 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function (): void {
             Route::middleware('web')
                 ->get('{any?}', function () {
-                    if (app()->environment('local')) {
-                        return redirect('http://localhost:3001/');
-                    }
-
                     return response()->file(public_path('index.html'));
                 })->where('any', '.*');
         },

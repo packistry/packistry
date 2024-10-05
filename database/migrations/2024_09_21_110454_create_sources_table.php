@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('provider');
             $table->string('url');
 
-            $table->string('token');
+            $table->text('token');
 
             $table->timestamps();
 
