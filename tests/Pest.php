@@ -27,6 +27,7 @@ use App\Sources\Gitea\Repository as GiteaRepository;
 use App\Sources\Gitlab\Project;
 use App\Sources\Importable;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Contracts\HasAbilities;
@@ -350,6 +351,9 @@ function fakeZipArchiveDownload(Importable $event, string $archivePath): void
     ]);
 }
 
+/**
+ * @return TestResponse<JsonResponse>
+ */
 function webhook(Repository $repository, SourceProvider $provider, (Importable&Data)|(Deletable&data) $event, ?string $archivePath = null): TestResponse
 {
     if (! is_null($archivePath) && $event instanceof Importable) {
