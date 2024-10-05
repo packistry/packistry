@@ -140,6 +140,7 @@ class GitlabClient extends Client
         $this->http()->post("$project->url/hooks", [
             'url' => url($repository->url('/incoming/gitlab')),
             'name' => 'packistry sync',
+            // @todo remove secret and generate it instead on source creation?
             'token' => config('services.gitea.webhook.secret'),
             'content_type' => 'json',
             'tag_push_events' => true,
