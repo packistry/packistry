@@ -3,7 +3,7 @@
     "type": "project",
     "description": "Packistry is a Composer repository for PHP packages.",
     "keywords": ["composer", "registry", "packages", "repository"],
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-or-later",
     "require": {
         "php": "^8.2",
         "ext-zip": "*",
