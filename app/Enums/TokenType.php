@@ -12,8 +12,8 @@ enum TokenType: string
     public function prefix(): string
     {
         return match ($this) {
-            self::PERSONAL_ACCESS => 'cdpat',
-            self::DEPLOY => 'cddt',
+            self::PERSONAL_ACCESS => 'pkpat',
+            self::DEPLOY => 'pkdt',
         };
     }
 }

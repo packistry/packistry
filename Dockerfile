@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.licenses="GPL-3.0"
 
 RUN apk add --no-cache \
     $PHPIZE_DEPS \
-    linux-headers ca-certificates curl gnupg git unzip \
+    linux-headers ca-certificates curl gnupg git unzip supervisor \
     oniguruma-dev libzip-dev libpng-dev libjpeg-turbo-dev icu-dev \
     && docker-php-ext-configure gd --enable-gd --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip gd intl opcache sockets pcntl
@@ -46,6 +46,7 @@ COPY --from=builder_api /var/www/html /var/www/html
 COPY --from=builder_frontend /frontend/dist /var/www/html/dist
 COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.2 /usr/bin/rr /usr/local/bin/rr
 
+COPY ./docker/supervisord.conf /etc/supervisord.conf
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY ./docker/packistry /usr/bin
 
@@ -55,7 +56,6 @@ RUN mv dist/* public/
 ENV USER="packistry"
 ENV GROUP="packistry"
 
-RUN touch /var/www/html/database/database.sqlite
 RUN addgroup -S $GROUP && adduser -S $USER -G $GROUP -H
 RUN chown -R $GROUP:$USER /var/www/html
 
@@ -63,8 +63,4 @@ USER $USER
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan config:cache \
-    && php artisan event:cache \
-    && php artisan route:cache \
-    && php artisan migrate --force \
-    && rr serve -c .rr.production.yaml"]
+CMD ["sh", "-c", "./setup.sh"]
