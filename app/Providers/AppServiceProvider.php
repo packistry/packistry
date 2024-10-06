@@ -10,7 +10,6 @@ use App\Http\Middleware\GitlabWebhookSecret;
 use App\Models\Token;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
 
@@ -21,8 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        URL::forceRootUrl(config('app.url'));
-
         $this->app->when(GitlabWebhookSecret::class)
             ->needs('$secret')
             ->give(config('services.gitlab.webhook.secret'));
@@ -35,7 +32,6 @@ class AppServiceProvider extends ServiceProvider
             ->needs('$secret')
             ->give(config('services.gitea.webhook.secret'));
 
-        JsonResource::withoutWrapping();
     }
 
     /**
@@ -45,5 +41,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::shouldBeStrict();
         Sanctum::usePersonalAccessTokenModel(Token::class);
+        JsonResource::withoutWrapping();
     }
 }

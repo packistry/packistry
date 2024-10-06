@@ -5,7 +5,7 @@ import * as React from 'react'
 import { useStoreDeployToken } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { toast } from 'sonner'
-import { TokenFormElements } from '@/components/form/token-form-elements'
+import { DeployTokenFormElements } from '@/components/form/deploy-token-form-elements'
 import { DialogProps } from '@/components/dialog/dialog'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { useAuth } from '@/auth'
@@ -67,7 +67,7 @@ export function AddDeployTokenDialog(props: AddDeployTokenDialog) {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <TokenFormElements control={form.control} />
+                        <DeployTokenFormElements control={form.control} />
                         <Button
                             type="submit"
                             loading={isPending}
