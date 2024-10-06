@@ -24,9 +24,13 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
 
 Packistry combines ease of use, flexibility, and security to give you complete control over your PHP package distribution in a self-hosted environment. Whether you're managing a private project, a team of developers, or an open-source initiative, Packistry streamlines your workflow with minimal configuration and maximum control.
 
+Here’s an updated version of your dependencies section, including **TanStack Query**, **TanStack Router**, **Tailwind CSS**, **Vite**, **React**, **Zod**, and **ShadCN**:
+
 ## Dependencies
 
-Packistry is built on a solid foundation of well-maintained dependencies from the PHP ecosystem, ensuring a high level of performance, security, and developer productivity. Here are some of the key dependencies that power Packistry:
+Packistry is built on a solid foundation of well-maintained dependencies from both the PHP and JavaScript ecosystems, ensuring a high level of performance, security, and developer productivity. Here are some of the key dependencies that power Packistry:
+
+### PHP Dependencies
 
 - **[Laravel](https://laravel.com/)**: A powerful and elegant PHP framework that provides the core foundation of Packistry's architecture.
 - **[Spiral RoadRunner](https://roadrunner.dev/)**: A high-performance PHP application server that improves request handling and enhances the scalability of Packistry.
@@ -35,6 +39,14 @@ Packistry is built on a solid foundation of well-maintained dependencies from th
 - **[Spatie Laravel Data](https://spatie.be/docs/laravel-data)**: A robust data-handling package that simplifies validation and transformation of data across Packistry.
 - **[Spatie Query Builder](https://spatie.be/docs/laravel-query-builder)**: A powerful package that allows us to easily build clean, flexible, and reusable queries for filtering and sorting in our API.
 - **[Barryvdh Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper)**: A package that enhances the development experience by generating helper files, providing accurate code completion, and improving IDE integration.
+
+### JavaScript Dependencies
+
+- **[TanStack Query](https://tanstack.com/query/latest)**: A powerful and flexible data-fetching library that simplifies state management for server-side data in React applications.
+- **[TanStack Router](https://tanstack.com/router)**: A modern router library that provides advanced navigation capabilities, improving client-side routing in our React-based frontend.
+- **[React](https://reactjs.org/)**: A declarative JavaScript library for building user interfaces, enabling the creation of dynamic and interactive frontend components.
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework that streamlines the styling process by providing a highly customizable and responsive design system.
+- **[Vite](https://vitejs.dev/)**: A fast and efficient build tool that enhances the development experience by providing lightning-fast hot module replacement and optimized builds.
 
 ## Security Vulnerabilities
 
