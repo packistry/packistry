@@ -3,7 +3,7 @@ name: ci
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 
 permissions:
   contents: read
@@ -26,19 +26,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Git tag
-        id: git_tag
-        run: |
-          TAG=${GITHUB_REF#refs/tags/}
-          echo "GIT_TAG=$TAG" >> $GITHUB_ENV
+      - name: Extract Docker metadata (tags, labels)
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ env.GIT_TAG }}
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
