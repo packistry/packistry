@@ -23,3 +23,8 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Machine Access Control**: Generate deploy tokens to allow machines (e.g., build systems or CI/CD pipelines) to access private repositories, ensuring smooth, secure automation.
 
 Packistry combines ease of use, flexibility, and security to give you complete control over your PHP package distribution in a self-hosted environment. Whether you're managing a private project, a team of developers, or an open-source initiative, Packistry streamlines your workflow with minimal configuration and maximum control.
+
+
+## Security Vulnerabilities
+
+Please review [our security policy](./SECURITY.md) on how to report security vulnerabilities.
