@@ -28,3 +28,8 @@ Packistry combines ease of use, flexibility, and security to give you complete c
 ## Security Vulnerabilities
 
 Please review [our security policy](./SECURITY.md) on how to report security vulnerabilities.
+
+## License
+
+Packistry is open-sourced software licensed under the [GPL-3.0](./LICENSE).
+
