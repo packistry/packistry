@@ -13,6 +13,7 @@ use App\Sources\Tag;
 use App\Sources\Traits\BearerToken;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -27,15 +28,13 @@ class GitHubClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function projects(?string $search = null): array
     {
         $response = $this->http()->get('/search/repositories', [
             'q' => $search,
-        ]);
-
-        $response->throw();
+        ])->throw();
 
         $data = $response->json()['items'];
 
@@ -49,13 +48,11 @@ class GitHubClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function branches(Project $project): array
     {
-        $response = $this->http()->get("$project->url/branches");
-
-        $response->throw();
+        $response = $this->http()->get("$project->url/branches")->throw();
 
         $data = $response->json();
 
@@ -72,13 +69,11 @@ class GitHubClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function tags(Project $project): array
     {
-        $response = $this->http()->get("$project->url/tags");
-
-        $response->throw();
+        $response = $this->http()->get("$project->url/tags")->throw();
 
         $data = $response->json();
 
@@ -95,11 +90,11 @@ class GitHubClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function createWebhook(\App\Models\Repository $repository, Project $project, Source $source): void
     {
-        $response = $this->http()->post("$project->url/hooks", [
+        $this->http()->post("$project->url/hooks", [
             'config' => [
                 'url' => url($repository->url("/incoming/github/$source->id")),
                 'secret' => decrypt($source->secret),
@@ -107,14 +102,15 @@ class GitHubClient extends Client
             ],
             'events' => ['push', 'delete'],
             'active' => true,
-        ]);
-
-        $response->throw();
+        ])->throw();
     }
 
+    /**
+     * @throws RequestException|ConnectionException
+     */
     public function project(string $id): Project
     {
-        $response = $this->http()->get("/repositories/$id");
+        $response = $this->http()->get("/repositories/$id")->throw();
 
         /** @var array<string, mixed> $item */
         $item = $response->json();

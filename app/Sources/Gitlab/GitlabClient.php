@@ -13,6 +13,7 @@ use App\Sources\Tag;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -34,6 +35,7 @@ class GitlabClient extends Client
 
     /**
      * @throws ConnectionException
+     * @throws RequestException
      */
     public function projects(?string $search = null): array
     {
@@ -43,11 +45,7 @@ class GitlabClient extends Client
             'per_page' => 1,
             'search' => $search,
             'search_namespaces' => true,
-        ]);
-
-        if (! $initialResponse->successful()) {
-            throw new \Exception('Failed to fetch initial project data: '.$initialResponse->body());
-        }
+        ])->throw();
 
         $totalProjects = (int) $initialResponse->header('X-Total-Pages');
         $totalPages = ceil($totalProjects / $perPage);
@@ -64,9 +62,7 @@ class GitlabClient extends Client
         $allProjects = [];
 
         foreach ($responses as $response) {
-            if (! $response->successful()) {
-                throw new \Exception('Failed to fetch projects: '.$response->body());
-            }
+            $response->throw();
 
             $data = $response->json();
             $projects = array_map(fn (array $item): Project => new Project(
@@ -84,11 +80,11 @@ class GitlabClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function branches(Project $project): array
     {
-        $response = $this->http()->get("$project->url/branches");
+        $response = $this->http()->get("$project->url/branches")->throw();
 
         $data = $response->json();
 
@@ -109,11 +105,11 @@ class GitlabClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function tags(Project $project): array
     {
-        $response = $this->http()->get("$project->url/tags");
+        $response = $this->http()->get("$project->url/tags")->throw();
 
         $data = $response->json();
 
@@ -134,7 +130,7 @@ class GitlabClient extends Client
     }
 
     /**
-     * @throws ConnectionException
+     * @throws ConnectionException|RequestException
      */
     public function createWebhook(Repository $repository, Project $project, Source $source): void
     {
@@ -145,12 +141,15 @@ class GitlabClient extends Client
             'content_type' => 'json',
             'tag_push_events' => true,
             'branch_push_events' => true,
-        ]);
+        ])->throw();
     }
 
+    /**
+     * @throws RequestException|ConnectionException
+     */
     public function project(string $id): Project
     {
-        $response = $this->http()->get("/api/v4/projects/$id");
+        $response = $this->http()->get("/api/v4/projects/$id")->throw();
         $item = $response->json();
 
         return new Project(

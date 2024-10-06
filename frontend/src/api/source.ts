@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { del, get, patch, post } from '@/api/axios'
 
-const provider = z.enum(['gitlab', 'github', 'gitea', 'gogs'])
+const provider = z.enum(['gitlab', 'github', 'gitea'])
 
 export type Provider = z.infer<typeof provider>
 
