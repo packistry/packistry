@@ -24,6 +24,17 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
 
 Packistry combines ease of use, flexibility, and security to give you complete control over your PHP package distribution in a self-hosted environment. Whether you're managing a private project, a team of developers, or an open-source initiative, Packistry streamlines your workflow with minimal configuration and maximum control.
 
+## Dependencies
+
+Packistry is built on a solid foundation of well-maintained dependencies from the PHP ecosystem, ensuring a high level of performance, security, and developer productivity. Here are some of the key dependencies that power Packistry:
+
+- **[Laravel](https://laravel.com/)**: A powerful and elegant PHP framework that provides the core foundation of Packistry's architecture.
+- **[Spiral RoadRunner](https://roadrunner.dev/)**: A high-performance PHP application server that improves request handling and enhances the scalability of Packistry.
+- **[Pest](https://pestphp.com/)**: An intuitive and minimal testing framework that ensures the stability and reliability of our codebase.
+- **[PHPStan](https://phpstan.org/)**: A static analysis tool that helps detect bugs and ensures code quality by performing rigorous type checks.
+- **[Spatie Laravel Data](https://spatie.be/docs/laravel-data)**: A robust data-handling package that simplifies validation and transformation of data across Packistry.
+- **[Spatie Query Builder](https://spatie.be/docs/laravel-query-builder)**: A powerful package that allows us to easily build clean, flexible, and reusable queries for filtering and sorting in our API.
+- **[Barryvdh Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper)**: A package that enhances the development experience by generating helper files, providing accurate code completion, and improving IDE integration.
 
 ## Security Vulnerabilities
 
