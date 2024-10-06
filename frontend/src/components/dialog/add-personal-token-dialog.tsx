@@ -6,12 +6,12 @@ import { Form } from '@/components/ui/form'
 import { useStorePersonalToken } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { toast } from 'sonner'
-import { TokenFormElements } from '@/components/form/token-form-elements'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { DialogProps } from '@/components/dialog/dialog'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { useAuth } from '@/auth'
 import { PERSONAL_TOKEN_CREATE } from '@/permission'
+import { PersonalTokenFormElements } from '@/components/form/personal-token-form-elements'
 
 export type AddPersonalTokenDialog = DialogProps
 
@@ -66,7 +66,7 @@ export function AddPersonalTokenDialog(props: AddPersonalTokenDialog) {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <TokenFormElements control={form.control} />
+                        <PersonalTokenFormElements control={form.control} />
                         <Button
                             type="submit"
                             loading={isPending}

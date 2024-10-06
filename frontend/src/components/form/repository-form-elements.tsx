@@ -3,6 +3,7 @@ import { FormSwitch } from '@/components/form/elements/FormSwitch'
 import * as React from 'react'
 import { Control } from 'react-hook-form'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function RepositoryFormElements({ control }: { control: Control<any> }) {
     return (
         <>

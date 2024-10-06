@@ -46,7 +46,14 @@ export function FormSelect({ control, label, options, name, description, empty, 
                                     {...empty}
                                 />
                             ) : (
-                                options.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)
+                                options.map((option) => (
+                                    <SelectItem
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </SelectItem>
+                                ))
                             )}
                         </SelectContent>
                     </Select>

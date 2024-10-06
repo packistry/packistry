@@ -5,7 +5,8 @@ import { FormCheckboxGroup } from '@/components/form/elements/FormCheckboxGroup'
 import { FormDatePicker } from '@/components/form/elements/FormDatePicker'
 import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/FormRepositorySearchCheckboxGroup'
 
-export function TokenFormElements({ control }: { control: Control<any> }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function DeployTokenFormElements({ control }: { control: Control<any> }) {
     return (
         <>
             <FormInput

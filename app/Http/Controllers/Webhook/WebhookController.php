@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
+use App\Archive;
 use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
@@ -16,6 +17,7 @@ use App\Sources\Importable;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 abstract class WebhookController extends RepositoryAwareController
 {
@@ -82,6 +84,9 @@ abstract class WebhookController extends RepositoryAwareController
         );
     }
 
+    /**
+     * @throws VersionNotFoundException
+     */
     public function delete(Deletable $event): JsonResponse
     {
         $package = $this->source()->packages()
@@ -92,6 +97,12 @@ abstract class WebhookController extends RepositoryAwareController
             ->versions()
             ->where('name', $event->version())
             ->firstOrFail();
+
+        $path = Archive::name($package, $version->name);
+
+        dispatch(function () use ($path) {
+            Storage::disk()->delete($path);
+        });
 
         $version->delete();
 
