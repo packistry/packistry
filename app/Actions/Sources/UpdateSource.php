@@ -13,7 +13,6 @@ class UpdateSource
     public function handle(Source $source, UpdateSourceInput $input): Source
     {
         $source->name = $input->name;
-        $source->provider = $input->provider;
         $source->url = Normalizer::url($input->url);
 
         if (is_string($input->token)) {

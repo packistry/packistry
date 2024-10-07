@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Enums\Permission;
-use App\Enums\SourceProvider;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\User;
@@ -15,7 +14,6 @@ it('updates', function (?User $user, int $status): void {
 
     $response = patchJson("/sources/$source->id", [
         'name' => $name = fake()->name,
-        'provider' => $provider = fake()->randomElement(SourceProvider::cases()),
         'url' => $url = fake()->url,
         'token' => $token = Str::random(),
     ])
@@ -37,7 +35,6 @@ it('updates', function (?User $user, int $status): void {
     expect($source)
         ->url->toBe(\App\Normalizer::url($url))
         ->name->toBe($name)
-        ->provider->toBe($provider)
         ->and(decrypt($source->token))->toBe($token);
 })->with(guestAndUsers(Permission::SOURCE_UPDATE));
 
@@ -50,7 +47,6 @@ it('does not update token when not given', function (?User $user, int $status): 
 
     patchJson("/sources/$source->id", [
         'name' => $name = fake()->name,
-        'provider' => $provider = fake()->randomElement(SourceProvider::cases()),
         'url' => $url = fake()->url,
     ])
         ->assertStatus($status);
@@ -61,6 +57,5 @@ it('does not update token when not given', function (?User $user, int $status): 
     expect($source)
         ->url->toBe(\App\Normalizer::url($url))
         ->name->toBe($name)
-        ->provider->toBe($provider)
         ->and(decrypt($source->token))->toBe($token);
 })->with(unscopedUser(Permission::SOURCE_UPDATE));

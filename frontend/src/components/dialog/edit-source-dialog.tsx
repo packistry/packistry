@@ -47,7 +47,10 @@ export function EditSourceDialog({ source, trigger }: { source: Source; trigger?
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-4"
                     >
-                        <SourceFormElements form={form} />
+                        <SourceFormElements
+                            disableProvider
+                            form={form}
+                        />
                         <div className="flex justify-between">
                             <Button
                                 loading={isPending}
