@@ -4,7 +4,8 @@ import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
 
 export const repository = z.object({
     id: z.coerce.string(),
-    name: z.string().nullable(),
+    name: z.string(),
+    path: z.string().nullable(),
     description: z.string().nullable(),
     public: z.boolean(),
     packagesCount: z.number().optional(),
@@ -31,6 +32,7 @@ export function fetchRepositories(query: RepositoryQuery) {
 
 export const storeRepositoryInput = z.object({
     name: z.string(),
+    path: z.string(),
     description: z.string(),
     public: z.boolean(),
 })
@@ -42,6 +44,7 @@ export function storeRepository(input: z.infer<typeof storeRepositoryInput>) {
 export const updateRepositoryInput = z.object({
     id: z.string(),
     name: z.string(),
+    path: z.string(),
     description: z.string(),
     public: z.boolean(),
 })

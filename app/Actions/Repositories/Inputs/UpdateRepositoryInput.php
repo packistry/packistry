@@ -9,7 +9,8 @@ use App\Actions\Input;
 class UpdateRepositoryInput extends Input
 {
     public function __construct(
-        public ?string $name,
+        public string $name,
+        public ?string $path,
         public ?string $description = null,
         public bool $public = false,
     ) {

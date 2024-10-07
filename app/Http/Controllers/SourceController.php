@@ -14,7 +14,8 @@ use App\Exceptions\FailedToParseUrlException;
 use App\Exceptions\InvalidTokenException;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
-use Illuminate\Http\Client\HttpClientException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -101,6 +102,9 @@ readonly class SourceController extends Controller
         );
     }
 
+    /**
+     * @throws ValidationException|ConnectionException
+     */
     public function projects(Request $request, string $sourceId): JsonResponse
     {
         $this->authorize(Permission::SOURCE_READ);
@@ -111,7 +115,7 @@ readonly class SourceController extends Controller
         try {
             $projects = $source->client()
                 ->projects($request->input('search'));
-        } catch (HttpClientException $e) {
+        } catch (RequestException $e) {
             if ($e->getCode() === 401) {
                 throw ValidationException::withMessages([
                     'source' => [

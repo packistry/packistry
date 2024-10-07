@@ -15,7 +15,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Throwable;
 
-use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multisearch;
 use function Laravel\Prompts\select;
 
@@ -70,29 +69,17 @@ class AddPackage extends Command
      */
     public function selectRepository(): void
     {
-        $intoRoot = confirm(
-            label: 'Import into root repository?',
-            default: true,
+        $repositories = Repository::query()
+            ->get()
+            ->keyBy(fn (Repository $repository): int => $repository->id);
+
+        $repositoryId = select(
+            label: 'Select your sub repository',
+            options: $repositories->map(fn (Repository $name): string => $name->name)->toArray(),
+            required: true,
         );
 
-        $this->repository = Repository::query()
-            ->whereNull('name')
-            ->firstOrFail();
-
-        if (! $intoRoot) {
-            $repositories = Repository::query()
-                ->whereNotNull('name')
-                ->get()
-                ->keyBy(fn (Repository $repository): int => $repository->id);
-
-            $repositoryId = select(
-                label: 'Select your sub repository',
-                options: $repositories->map(fn (Repository $name): string => (string) $name->name)->toArray(),
-                required: true,
-            );
-
-            $this->repository = $repositories[$repositoryId] ?? throw new Exception('selected repository not found');
-        }
+        $this->repository = $repositories[$repositoryId] ?? throw new Exception('selected repository not found');
     }
 
     public function selectSource(): Source

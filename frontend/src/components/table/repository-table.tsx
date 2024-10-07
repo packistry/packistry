@@ -39,11 +39,15 @@ export function RepositoryTable({ query }: { query: UseQueryResult<PaginatedRepo
                     cell: {
                         className: 'font-medium',
                     },
-                    render: (repository) => repository.name || 'Root',
+                    render: (repository) => repository.name,
                 },
                 {
                     key: 'description',
                     label: 'Description',
+                },
+                {
+                    key: 'path',
+                    label: 'Path',
                 },
                 {
                     key: 'packagesCount',

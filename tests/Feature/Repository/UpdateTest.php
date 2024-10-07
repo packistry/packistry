@@ -15,6 +15,7 @@ it('updates', function (?User $user, int $status): void {
 
     $attributes = [
         'name' => fake()->name,
+        'path' => $path = fake()->sentence,
         'description' => fake()->text,
         'public' => fake()->boolean(),
     ];
@@ -32,22 +33,23 @@ it('updates', function (?User $user, int $status): void {
         ))
     );
 
-    assertDatabaseHas('repositories', $attributes);
+    assertDatabaseHas('repositories', [...$attributes, 'path' => Str::slug($path)]);
 })
     ->with(guestAndUsers([Permission::REPOSITORY_UPDATE, Permission::UNSCOPED]));
 
-it('has unique name', function (?User $user, int $status): void {
+it('has unique path', function (?User $user, int $status): void {
     $repository = Repository::factory()->create();
     $otherRepository = Repository::factory()->create();
 
     $attributes = [
-        'name' => $otherRepository->name,
+        'name' => fake()->name,
+        'path' => $otherRepository->path,
     ];
 
     patchJson("/repositories/$repository->id", $attributes)
         ->assertStatus($status)
         ->assertExactJson(validation([
-            'name' => ['Repository name has already been taken.'],
+            'path' => ['Repository path has already been taken.'],
         ]));
 })
     ->with(unscopedUser(Permission::REPOSITORY_UPDATE, expectedStatus: 422));

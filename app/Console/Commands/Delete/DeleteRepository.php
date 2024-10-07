@@ -28,7 +28,7 @@ class DeleteRepository extends Command
                 ->when($value, fn (Builder $query) => $query->where('name', 'like', "$value%"))
                 ->get()
                 ->keyBy(fn (Repository $repository): string => (string) $repository->id)
-                ->map(fn (Repository $repository): string => $repository->name ?? 'Root')
+                ->map(fn (Repository $repository): string => $repository->name)
                 ->toArray(),
             required: true,
         );

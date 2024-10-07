@@ -21,6 +21,7 @@ class RepositoryFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'path' => fake()->name(),
             'public' => false,
         ];
     }
@@ -28,7 +29,7 @@ class RepositoryFactory extends Factory
     public function root(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'name' => null,
+            'path' => null,
         ]);
     }
 

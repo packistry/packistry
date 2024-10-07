@@ -20,7 +20,7 @@ export function FormRepositorySearchCheckboxGroup(
     const options = (query.data?.data || [])
         .map((repository) => ({
             value: repository.id,
-            label: repository.name || 'Root',
+            label: repository.name,
         }))
         .sort((a, b) => a.label.localeCompare(b.label))
 

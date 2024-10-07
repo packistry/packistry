@@ -21,10 +21,7 @@ export function FormCheckboxGroup({ control, label, name, options, description }
             name={name}
             render={() => (
                 <FormItem>
-                    <div className="mb-4">
-                        <FormLabel>{label}</FormLabel>
-                        <FormDescription>{description}</FormDescription>
-                    </div>
+                    <FormLabel>{label}</FormLabel>
                     <div className="flex space-x-4">
                         {options.map((item) => (
                             <FormField
@@ -60,6 +57,7 @@ export function FormCheckboxGroup({ control, label, name, options, description }
                             />
                         ))}
                     </div>
+                    <FormDescription>{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}

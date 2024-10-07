@@ -91,7 +91,7 @@ class GiteaClient extends Client
         $this->http()->post("$project->url/hooks", [
             'type' => 'gitea',
             'config' => [
-                'url' => url($repository->url("/incoming/gitea/$source->id")),
+                'url' => $repository->url("/incoming/gitea/$source->id"),
                 'secret' => decrypt($source->secret),
                 'content_type' => 'json',
             ],

@@ -15,10 +15,12 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
             <FormInput
                 name="name"
                 label="Name"
+                description="Provide a name for this source to easily identify it."
                 control={form.control}
             />
             <FormSourceProviderSelect
                 disabled={disableProvider}
+                description="Select the platform where your source is hosted."
                 onChange={(value) => {
                     form.setValue('url', providerUrls[value as SourceProvider])
                 }}
@@ -28,7 +30,7 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
                 label="URL"
                 name="url"
                 placeholder="e.g. https://sub.domain.com"
-                description="For self-hosted variants update the url e.g. https://git.company.com"
+                description="For self-hosted variants update the url e.g. https://git.company.com."
                 control={form.control}
             />
             {provider && (
@@ -41,6 +43,7 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
                 label="Token"
                 name="token"
                 type="password"
+                description="Enter your access token for authentication."
                 control={form.control}
             />
         </>

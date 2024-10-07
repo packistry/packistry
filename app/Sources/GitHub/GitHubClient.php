@@ -97,7 +97,7 @@ class GitHubClient extends Client
     {
         $this->http()->post("$project->url/hooks", [
             'config' => [
-                'url' => url($repository->url("/incoming/github/$source->id")),
+                'url' => $repository->url("/incoming/github/$source->id"),
                 'secret' => decrypt($source->secret),
                 'content_type' => 'json',
             ],

@@ -17,7 +17,8 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property string|null $name
+ * @property string $name
+ * @property string|null $path
  * @property string|null $description
  * @property bool $public
  * @property Carbon|null $created_at
@@ -51,14 +52,14 @@ class Repository extends Model
 
     public function url(string $url): string
     {
-        $prefix = is_null($this->name) ? '' : "/$this->name";
+        $prefix = is_null($this->path) ? '' : "/$this->path";
 
-        return $prefix.$url;
+        return url($prefix.$url);
     }
 
     public function archivePath(string $file): string
     {
-        $prefix = is_null($this->name) ? '' : "$this->name/";
+        $prefix = is_null($this->path) ? '' : "$this->path/";
 
         return $prefix.basename($file);
     }
@@ -95,18 +96,18 @@ class Repository extends Model
     /**
      * @return Builder<Repository>
      */
-    public static function queryByName(?string $name): Builder
+    public static function queryByPath(?string $path): Builder
     {
         return self::query()->when(
-            $name,
-            fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('name', $name),
-            fn (Builder $query) => $query->whereNull('name')
+            $path,
+            fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('path', $path),
+            fn (Builder $query) => $query->whereNull('path')
         );
     }
 
-    public static function isNameInUse(?string $name, ?int $exclude = null): bool
+    public static function isPathInUse(?string $path, ?int $exclude = null): bool
     {
-        return self::queryByName($name)
+        return self::queryByPath($path)
             ->when($exclude, fn (Builder $query) => $query->whereNot('id', $exclude))
             ->exists();
     }

@@ -30,7 +30,7 @@ class DeletePackage extends Command
                 ->get()
                 ->keyBy(fn (Package $package): string => (string) $package->id)
                 ->map(function (Package $package): string {
-                    $repository = $package->repository->name ?? 'Root';
+                    $repository = $package->repository->name;
 
                     return "[$repository] $package->name";
                 })
