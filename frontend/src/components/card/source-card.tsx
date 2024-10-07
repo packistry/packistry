@@ -64,6 +64,7 @@ export function SourceCard({ source }: { source: Source }) {
                             className="w-full"
                             rel="noreferrer"
                             target="_blank"
+                            tabIndex={-1}
                         >
                             <Button
                                 variant="outline"

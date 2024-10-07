@@ -27,7 +27,7 @@ export default function LoginComponent() {
     const navigate = useNavigate()
     const search = Route.useSearch()
 
-    const { form, onSubmit } = useForm({
+    const { form, onSubmit, isPending } = useForm({
         mutation,
         defaultValues: {
             email: '',
@@ -69,6 +69,7 @@ export default function LoginComponent() {
                             <Button
                                 className="w-full"
                                 type="submit"
+                                loading={isPending}
                             >
                                 Login
                             </Button>

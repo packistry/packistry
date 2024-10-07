@@ -48,13 +48,13 @@ export function Sidebar() {
                     })
                     .map((item) => (
                         <Link
+                            tabIndex={-1}
                             key={item.name}
                             to={item.href}
                         >
                             {({ isActive }) => {
                                 return (
                                     <Button
-                                        tabIndex={-1}
                                         variant="ghost"
                                         className={cn('w-full justify-start', isActive ? 'bg-muted' : '')}
                                     >

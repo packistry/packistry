@@ -16,7 +16,7 @@ export type FormSelectProps = {
     onChange?: (value: string) => void
 } & FormElement
 
-export function FormSelect({ control, label, options, name, description, empty, onChange }: FormSelectProps) {
+export function FormSelect({ control, label, options, disabled, name, description, empty, onChange }: FormSelectProps) {
     return (
         <FormField
             control={control}
@@ -25,6 +25,7 @@ export function FormSelect({ control, label, options, name, description, empty, 
                 <FormItem>
                     <FormLabel>{label}</FormLabel>
                     <Select
+                        disabled={disabled}
                         onValueChange={(value) => {
                             field.onChange(value)
 
