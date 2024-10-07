@@ -23,4 +23,15 @@ enum SourceProvider: string
 
         return $class;
     }
+
+    public function clientWith(string $token, string $url): Client
+    {
+        /** @var Client $client */
+        $client = app($this->clientClassString());
+
+        return $client->withOptions(
+            token: $token,
+            url: $url,
+        );
+    }
 }

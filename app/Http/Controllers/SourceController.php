@@ -11,8 +11,10 @@ use App\Actions\Sources\StoreSource;
 use App\Actions\Sources\UpdateSource;
 use App\Enums\Permission;
 use App\Exceptions\FailedToParseUrlException;
+use App\Exceptions\InvalidTokenException;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
+use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -50,6 +52,10 @@ readonly class SourceController extends Controller
         } catch (FailedToParseUrlException) {
             throw ValidationException::withMessages([
                 'url' => ['URL must be a valid URL'],
+            ]);
+        } catch (InvalidTokenException $e) {
+            throw ValidationException::withMessages([
+                'token' => ['Token does not appear to be valid, or missing scopes: '.implode(', ', $e->missingScopes)],
             ]);
         }
 
@@ -102,8 +108,24 @@ readonly class SourceController extends Controller
         /** @var Source $source */
         $source = Source::query()->findOrFail($sourceId);
 
-        $projects = $source->client()
-            ->projects($request->input('search'));
+        try {
+            $projects = $source->client()
+                ->projects($request->input('search'));
+        } catch (HttpClientException $e) {
+            if ($e->getCode() === 401) {
+                throw ValidationException::withMessages([
+                    'source' => [
+                        'Received a 401 Unauthorized response. Your authentication token may be invalid or expired. Please verify your token and try again.',
+                    ],
+                ]);
+            }
+
+            throw ValidationException::withMessages([
+                'source' => [
+                    $e->getMessage(),
+                ],
+            ]);
+        }
 
         return response()->json(
             $projects

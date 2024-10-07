@@ -15,4 +15,11 @@ export default [
             'react/prop-types': 'off',
         },
     },
+    {
+        settings: {
+            react: {
+                version: 'detect', // Automatically picks the version you have installed
+            },
+        },
+    },
 ]

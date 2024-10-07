@@ -42,7 +42,8 @@ export function useForm<Mutation extends AnyMutationResult>({
     }
 }
 
-export type ValidationError<T> = AxiosError<{
+export type ValidationError<T extends object = object> = AxiosError<{
+    message: string
     errors: Record<keyof T, string>
 }>
 

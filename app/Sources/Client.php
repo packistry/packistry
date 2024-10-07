@@ -64,6 +64,8 @@ abstract class Client
 
     /**
      * @return Project[]
+     *
+     * @throws ConnectionException|RequestException
      */
     abstract public function projects(?string $search = null): array;
 
@@ -83,4 +85,6 @@ abstract class Client
      * @throws RequestException
      */
     abstract public function createWebhook(Repository $repository, Project $project, Source $source): void;
+
+    abstract public function validateToken(): void;
 }

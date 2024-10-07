@@ -54,7 +54,7 @@ export function FormSearchCheckboxGroup({
                         value={search}
                         onChange={(e) => (onSearch ? onSearch(e.target.value) : setSearchTerm(e.target.value))}
                     />
-                    <ScrollArea className="h-72 rounded-md border">
+                    <ScrollArea className="h-48 rounded-md border">
                         <div className="p-4">
                             {loading ? (
                                 <div className="flex flex-col space-y-4">

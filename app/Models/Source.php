@@ -42,13 +42,8 @@ class Source extends Model
 
     public function client(): Client
     {
-        $token = decrypt($this->token);
-
-        /** @var Client $client */
-        $client = app($this->provider->clientClassString());
-
-        return $client->withOptions(
-            token: $token,
+        return $this->provider->clientWith(
+            token: decrypt($this->token),
             url: $this->url,
         );
     }
