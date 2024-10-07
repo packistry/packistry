@@ -1,6 +1,8 @@
 import { get, post } from '@/api/axios'
 import { z } from 'zod'
 import { user } from '@/api/user'
+import axios from 'axios'
+import { ValidationError } from '@/hooks/useForm'
 
 export * from './pagination'
 export * from './repository'
@@ -40,4 +42,8 @@ export function login(input: LoginInput) {
 
 export function logout() {
     return post(z.string(), '/logout', {})
+}
+
+export function isValidationError(error: unknown): error is Required<ValidationError> {
+    return axios.isAxiosError(error) && typeof error.response !== 'undefined' && error.response.status === 422
 }

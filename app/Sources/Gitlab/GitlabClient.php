@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\Gitlab;
 
+use App\Exceptions\InvalidTokenException;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Sources\Branch;
@@ -159,5 +160,25 @@ class GitlabClient extends Client
             url: $item['_links']['self'].'/repository',
             webUrl: $item['web_url'],
         );
+    }
+
+    /**
+     * @throws InvalidTokenException|ConnectionException
+     */
+    public function validateToken(): void
+    {
+        $response = $this->http()
+            ->get('/api/v4/personal_access_tokens/self');
+
+        $json = $response->json();
+
+        if (
+            ! is_array($json)
+            || ! array_key_exists('scopes', $json)
+            || in_array('api', $json['scopes'])) {
+            throw new InvalidTokenException(
+                missingScopes: ['api']
+            );
+        }
     }
 }

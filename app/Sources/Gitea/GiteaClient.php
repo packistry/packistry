@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\Gitea;
 
+use App\Exceptions\InvalidTokenException;
 use App\Models\Source;
 use App\Normalizer;
 use App\Sources\Branch;
@@ -116,5 +117,32 @@ class GiteaClient extends Client
             url: $item['url'],
             webUrl: $item['html_url'],
         );
+    }
+
+    /**
+     * @throws ConnectionException
+     * @throws InvalidTokenException
+     */
+    public function validateToken(): void
+    {
+        try {
+            $projects = $this->projects();
+        } catch (\Exception) {
+            throw new InvalidTokenException(missingScopes: ['write:repository']);
+        }
+
+        if (count($projects) === 0) {
+            throw new InvalidTokenException(missingScopes: ['write:repository']);
+        }
+
+        $project = $projects[0];
+
+        $response = $this->http()->post("$project->url/hooks");
+
+        if ($response->status() === 422) {
+            return;
+        }
+
+        throw new InvalidTokenException(missingScopes: ['write:repository']);
     }
 }

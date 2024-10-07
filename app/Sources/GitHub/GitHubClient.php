@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\GitHub;
 
+use App\Exceptions\InvalidTokenException;
 use App\Models\Source;
 use App\Normalizer;
 use App\Sources\Branch;
@@ -122,5 +123,59 @@ class GitHubClient extends Client
             url: $item['url'],
             webUrl: $item['html_url'],
         );
+    }
+
+    /**
+     * @throws InvalidTokenException|ConnectionException
+     */
+    public function validateToken(): void
+    {
+        // Fine-grained personal access tokens, does not respond with scopes in header
+        // lets try and manual check
+        if (str_starts_with($this->token, 'github_pat_')) {
+            $this->validateTokenManually();
+
+            return;
+        }
+
+        $response = $this->http()
+            ->get('/');
+
+        $scopes = $response->header('X-OAuth-Scopes');
+        $scopes = array_map(fn (string $value): string => trim($value), explode(',', $scopes));
+
+        if (in_array('repo', $scopes)) {
+            return;
+        }
+
+        throw new InvalidTokenException(
+            missingScopes: ['repo']
+        );
+    }
+
+    /**
+     * @throws InvalidTokenException|ConnectionException
+     */
+    private function validateTokenManually(): void
+    {
+        try {
+            $projects = $this->projects('is:private');
+        } catch (\Exception $e) {
+            throw new InvalidTokenException(missingScopes: ['contents read-only']);
+        }
+
+        if (count($projects) === 0) {
+            throw new InvalidTokenException(missingScopes: ['contents read-only']);
+        }
+
+        $project = $projects[0];
+
+        $response = $this->http()->post("$project->url/hooks");
+
+        if ($response->status() === 422) {
+            return;
+        }
+
+        throw new InvalidTokenException(missingScopes: ['webhooks read and write']);
     }
 }

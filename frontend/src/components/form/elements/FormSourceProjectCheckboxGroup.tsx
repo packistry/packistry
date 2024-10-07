@@ -6,6 +6,9 @@ import { FormSelectProps } from '@/components/form/elements/FormSelect'
 import { Optional } from '@tanstack/react-query'
 import { useSourceProjects } from '@/api/hooks'
 import { FormSearchCheckboxGroup } from '@/components/form/elements/FormSearchCheckboxGroup'
+import { CircleX } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { isValidationError } from '@/api'
 
 export function FormSourceProjectCheckboxGroup(
     props: Omit<Optional<FormSelectProps, 'name' | 'label'>, 'options'> & {
@@ -18,22 +21,31 @@ export function FormSourceProjectCheckboxGroup(
     const query = useSourceProjects(props.source, debouncedSearchTerm)
 
     return (
-        <FormSearchCheckboxGroup
-            label="Projects"
-            name="projects"
-            {...props}
-            search={searchTerm}
-            onSearch={(search) => {
-                setSearchTerm(search)
-            }}
-            placeholder="Starts searching after 3 characters"
-            loading={query.isPending}
-            options={(query.data || [])
-                .map((repository) => ({
-                    value: repository.id,
-                    label: repository.fullName,
-                }))
-                .sort((a, b) => a.label.localeCompare(b.label))}
-        />
+        <>
+            {isValidationError(query.error) && (
+                <Alert variant="destructive">
+                    <CircleX className="h-4 w-4" />
+                    <AlertTitle>Unable to Fetch Source Repositories</AlertTitle>
+                    <AlertDescription>{query.error.response.data.message}</AlertDescription>
+                </Alert>
+            )}
+            <FormSearchCheckboxGroup
+                label="Projects"
+                name="projects"
+                {...props}
+                search={searchTerm}
+                onSearch={(search) => {
+                    setSearchTerm(search)
+                }}
+                placeholder="Search begins after entering at least 3 characters."
+                loading={query.isLoading}
+                options={(query.data || [])
+                    .map((repository) => ({
+                        value: repository.id,
+                        label: repository.fullName,
+                    }))
+                    .sort((a, b) => a.label.localeCompare(b.label))}
+            />
+        </>
     )
 }

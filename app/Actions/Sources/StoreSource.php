@@ -8,11 +8,20 @@ use App\Actions\Sources\Inputs\StoreSourceInput;
 use App\Models\Source;
 use App\Normalizer;
 use Illuminate\Support\Str;
+use Throwable;
 
 class StoreSource
 {
+    /**
+     * @throws Throwable
+     */
     public function handle(StoreSourceInput $input): Source
     {
+        $input->provider->clientWith(
+            token: $input->token,
+            url: $input->url,
+        )->validateToken();
+
         $source = new Source;
 
         $source->name = $input->name;
