@@ -23,6 +23,7 @@ class RepositoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'path' => $this->path,
             'description' => $this->description,
             'public' => $this->public,
             'created_at' => $this->created_at,

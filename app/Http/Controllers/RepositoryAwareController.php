@@ -22,13 +22,13 @@ abstract class RepositoryAwareController
     protected function repository(): Repository
     {
         return once(function () {
-            $name = request()->route('repository');
+            $path = request()->route('repository');
 
-            if (is_object($name)) {
+            if (is_object($path)) {
                 abort(401);
             }
 
-            return Repository::queryByName($name)
+            return Repository::queryByPath($path)
                 ->firstOrFail();
         });
     }

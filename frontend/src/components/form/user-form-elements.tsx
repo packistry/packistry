@@ -13,19 +13,21 @@ export function UserFormElements({ form }: { form: UseFormReturn<any, any, any> 
             <FormInput
                 label="Name"
                 name="name"
+                description="Enter the name of ther user to be added."
                 control={form.control}
             />
             <FormInput
                 label="Email"
                 name="email"
+                description="Provide a unique email for the user"
                 control={form.control}
             />
             <FormRadioGroup
                 label="Role"
                 name="role"
                 options={[
-                    { value: 'admin', label: 'Admin' },
-                    { value: 'user', label: 'User' },
+                    { value: 'admin', label: 'Admin: Full access' },
+                    { value: 'user', label: 'User: Limited access to view assigned private repositories' },
                 ]}
                 control={form.control}
             />

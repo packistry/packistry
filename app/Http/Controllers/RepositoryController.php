@@ -56,7 +56,7 @@ readonly class RepositoryController extends Controller
             $repository = $this->storeRepository->handle($input);
         } catch (RepositoryAlreadyExistsException) {
             throw ValidationException::withMessages([
-                'name' => 'Repository name has already been taken.',
+                'path' => 'Repository path has already been taken.',
             ]);
         }
 
@@ -80,7 +80,7 @@ readonly class RepositoryController extends Controller
             );
         } catch (RepositoryAlreadyExistsException) {
             throw ValidationException::withMessages([
-                'name' => 'Repository name has already been taken.',
+                'path' => 'Repository path has already been taken.',
             ]);
         }
 

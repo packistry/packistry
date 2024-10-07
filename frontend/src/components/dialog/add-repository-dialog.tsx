@@ -20,6 +20,7 @@ export function AddRepositoryDialog(props: DialogProps) {
         mutation,
         defaultValues: {
             name: '',
+            path: '',
             description: '',
             public: false,
         },

@@ -58,12 +58,19 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <FormRepositorySelect control={form.control} />
-                        <FormSourceSelect control={form.control} />
+                        <FormRepositorySelect
+                            description="Select the repository where this package will be added."
+                            control={form.control}
+                        />
+                        <FormSourceSelect
+                            description="Choose the source from which to add a package."
+                            control={form.control}
+                        />
                         {source && (
                             <>
                                 <FormSourceProjectCheckboxGroup
                                     source={source}
+                                    description={'Select one or more projects to add as packages.'}
                                     control={form.control}
                                 />
                                 <FormSwitch

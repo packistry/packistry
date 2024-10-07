@@ -136,7 +136,7 @@ class GitlabClient extends Client
     public function createWebhook(Repository $repository, Project $project, Source $source): void
     {
         $this->http()->post("$project->url/hooks", [
-            'url' => url($repository->url("/incoming/gitlab/$source->id")),
+            'url' => $repository->url("/incoming/gitlab/$source->id"),
             'name' => 'packistry sync',
             'token' => decrypt($source->secret),
             'content_type' => 'json',

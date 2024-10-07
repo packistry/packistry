@@ -32,12 +32,12 @@ class RepositoryController extends RepositoryAwareController
     public function packages(): JsonResponse
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
-        $base = $this->repository()->name.'/';
+        $repository = $this->repository();
 
         return response()->json([
-            'search' => url("{$base}search.json?q=%query%&type=%type%"),
-            'metadata-url' => url("{$base}p2/%package%.json"),
-            'list' => url("{$base}list.json"),
+            'search' => $repository->url('/search.json?q=%query%&type=%type%'),
+            'metadata-url' => $repository->url('/p2/%package%.json'),
+            'list' => $repository->url('/list.json'),
         ]);
     }
 

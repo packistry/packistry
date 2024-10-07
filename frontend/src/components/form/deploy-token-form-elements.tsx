@@ -12,6 +12,7 @@ export function DeployTokenFormElements({ control }: { control: Control<any> }) 
             <FormInput
                 label="Token Name"
                 name="name"
+                description="Enter a name for this deploy token to easily identify its purpose."
                 control={control}
             />
             <FormCheckboxGroup
@@ -21,16 +22,18 @@ export function DeployTokenFormElements({ control }: { control: Control<any> }) 
                 ]}
                 name="abilities"
                 label="Access Rights"
+                description="Give write access, if you want to upload package zips to a repository"
                 control={control}
             />
             <FormDatePicker
                 label="Expiration Date"
                 name="expiresAt"
+                description="Optionally set an expiration date, after which it will no longer be valid."
                 control={control}
             />
             <FormRepositorySearchCheckboxGroup
                 label="Private Repositories"
-                description="Give deploy token access to private repositories"
+                description="Select the private repositories it should have access to."
                 control={control}
             />
         </>

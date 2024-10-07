@@ -44,10 +44,7 @@ export function FormSearchCheckboxGroup({
             name={name}
             render={() => (
                 <FormItem>
-                    <div className="mb-4">
-                        <FormLabel className="text-base">{label}</FormLabel>
-                        <FormDescription>{description}</FormDescription>
-                    </div>
+                    <FormLabel className="text-base">{label}</FormLabel>
                     <Input
                         type="search"
                         placeholder={placeholder || 'Search...'}
@@ -104,7 +101,7 @@ export function FormSearchCheckboxGroup({
                             )}
                         </div>
                     </ScrollArea>
-
+                    <FormDescription>{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}

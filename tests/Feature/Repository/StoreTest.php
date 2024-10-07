@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Repository;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\postJson;
@@ -13,6 +14,7 @@ use function Pest\Laravel\postJson;
 it('stores', function (?User $user, int $status): void {
     $response = postJson('/repositories', $attributes = [
         'name' => fake()->name,
+        'path' => $path = fake()->sentence,
         'description' => fake()->text,
         'public' => fake()->boolean(),
     ])
@@ -28,19 +30,20 @@ it('stores', function (?User $user, int $status): void {
         ))
     );
 
-    assertDatabaseHas('repositories', $attributes);
+    assertDatabaseHas('repositories', [...$attributes, 'path' => Str::slug($path)]);
 })
     ->with(guestAndUsers(Permission::REPOSITORY_CREATE, userWithPermission: 201));
 
-it('has unique name', function (?User $user, int $status): void {
+it('has unique path', function (?User $user, int $status): void {
     $repository = Repository::factory()->create();
 
     postJson('/repositories', [
         'name' => $repository->name,
+        'path' => $repository->path,
     ])
         ->assertStatus($status)
         ->assertExactJson(validation([
-            'name' => ['Repository name has already been taken.'],
+            'path' => ['Repository path has already been taken.'],
         ]));
 })
     ->with(unscopedUser(Permission::REPOSITORY_CREATE, expectedStatus: 422));

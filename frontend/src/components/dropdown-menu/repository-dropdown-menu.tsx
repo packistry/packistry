@@ -22,7 +22,7 @@ export function RepositoryDropdownMenu({ onRepoSelect, selected }: RepositoryDro
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline">
-                    {typeof repository === 'undefined' ? 'All repositories' : (repository.name ?? 'Root')}
+                    {typeof repository === 'undefined' ? 'All repositories' : repository.name}
                     <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
@@ -38,7 +38,7 @@ export function RepositoryDropdownMenu({ onRepoSelect, selected }: RepositoryDro
                         key={repo.id}
                         onSelect={() => onRepoSelect(repo)}
                     >
-                        {repo.name ?? 'Root'}
+                        {repo.name}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

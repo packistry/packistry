@@ -133,11 +133,11 @@ function actingAs(User|DeployToken $subject, TokenAbility|array $abilities = [])
     app('auth')->shouldUse('sanctum');
 }
 
-function repository(string $name = 'sub', bool $public = false, ?Closure $closure = null): Repository
+function repository(string $path = 'sub', bool $public = false, ?Closure $closure = null): Repository
 {
     return Repository::factory()
         ->state([
-            'name' => $name,
+            'path' => $path,
         ])
         ->when($public, fn (RepositoryFactory $factory): RepositoryFactory => $factory->public())
         ->when(! is_null($closure), $closure)

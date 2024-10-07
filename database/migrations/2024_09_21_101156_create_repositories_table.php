@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('repositories', function (Blueprint $table): void {
             $table->id();
-            $table->string('name')->nullable()->unique();
+            $table->string('name');
+            $table->string('path')->nullable()->unique();
             $table->string('description')->nullable()->unique();
             $table->boolean('public')->default(false);
             $table->timestamps();

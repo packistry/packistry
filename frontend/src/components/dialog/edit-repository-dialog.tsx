@@ -18,7 +18,7 @@ export function EditRepositoryDialog({ repository, trigger }: { trigger?: ReactE
         defaultValues: {
             ...repository,
             // @todo meh
-            name: repository.name ? repository.name : '',
+            path: repository.path ? repository.path : '',
             description: repository.description ? repository.description : '',
         },
         onSuccess() {

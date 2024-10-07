@@ -11,6 +11,7 @@ export function PersonalTokenFormElements({ control }: { control: Control<any> }
             <FormInput
                 label="Token Name"
                 name="name"
+                description="Enter a name for this token to easily identify its purpose."
                 control={control}
             />
             <FormCheckboxGroup
@@ -20,11 +21,13 @@ export function PersonalTokenFormElements({ control }: { control: Control<any> }
                 ]}
                 name="abilities"
                 label="Access Rights"
+                description="Give write access, if you want to upload package zips to a repository"
                 control={control}
             />
             <FormDatePicker
                 label="Expiration Date"
                 name="expiresAt"
+                description="Optionally set an expiration date, after which it will no longer be valid."
                 control={control}
             />
         </>
