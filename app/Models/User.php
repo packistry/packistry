@@ -69,7 +69,7 @@ class User extends Model implements AuthenticatableContract, Tokenable
     ];
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, string>
      */
     protected function casts(): array
     {
