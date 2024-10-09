@@ -24,8 +24,6 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
 
 Packistry combines ease of use, flexibility, and security to give you complete control over your PHP package distribution in a self-hosted environment. Whether you're managing a private project, a team of developers, or an open-source initiative, Packistry streamlines your workflow with minimal configuration and maximum control.
 
-Here’s an updated version of your dependencies section, including **TanStack Query**, **TanStack Router**, **Tailwind CSS**, **Vite**, **React**, **Zod**, and **ShadCN**:
-
 ## Dependencies
 
 Packistry is built on a solid foundation of well-maintained dependencies from both the PHP and JavaScript ecosystems, ensuring a high level of performance, security, and developer productivity. Here are some of the key dependencies that power Packistry:

@@ -7,7 +7,6 @@ namespace App\Console\Commands\Add;
 use App\Actions\Repositories\Inputs\StoreRepositoryInput;
 use App\Actions\Repositories\StoreRepository;
 use Illuminate\Console\Command;
-
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\text;
 
@@ -18,7 +17,7 @@ class AddRepository extends Command
      *
      * @var string
      */
-    protected $signature = 'add:repository {name?}';
+    protected $signature = 'add:repository';
 
     /**
      * The console command description.
