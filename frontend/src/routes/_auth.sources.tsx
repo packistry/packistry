@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import * as React from 'react'
-import { ReactElement, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useSources } from '@/api/hooks'
 import { AddSourceDialog } from '@/components/dialog/add-source-dialog'
 import { Heading } from '@/components/page/Heading'
@@ -36,7 +36,7 @@ function SourcesComponent() {
     )
 
     return (
-        <div className="space-y-6">
+        <>
             <Heading title="Sources">
                 <AddSourceDialog {...dialogProps} />
             </Heading>
@@ -49,12 +49,12 @@ function SourcesComponent() {
                 sources={filteredSources}
                 query={query}
             />
-        </div>
+        </>
     )
 }
 
 function PageContent({ sources, query }: { sources: Source[]; query: ReturnType<typeof useSources> }) {
-    const Grid = ({ children }: { children: ReactElement | ReactElement[] }) => {
+    const Grid = ({ children }: { children: ReactNode }) => {
         return <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{children}</div>
     }
 

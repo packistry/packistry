@@ -39,6 +39,7 @@ export const storeUserInput = z.object({
     name: z.string(),
     email: z.string(),
     role,
+    password: z.string(),
     repositories: z.string().array(),
 })
 
@@ -51,6 +52,7 @@ export const updateUserInput = z.object({
     name: z.string(),
     email: z.string(),
     role,
+    password: z.string(),
     repositories: z.string().array(),
 })
 
@@ -60,4 +62,15 @@ export function updateUser({ id, ...input }: z.infer<typeof updateUserInput>) {
 
 export function deleteUser(id: string) {
     return del(user, `/users/${id}`)
+}
+
+export const updateMeInput = z.object({
+    name: z.string(),
+    currentPassword: z.string(),
+    password: z.string(),
+    passwordConfirmation: z.string(),
+})
+
+export function updateMe(input: z.infer<typeof updateMeInput>) {
+    return patch(user, '/me', input)
 }

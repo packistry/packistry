@@ -18,7 +18,9 @@ export function PackageTable({ query }: { query: UseQueryResult<PaginatedPackage
             empty={{
                 title: 'No Packages',
                 icon: <PackageIcon />,
-                description: "You haven't created any packages yet. Create a package to get started.",
+                description: can(PACKAGE_CREATE)
+                    ? "You haven't created any packages yet. Create a package to get started."
+                    : 'No packages are available at the moment.',
                 button: can(PACKAGE_CREATE) ? (
                     <Link
                         to="."

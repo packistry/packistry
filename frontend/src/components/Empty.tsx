@@ -1,13 +1,14 @@
 import * as React from 'react'
-import { cloneElement, ReactElement } from 'react'
+import { cloneElement, ReactElement, ReactNode } from 'react'
 
 export type EmptyProps = {
     title: string
     description?: string
-    button?: ReactElement
+    button?: ReactNode
     icon?: ReactElement
     className?: string
 }
+
 export function Empty({ title, description, button, icon, className }: EmptyProps) {
     return (
         <div className={`flex flex-col items-center justify-center text-center ${className}`}>

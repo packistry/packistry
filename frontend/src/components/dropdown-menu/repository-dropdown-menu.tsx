@@ -8,9 +8,10 @@ import { Repository } from '@/api'
 export type RepositoryDropdownMenuProps = {
     selected?: string
     onRepoSelect: (repo?: Repository) => void
+    className?: string
 }
 
-export function RepositoryDropdownMenu({ onRepoSelect, selected }: RepositoryDropdownMenuProps) {
+export function RepositoryDropdownMenu({ onRepoSelect, selected, className }: RepositoryDropdownMenuProps) {
     const query = useRepositories({
         // @todo add an all option?
         size: 1000,
@@ -21,7 +22,10 @@ export function RepositoryDropdownMenu({ onRepoSelect, selected }: RepositoryDro
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button
+                    variant="outline"
+                    className={className}
+                >
                     {typeof repository === 'undefined' ? 'All repositories' : repository.name}
                     <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>

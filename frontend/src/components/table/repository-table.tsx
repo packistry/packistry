@@ -7,18 +7,23 @@ import { EditRepositoryDialog } from '@/components/dialog/edit-repository-dialog
 import { RepositoryBadge } from '@/components/badge/repository-badge'
 import { Link } from '@tanstack/react-router'
 import { DatabaseIcon } from 'lucide-react'
-import { REPOSITORY_UPDATE } from '@/permission'
+import { REPOSITORY_CREATE, REPOSITORY_UPDATE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
+import { useAuth } from '@/auth'
 
 export function RepositoryTable({ query }: { query: UseQueryResult<PaginatedRepository> }) {
+    const { can } = useAuth()
+
     return (
         <PaginatedTable
             query={query}
             empty={{
                 title: 'No Repositories',
                 icon: <DatabaseIcon />,
-                description: "You haven't created any repositories yet. Generate a new repository to get started.",
-                button: (
+                description: can(REPOSITORY_CREATE)
+                    ? "You haven't created any repositories yet. Create a repository to get started."
+                    : 'No repositories are available at the moment.',
+                button: can(REPOSITORY_CREATE) ? (
                     <Link
                         to="."
                         search={{ open: true }}
@@ -27,7 +32,7 @@ export function RepositoryTable({ query }: { query: UseQueryResult<PaginatedRepo
                             <span className="mr-2">+</span> Add Repository
                         </Button>
                     </Link>
-                ),
+                ) : undefined,
             }}
             columns={[
                 {

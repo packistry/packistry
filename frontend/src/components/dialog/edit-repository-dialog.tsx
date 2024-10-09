@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import * as React from 'react'
-import { ReactElement, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useUpdateRepository } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { Repository } from '@/api'
@@ -9,7 +9,7 @@ import { DeleteRepositoryButton } from '@/components/button/delete-repository-bu
 import { RepositoryFormElements } from '@/components/form/repository-form-elements'
 import { Form } from '@/components/ui/form'
 
-export function EditRepositoryDialog({ repository, trigger }: { trigger?: ReactElement; repository: Repository }) {
+export function EditRepositoryDialog({ repository, trigger }: { trigger?: ReactNode; repository: Repository }) {
     const mutation = useUpdateRepository()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 
 import { cn } from '@/lib/utils'
@@ -33,7 +33,7 @@ const TextTooltip = ({
 }: {
     disabled?: boolean
     content: string
-    children: ReactElement
+    children: ReactNode
 }) => {
     return (
         <TooltipProvider>

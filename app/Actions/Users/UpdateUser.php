@@ -28,6 +28,10 @@ class UpdateUser
             $user->name = $input->name;
         }
 
+        if (is_string($input->password)) {
+            $user->password = $input->password;
+        }
+
         if ($input->role instanceof Role) {
             $user->role = $input->role;
         }

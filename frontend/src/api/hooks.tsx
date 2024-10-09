@@ -25,6 +25,7 @@ import {
     storeRepository,
     storeSource,
     storeUser,
+    updateMe,
     updateRepository,
     updateSource,
     updateUser,
@@ -192,6 +193,20 @@ export function useStoreUser() {
 
     return useMutation({
         mutationFn: storeUser,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: usersKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useUpdateMe() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateMe,
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: usersKey,

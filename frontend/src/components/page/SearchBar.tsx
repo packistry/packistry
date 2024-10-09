@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 import { UseNavigateResult } from '@tanstack/react-router'
 
 export function SearchBar({
@@ -14,7 +14,7 @@ export function SearchBar({
     search?: string
     name: string
     onSearch: (search: string) => void
-    children?: ReactElement
+    children?: ReactNode
 }) {
     return (
         <div>

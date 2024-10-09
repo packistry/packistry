@@ -23,6 +23,7 @@ export function AddUserDialog(props: DialogProps) {
             email: '',
             role: 'user',
             repositories: [],
+            password: '',
         },
         onSuccess() {
             form.reset()

@@ -7,7 +7,7 @@ namespace App\Actions\Users\Inputs;
 use App\Actions\Input;
 use App\Enums\Role;
 use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Password;
 
 class StoreUserInput extends Input
 {
@@ -19,9 +19,9 @@ class StoreUserInput extends Input
         #[Email]
         public string $email,
         public Role $role,
+        #[Password(6)]
+        public string $password,
         public ?array $repositories = [],
-        #[Min(6)]
-        public ?string $password = null,
     ) {
         //
     }
