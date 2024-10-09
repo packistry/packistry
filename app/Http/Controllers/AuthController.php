@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\Users\Inputs\UpdateMeInput;
+use App\Actions\Users\UpdateMe;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,5 +42,15 @@ class AuthController
         Auth::guard('web')->logout();
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function update(UpdateMe $updateMe, UpdateMeInput $updateMeInput): JsonResponse
+    {
+        $user = $updateMe->handle($updateMeInput);
+
+        return response()->json(new UserResource($user));
     }
 }

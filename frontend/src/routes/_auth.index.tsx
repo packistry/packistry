@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CodeIcon, DatabaseIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
 import { useDashboard } from '@/api/hooks'
+import { Heading } from '@/components/page/Heading'
 
 export const Route = createFileRoute('/_auth/')({
     component: HomeComponent,
@@ -12,8 +13,8 @@ function HomeComponent() {
     const query = useDashboard()
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold">Dashboard</h1>
+        <>
+            <Heading title="Dashboard" />
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {typeof query.data?.repositories !== 'undefined' && (
                     <Card>
@@ -83,6 +84,6 @@ function HomeComponent() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </>
     )
 }

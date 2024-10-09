@@ -10,6 +10,9 @@ import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
 import { UseQueryResult } from '@tanstack/react-query'
 import { useSearchDialog } from '@/components/dialog/use-search-dialog'
 import { z } from 'zod'
+import { useAuth } from '@/auth'
+import { REPOSITORY_CREATE } from '@/permission'
+import { Heading } from '@/components/page/Heading'
 
 export const Route = createFileRoute('/_auth/repositories')({
     validateSearch: repositoryQuery.extend({
@@ -22,21 +25,19 @@ function RepositoriesComponent() {
     const { open, ...search } = Route.useSearch()
     const query = useRepositories(search)
     const dialogProps = useSearchDialog({ open })
+    const { can } = useAuth()
     const navigate = useNavigate()
 
     return (
-        <div className="space-y-6">
-            <header className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-primary">Repositories</h1>
-                <AddRepositoryDialog {...dialogProps} />
-            </header>
+        <>
+            <Heading title="Repositories">{can(REPOSITORY_CREATE) && <AddRepositoryDialog {...dialogProps} />}</Heading>
             <SearchBar
                 name="repositories"
                 search={search.filters?.search}
                 onSearch={navigateOnSearch(navigate)}
             />
             <PageContent query={query} />
-        </div>
+        </>
     )
 }
 

@@ -50,9 +50,10 @@ export default function LoginComponent() {
                     <CardTitle>Login</CardTitle>
                     <CardDescription>Enter your credentials to access your account</CardDescription>
                 </CardHeader>
+
                 <Form {...form}>
                     <form onSubmit={onSubmit}>
-                        <CardContent>
+                        <CardContent className="space-y-4">
                             <FormInput
                                 label="Email"
                                 name="email"

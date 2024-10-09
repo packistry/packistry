@@ -2,7 +2,10 @@ import * as React from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { usePackages } from '@/api/hooks'
 import { AddPackageDialog } from '@/components/dialog/add-package-dialog'
-import { RepositoryDropdownMenu } from '@/components/dropdown-menu/repository-dropdown-menu'
+import {
+    RepositoryDropdownMenu,
+    RepositoryDropdownMenuProps,
+} from '@/components/dropdown-menu/repository-dropdown-menu'
 import { packageQuery } from '@/api'
 import { Heading } from '@/components/page/Heading'
 import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
@@ -23,6 +26,16 @@ function PackagesComponent() {
     const dialogProps = useSearchDialog({ open })
     const navigate = useNavigate()
 
+    const onRepoSelected: RepositoryDropdownMenuProps['onRepoSelect'] = (repo) => {
+        navigate({
+            to: '.',
+            search: (prev) => ({
+                ...prev,
+                filters: { ...prev.filters, repositoryId: repo?.id },
+            }),
+        })
+    }
+
     return (
         <>
             <Heading title="Packages">
@@ -30,18 +43,7 @@ function PackagesComponent() {
                     <AddPackageDialog {...dialogProps} />
                     <RepositoryDropdownMenu
                         selected={search.filters?.repositoryId}
-                        onRepoSelect={(repo) => {
-                            navigate({
-                                to: '.',
-                                search: (prev) => ({
-                                    ...prev,
-                                    filters: {
-                                        ...prev.filters,
-                                        repositoryId: repo?.id,
-                                    },
-                                }),
-                            })
-                        }}
+                        onRepoSelect={onRepoSelected}
                     />
                 </div>
             </Heading>

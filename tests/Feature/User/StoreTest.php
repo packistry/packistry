@@ -15,8 +15,9 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
 
     $response = postJson('/users', [
         'name' => $name = fake()->name,
-        'email' => $email = fake()->email,
+        'email' => $email = fake()->unique()->email,
         'role' => $role,
+        'password' => $password = fake()->password,
         'repositories' => $repositories,
     ])
         ->assertStatus($status);
@@ -37,7 +38,8 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
         ->name->toBe($name)
         ->email->toBe($email)
         ->role->toBe($role)
-        ->and($user->repositories()->pluck('repositories.id')->toArray())->toBe($repositories);
+        ->and($user->repositories()->pluck('repositories.id')->toArray())->toBe($repositories)
+        ->and(Hash::check($password, $user->password));
 })
     ->with(guestAndUsers(Permission::USER_CREATE, userWithPermission: 201))
     ->with([
@@ -58,6 +60,7 @@ it('has unique email', function (?User $user, int $status): void {
         'name' => fake()->name,
         'email' => $user->email,
         'role' => Role::USER,
+        'password' => fake()->password,
         'repositories' => [],
     ])
         ->assertStatus($status)
@@ -72,6 +75,7 @@ it('requires valid email', function (?User $user, int $status): void {
         'name' => fake()->name,
         'email' => fake()->name,
         'role' => Role::USER,
+        'password' => fake()->password,
         'repositories' => [],
     ])
         ->assertStatus($status)

@@ -3,6 +3,7 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { Sidebar } from '@/components/sidebar'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthDropdownMenu } from '@/components/dropdown-menu/auth-dropdown-menu'
+import { EditMeDialog } from '@/components/dialog/edit-me-dialog'
 
 export const Route = createFileRoute('/_auth')({
     beforeLoad: ({ context, location }) => {
@@ -26,6 +27,7 @@ function AuthLayout() {
                 <header className="flex items-center justify-end h-16 px-4 bg-background border-b">
                     <div className="flex items-center space-x-4">
                         <ThemeToggle />
+                        <EditMeDialog />
                         <AuthDropdownMenu />
                     </div>
                 </header>

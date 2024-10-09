@@ -8,7 +8,6 @@ use App\Actions\Users\Inputs\StoreUserInput;
 use App\Enums\Permission;
 use App\Exceptions\EmailAlreadyTakenException;
 use App\Models\User;
-use Illuminate\Support\Str;
 
 class StoreUser
 {
@@ -26,7 +25,7 @@ class StoreUser
         $user->name = $input->name;
         $user->email = $input->email;
         $user->role = $input->role;
-        $user->password = $input->password ?? Str::random();
+        $user->password = $input->password;
 
         $user->save();
 

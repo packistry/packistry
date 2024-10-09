@@ -22,6 +22,13 @@ export function UserFormElements({ form }: { form: UseFormReturn<any, any, any> 
                 description="Provide a unique email for the user"
                 control={form.control}
             />
+            <FormInput
+                label="Password"
+                name="password"
+                description="Enter a password for this user"
+                type="password"
+                control={form.control}
+            />
             <FormRadioGroup
                 label="Role"
                 name="role"

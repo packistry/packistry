@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import * as React from 'react'
-import { ReactElement, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Form } from '@/components/ui/form'
 import { useUpdateUser } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
@@ -9,7 +9,7 @@ import { UserFormElements } from '@/components/form/user-form-elements'
 import { User } from '@/api'
 import { DeleteUserButton } from '@/components/button/delete-user-button'
 
-export function EditUserDialog({ user, trigger }: { trigger?: ReactElement; user: User }) {
+export function EditUserDialog({ user, trigger }: { trigger?: ReactNode; user: User }) {
     const mutation = useUpdateUser()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const { form, onSubmit, isPending } = useForm({
@@ -17,12 +17,14 @@ export function EditUserDialog({ user, trigger }: { trigger?: ReactElement; user
         defaultValues: {
             ...user,
             repositories: user.repositories?.map(({ id }) => id) || '',
+            password: '',
         },
         onSuccess(user) {
             form.setValue(
                 'repositories',
                 user.repositories?.map(({ id }) => id)
             )
+            form.resetField('password')
             setIsDialogOpen(false)
         },
     })

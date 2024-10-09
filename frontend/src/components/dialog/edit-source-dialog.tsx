@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import * as React from 'react'
-import { ReactElement, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Form } from '@/components/ui/form'
 import { useUpdateSource } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
@@ -10,7 +10,7 @@ import { Source } from '@/api'
 import { SourceFormElements } from '@/components/form/source-form-elements'
 import { DeleteSourceButton } from '@/components/button/delete-source-button'
 
-export function EditSourceDialog({ source, trigger }: { source: Source; trigger?: ReactElement }) {
+export function EditSourceDialog({ source, trigger }: { source: Source; trigger?: ReactNode }) {
     const mutation = useUpdateSource()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 

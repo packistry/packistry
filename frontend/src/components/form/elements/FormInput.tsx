@@ -9,11 +9,12 @@ export type FormInputProps = {
     type?: HTMLInputTypeAttribute
 } & FormElement
 
-export function FormInput({ control, label, name, placeholder, description, type }: FormInputProps) {
+export function FormInput({ control, label, name, placeholder, disabled, description, type }: FormInputProps) {
     return (
         <FormField
             control={control}
             name={name}
+            disabled={disabled}
             render={({ field }) => (
                 <FormItem>
                     <FormLabel>{label}</FormLabel>
