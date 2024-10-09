@@ -43,6 +43,7 @@ class AddSource extends Command
 
         $token = text(
             label: 'Access token for provider',
+            required: true,
         );
 
         $storeSource->handle(new StoreSourceInput(

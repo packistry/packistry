@@ -56,9 +56,9 @@ class AddUser extends Command
             /** @var string[] $repositories */
             $repositories = multisearch(
                 label: 'Select repositories this user will have access to',
-                options: fn (string $value) => Repository::query()
+                options: fn (string $search) => Repository::query()
                     ->where('public', false)
-                    ->when($value, fn (Builder $query) => $query->where('name', 'like', "$value%"))
+                    ->when($search, fn (Builder $query) => $query->where('name', 'like', "$search%"))
                     ->get()
                     ->keyBy(fn (Repository $repository): string => (string) $repository->id)
                     ->map(fn (Repository $repository): string => $repository->name)
@@ -71,8 +71,8 @@ class AddUser extends Command
             name: $name,
             email: $email,
             role: $role,
-            repositories: $repositories,
             password: $password,
+            repositories: $repositories,
         ));
 
         $this->info('User created');
