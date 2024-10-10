@@ -32,8 +32,8 @@ export function DeployTokenFormElements({ control }: { control: Control<any> }) 
                 control={control}
             />
             <FormRepositorySearchCheckboxGroup
-                label="Private Repositories"
-                description="Select the private repositories it should have access to."
+                label="Repositories"
+                description="Select the repositories it should have access to."
                 control={control}
             />
         </>

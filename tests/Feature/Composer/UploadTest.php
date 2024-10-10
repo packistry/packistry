@@ -91,6 +91,7 @@ it('creates new version for existing package', function (Repository $repository,
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         personalTokenWithAccessStatus: 201,
+        unscopedPersonalTokenWithoutAccessStatus: 201,
         deployTokenWithoutAccessStatus: 401,
         deployTokenWithAccessStatus: 201,
     ));
@@ -165,6 +166,7 @@ it('creates new package and version when non existing', function (Repository $re
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         personalTokenWithAccessStatus: 201,
+        unscopedPersonalTokenWithoutAccessStatus: 201,
         deployTokenWithoutAccessStatus: 401,
         deployTokenWithAccessStatus: 201,
     ));
@@ -181,6 +183,7 @@ it('creates package in private repository', function (Repository $repository, ?A
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         personalTokenWithAccessStatus: 422,
+        unscopedPersonalTokenWithoutAccessStatus: 422,
         deployTokenWithoutAccessStatus: 401,
         deployTokenWithAccessStatus: 422,
     ));

@@ -6,15 +6,14 @@ import {
     FormSearchCheckboxGroupProps,
 } from '@/components/form/elements/FormSearchCheckboxGroup'
 
-export function FormRepositorySearchCheckboxGroup(
-    props: Omit<Optional<FormSearchCheckboxGroupProps, 'name' | 'label'>, 'options'>
-) {
+export type FormRepositorySearchCheckboxGroupProps = {
+    filters?: Parameters<typeof useRepositories>[0]['filters']
+} & Omit<Optional<FormSearchCheckboxGroupProps, 'name' | 'label'>, 'options'>
+export function FormRepositorySearchCheckboxGroup(props: FormRepositorySearchCheckboxGroupProps) {
     const query = useRepositories({
         // @todo add an all option?
         size: 1000,
-        filters: {
-            public: false,
-        },
+        filters: props.filters,
     })
 
     const options = (query.data?.data || [])

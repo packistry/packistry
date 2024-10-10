@@ -65,11 +65,16 @@ function user(Permission|array $permissions = []): User
 
 /**
  * @param  TokenAbility|TokenAbility[]  $abilities
+ * @param  Permission|Permission[]  $permissions
  */
-function personalToken(TokenAbility|array $abilities = [], bool $withAccess = false): User
+function personalToken(TokenAbility|array $abilities = [], bool $withAccess = false, Permission|array $permissions = []): User
 {
-    $user = User::factory()->create();
+    $permissions = is_array($permissions)
+        ? $permissions
+        : [$permissions];
 
+    $user = User::factory()->create();
+    config()->set("authorization.{$user->role->value}", $permissions);
     actingAs($user, $abilities);
 
     if ($withAccess) {
@@ -226,6 +231,7 @@ function guestAndTokens(
     int $guestStatus = 200,
     int $personalTokenWithoutAccessStatus = 200,
     int $personalTokenWithAccessStatus = 200,
+    int $unscopedPersonalTokenWithoutAccessStatus = 200,
     int $deployTokenWithoutAccessStatus = 200,
     int $deployTokenWithAccessStatus = 200,
 ): array {
@@ -247,6 +253,10 @@ function guestAndTokens(
         "$personalTokenWithAccessStatus user with access ($imploded)" => [
             fn (): User => personalToken($abilities, withAccess: true),
             $personalTokenWithAccessStatus,
+        ],
+        "$unscopedPersonalTokenWithoutAccessStatus unscoped user without access ($imploded)" => [
+            fn (): User => personalToken($abilities, permissions: Permission::UNSCOPED),
+            $unscopedPersonalTokenWithoutAccessStatus,
         ],
         "$deployTokenWithoutAccessStatus deploy token without access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities),

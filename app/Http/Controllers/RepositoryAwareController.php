@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Enums\TokenAbility;
 use App\Models\Contracts\Tokenable;
 use App\Models\Repository;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 abstract class RepositoryAwareController
@@ -38,17 +40,19 @@ abstract class RepositoryAwareController
         $token = $this->token();
         $repository = $this->repository();
 
-        if (in_array($ability, TokenAbility::readAbilities())) {
-            if ($repository->public) {
-                return;
-            }
-
-            if ($token instanceof \App\Models\Contracts\Tokenable && $token->hasAccessToRepository($repository)) {
-                return;
-            }
+        if (in_array($ability, TokenAbility::readAbilities()) && $repository->public) {
+            return;
         }
 
-        if (is_null($token) || ! $token->tokenCan($ability->value) || ! $token->hasAccessToRepository($repository)) {
+        if (is_null($token) || ! $token->tokenCan($ability->value)) {
+            abort(401);
+        }
+
+        if ($token instanceof User && $token->can(Permission::UNSCOPED)) {
+            return;
+        }
+
+        if (! $token->hasAccessToRepository($repository)) {
             abort(401);
         }
     }

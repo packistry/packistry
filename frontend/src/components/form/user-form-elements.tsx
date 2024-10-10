@@ -43,6 +43,9 @@ export function UserFormElements({ form }: { form: UseFormReturn<any, any, any> 
                     label="Private Repositories"
                     description="Give user access to private repositories"
                     control={form.control}
+                    filters={{
+                        public: false,
+                    }}
                 />
             )}
         </>
