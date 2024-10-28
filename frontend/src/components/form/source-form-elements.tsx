@@ -91,6 +91,8 @@ function TokenCreationAlert({ url, provider }: { url: string; provider: SourcePr
                 {isUrlValid(fullUrl) ? (
                     <a
                         rel="noreferrer"
+                        target="_blank"
+                        className="underline"
                         href={fullUrl + explanation.path}
                     >
                         {fullUrl}
