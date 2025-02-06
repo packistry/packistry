@@ -17,7 +17,7 @@ FROM node:22-slim AS builder_frontend
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g pnpm@latest
 
 WORKDIR /frontend
 
