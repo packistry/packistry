@@ -30,7 +30,8 @@ if (! function_exists('repositoryRoutes')) {
         Route::get('/p2/{vendor}/{name}~dev.json', [Composer\RepositoryController::class, 'packageDev']);
         Route::get('/p2/{vendor}/{name}.json', [Composer\RepositoryController::class, 'package']);
         Route::post('/{vendor}/{name}', [Composer\RepositoryController::class, 'upload']);
-        Route::get('/{vendor}/{name}/{version}', [Composer\RepositoryController::class, 'download']);
+        Route::get('/{vendor}/{name}/{version}', [Composer\RepositoryController::class, 'download'])
+            ->where('version', '.*');
     }
 }
 
