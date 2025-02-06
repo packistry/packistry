@@ -52,7 +52,7 @@ class Repository extends Model
 
     public function url(string $url): string
     {
-        $prefix = is_null($this->path) ? '' : "/$this->path";
+        $prefix = is_null($this->path) ? '' : "/r/$this->path";
 
         return url($prefix.$url);
     }

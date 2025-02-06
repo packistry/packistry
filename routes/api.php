@@ -64,8 +64,8 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
     });
 });
 
-repositoryRoutes();
-
-Route::prefix('/{repository}')->group(function (): void {
+Route::prefix('/r/{repository}')->group(function (): void {
     repositoryRoutes();
 });
+
+repositoryRoutes();
