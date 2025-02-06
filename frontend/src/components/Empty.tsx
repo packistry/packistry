@@ -5,7 +5,7 @@ export type EmptyProps = {
     title: string
     description?: string
     button?: ReactNode
-    icon?: ReactElement
+    icon?: ReactElement<{ className?: string }>
     className?: string
 }
 
