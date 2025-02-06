@@ -40,7 +40,7 @@ jobs:
         with:
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.meta-amd.outputs.tags }}-amd64
+          tags: latest-amd64
           labels: ${{ steps.meta-amd.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -75,7 +75,7 @@ jobs:
         with:
           platforms: linux/arm64
           push: true
-          tags: ${{ steps.meta-arm.outputs.tags }}-arm64
+          tags: latest-arm64
           labels: ${{ steps.meta-arm.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -111,6 +111,6 @@ jobs:
           for TAG in $(echo "${{ steps.meta-final.outputs.tags }}" | tr ',' ' '); do
             docker buildx imagetools create \
               --tag $TAG \
-              $TAG-amd64 \
-              $TAG-arm64
+              latest-amd64 \
+              latest-arm64
           done
