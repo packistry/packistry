@@ -128,11 +128,11 @@ class GiteaClient extends Client
         try {
             $projects = $this->projects();
         } catch (\Exception) {
-            throw new InvalidTokenException(missingScopes: ['write:repository']);
+            throw new InvalidTokenException(missingScopes: ['read:repository']);
         }
 
         if ($projects === []) {
-            throw new InvalidTokenException(missingScopes: ['write:repository']);
+            throw new InvalidTokenException(missingScopes: ['read:repository']);
         }
 
         $project = $projects[0];
