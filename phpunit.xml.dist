@@ -27,7 +27,5 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="GITEA_WEBHOOK_SECRET" value="secret"/>
-        <env name="GITLAB_WEBHOOK_SECRET" value="secret"/>
     </php>
 </phpunit>

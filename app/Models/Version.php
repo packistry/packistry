@@ -16,12 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Override;
 
 /**
  * @property int $id
  * @property int $package_id
  * @property string $name
- * @property array $metadata
+ * @property array<string, mixed> $metadata
  * @property string $shasum
  * @property string $order
  * @property Carbon|null $created_at
@@ -51,7 +52,7 @@ class Version extends Model
     protected $hidden = ['order', 'original'];
 
     /**
-     * @return BelongsTo<Package, Version>
+     * @return BelongsTo<Package, $this>
      */
     public function package(): BelongsTo
     {
@@ -59,13 +60,14 @@ class Version extends Model
     }
 
     /**
-     * @return HasMany<Download>
+     * @return HasMany<Download, $this>
      */
     public function downloads(): HasMany
     {
         return $this->hasMany(Download::class);
     }
 
+    #[Override]
     protected static function booted(): void
     {
         static::addGlobalScope(new OrderScope('order'));

@@ -49,15 +49,12 @@ class Package extends Model
         'type' => PackageType::class,
     ];
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     protected $attributes = [
         'downloads' => 0,
     ];
 
     /**
-     * @return BelongsTo<Repository, Package>
+     * @return BelongsTo<Repository, $this>
      */
     public function repository(): BelongsTo
     {
@@ -65,7 +62,7 @@ class Package extends Model
     }
 
     /**
-     * @return BelongsTo<Source, Package>
+     * @return BelongsTo<Source, $this>
      */
     public function source(): BelongsTo
     {
@@ -73,7 +70,7 @@ class Package extends Model
     }
 
     /**
-     * @return HasMany<Version>
+     * @return HasMany<Version, $this>
      */
     public function versions(): HasMany
     {
@@ -81,7 +78,7 @@ class Package extends Model
     }
 
     /**
-     * @return Builder<Package>
+     * @return Builder<$this>
      */
     public static function userScoped(?User $user = null): Builder
     {

@@ -43,7 +43,7 @@ class Repository extends Model
     ];
 
     /**
-     * @return HasMany<Package>
+     * @return HasMany<Package, $this>
      */
     public function packages(): HasMany
     {
@@ -82,7 +82,7 @@ class Repository extends Model
     }
 
     /**
-     * @return Builder<Repository>
+     * @return Builder<$this>
      */
     public static function userScoped(?User $user = null): Builder
     {
@@ -94,7 +94,7 @@ class Repository extends Model
     }
 
     /**
-     * @return Builder<Repository>
+     * @return Builder<$this>
      */
     public static function queryByPath(?string $path): Builder
     {

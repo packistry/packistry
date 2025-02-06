@@ -3,6 +3,7 @@ includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/tomasvotruba/type-coverage/config/extension.neon
+    - phpstan-baseline.neon
 
 rules:
     - Spatie\Ray\PHPStan\RemainingRayCallRule
@@ -12,22 +13,16 @@ rules:
 
 parameters:
     ignoreErrors:
-        - '#Access to an undefined property Pest\\Expectation#'
-        - '#Access to an undefined property Pest\\Mixins\\Expectation#'
-        - '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::withAnyArgs\(\)#'
-        - '#method Pest\\PendingCalls\\TestCall::with\(\) expects array#'
+        -
+            identifier: staticMethod.dynamicCall
     type_coverage:
         return: 100
         param: 100
         property: 100
         constant: 100
     customRulesetUsed: true
-    strictRules:
-        strictCalls: false
     level: 8
     paths:
         - app/
-        - tests/
-        - config/
         - database/
         - bootstrap/app.php

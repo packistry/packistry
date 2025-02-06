@@ -81,7 +81,7 @@ class User extends Model implements AuthenticatableContract, Tokenable
     }
 
     /**
-     * @return BelongsToMany<Repository>
+     * @return BelongsToMany<Repository, $this>
      */
     public function repositories(): BelongsToMany
     {
@@ -90,7 +90,7 @@ class User extends Model implements AuthenticatableContract, Tokenable
 
     public function can(Permission $permission): bool
     {
-        return in_array($permission, $this->role->permissions());
+        return in_array($permission, $this->role->permissions(), true);
     }
 
     public function canNot(Permission $permission): bool
