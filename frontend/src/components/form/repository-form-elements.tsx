@@ -15,7 +15,7 @@ export function RepositoryFormElements({ control }: { control: Control<any> }) {
             />
             <FormInput
                 name="path"
-                description={`The base path where your repository will be served (e.g., 'plugins' will be accessible at ${window.location.host}/plugins). Leave blank to serve from the root (/) path.`}
+                description={`The base path where your repository will be served (e.g., 'plugins' will be accessible at ${window.location.host}/r/plugins). Leave blank to serve from the root (${window.location.host}/) path.`}
                 label="Path"
                 control={control}
             />

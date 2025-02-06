@@ -9,7 +9,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use function Pest\Laravel\getJson;
 
 it('provides urls', function (Repository $repository, ?Authenticatable $auth, int $status): void {
-    $prefix = is_null($repository->path) ? '' : $repository->path.'/';
+    $prefix = is_null($repository->path) ? '' : "/r/$repository->path/";
 
     getJson($repository->url('/packages.json'))
         ->assertStatus($status)
