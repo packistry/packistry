@@ -15,12 +15,10 @@ class DestroyPackage
     {
         $paths = $package->versions()
             ->get()
-            ->map(function (Version $version) use ($package): string {
-                return Archive::name($package, $version->name);
-            });
+            ->map(fn (Version $version): string => Archive::name($package, $version->name));
 
         foreach ($paths as $path) {
-            dispatch(function () use ($path) {
+            dispatch(function () use ($path): void {
                 Storage::disk()->delete($path);
             });
         }

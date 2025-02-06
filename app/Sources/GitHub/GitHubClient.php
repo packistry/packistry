@@ -160,11 +160,11 @@ class GitHubClient extends Client
     {
         try {
             $projects = $this->projects('is:private');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new InvalidTokenException(missingScopes: ['contents read-only']);
         }
 
-        if (count($projects) === 0) {
+        if ($projects === []) {
             throw new InvalidTokenException(missingScopes: ['contents read-only']);
         }
 

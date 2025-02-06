@@ -100,7 +100,7 @@ abstract class WebhookController extends RepositoryAwareController
 
         $path = Archive::name($package, $version->name);
 
-        dispatch(function () use ($path) {
+        dispatch(function () use ($path): void {
             Storage::disk()->delete($path);
         });
 

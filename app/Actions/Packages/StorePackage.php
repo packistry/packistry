@@ -80,7 +80,7 @@ class StorePackage
                 $package->save();
             }
 
-            dispatch(function () use ($package, $source, $project) {
+            dispatch(function () use ($package, $source, $project): void {
                 $client = $source->client();
                 $tags = array_reverse($client->tags($project));
                 $branches = array_reverse($client->branches($project));
@@ -95,7 +95,7 @@ class StorePackage
                 }, [...$branches, ...$tags]);
 
                 Bus::batch($imports)
-                    ->finally(function () use ($package) {
+                    ->finally(function () use ($package): void {
                         if (! str_starts_with($package->name, 'Importing')) {
                             return;
                         }
