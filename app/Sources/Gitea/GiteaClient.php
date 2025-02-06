@@ -131,7 +131,7 @@ class GiteaClient extends Client
             throw new InvalidTokenException(missingScopes: ['write:repository']);
         }
 
-        if (count($projects) === 0) {
+        if ($projects === []) {
             throw new InvalidTokenException(missingScopes: ['write:repository']);
         }
 

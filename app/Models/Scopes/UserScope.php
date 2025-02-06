@@ -18,13 +18,11 @@ readonly class UserScope implements Scope
     }
 
     /**
-     * @phpstan-ignore-next-line
-     *
      * @param  Builder<Model>  $builder
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (! $this->user instanceof \App\Models\User) {
+        if (! $this->user instanceof User) {
             abort(401);
         }
 

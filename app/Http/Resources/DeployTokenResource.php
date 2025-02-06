@@ -7,6 +7,7 @@ namespace App\Http\Resources;
 use App\Models\DeployToken;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
 /**
  * @mixin DeployToken
@@ -18,6 +19,7 @@ class DeployTokenResource extends JsonResource
      *
      * @return array<int|string, mixed>
      */
+    #[Override]
     public function toArray(Request $request): array
     {
         return [

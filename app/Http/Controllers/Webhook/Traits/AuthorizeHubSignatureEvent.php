@@ -16,7 +16,7 @@ trait AuthorizeHubSignatureEvent
             abort(401, 'signature missing');
         }
 
-        $calculatedHash = 'sha256='.hash_hmac('sha256', $request->getContent(), decrypt($this->source()->secret));
+        $calculatedHash = 'sha256='.hash_hmac('sha256', $request->getContent(), (string) decrypt($this->source()->secret));
 
         if (! hash_equals($calculatedHash, $signature)) {
             abort(401, 'signature validation failed');

@@ -12,6 +12,7 @@ use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
 use App\Sources\Traits\BearerToken;
+use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
@@ -144,7 +145,7 @@ class GitHubClient extends Client
         $scopes = $response->header('X-OAuth-Scopes');
         $scopes = array_map(fn (string $value): string => trim($value), explode(',', $scopes));
 
-        if (in_array('repo', $scopes)) {
+        if (in_array('repo', $scopes, true)) {
             return;
         }
 
@@ -160,11 +161,11 @@ class GitHubClient extends Client
     {
         try {
             $projects = $this->projects('is:private');
-        } catch (\Exception $e) {
+        } catch (Exception) {
             throw new InvalidTokenException(missingScopes: ['contents read-only']);
         }
 
-        if (count($projects) === 0) {
+        if ($projects === []) {
             throw new InvalidTokenException(missingScopes: ['contents read-only']);
         }
 

@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine AS base
+FROM php:8.4-fpm-alpine AS base
 
 LABEL org.opencontainers.image.source="https://github.com/packistry/packistry"
 LABEL org.opencontainers.image.description="Packistry is a Composer repository for PHP packages Packistry is a Composer repository for PHP packages"
@@ -44,7 +44,7 @@ FROM base AS runner
 
 COPY --from=builder_api /var/www/html /var/www/html
 COPY --from=builder_frontend /frontend/dist /var/www/html/dist
-COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.2 /usr/bin/rr /usr/local/bin/rr
+COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.3.2 /usr/bin/rr /usr/local/bin/rr
 
 COPY ./docker/supervisord.conf /etc/supervisord.conf
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini

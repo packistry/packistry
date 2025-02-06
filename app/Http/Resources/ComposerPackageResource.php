@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\Version;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
 /** @mixin Package */
 class ComposerPackageResource extends JsonResource
@@ -17,6 +18,7 @@ class ComposerPackageResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    #[Override]
     public function toArray(Request $request): array
     {
         return [

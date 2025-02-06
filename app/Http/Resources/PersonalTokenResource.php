@@ -7,6 +7,7 @@ namespace App\Http\Resources;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
 /**
  * @mixin Token
@@ -18,6 +19,7 @@ class PersonalTokenResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    #[Override]
     public function toArray(Request $request): array
     {
         return [

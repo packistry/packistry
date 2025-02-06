@@ -42,7 +42,7 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
     use HasFactory;
 
     /**
-     * @return MorphOne<Token>
+     * @return MorphOne<Token, $this>
      */
     public function token(): MorphOne
     {
@@ -50,7 +50,7 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
     }
 
     /**
-     * @return BelongsToMany<Repository>
+     * @return BelongsToMany<Repository, $this>
      */
     public function repositories(): BelongsToMany
     {

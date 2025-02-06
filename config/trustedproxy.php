@@ -3,5 +3,5 @@
 declare(strict_types=1);
 
 return [
-    'proxies' => explode(',', env('TRUSTED_PROXIES', '')),
+    'proxies' => explode(',', (string) env('TRUSTED_PROXIES', '')),
 ];

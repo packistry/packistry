@@ -175,7 +175,7 @@ class GitlabClient extends Client
         if (
             ! is_array($json)
             || ! array_key_exists('scopes', $json)
-            || in_array('api', $json['scopes'])) {
+            || in_array('api', $json['scopes'], true)) {
             throw new InvalidTokenException(
                 missingScopes: ['api']
             );

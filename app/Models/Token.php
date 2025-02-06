@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\PersonalAccessToken;
+use Override;
+use RuntimeException;
 
 /**
  * @property int|false $id
@@ -17,7 +19,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property int $tokenable_id
  * @property string $name
  * @property string $token
- * @property array|null $abilities
+ * @property string[]|null $abilities
  * @property Carbon|null $last_used_at
  * @property Carbon|null $expires_at
  * @property Carbon|null $created_at
@@ -37,15 +39,14 @@ class Token extends PersonalAccessToken
         return match ($this->tokenable_type) {
             User::class => TokenType::PERSONAL_ACCESS,
             DeployToken::class => TokenType::DEPLOY,
-            default => throw new \RuntimeException("No type for $this->tokenable_type")
+            default => throw new RuntimeException("No type for $this->tokenable_type")
         };
     }
 
     /**
      * @param  string  $token
-     *
-     * @phpstan-ignore-next-line
      */
+    #[Override]
     public static function findToken($token): ?PersonalAccessToken
     {
         [, $token] = explode('-', $token, 2);

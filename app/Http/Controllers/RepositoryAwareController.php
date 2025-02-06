@@ -15,8 +15,11 @@ abstract class RepositoryAwareController
 {
     protected function token(): ?Tokenable
     {
-        /** @var Tokenable $token */
         $token = Auth::guard('sanctum')->user();
+
+        if ($token !== null && ! $token instanceof Tokenable) {
+            return throw new \RuntimeException('Authenticatable class must implement '.Tokenable::class);
+        }
 
         return $token;
     }
@@ -40,7 +43,7 @@ abstract class RepositoryAwareController
         $token = $this->token();
         $repository = $this->repository();
 
-        if (in_array($ability, TokenAbility::readAbilities()) && $repository->public) {
+        if (in_array($ability, TokenAbility::readAbilities(), true) && $repository->public) {
             return;
         }
 
