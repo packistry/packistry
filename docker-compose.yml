@@ -1,33 +1,42 @@
 services:
-    gitlab:
-        image: gitlab/gitlab-ce:17.4.0-ce.0
-        container_name: gitlab
+    web:
         restart: unless-stopped
-        environment:
-            GITLAB_OMNIBUS_CONFIG: |
-                # Add any other gitlab.rb configuration here, each on its own line
-                external_url 'http://localhost'
+        build:
+            context: .
+            target: base
         ports:
-            - '80:80'
+            - '${APP_PORT:-80}:8000'
+        environment:
+            PHP_CLI_SERVER_WORKERS: 4
         volumes:
-            - 'gitlab-config:/etc/gitlab'
-            - 'gitlab-logs:/var/log/gitlab'
-            - 'gitlab-data:/var/opt/gitlab'
-        shm_size: '256m'
+            - '.:/var/www/html:delegated'
+        command: 'php artisan serve --host=0.0.0.0'
     gitea:
-        image: gitea/gitea:1.22.2
-        container_name: gitea
+        image: gitea/gitea:1.23.3
         restart: unless-stopped
         environment:
             - GITEA__webhook__ALLOWED_HOST_LIST=*
         ports:
             - '3000:3000'
     gogs:
-        image: gogs/gogs:latest
-        container_name: gogs
+        image: gogs/gogs:0.13
         restart: unless-stopped
         ports:
             - '3001:3000'
+    gitlab:
+        image: gitlab/gitlab-ce:17.6.4-ce.0
+        restart: unless-stopped
+        environment:
+            GITLAB_OMNIBUS_CONFIG: |
+                # Add any other gitlab.rb configuration here, each on its own line
+                external_url 'http://localhost'
+        ports:
+            - '3002:80'
+        volumes:
+            - 'gitlab-config:/etc/gitlab'
+            - 'gitlab-logs:/var/log/gitlab'
+            - 'gitlab-data:/var/opt/gitlab'
+        shm_size: '256m'
 volumes:
     gitlab-config:
     gitlab-logs:

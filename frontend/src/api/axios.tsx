@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
-export const baseURL = import.meta.env.DEV ? 'http://localhost:8000' : ''
+export const baseURL = import.meta.env.DEV ? 'http://localhost' : ''
 axios.get(`${baseURL}/sanctum/csrf-cookie`)
 
 export const axiosDefaults: CreateAxiosDefaults = {
