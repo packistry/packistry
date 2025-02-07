@@ -10,7 +10,7 @@ use App\Models\User;
 use function Pest\Laravel\getJson;
 
 it('indexes', function (?User $user, int $status): void {
-    if (! $user instanceof \App\Models\User) {
+    if (! $user instanceof User) {
         return;
     }
 
@@ -33,7 +33,7 @@ it('indexes', function (?User $user, int $status): void {
 })->with(guestAndUsers(Permission::PERSONAL_TOKEN_READ));
 
 it('searches', function (?User $user, int $status): void {
-    if (! $user instanceof \App\Models\User) {
+    if (! $user instanceof User) {
         return;
     }
 

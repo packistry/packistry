@@ -6,6 +6,7 @@ namespace App\Listeners;
 
 use App\Events\PackageDownloadEvent;
 use App\Models\Download;
+use App\Models\Token;
 use App\Models\Version;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -27,7 +28,7 @@ class RecordPackageDownload
             $download = new Download;
             $download->ip = $event->ip;
 
-            if ($event->token instanceof \App\Models\Token && $event->token->id !== false) {
+            if ($event->token instanceof Token && $event->token->id !== false) {
                 $download->token_id = $event->token->id;
             }
 

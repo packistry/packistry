@@ -15,11 +15,11 @@ it('shows index', function (?User $user, int $status): void {
         ->count(10)
         ->create();
 
-    $query = $user instanceof \App\Models\User
+    $query = $user instanceof User
         ? Repository::userScoped($user)
         : Repository::query();
 
-    if ($user instanceof \App\Models\User) {
+    if ($user instanceof User) {
         $user->repositories()->sync([
             1, 2, 3, 4, 5,
         ]);

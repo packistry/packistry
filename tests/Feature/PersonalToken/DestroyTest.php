@@ -9,7 +9,7 @@ use function Pest\Laravel\assertModelMissing;
 use function Pest\Laravel\deleteJson;
 
 it('destroys', function (?User $user, int $status): void {
-    if (! $user instanceof \App\Models\User) {
+    if (! $user instanceof User) {
         return;
     }
 

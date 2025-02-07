@@ -8,6 +8,7 @@ use App\Http\Resources\SourceResource;
 use App\Import;
 use App\Models\Source;
 use App\Models\User;
+use App\Normalizer;
 use App\Sources\Client;
 
 use function Pest\Laravel\postJson;
@@ -46,7 +47,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
     $source = Source::query()->first();
 
     expect($source)
-        ->url->toBe(\App\Normalizer::url($url))
+        ->url->toBe(Normalizer::url($url))
         ->name->toBe($name)
         ->provider->toBe($provider)
         ->and(decrypt($source->token))->toBe($token);
