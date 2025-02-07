@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { del, get, patch, post } from '@/api/axios'
 
-const provider = z.enum(['gitlab', 'github', 'gitea'])
+const provider = z.enum(['gitlab', 'github', 'gitea', 'bitbucket'])
 
 export type Provider = z.infer<typeof provider>
 
@@ -10,6 +10,7 @@ export const source = z.object({
     name: z.string(),
     provider: provider,
     url: z.string(),
+    useNameAsWorkspace: z.boolean(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })
@@ -25,6 +26,7 @@ export const storeSourceInput = z.object({
     provider: provider,
     url: z.string(),
     token: z.string(),
+    useNameAsWorkspace: z.boolean(),
 })
 
 export function storeSource(input: z.infer<typeof storeSourceInput>) {
@@ -37,6 +39,7 @@ export const updateSourceInput = z.object({
     provider: provider,
     url: z.string(),
     token: z.string().optional(),
+    useNameAsWorkspace: z.boolean(),
 })
 
 export function updateSource(input: z.infer<typeof updateSourceInput>) {

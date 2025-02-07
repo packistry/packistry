@@ -38,6 +38,7 @@ class Source extends Model
 
     protected $casts = [
         'provider' => SourceProvider::class,
+        'use_name_as_workspace' => 'boolean',
     ];
 
     public function client(): Client
@@ -45,6 +46,7 @@ class Source extends Model
         return $this->provider->clientWith(
             token: decrypt($this->token),
             url: $this->url,
+            source: $this,
         );
     }
 

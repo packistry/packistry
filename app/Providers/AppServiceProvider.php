@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Middleware\BitbucketWebhookSecret;
 use App\Http\Middleware\GiteaWebhookSecret;
 use App\Http\Middleware\GitHubWebhookSecret;
 use App\Http\Middleware\GitlabWebhookSecret;
@@ -33,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(GitHubWebhookSecret::class)
             ->needs('$secret')
             ->give(config('services.gitea.webhook.secret'));
+
+        $this->app->when(BitbucketWebhookSecret::class)
+            ->needs('$secret')
+            ->give(config('services.bitbucket.webhook.secret'));
 
     }
 

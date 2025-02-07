@@ -26,6 +26,8 @@ abstract class Client
 
     protected string $token;
 
+    protected ?Source $source = null;
+
     public function __construct(
         private readonly Import $import,
     ) {
@@ -34,10 +36,12 @@ abstract class Client
 
     public function withOptions(
         #[SensitiveParameter] string $token,
-        string $url
+        string $url,
+        ?Source $source = null,
     ): static {
         $this->token = $token;
         $this->url = $url;
+        $this->source = $source;
 
         return $this;
     }

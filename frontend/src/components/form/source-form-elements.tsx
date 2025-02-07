@@ -1,4 +1,5 @@
 import { FormInput } from '@/components/form/elements/FormInput'
+import { FormSwitch } from '@/components/form/elements/FormSwitch'
 import * as React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { FormSourceProviderSelect } from '@/components/form/elements/FormSourceProviderSelect'
@@ -46,6 +47,15 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
                 description="Enter your access token for authentication."
                 control={form.control}
             />
+
+            {provider === 'bitbucket' && (
+                <FormSwitch
+                    label="Use source name as workspace"
+                    name="useNameAsWorkspace"
+                    control={form.control}
+                    description="Private repositories may be accessed with the workspace name. Enable this option if your repositories require the workspace name in API requests."
+                />
+            )}
         </>
     )
 }
@@ -65,6 +75,10 @@ function TokenCreationAlert({ url, provider }: { url: string; provider: SourcePr
         fullUrl = 'https://github.com'
     }
 
+    if (fullUrl === 'https://api.bitbucket.org') {
+        fullUrl = 'https://bitbucket.org'
+    }
+
     const providerExplanations: Record<SourceProvider, { path: string; scopes: string }> = {
         gitea: {
             path: '/user/settings/applications',
@@ -77,6 +91,10 @@ function TokenCreationAlert({ url, provider }: { url: string; provider: SourcePr
         gitlab: {
             path: '/-/user_settings/personal_access_tokens',
             scopes: 'api scope',
+        },
+        bitbucket: {
+            path: '/account/settings/app-passwords/',
+            scopes: 'with read permissions. Use your user name and an app password to generate a base64 encoded token',
         },
     }
 

@@ -40,6 +40,7 @@ class SourceFactory extends Factory
                     SourceProvider::GITEA => 'https://gitea.com',
                     SourceProvider::GITLAB => 'https://gitlab.com',
                     SourceProvider::GITHUB => 'https://api.github.com',
+                    SourceProvider::BITBUCKET => 'https://api.bitbucket.org',
                 },
             ]);
     }
