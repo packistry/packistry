@@ -7,7 +7,6 @@ parameters:
 			path: app/Models/Scopes/UserScope.php
 
 		-
-			message: '#^Out of 406 possible param types, only 405 \- 99\.7 %% actually have it\. Add more param types to get over 100 %%$#'
 			identifier: typeCoverage.paramTypeCoverage
 			count: 1
 			path: app/Models/Token.php

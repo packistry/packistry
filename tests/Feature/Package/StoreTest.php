@@ -102,7 +102,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
         ->description->toBe('description');
 
     /** @var Version $version */
-    $version = \App\Models\Version::query()->find(1);
+    $version = Version::query()->find(1);
 
     expect($version)->not()->toBeNull()
         ->package_id->toBe(1)
@@ -125,7 +125,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
         ]);
 
     /** @var Version $version */
-    $version = \App\Models\Version::query()->find(2);
+    $version = Version::query()->find(2);
 
     expect($version)->not()->toBeNull()
         ->package_id->toBe(1)

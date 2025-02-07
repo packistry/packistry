@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\User;
+use App\Normalizer;
 
 use function Pest\Laravel\patchJson;
 
@@ -33,7 +34,7 @@ it('updates', function (?User $user, int $status): void {
     $source = $source->fresh();
 
     expect($source)
-        ->url->toBe(\App\Normalizer::url($url))
+        ->url->toBe(Normalizer::url($url))
         ->name->toBe($name)
         ->and(decrypt($source->token))->toBe($token);
 })->with(guestAndUsers(Permission::SOURCE_UPDATE));
@@ -55,7 +56,7 @@ it('does not update token when not given', function (?User $user, int $status): 
     $source = $source->fresh();
 
     expect($source)
-        ->url->toBe(\App\Normalizer::url($url))
+        ->url->toBe(Normalizer::url($url))
         ->name->toBe($name)
         ->and(decrypt($source->token))->toBe($token);
 })->with(unscopedUser(Permission::SOURCE_UPDATE));

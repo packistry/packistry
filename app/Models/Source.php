@@ -51,7 +51,7 @@ class Source extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Package, $this>
+     * @return HasMany<Package, $this>
      */
     public function packages(): HasMany
     {

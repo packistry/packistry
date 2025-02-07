@@ -27,7 +27,7 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
     }
 
     /** @var User $user */
-    $user = \App\Models\User::query()->find(2);
+    $user = User::query()->find(2);
     $response->assertExactJson(
         resourceAsJson(new UserResource(
             $user,
