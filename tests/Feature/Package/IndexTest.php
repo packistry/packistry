@@ -17,7 +17,7 @@ it('shows index', function (?User $user, int $status): void {
         ->count(10)
         ->create();
 
-    $query = $user instanceof \App\Models\User
+    $query = $user instanceof User
         ? Package::userScoped($user)
         : Package::query();
 
