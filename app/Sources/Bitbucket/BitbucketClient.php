@@ -218,6 +218,7 @@ class BitbucketClient extends Client
             return '';
         }
 
-        return $this->source->use_name_as_workspace ? "{$this->source->name}/" : '';
+        $workspace = $this->source->meta_data["workspace"] ?? null;
+        return $workspace !== null && $workspace !== '' ? "{$workspace}/" : '';
     }
 }

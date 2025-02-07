@@ -38,7 +38,7 @@ class Source extends Model
 
     protected $casts = [
         'provider' => SourceProvider::class,
-        'use_name_as_workspace' => 'boolean',
+        'meta_data' => 'array',
     ];
 
     public function client(): Client

@@ -14,6 +14,6 @@ class UpdateSourceInput extends Input
         public string $name,
         public string $url,
         #[SensitiveParameter] public Optional|string $token,
-        public bool $use_name_as_workspace,
+        public ?array $meta_data = null,
     ) {}
 }

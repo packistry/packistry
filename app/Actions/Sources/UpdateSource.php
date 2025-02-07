@@ -14,7 +14,7 @@ class UpdateSource
     {
         $source->name = $input->name;
         $source->url = Normalizer::url($input->url);
-        $source->use_name_as_workspace = $input->use_name_as_workspace;
+        $source->meta_data = $input->meta_data;
 
         if (is_string($input->token)) {
             $source->token = encrypt($input->token);

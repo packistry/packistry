@@ -49,11 +49,12 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
             />
 
             {provider === 'bitbucket' && (
-                <FormSwitch
-                    label="Use source name as workspace"
-                    name="useNameAsWorkspace"
+                <FormInput
+                    disabled={disableProvider}
+                    label="Workspace"
+                    name="metaData.workspace"
                     control={form.control}
-                    description="Private repositories may be accessed with the workspace name. Enable this option if your repositories require the workspace name in API requests."
+                    description="Private repositories may be accessed within a workspace."
                 />
             )}
         </>

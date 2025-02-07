@@ -29,7 +29,7 @@ class StoreSource
         $source->url = Normalizer::url($input->url);
         $source->token = encrypt($input->token);
         $source->secret = encrypt(Str::random());
-        $source->use_name_as_workspace = $input->use_name_as_workspace;
+        $source->meta_data = $input->meta_data;
 
         $source->save();
 

@@ -10,7 +10,7 @@ export const source = z.object({
     name: z.string(),
     provider: provider,
     url: z.string(),
-    useNameAsWorkspace: z.boolean(),
+    metaData: z.any(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })
@@ -26,7 +26,7 @@ export const storeSourceInput = z.object({
     provider: provider,
     url: z.string(),
     token: z.string(),
-    useNameAsWorkspace: z.boolean(),
+    metaData: z.any(),
 })
 
 export function storeSource(input: z.infer<typeof storeSourceInput>) {
@@ -39,7 +39,7 @@ export const updateSourceInput = z.object({
     provider: provider,
     url: z.string(),
     token: z.string().optional(),
-    useNameAsWorkspace: z.boolean(),
+    metaData: z.any(),
 })
 
 export function updateSource(input: z.infer<typeof updateSourceInput>) {
