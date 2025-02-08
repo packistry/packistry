@@ -27,6 +27,7 @@ class VersionResource extends JsonResource
             'package_id' => $this->package_id,
             'name' => $this->name,
             'shasum' => $this->shasum,
+            'downloads_count' => $this->whenCounted('downloads'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

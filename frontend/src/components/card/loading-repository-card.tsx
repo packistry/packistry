@@ -2,9 +2,9 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import * as React from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function LoadingRepositoryCard() {
+export function LoadingRepositoryCard({ className }: { className?: string }) {
     return (
-        <Card>
+        <Card className={className}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <Skeleton className="w-20 h-4" />
                 <Skeleton className="w-5 h-5" />

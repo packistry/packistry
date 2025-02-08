@@ -44,6 +44,19 @@ export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     cell: {
                         className: 'font-medium',
                     },
+                    render: (record) => {
+                        return (
+                            <Link
+                                to="/packages/$packageId"
+                                className="underline"
+                                params={{
+                                    packageId: record.id,
+                                }}
+                            >
+                                {record.name}
+                            </Link>
+                        )
+                    },
                 },
                 {
                     key: 'description',

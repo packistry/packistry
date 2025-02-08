@@ -6,14 +6,15 @@ import { ExternalLinkIcon, GitlabIcon } from 'lucide-react'
 import * as React from 'react'
 import { Source } from '@/api'
 import { providerColors, providerIcons } from '@/api/source-provider'
+import { cn } from '@/lib/utils'
 
-export function SourceCard({ source }: { source: Source }) {
+export function SourceCard({ source, className }: { source: Source; className?: string }) {
     const ProviderIcon = providerIcons[source.provider] || GitlabIcon
 
     return (
         <Card
             key={source.id}
-            className="overflow-hidden"
+            className={cn('overflow-hidden', className)}
         >
             <CardContent className="p-0">
                 <div className={`p-4 ${providerColors[source.provider] || 'bg-primary text-primary-foreground'}`}>

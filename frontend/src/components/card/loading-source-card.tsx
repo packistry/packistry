@@ -1,10 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import * as React from 'react'
+import { cn } from '@/lib/utils'
 
-export function LoadingSourceCard() {
+export function LoadingSourceCard({ className }: { className?: string }) {
     return (
-        <Card className="overflow-hidden">
+        <Card className={cn('overflow-hidden', className)}>
             <CardContent className="p-0">
                 <div className="p-4 bg-background text-primary-foreground">
                     <div className="flex justify-between items-center">

@@ -11,6 +11,8 @@ use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
 use App\Models\Package;
 use App\SearchFilter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -57,6 +59,24 @@ readonly class PackageController extends Controller
         return response()->json(
             PackageResource::collection($packages),
             201,
+        );
+    }
+
+    public function show(string $packageId): JsonResponse
+    {
+        $this->authorize(Permission::PACKAGE_READ);
+
+        $package = Package::userScoped()
+            ->findOrFail($packageId);
+
+        $package->load([
+            'versions' => fn (HasMany $query) => $query->withCount('downloads'),
+            'repository' => fn (BelongsTo $query) => $query->withCount('packages'),
+            'source' => fn (BelongsTo $query) => $query,
+        ]);
+
+        return response()->json(
+            new PackageResource($package)
         );
     }
 

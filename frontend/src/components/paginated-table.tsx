@@ -169,7 +169,9 @@ function TableHeaderFromColumns({
                                 'flex justify-between w-full cursor-pointer h-12 items-center': column.sorter,
                             })}
                             onClick={() => {
-                                onSort && onSort(column)
+                                if (typeof onSort !== 'undefined') {
+                                    onSort(column)
+                                }
                             }}
                         >
                             <span>{column.label}</span>
@@ -201,7 +203,7 @@ function TableLoadingRow({ columns }: { columns: Column<never>[] }) {
 }
 
 export function navigateOnSort(navigate: UseNavigateResult<string>, param: string = 'sort') {
-    return (column: Column<any>) => {
+    return (column: Column<never>) => {
         if (!column.sorter) {
             return
         }

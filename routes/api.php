@@ -58,7 +58,7 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
             ->only(['index', 'store', 'destroy', 'update']);
 
         Route::apiResource('/packages', PackageController::class)
-            ->only(['index', 'store', 'destroy']);
+            ->only(['index', 'store', 'destroy', 'show']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::patch('/me', [AuthController::class, 'update']);
