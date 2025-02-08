@@ -28,9 +28,12 @@ class RecordPackageDownload
             $download = new Download;
             $download->ip = $event->ip;
 
-            if ($event->token instanceof Token && $event->token->id !== false) {
+            if ($event->token instanceof Token) {
                 $download->token_id = $event->token->id;
             }
+
+            $download->package()->associate($event->package);
+            $download->version_name = $version->name;
 
             $version
                 ->downloads()

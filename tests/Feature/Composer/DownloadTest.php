@@ -28,8 +28,9 @@ it('downloads a version', function (Repository $repository, ?Authenticatable $au
         ->assertContent((string) file_get_contents($path));
 
     assertDatabaseHas(Download::class, [
+        'package_id' => 1,
         'version_id' => 1,
-        'token_id' => null,
+        'token_id' => $auth === null ? null : 1,
         'ip' => '127.0.0.1',
     ]);
 
@@ -56,6 +57,19 @@ it('downloads version from private repository', function (Repository $repository
 
     getJson($repository->url('/test/test/1.0.0'))
         ->assertStatus($status);
+
+    if ($status !== 401) {
+        assertDatabaseHas(Download::class, [
+            'package_id' => 1,
+            'version_id' => 1,
+            'token_id' => 1,
+            'ip' => '127.0.0.1',
+        ]);
+
+        /** @var Package $package */
+        $package = Package::query()->first();
+        expect($package->downloads)->toBe(1);
+    }
 })
     ->with(rootAndSubRepository())
     ->with(guestAndTokens(
