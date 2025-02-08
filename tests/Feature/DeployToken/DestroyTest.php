@@ -8,8 +8,8 @@ use App\Models\Repository;
 use App\Models\User;
 
 use function Pest\Laravel\assertModelMissing;
+use function Pest\Laravel\assertSoftDeleted;
 use function Pest\Laravel\deleteJson;
-use function PHPUnit\Framework\assertNotNull;
 
 it('destroys', function (?User $user, int $status): void {
     Repository::factory()->create();
@@ -25,7 +25,6 @@ it('destroys', function (?User $user, int $status): void {
     }
 
     assertModelMissing($token);
-    assertNotNull($token->token);
-    assertModelMissing($token->token);
+    assertSoftDeleted($token->token);
 })
     ->with(guestAndUsers(Permission::DEPLOY_TOKEN_DELETE));

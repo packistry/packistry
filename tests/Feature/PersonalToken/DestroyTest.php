@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Enums\Permission;
 use App\Models\User;
 
-use function Pest\Laravel\assertModelMissing;
+use function Pest\Laravel\assertSoftDeleted;
 use function Pest\Laravel\deleteJson;
 
 it('destroys', function (?User $user, int $status): void {
@@ -22,6 +22,6 @@ it('destroys', function (?User $user, int $status): void {
         return;
     }
 
-    assertModelMissing($token->accessToken);
+    assertSoftDeleted($token->accessToken);
 })
     ->with(guestAndUsers(Permission::PERSONAL_TOKEN_DELETE));

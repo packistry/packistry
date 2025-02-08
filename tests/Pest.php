@@ -16,7 +16,6 @@ declare(strict_types=1);
 use App\Enums\Permission;
 use App\Enums\SourceProvider;
 use App\Enums\TokenAbility;
-use App\Enums\TokenType;
 use App\Models\DeployToken;
 use App\Models\Repository;
 use App\Models\Source;
@@ -35,10 +34,6 @@ use Database\Factories\RepositoryFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
-use Laravel\Sanctum\Contracts\HasAbilities;
-use Laravel\Sanctum\Sanctum;
-use Mockery\LegacyMockInterface;
-use Mockery\MockInterface;
 use Spatie\LaravelData\Data;
 
 use function Pest\Laravel\postJson;
@@ -114,25 +109,9 @@ function actingAs(User|DeployToken $subject, TokenAbility|array $abilities = [])
         ? array_map(fn (TokenAbility $ability) => $ability->value, $abilities)
         : [$abilities->value];
 
-    /** @var MockInterface&LegacyMockInterface&HasAbilities $token */
-    $token = Mockery::mock(Sanctum::personalAccessTokenModel())->shouldIgnoreMissing(false);
+    $new = $subject->createToken('token', $abilities);
 
-    if (in_array('*', $abilities)) {
-        /** @phpstan-ignore-next-line  */
-        $token->shouldReceive('can')->withAnyArgs()->andReturn(true);
-    } else {
-        foreach ($abilities as $ability) {
-            /** @phpstan-ignore-next-line  */
-            $token->shouldReceive('can')->with($ability)->andReturn(true);
-        }
-    }
-
-    /** @phpstan-ignore-next-line  */
-    $token->shouldReceive('type')->andReturn(TokenType::PERSONAL_ACCESS);
-    /** @phpstan-ignore-next-line  */
-    $token->shouldReceive('getAttribute')->with('tokenable')->andReturn($subject);
-
-    $subject->withAccessToken($token);
+    $subject->withAccessToken($new->accessToken);
 
     if (isset($subject->wasRecentlyCreated) && $subject->wasRecentlyCreated) {
         $subject->wasRecentlyCreated = false;

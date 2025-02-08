@@ -8,13 +8,14 @@ use App\Enums\TokenType;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\PersonalAccessToken;
 use Override;
 use RuntimeException;
 
 /**
- * @property int|false $id
+ * @property int $id
  * @property string $tokenable_type
  * @property int $tokenable_id
  * @property string $name
@@ -34,6 +35,8 @@ use RuntimeException;
  */
 class Token extends PersonalAccessToken
 {
+    use SoftDeletes;
+
     public function type(): TokenType
     {
         return match ($this->tokenable_type) {
