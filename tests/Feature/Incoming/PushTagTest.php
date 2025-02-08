@@ -6,6 +6,7 @@ use App\Enums\SourceProvider;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
+use App\Sources\Importable;
 
 it('creates version for new tag', function (Repository $repository, SourceProvider $provider, ...$args): void {
     /** @var Package $package */
@@ -69,3 +70,32 @@ it('overwrites version for same tag', function (Repository $repository, SourcePr
 })
     ->with(rootAndSubRepository())
     ->with(providerPushEvents());
+
+it('has correct zip url for tag', function (SourceProvider $provider, Importable $event, ...$rest): void {
+    $url = match ($provider) {
+        SourceProvider::GITEA => 'https://gitea.com/vendor/test/archive/v1.0.0.zip',
+        SourceProvider::GITHUB => 'https://github.com/vendor/test/archive/v1.0.0.zip',
+        SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkoutsha',
+        SourceProvider::BITBUCKET => 'https://bitbucket.org/vendor/test/get/v1.0.0.zip',
+    };
+
+    expect($event->zipUrl())->toBe($url);
+})
+    ->with(providerPushEvents(
+        ref: 'v1.0.0'
+    ));
+
+it('has correct zip url for branch', function (SourceProvider $provider, Importable $event, ...$rest): void {
+    $url = match ($provider) {
+        SourceProvider::GITEA => 'https://gitea.com/vendor/test/archive/feature/my-feature.zip',
+        SourceProvider::GITHUB => 'https://github.com/vendor/test/archive/feature/my-feature.zip',
+        SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkoutsha',
+        SourceProvider::BITBUCKET => 'https://bitbucket.org/vendor/test/get/feature/my-feature.zip',
+    };
+
+    expect($event->zipUrl())->toBe($url);
+})
+    ->with(providerPushEvents(
+        refType: 'heads',
+        ref: 'feature/my-feature',
+    ));
