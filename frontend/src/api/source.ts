@@ -5,15 +5,38 @@ const provider = z.enum(['gitlab', 'github', 'gitea', 'bitbucket'])
 
 export type Provider = z.infer<typeof provider>
 
-export const source = z.object({
+const baseSource = z.object({
     id: z.coerce.string(),
     name: z.string(),
-    provider: provider,
     url: z.string(),
-    metadata: z.object({}),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })
+
+export const source = z.discriminatedUnion('provider', [
+    z.object({
+        provider: z.literal('gitlab'),
+        metadata: z.object({}),
+        ...baseSource.shape,
+    }),
+    z.object({
+        provider: z.literal('github'),
+        metadata: z.object({}),
+        ...baseSource.shape,
+    }),
+    z.object({
+        provider: z.literal('gitea'),
+        metadata: z.object({}),
+        ...baseSource.shape,
+    }),
+    z.object({
+        provider: z.literal('bitbucket'),
+        metadata: z.object({
+            workspace: z.string().optional(),
+        }),
+        ...baseSource.shape,
+    }),
+])
 
 export type Source = z.infer<typeof source>
 
@@ -26,7 +49,7 @@ export const storeSourceInput = z.object({
     provider: provider,
     url: z.string(),
     token: z.string(),
-    metadata: z.object({}),
+    metadata: z.any(),
 })
 
 export function storeSource(input: z.infer<typeof storeSourceInput>) {
@@ -36,10 +59,9 @@ export function storeSource(input: z.infer<typeof storeSourceInput>) {
 export const updateSourceInput = z.object({
     id: z.string(),
     name: z.string(),
-    provider: provider,
     url: z.string(),
     token: z.string().optional(),
-    metadata: z.object({}),
+    metadata: z.any(),
 })
 
 export function updateSource(input: z.infer<typeof updateSourceInput>) {

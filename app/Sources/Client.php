@@ -8,6 +8,7 @@ use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\InvalidTokenException;
 use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Import;
@@ -96,5 +97,8 @@ abstract class Client
      */
     abstract public function createWebhook(Repository $repository, Project $project, Source $source): void;
 
+    /**
+     * @throws InvalidTokenException
+     */
     abstract public function validateToken(): void;
 }

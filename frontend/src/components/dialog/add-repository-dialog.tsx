@@ -46,7 +46,7 @@ export function AddRepositoryDialog(props: DialogProps) {
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={onSubmit}
                         className="space-y-4"
                     >
                         <RepositoryFormElements control={form.control} />

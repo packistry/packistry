@@ -18,6 +18,6 @@ class StoreSourceInput extends Input
         public SourceProvider $provider,
         public string $url,
         #[SensitiveParameter] public string $token,
-        public array $metadata = [],
+        public ?array $metadata = [],
     ) {}
 }

@@ -7,7 +7,6 @@ namespace App\Actions\Sources;
 use App\Actions\Sources\Inputs\StoreSourceInput;
 use App\Models\Source;
 use App\Normalizer;
-use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -31,7 +30,10 @@ class StoreSource
         $source->url = Normalizer::url($input->url);
         $source->token = encrypt($input->token);
         $source->secret = encrypt(Str::random());
-        $source->metadata = new ArrayObject($input->metadata);
+
+        if ($input->metadata !== null) {
+            $source->metadata = $input->metadata;
+        }
 
         $source->save();
 

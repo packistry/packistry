@@ -17,6 +17,6 @@ class UpdateSourceInput extends Input
         public string $name,
         public string $url,
         #[SensitiveParameter] public Optional|string $token,
-        public array $metadata = [],
+        public ?array $metadata = [],
     ) {}
 }

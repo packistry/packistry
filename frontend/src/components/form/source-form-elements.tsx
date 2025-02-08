@@ -50,7 +50,6 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
 
             {provider === 'bitbucket' && (
                 <FormInput
-                    disabled={disableProvider}
                     label="Workspace"
                     name="metadata.workspace"
                     control={form.control}
@@ -119,7 +118,7 @@ function TokenCreationAlert({ url, provider }: { url: string; provider: SourcePr
                 >
                     https://bitbucket.org/account/settings/app-passwords/
                 </a>{' '}
-                and create an app password with repository read/write/admin and webhook read/write permissions. Base64
+                and create an app password with repository read/admin and webhook read and write permissions. Base64
                 encode username:app-password to create a token
             </>
         ),

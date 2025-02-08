@@ -28,7 +28,7 @@ enum SourceProvider: string
     /**
      * @param  array<string, mixed>  $metadata
      */
-    public function clientWith(string $token, string $url, array $metadata = []): Client
+    public function clientWith(string $token, string $url, ?array $metadata = []): Client
     {
         /** @var Client $client */
         $client = app($this->clientClassString());
@@ -36,7 +36,7 @@ enum SourceProvider: string
         return $client->withOptions(
             token: $token,
             url: $url,
-            metadata: $metadata,
+            metadata: $metadata ?? [],
         );
     }
 }
