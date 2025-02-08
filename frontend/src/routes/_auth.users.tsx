@@ -6,6 +6,7 @@ import { UserTable } from '@/components/table/user-table'
 import { Heading } from '@/components/page/Heading'
 import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
 import { userQuery } from '@/api'
+import { navigateOnSort } from '@/components/paginated-table'
 
 export const Route = createFileRoute('/_auth/users')({
     validateSearch: userQuery,
@@ -27,7 +28,11 @@ function UsersComponent() {
                 search={search.filters?.search}
                 onSearch={navigateOnSearch(navigate)}
             />
-            <UserTable query={query} />
+            <UserTable
+                sort={search.sort}
+                query={query}
+                onSort={navigateOnSort(navigate)}
+            />
         </>
     )
 }

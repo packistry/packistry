@@ -8,6 +8,7 @@ import { Heading } from '@/components/page/Heading'
 import { z } from 'zod'
 import { useSearchDialog } from '@/components/dialog/use-search-dialog'
 import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
+import { navigateOnSort } from '@/components/paginated-table'
 
 export const Route = createFileRoute('/_auth/deploy-tokens')({
     validateSearch: deployTokenQuery.extend({
@@ -32,7 +33,11 @@ function TokensComponent() {
                 search={search.filters?.search}
                 onSearch={navigateOnSearch(navigate)}
             />
-            <DeployTokenTable query={query} />
+            <DeployTokenTable
+                sort={search.sort}
+                query={query}
+                onSort={navigateOnSort(navigate)}
+            />
         </>
     )
 }

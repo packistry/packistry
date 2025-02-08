@@ -12,6 +12,7 @@ import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
 import { PackageTable } from '@/components/table/package-table'
 import { z } from 'zod'
 import { useSearchDialog } from '@/components/dialog/use-search-dialog'
+import { navigateOnSort } from '@/components/paginated-table'
 
 export const Route = createFileRoute('/_auth/packages')({
     validateSearch: packageQuery.extend({
@@ -52,7 +53,11 @@ function PackagesComponent() {
                 search={search.filters?.search}
                 onSearch={navigateOnSearch(navigate)}
             />
-            <PackageTable query={query} />
+            <PackageTable
+                sort={search.sort}
+                query={query}
+                onSort={navigateOnSort(navigate)}
+            />
         </>
     )
 }

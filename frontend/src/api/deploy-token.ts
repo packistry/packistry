@@ -20,6 +20,7 @@ export const deployTokenQuery = paginatedQuery({
             search: z.string().optional(),
         })
         .optional(),
+    sort: z.enum(['name', '-name', 'expiresAt', '-expiresAt', 'lastUsedAt', '-lastUsedAt']),
 })
 
 export type DeployTokenQuery = z.infer<typeof deployTokenQuery>

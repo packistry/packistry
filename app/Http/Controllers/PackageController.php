@@ -35,6 +35,10 @@ readonly class PackageController extends Controller
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('repository_id'),
             ])
+            ->allowedSorts([
+                'downloads',
+                'name',
+            ])
             ->paginate((int) $request->query('size', '10'));
 
         return PackageResource::collection($packages)

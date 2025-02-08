@@ -13,6 +13,7 @@ import { z } from 'zod'
 import { useAuth } from '@/auth'
 import { REPOSITORY_CREATE } from '@/permission'
 import { Heading } from '@/components/page/Heading'
+import { navigateOnSort } from '@/components/paginated-table'
 
 export const Route = createFileRoute('/_auth/repositories')({
     validateSearch: repositoryQuery.extend({
@@ -36,12 +37,17 @@ function RepositoriesComponent() {
                 search={search.filters?.search}
                 onSearch={navigateOnSearch(navigate)}
             />
-            <PageContent query={query} />
+            <RepositoryCards query={query} />
+            <RepositoryTable
+                query={query}
+                sort={search.sort}
+                onSort={navigateOnSort(navigate)}
+            />
         </>
     )
 }
 
-function PageContent({ query }: { query: UseQueryResult<PaginatedRepository> }) {
+function RepositoryCards({ query }: { query: UseQueryResult<PaginatedRepository> }) {
     if (query.isLoading) {
         return (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -53,19 +59,19 @@ function PageContent({ query }: { query: UseQueryResult<PaginatedRepository> }) 
     }
 
     const repositories = query.data?.data || []
+
+    if (repositories.length === 0) {
+        return <></>
+    }
+
     return (
-        <>
-            {repositories.length > 0 && (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {repositories.slice(0, 3).map((repository) => (
-                        <RepositoryCard
-                            key={repository.id}
-                            repository={repository}
-                        />
-                    ))}
-                </div>
-            )}
-            <RepositoryTable query={query} />
-        </>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {repositories.slice(0, 3).map((repository) => (
+                <RepositoryCard
+                    key={repository.id}
+                    repository={repository}
+                />
+            ))}
+        </div>
     )
 }

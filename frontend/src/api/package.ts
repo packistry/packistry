@@ -19,6 +19,7 @@ export const packageQuery = paginatedQuery({
         repositoryId: z.string().optional(),
         search: z.string().optional(),
     }),
+    sort: z.enum(['downloads', '-downloads', 'name', '-name']),
 })
 
 export type PackageQuery = z.infer<typeof packageQuery>

@@ -13,6 +13,7 @@ use App\Models\DeployToken;
 use App\SearchFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
@@ -34,8 +35,16 @@ readonly class DeployTokenController extends Controller
                 ->with('token')
         )
             ->allowedFilters([
-                SearchFilter::allowed(['name']),
+                SearchFilter::allowed(['deploy_tokens.name']),
             ])
+            ->allowedSorts([
+                'name',
+                AllowedSort::field('expires_at', 'tokens.expires_at'),
+                AllowedSort::field('last_used_at', 'tokens.last_used_at'),
+            ])
+            ->select('deploy_tokens.*')
+            ->leftJoin('tokens', 'tokens.tokenable_id', '=', 'deploy_tokens.id')
+            ->where('tokens.tokenable_type', DeployToken::class)
             ->paginate((int) $request->query('size', '10'));
 
         return DeployTokenResource::collection($tokens)

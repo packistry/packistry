@@ -17,7 +17,7 @@ export function paginatedQuery<
 
 export const query = paginatedQuery({
     filters: z.record(z.string(), z.string().or(z.number()).or(z.boolean())).optional(),
-    sort: z.string().array(),
+    sort: z.string(),
 })
 
 export type Query = z.infer<typeof query>
@@ -52,10 +52,11 @@ export const anyPaginated = paginated(z.any())
 
 export type AnyPaginated = z.infer<typeof anyPaginated>
 
-export function toQueryString({ filters, ...props }: Query) {
+export function toQueryString({ filters, sort, ...props }: Query) {
     return new URLSearchParams({
         ...(decamelizeKeys(props) as Record<string, string>),
         ...(filters ? buildFilters(filters) : {}),
+        ...(sort ? { sort: decamelize(String(sort)) } : {}),
     }).toString()
 }
 

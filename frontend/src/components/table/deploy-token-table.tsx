@@ -1,4 +1,4 @@
-import { PaginatedTable } from '@/components/paginated-table'
+import { PaginatedTable, PaginatedTableProps } from '@/components/paginated-table'
 import * as React from 'react'
 import { UseQueryResult } from '@tanstack/react-query'
 import { PaginatedDeployToken } from '@/api/deploy-token'
@@ -11,10 +11,12 @@ import { KeyIcon } from 'lucide-react'
 import { DEPLOY_TOKEN_DELETE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
 
-export function DeployTokenTable({ query }: { query: UseQueryResult<PaginatedDeployToken> }) {
+export function DeployTokenTable(
+    props: Omit<PaginatedTableProps<UseQueryResult<PaginatedDeployToken>>, 'empty' | 'columns'>
+) {
     return (
         <PaginatedTable
-            query={query}
+            {...props}
             empty={{
                 title: 'No Deploy Tokens',
                 icon: <KeyIcon />,
@@ -34,6 +36,7 @@ export function DeployTokenTable({ query }: { query: UseQueryResult<PaginatedDep
                 {
                     key: 'name',
                     label: 'Name',
+                    sorter: true,
                     cell: {
                         className: 'font-medium',
                     },
@@ -57,6 +60,7 @@ export function DeployTokenTable({ query }: { query: UseQueryResult<PaginatedDep
                 {
                     key: 'lastUsedAt',
                     label: 'Last Used at',
+                    sorter: true,
                     head: {
                         className: 'w-[200px]',
                     },
@@ -65,6 +69,7 @@ export function DeployTokenTable({ query }: { query: UseQueryResult<PaginatedDep
                 {
                     key: 'expiresAt',
                     label: 'Expires',
+                    sorter: true,
                     head: {
                         className: 'w-[200px]',
                     },
