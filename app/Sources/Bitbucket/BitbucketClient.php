@@ -190,7 +190,7 @@ class BitbucketClient extends Client
         }
 
         return new Project(
-            id: $item['slug'],
+            id: trim($item['uuid'], '{}'),
             fullName: $item['full_name'],
             name: $item['name'],
             url: $item['links']['self']['href'],

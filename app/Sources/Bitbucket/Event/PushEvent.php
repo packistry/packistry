@@ -61,7 +61,7 @@ class PushEvent extends Input implements Deletable, Importable
     public function version(): string
     {
         return $this->isTag()
-            ? str_replace('v', '', $this->shortRef()) // ?
+            ? $this->shortRef()
             : "dev-{$this->shortRef()}";
     }
 

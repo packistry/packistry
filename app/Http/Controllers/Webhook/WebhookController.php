@@ -12,6 +12,7 @@ use App\Exceptions\VersionNotFoundException;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\VersionResource;
 use App\Models\Source;
+use App\Normalizer;
 use App\Sources\Deletable;
 use App\Sources\Importable;
 use Illuminate\Http\Client\ConnectionException;
@@ -95,7 +96,7 @@ abstract class WebhookController extends RepositoryAwareController
 
         $version = $package
             ->versions()
-            ->where('name', $event->version())
+            ->where('name', Normalizer::version($event->version()))
             ->firstOrFail();
 
         $path = Archive::name($package, $version->name);
