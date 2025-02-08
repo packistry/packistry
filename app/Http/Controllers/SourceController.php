@@ -82,6 +82,10 @@ readonly class SourceController extends Controller
             throw ValidationException::withMessages([
                 'url' => ['URL must be a valid URL'],
             ]);
+        } catch (InvalidTokenException $e) {
+            throw ValidationException::withMessages([
+                'token' => ['Token does not appear to be valid, or missing scopes: '.implode(', ', $e->missingScopes)],
+            ]);
         }
 
         return response()->json(

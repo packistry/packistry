@@ -44,7 +44,7 @@ export function EditSourceDialog({ source, trigger }: { source: Source; trigger?
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={onSubmit}
                         className="space-y-4"
                     >
                         <SourceFormElements

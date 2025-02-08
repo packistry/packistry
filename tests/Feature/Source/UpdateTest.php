@@ -4,14 +4,28 @@ declare(strict_types=1);
 
 use App\Enums\Permission;
 use App\Http\Resources\SourceResource;
+use App\Import;
 use App\Models\Source;
 use App\Models\User;
 use App\Normalizer;
+use App\Sources\Client;
 
 use function Pest\Laravel\patchJson;
 
 it('updates', function (?User $user, int $status): void {
     $source = Source::factory()->create();
+    $clientClassString = $source->provider->clientClassString();
+
+    app()->singleton($source->provider->clientClassString(), function () use ($clientClassString) {
+        /** @var Client $client */
+        $client = new $clientClassString(app(Import::class));
+
+        $mock = Mockery::mock($client)->shouldIgnoreMissing(false);
+        $mock->shouldReceive('withOptions')->withAnyArgs()->andReturn($mock);
+        $mock->shouldReceive('validateToken')->withAnyArgs()->andReturn();
+
+        return $mock;
+    });
 
     $response = patchJson("/sources/$source->id", [
         'name' => $name = fake()->name,

@@ -20,6 +20,7 @@ class StoreSource
         $input->provider->clientWith(
             token: $input->token,
             url: $input->url,
+            metadata: $input->metadata,
         )->validateToken();
 
         $source = new Source;
@@ -29,6 +30,10 @@ class StoreSource
         $source->url = Normalizer::url($input->url);
         $source->token = encrypt($input->token);
         $source->secret = encrypt(Str::random());
+
+        if ($input->metadata !== null) {
+            $source->metadata = $input->metadata;
+        }
 
         $source->save();
 

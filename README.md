@@ -1,6 +1,6 @@
 # Packistry
 
-Packistry is a self-hosted Composer repository designed to handle your PHP package distribution. It supports importing from multiple sources like GitHub, GitLab, and Gitea, with seamless updates using webhooks. Packistry allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
+Packistry is a self-hosted Composer repository designed to handle your PHP package distribution. It supports importing from multiple sources like GitHub, GitLab, Gitea and Bitbucket, with seamless updates using webhooks. Packistry allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
 
 - Explore our docs at **[https://packistry.github.io/ »](https://packistry.github.io/)**
 
@@ -14,6 +14,7 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **GitHub**
     - **GitLab**
     - **Gitea**
+    - **Bitbucket**
 
   Stays up to date automatically, as Packistry uses **webhooks** to pull the latest changes from your source repositories.
 

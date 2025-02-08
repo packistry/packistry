@@ -1,5 +1,6 @@
 import { FormInput } from '@/components/form/elements/FormInput'
 import * as React from 'react'
+import { ReactElement } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { FormSourceProviderSelect } from '@/components/form/elements/FormSourceProviderSelect'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -46,63 +47,88 @@ export function SourceFormElements({ form, disableProvider }: { form: UseFormRet
                 description="Enter your access token for authentication."
                 control={form.control}
             />
+
+            {provider === 'bitbucket' && (
+                <FormInput
+                    label="Workspace"
+                    name="metadata.workspace"
+                    control={form.control}
+                    description="Private repositories may be accessed within a workspace."
+                />
+            )}
         </>
     )
 }
-function isUrlValid(url: string) {
-    try {
-        new URL(url)
-        return true
-    } catch {
-        return false
-    }
-}
+
 function TokenCreationAlert({ url, provider }: { url: string; provider: SourceProvider }) {
-    let fullUrl = url.indexOf('://') === -1 ? 'https://' + url : url
+    const fullUrl = url.indexOf('://') === -1 ? 'https://' + url : url
 
-    // @todo meh
-    if (fullUrl === 'https://api.github.com') {
-        fullUrl = 'https://github.com'
+    const providerExplanations: Record<SourceProvider, ReactElement> = {
+        gitea: (
+            <>
+                Navigate to{' '}
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    className="underline"
+                    href={fullUrl + '/user/settings/applications'}
+                >
+                    {fullUrl}
+                    /user/settings/applications
+                </a>{' '}
+                and create a token with repository read and write permission
+            </>
+        ),
+        github: (
+            <>
+                Navigate to{' '}
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    className="underline"
+                    href={'https://github.com/settings/tokens/new'}
+                >
+                    https://github.com/settings/tokens/new
+                </a>{' '}
+                and create a token with repo scope
+            </>
+        ),
+        gitlab: (
+            <>
+                Navigate to{' '}
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    className="underline"
+                    href={fullUrl + '/-/user_settings/personal_access_tokens'}
+                >
+                    {fullUrl + '/-/user_settings/personal_access_tokens'}
+                </a>{' '}
+                and create a token with api scope
+            </>
+        ),
+        bitbucket: (
+            <>
+                Navigate to{' '}
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    className="underline"
+                    href={'https://bitbucket.org/account/settings/app-passwords/'}
+                >
+                    https://bitbucket.org/account/settings/app-passwords/
+                </a>{' '}
+                and create an app password with repository read/admin and webhook read and write permissions. Base64
+                encode username:app-password to create a token
+            </>
+        ),
     }
-
-    const providerExplanations: Record<SourceProvider, { path: string; scopes: string }> = {
-        gitea: {
-            path: '/user/settings/applications',
-            scopes: 'repository read and write permission',
-        },
-        github: {
-            path: '/settings/tokens/new',
-            scopes: 'repo scope',
-        },
-        gitlab: {
-            path: '/-/user_settings/personal_access_tokens',
-            scopes: 'api scope',
-        },
-    }
-
-    const explanation = providerExplanations[provider]
 
     return (
         <Alert>
             <Info className="h-4 w-4" />
             <AlertTitle>{providerNames[provider]}</AlertTitle>
-            <AlertDescription>
-                Navigate to{' '}
-                {isUrlValid(fullUrl) ? (
-                    <a
-                        rel="noreferrer"
-                        target="_blank"
-                        className="underline"
-                        href={fullUrl + explanation.path}
-                    >
-                        {fullUrl}
-                        {explanation.path}
-                    </a>
-                ) : (
-                    explanation.path
-                )}{' '}
-                and create a token with {explanation.scopes}.
-            </AlertDescription>
+            <AlertDescription>{providerExplanations[provider]}</AlertDescription>
         </Alert>
     )
 }

@@ -6,12 +6,11 @@ namespace App;
 
 use App\Exceptions\FailedToParseUrlException;
 use App\Exceptions\VersionNotFoundException;
-use RuntimeException;
 
 class Normalizer
 {
     /**
-     * @throws RuntimeException
+     * @throws FailedToParseUrlException
      */
     public static function url(string $url): string
     {

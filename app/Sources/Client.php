@@ -8,6 +8,7 @@ use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\InvalidTokenException;
 use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Import;
@@ -26,18 +27,28 @@ abstract class Client
 
     protected string $token;
 
+    /**
+     * @var array<string, mixed>
+     */
+    protected ?array $metadata = [];
+
     public function __construct(
         private readonly Import $import,
     ) {
         //
     }
 
+    /**
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function withOptions(
         #[SensitiveParameter] string $token,
-        string $url
+        string $url,
+        ?array $metadata = null,
     ): static {
         $this->token = $token;
         $this->url = $url;
+        $this->metadata = $metadata;
 
         return $this;
     }
@@ -86,5 +97,8 @@ abstract class Client
      */
     abstract public function createWebhook(Repository $repository, Project $project, Source $source): void;
 
+    /**
+     * @throws InvalidTokenException
+     */
     abstract public function validateToken(): void;
 }

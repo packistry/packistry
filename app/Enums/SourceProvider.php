@@ -12,6 +12,7 @@ enum SourceProvider: string
     case GITEA = 'gitea';
     case GITHUB = 'github';
     case GITLAB = 'gitlab';
+    case BITBUCKET = 'bitbucket';
 
     public function clientClassString(): string
     {
@@ -24,7 +25,10 @@ enum SourceProvider: string
         return $class;
     }
 
-    public function clientWith(string $token, string $url): Client
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
+    public function clientWith(string $token, string $url, ?array $metadata = []): Client
     {
         /** @var Client $client */
         $client = app($this->clientClassString());
@@ -32,6 +36,7 @@ enum SourceProvider: string
         return $client->withOptions(
             token: $token,
             url: $url,
+            metadata: $metadata ?? [],
         );
     }
 }

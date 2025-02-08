@@ -22,6 +22,7 @@ if (! function_exists('repositoryRoutes')) {
             Route::post('/gitea/{sourceId}', Webhook\GiteaController::class);
             Route::post('/github/{sourceId}', Webhook\GitHubController::class);
             Route::post('/gitlab/{sourceId}', Webhook\GitlabController::class);
+            Route::post('/bitbucket/{sourceId}', Webhook\BitbucketController::class);
         });
 
         Route::get('/packages.json', [Composer\RepositoryController::class, 'packages']);

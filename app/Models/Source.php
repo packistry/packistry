@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string $url
  * @property string $token
  * @property string $secret
+ * @property array<string, mixed> $metadata
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -38,6 +39,11 @@ class Source extends Model
 
     protected $casts = [
         'provider' => SourceProvider::class,
+        'metadata' => 'array',
+    ];
+
+    protected $attributes = [
+        'metadata' => '{}',
     ];
 
     public function client(): Client
@@ -45,6 +51,7 @@ class Source extends Model
         return $this->provider->clientWith(
             token: decrypt($this->token),
             url: $this->url,
+            metadata: $this->metadata,
         );
     }
 

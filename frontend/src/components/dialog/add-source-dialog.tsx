@@ -23,6 +23,7 @@ export function AddSourceDialog(props: DialogProps) {
             provider: '',
             url: '',
             token: '',
+            metadata: {},
         },
         onSuccess() {
             form.reset()
@@ -46,7 +47,7 @@ export function AddSourceDialog(props: DialogProps) {
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={onSubmit}
                         className="space-y-4"
                     >
                         <SourceFormElements form={form} />

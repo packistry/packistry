@@ -10,9 +10,13 @@ use Spatie\LaravelData\Optional;
 
 class UpdateSourceInput extends Input
 {
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
     public function __construct(
         public string $name,
         public string $url,
         #[SensitiveParameter] public Optional|string $token,
+        public ?array $metadata = [],
     ) {}
 }

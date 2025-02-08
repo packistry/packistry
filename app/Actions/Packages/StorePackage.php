@@ -21,6 +21,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class StorePackage
 {
@@ -34,7 +35,7 @@ class StorePackage
      * @throws NameNotFoundException
      * @throws VersionNotFoundException
      * @throws ConnectionException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function handle(StorePackageInput $input): array
     {
