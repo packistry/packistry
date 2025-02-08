@@ -27,7 +27,7 @@ class SourceResource extends JsonResource
             'provider' => $this->provider,
             'name' => $this->name,
             'url' => $this->url,
-            'meta_data' => $this->meta_data,
+            'metadata' => (object) $this->metadata->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

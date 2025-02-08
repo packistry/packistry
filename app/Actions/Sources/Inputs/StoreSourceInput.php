@@ -10,11 +10,14 @@ use SensitiveParameter;
 
 class StoreSourceInput extends Input
 {
+    /**
+     * @param  array<string,mixed>  $metadata
+     */
     public function __construct(
         public string $name,
         public SourceProvider $provider,
         public string $url,
         #[SensitiveParameter] public string $token,
-        public ?array $meta_data = null,
+        public array $metadata = [],
     ) {}
 }

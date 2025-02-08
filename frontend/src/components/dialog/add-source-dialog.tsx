@@ -23,6 +23,7 @@ export function AddSourceDialog(props: DialogProps) {
             provider: '',
             url: '',
             token: '',
+            metadata: {},
         },
         onSuccess() {
             form.reset()

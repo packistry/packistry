@@ -7,6 +7,7 @@ namespace App\Actions\Sources;
 use App\Actions\Sources\Inputs\UpdateSourceInput;
 use App\Models\Source;
 use App\Normalizer;
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
 
 class UpdateSource
 {
@@ -14,7 +15,7 @@ class UpdateSource
     {
         $source->name = $input->name;
         $source->url = Normalizer::url($input->url);
-        $source->meta_data = $input->meta_data;
+        $source->metadata = new ArrayObject($input->metadata);
 
         if (is_string($input->token)) {
             $source->token = encrypt($input->token);

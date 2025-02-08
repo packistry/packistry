@@ -26,7 +26,10 @@ abstract class Client
 
     protected string $token;
 
-    protected ?Source $source = null;
+    /**
+     * @var array<string, mixed>
+     */
+    protected ?array $metadata = [];
 
     public function __construct(
         private readonly Import $import,
@@ -34,14 +37,17 @@ abstract class Client
         //
     }
 
+    /**
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function withOptions(
         #[SensitiveParameter] string $token,
         string $url,
-        ?Source $source = null,
+        ?array $metadata = null,
     ): static {
         $this->token = $token;
         $this->url = $url;
-        $this->source = $source;
+        $this->metadata = $metadata;
 
         return $this;
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use App\Models\Source;
 use App\Sources\Client;
 use RuntimeException;
 
@@ -26,14 +25,18 @@ enum SourceProvider: string
         return $class;
     }
 
-    public function clientWith(string $token, string $url, ?Source $source = null): Client
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
+    public function clientWith(string $token, string $url, array $metadata = []): Client
     {
         /** @var Client $client */
         $client = app($this->clientClassString());
+
         return $client->withOptions(
             token: $token,
             url: $url,
-            source: $source,
+            metadata: $metadata,
         );
     }
 }

@@ -11,6 +11,7 @@ use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
+use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
@@ -41,9 +42,9 @@ class BitbucketClient extends Client
     public function projects(?string $search = null): array
     {
         $perPage = 100;
-        $workspace = $this->getWorkspace();
+        $workspace = $this->workspace();
 
-        $initialResponse = $this->http()->get("/2.0/repositories/{$workspace}", [
+        $initialResponse = $this->http()->get("/2.0/repositories/$workspace", [
             'q' => $search !== null ? "name~\"$search\"" : null,
             'pagelen' => 1,
         ])->throw();
@@ -54,7 +55,7 @@ class BitbucketClient extends Client
         $responses = $this->http()
             ->pool(fn (Pool $pool): array => array_map(
                 fn (float $page) => $this->requestOptions($pool)
-                    ->get("/2.0/repositories/{$workspace}", [
+                    ->get("/2.0/repositories/$workspace", [
                         'q' => $search !== null ? "name~\"$search\"" : null,
                         'pagelen' => $perPage,
                         'page' => $page,
@@ -94,7 +95,7 @@ class BitbucketClient extends Client
         $allBranches = [];
 
         do {
-            $response = $this->http()->get("{$project->url}/refs/branches", [
+            $response = $this->http()->get("$project->url/refs/branches", [
                 'pagelen' => $perPage,
                 'page' => $page,
             ])->throw();
@@ -105,11 +106,11 @@ class BitbucketClient extends Client
                 throw new RuntimeException('Unexpected API response format.');
             }
 
-            $branches = array_map(fn (array $item): \App\Sources\Branch => new Branch(
+            $branches = array_map(fn (array $item): Branch => new Branch(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
-                zipUrl: "{$project->webUrl}/get/{$item['name']}.zip"
+                zipUrl: "$project->webUrl/get/{$item['name']}.zip"
             ), $data['values']);
 
             $allBranches = array_merge($allBranches, $branches);
@@ -130,7 +131,7 @@ class BitbucketClient extends Client
         $allTags = [];
 
         do {
-            $response = $this->http()->get("{$project->url}/refs/tags", [
+            $response = $this->http()->get("$project->url/refs/tags", [
                 'pagelen' => $perPage,
                 'page' => $page,
             ])->throw();
@@ -141,11 +142,11 @@ class BitbucketClient extends Client
                 throw new RuntimeException('Unexpected API response format.');
             }
 
-            $tags = array_map(fn (array $item): \App\Sources\Tag => new Tag(
+            $tags = array_map(fn (array $item): Tag => new Tag(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
-                zipUrl: "{$project->webUrl}/get/{$item['name']}.zip"
+                zipUrl: "$project->webUrl/get/{$item['name']}.zip"
             ), $data['values']);
 
             $allTags = array_merge($allTags, $tags);
@@ -164,7 +165,7 @@ class BitbucketClient extends Client
     public function createWebhook(Repository $repository, Project $project, Source $source): void
     {
         $this->http()->post("$project->url/hooks", [
-            'description' => 'Packistry Sync Webhook',
+            'description' => 'Packistry sync',
             'url' => $repository->url("/incoming/bitbucket/$source->id"),
             'active' => true,
             'secret' => decrypt($source->secret),
@@ -175,11 +176,11 @@ class BitbucketClient extends Client
     }
 
     /**
-     * @throws RequestException|ConnectionException
+     * @throws ConnectionException
      */
     public function project(string $id): Project
     {
-        $workspace = $this->getWorkspace();
+        $workspace = $this->workspace();
         $url = "/2.0/repositories/$workspace";
         $response = $this->http()->get("$url/$id");
         $item = $response->json();
@@ -202,23 +203,33 @@ class BitbucketClient extends Client
      */
     public function validateToken(): void
     {
-        $response = $this->http()->get('/2.0/user');
-        $json = $response->json();
+        try {
+            $projects = $this->projects();
+        } catch (Exception) {
+            throw new InvalidTokenException(missingScopes: ['read:repository', 'write:repository', 'admin:repository']);
+        }
 
-        if (! is_array($json) || ! array_key_exists('display_name', $json)) {
+        if ($projects === []) {
+            throw new InvalidTokenException(missingScopes: ['read:repository', 'write:repository', 'admin:repository']);
+        }
+
+        $project = $projects[0];
+
+        $response = $this->http()->post("$project->url/hooks", [
+            'events' => [],
+        ]);
+
+        if ($response->status() === 403) {
             throw new InvalidTokenException(
-                missingScopes: ['api']
+                missingScopes: ['write:webhook']
             );
         }
     }
 
-    protected function getWorkspace(): string
+    protected function workspace(): string
     {
-        if (! $this->source instanceof Source) {
-            return '';
-        }
+        $workspace = $this->metadata['workspace'] ?? null;
 
-        $workspace = $this->source->meta_data["workspace"] ?? null;
-        return $workspace !== null && $workspace !== '' ? "{$workspace}/" : '';
+        return $workspace !== null && $workspace !== '' ? "$workspace/" : '';
     }
 }

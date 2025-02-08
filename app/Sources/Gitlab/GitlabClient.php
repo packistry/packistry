@@ -137,7 +137,7 @@ class GitlabClient extends Client
     {
         $this->http()->post("$project->url/hooks", [
             'url' => $repository->url("/incoming/gitlab/$source->id"),
-            'name' => 'packistry sync',
+            'name' => 'Packistry sync',
             'token' => decrypt($source->secret),
             'content_type' => 'json',
             'tag_push_events' => true,

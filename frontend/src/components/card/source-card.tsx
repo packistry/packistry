@@ -10,14 +10,14 @@ const providerIcons = {
     github: GithubIcon,
     gitlab: GitlabIcon,
     gitea: GitFork,
-    gogs: GitFork,
+    bitbucket: GitFork,
 }
 
 const providerColors = {
     github: 'bg-[#24292e] text-white',
     gitlab: 'bg-[#e2492f] text-white',
     gitea: 'bg-[#609926] text-white',
-    gogs: 'bg-[#2185d0] text-white',
+    bitbucket: 'bg-[#0052CC] text-white',
 }
 
 export function SourceCard({ source }: { source: Source }) {
