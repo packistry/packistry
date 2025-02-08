@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { PaginatedTable } from '@/components/paginated-table'
+import { PaginatedTable, PaginatedTableProps } from '@/components/paginated-table'
 import * as React from 'react'
 import { UseQueryResult } from '@tanstack/react-query'
 import { PaginatedRepository } from '@/api'
@@ -11,12 +11,14 @@ import { REPOSITORY_CREATE, REPOSITORY_UPDATE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
 import { useAuth } from '@/auth'
 
-export function RepositoryTable({ query }: { query: UseQueryResult<PaginatedRepository> }) {
+export function RepositoryTable(
+    props: Omit<PaginatedTableProps<UseQueryResult<PaginatedRepository>>, 'empty' | 'columns'>
+) {
     const { can } = useAuth()
 
     return (
         <PaginatedTable
-            query={query}
+            {...props}
             empty={{
                 title: 'No Repositories',
                 icon: <DatabaseIcon />,
@@ -38,13 +40,22 @@ export function RepositoryTable({ query }: { query: UseQueryResult<PaginatedRepo
                 {
                     key: 'name',
                     label: 'Name',
+                    sorter: true,
                     head: {
                         className: 'w-[250px]',
                     },
                     cell: {
                         className: 'font-medium',
                     },
-                    render: (repository) => repository.name,
+                    render: (repository) => (
+                        <Link
+                            to="/packages"
+                            className="underline"
+                            search={{ filters: { repositoryId: repository.id } }}
+                        >
+                            {repository.name}
+                        </Link>
+                    ),
                 },
                 {
                     key: 'description',
@@ -53,12 +64,14 @@ export function RepositoryTable({ query }: { query: UseQueryResult<PaginatedRepo
                 {
                     key: 'path',
                     label: 'Path',
+                    sorter: true,
                 },
                 {
                     key: 'packagesCount',
                     label: 'Packages',
+                    sorter: true,
                     head: {
-                        className: 'w-[100px]',
+                        className: 'w-[150px]',
                     },
                 },
                 {

@@ -1,13 +1,19 @@
 import { z } from 'zod'
 import { del, get, post } from '@/api/axios'
 import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
+import { versionSchema } from '@/api/version'
+import { repository } from '@/api/repository'
+import { source } from '@/api/source'
 
 export const packageSchema = z.object({
     id: z.coerce.string(),
     name: z.string(),
+    repository: repository.optional(),
+    source: source.optional(),
     description: z.string().nullable(),
     downloads: z.number(),
     latestVersion: z.string().nullable(),
+    versions: versionSchema.array().optional(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })
@@ -19,6 +25,7 @@ export const packageQuery = paginatedQuery({
         repositoryId: z.string().optional(),
         search: z.string().optional(),
     }),
+    sort: z.enum(['downloads', '-downloads', 'name', '-name']),
 })
 
 export type PackageQuery = z.infer<typeof packageQuery>
@@ -28,6 +35,10 @@ export type PaginatedPackage = z.infer<typeof paginatedPackage>
 
 export function fetchPackages(query: PackageQuery) {
     return get(paginatedPackage, `/packages?${toQueryString(query)}`)
+}
+
+export function fetchPackage(packageId: string | number) {
+    return get(packageSchema, `/packages/${packageId}`)
 }
 
 export const storePackageInput = z.object({

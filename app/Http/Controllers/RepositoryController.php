@@ -39,6 +39,11 @@ readonly class RepositoryController extends Controller
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('public'),
             ])
+            ->allowedSorts([
+                'name',
+                'path',
+                'packages_count',
+            ])
             ->paginate((int) $request->query('size', '10'));
 
         return RepositoryResource::collection($repositories)

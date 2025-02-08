@@ -6,9 +6,9 @@ import * as React from 'react'
 import { Repository } from '@/api'
 import { RepositoryBadge } from '@/components/badge/repository-badge'
 
-export function RepositoryCard({ repository }: { repository: Repository }) {
+export function RepositoryCard({ repository, className }: { repository: Repository; className?: string }) {
     return (
-        <Card>
+        <Card className={className}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{repository.name}</CardTitle>
                 {!repository.public ? (
@@ -20,7 +20,9 @@ export function RepositoryCard({ repository }: { repository: Repository }) {
             <CardContent>
                 <p className="text-xs text-muted-foreground">{repository.description || '-'}</p>
                 <div className="flex justify-between items-center mt-2">
-                    <span className="text-2xl font-bold">{repository.packagesCount} packages</span>
+                    <span className="text-2xl font-bold">
+                        {repository.packagesCount ? <>{repository.packagesCount} packages</> : null}
+                    </span>
                     <RepositoryBadge repository={repository} />
                 </div>
                 <EditRepositoryDialog

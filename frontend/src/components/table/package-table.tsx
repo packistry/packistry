@@ -1,4 +1,4 @@
-import { PaginatedTable } from '@/components/paginated-table'
+import { PaginatedTable, PaginatedTableProps } from '@/components/paginated-table'
 import * as React from 'react'
 import { UseQueryResult } from '@tanstack/react-query'
 import { PaginatedPackage } from '@/api'
@@ -10,11 +10,12 @@ import { useAuth } from '@/auth'
 import { PACKAGE_CREATE, PACKAGE_DELETE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
 
-export function PackageTable({ query }: { query: UseQueryResult<PaginatedPackage> }) {
+export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<PaginatedPackage>>, 'empty' | 'columns'>) {
     const { can } = useAuth()
+
     return (
         <PaginatedTable
-            query={query}
+            {...props}
             empty={{
                 title: 'No Packages',
                 icon: <PackageIcon />,
@@ -36,11 +37,25 @@ export function PackageTable({ query }: { query: UseQueryResult<PaginatedPackage
                 {
                     key: 'name',
                     label: 'Name',
+                    sorter: true,
                     head: {
                         className: 'w-[300px]',
                     },
                     cell: {
                         className: 'font-medium',
+                    },
+                    render: (record) => {
+                        return (
+                            <Link
+                                to="/packages/$packageId"
+                                className="underline"
+                                params={{
+                                    packageId: record.id,
+                                }}
+                            >
+                                {record.name}
+                            </Link>
+                        )
                     },
                 },
                 {
@@ -63,6 +78,7 @@ export function PackageTable({ query }: { query: UseQueryResult<PaginatedPackage
                     cell: {
                         className: 'text-right',
                     },
+                    sorter: true,
                     render: (pkg) => {
                         return pkg.downloads.toLocaleString()
                     },

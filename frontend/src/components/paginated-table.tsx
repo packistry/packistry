@@ -9,6 +9,9 @@ import FailedToLoad from '@/components/failed-to-load'
 import { Empty, EmptyProps } from '@/components/Empty'
 import { Permission } from '@/permission'
 import { useAuth } from '@/auth'
+import { ChevronDown, ChevronUp, MinusIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { UseNavigateResult } from '@tanstack/react-router'
 
 export type PaginatedUseQueryResult = UseQueryResult<AnyPaginated>
 type InferReturn<T> = T extends DefinedQueryObserverResult<{ data: { id: string }[] }> ? T['data']['data'][0] : never
@@ -19,6 +22,8 @@ type BaseColumn = {
     cell?: React.ThHTMLAttributes<HTMLTableCellElement>
     skeleton?: ReactNode
     permission?: Permission
+    sorter?: boolean
+    sort?: 'asc' | 'desc'
 }
 
 type UnknownColumn<Query extends PaginatedUseQueryResult> = {
@@ -35,30 +40,57 @@ type Column<Query extends PaginatedUseQueryResult> = UnknownColumn<Query> | Name
 
 export type PaginatedTableProps<Query extends PaginatedUseQueryResult> = {
     query: Query
+    sort?: string
+    onSort?: (column: Column<Query>) => unknown
     columns: Column<Query>[]
     empty?: EmptyProps
 }
 
 export function PaginatedTable<Query extends PaginatedUseQueryResult>({
     query,
+    sort,
+    onSort,
     empty,
     ...rest
 }: PaginatedTableProps<Query>) {
     const { can } = useAuth()
-    const columns = rest.columns.filter((column) => {
-        if (typeof column.permission === 'undefined') {
-            return true
-        }
+    const columns = rest.columns
+        .filter((column) => {
+            if (typeof column.permission === 'undefined') {
+                return true
+            }
 
-        return can(column.permission)
-    })
+            return can(column.permission)
+        })
+        .map((column) => {
+            if (typeof sort === 'undefined') {
+                return column
+            }
+
+            const direction = sort.startsWith('-') ? 'desc' : 'asc'
+
+            if (sort.substring(direction === 'desc' ? 1 : 0, sort.length) === column.key) {
+                return {
+                    ...column,
+                    sort: direction as 'asc' | 'desc',
+                }
+            }
+
+            return {
+                ...column,
+                sort: undefined,
+            }
+        })
 
     if (query.isPending) {
         const loaders = Array(10).fill(0)
 
         return (
             <Table>
-                <TableHeaderFromColumns columns={columns} />
+                <TableHeaderFromColumns
+                    columns={columns}
+                    onSort={onSort}
+                />
                 <TableBody>
                     {loaders.map((_, index) => {
                         return (
@@ -91,7 +123,10 @@ export function PaginatedTable<Query extends PaginatedUseQueryResult>({
     return (
         <>
             <Table>
-                <TableHeaderFromColumns columns={columns} />
+                <TableHeaderFromColumns
+                    columns={columns}
+                    onSort={onSort}
+                />
                 <TableBody>
                     {query.data.data.map((row) => (
                         <TableRow key={row.id}>
@@ -114,7 +149,13 @@ export function PaginatedTable<Query extends PaginatedUseQueryResult>({
     )
 }
 
-function TableHeaderFromColumns({ columns }: { columns: Column<PaginatedUseQueryResult>[] }) {
+function TableHeaderFromColumns({
+    columns,
+    onSort,
+}: {
+    columns: Column<PaginatedUseQueryResult>[]
+    onSort?: (column: Column<PaginatedUseQueryResult>) => unknown
+}) {
     return (
         <TableHeader>
             <TableRow>
@@ -123,7 +164,25 @@ function TableHeaderFromColumns({ columns }: { columns: Column<PaginatedUseQuery
                         key={String(column.key)}
                         {...column.head}
                     >
-                        {column.label}
+                        <button
+                            className={cn({
+                                'flex justify-between w-full cursor-pointer h-12 items-center': column.sorter,
+                            })}
+                            onClick={() => {
+                                if (typeof onSort !== 'undefined') {
+                                    onSort(column)
+                                }
+                            }}
+                        >
+                            <span>{column.label}</span>
+                            {column.sorter && (
+                                <span>
+                                    {typeof column.sort === 'undefined' && <MinusIcon size={20} />}
+                                    {column.sort === 'asc' && <ChevronUp size={20} />}
+                                    {column.sort === 'desc' && <ChevronDown size={20} />}
+                                </span>
+                            )}
+                        </button>
                     </TableHead>
                 ))}
             </TableRow>
@@ -141,4 +200,30 @@ function TableLoadingRow({ columns }: { columns: Column<never>[] }) {
             ))}
         </TableRow>
     )
+}
+
+export function navigateOnSort(navigate: UseNavigateResult<string>, param: string = 'sort') {
+    return (column: Column<never>) => {
+        if (!column.sorter) {
+            return
+        }
+
+        let sort: undefined | typeof column.key = column.key
+
+        if (column.sort === 'desc') {
+            sort = undefined
+        }
+
+        if (column.sort === 'asc') {
+            sort = '-' + String(column.key)
+        }
+
+        navigate({
+            to: '.',
+            search: (prev) => ({
+                ...prev,
+                [param]: sort,
+            }),
+        })
+    }
 }

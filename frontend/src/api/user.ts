@@ -24,6 +24,7 @@ export const userQuery = paginatedQuery({
             search: z.string().optional(),
         })
         .optional(),
+    sort: z.enum(['name', '-name', 'email', '-email', 'role', '-role']),
 })
 
 export type UserQuery = z.infer<typeof userQuery>

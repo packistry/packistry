@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { EditUserDialog } from '@/components/dialog/edit-user-dialog'
 import { Button } from '@/components/ui/button'
-import { PaginatedTable } from '@/components/paginated-table'
+import { PaginatedTable, PaginatedTableProps } from '@/components/paginated-table'
 import * as React from 'react'
 import { UseQueryResult } from '@tanstack/react-query'
 import { PaginatedUser } from '@/api'
@@ -10,10 +10,10 @@ import { USER_UPDATE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
 import { RoleBadge } from '@/components/badge/role-badge'
 
-export function UserTable({ query }: { query: UseQueryResult<PaginatedUser> }) {
+export function UserTable(props: Omit<PaginatedTableProps<UseQueryResult<PaginatedUser>>, 'columns'>) {
     return (
         <PaginatedTable
-            query={query}
+            {...props}
             columns={[
                 {
                     key: 'user',
@@ -27,6 +27,7 @@ export function UserTable({ query }: { query: UseQueryResult<PaginatedUser> }) {
                 {
                     key: 'name',
                     label: 'Name',
+                    sorter: true,
                     cell: {
                         className: 'font-medium',
                     },
@@ -34,6 +35,7 @@ export function UserTable({ query }: { query: UseQueryResult<PaginatedUser> }) {
                 {
                     key: 'email',
                     label: 'Email',
+                    sorter: true,
                     head: {
                         className: 'w-[400px]',
                     },
@@ -49,6 +51,7 @@ export function UserTable({ query }: { query: UseQueryResult<PaginatedUser> }) {
                 {
                     key: 'role',
                     label: 'Role',
+                    sorter: true,
                     head: {
                         className: 'w-[100px]',
                     },

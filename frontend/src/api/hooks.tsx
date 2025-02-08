@@ -9,6 +9,7 @@ import {
     DeployTokenQuery,
     fetchDashboard,
     fetchDeployTokens,
+    fetchPackage,
     fetchPackages,
     fetchPersonalTokens,
     fetchRepositories,
@@ -71,6 +72,10 @@ export function useUpdateRepository() {
                 queryKey: repositoriesKey,
                 exact: false,
             })
+
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
+            })
         },
     })
 }
@@ -93,6 +98,13 @@ export function usePackages(query: PackageQuery) {
     return useQuery({
         queryFn: () => fetchPackages(query),
         queryKey: [...packagesKey, query],
+    })
+}
+
+export function usePackage(packageId: string | number) {
+    return useQuery({
+        queryFn: () => fetchPackage(packageId),
+        queryKey: [...packagesKey, packageId],
     })
 }
 
@@ -168,6 +180,10 @@ export function useUpdateSource() {
             queryClient.invalidateQueries({
                 queryKey: sourcesKey,
                 exact: false,
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
             })
         },
     })
