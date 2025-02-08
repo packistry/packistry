@@ -24,7 +24,7 @@ class PushEvent extends Input implements Importable
     {
         $parts = explode('/', $this->ref);
 
-        return end($parts);
+        return implode('/', array_slice($parts, 2));
     }
 
     public function zipUrl(): string
