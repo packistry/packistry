@@ -4,56 +4,58 @@ declare(strict_types=1);
 
 namespace App\Sources\Bitbucket\Event;
 
+use App\Sources\Bitbucket\Change;
 use App\Sources\Bitbucket\Input;
+use App\Sources\Bitbucket\Push;
+use App\Sources\Bitbucket\Reference;
 use App\Sources\Bitbucket\Repository;
 use App\Sources\Deletable;
 use App\Sources\Importable;
-use Spatie\LaravelData\Attributes\MapInputName;
+use RuntimeException;
 
 class PushEvent extends Input implements Deletable, Importable
 {
     public function __construct(
-        #[MapInputName('push.changes.0.new.name')]
-        public ?string $ref,
-        #[MapInputName('push.changes.0.new.type')]
-        public ?string $type,
-        #[MapInputName('push.changes.0.old.name')]
-        public ?string $oldRef,
-        #[MapInputName('push.changes.0.old.type')]
-        public ?string $oldType,
+        public Push $push,
         public Repository $repository,
     ) {}
 
+    public function latestChange(): Change
+    {
+        return $this->push->changes[0] ?? throw new RuntimeException('No changes supplied in webhook');
+    }
+
     public function isDelete(): bool
     {
-        return $this->ref === null;
+        return $this->latestChange()->new === null;
+    }
+
+    public function reference(): Reference
+    {
+        $reference = $this->isDelete()
+            ? $this->latestChange()->old
+            : $this->latestChange()->new;
+
+        if ($reference === null) {
+            throw new RuntimeException('Neither old or new has been provided');
+        }
+
+        return $reference;
     }
 
     public function isTag(): bool
     {
-        if ($this->isDelete()) {
-            return $this->oldType === 'tag';
-        }
-
-        return $this->type === 'tag';
+        return $this->reference()->type === 'tag';
     }
 
     public function shortRef(): string
     {
-        $ref = $this->isDelete()
-            ? $this->oldRef
-            : $this->ref;
-
-        if ($ref === null) {
-            throw new \RuntimeException('Neither old or new ref supplied');
-        }
-
-        return $ref;
+        return $this->reference()->name;
     }
 
     public function zipUrl(): string
     {
-        return "{$this->repository->htmlUrl}/get/{$this->shortRef()}.zip";
+        return "{$this->url()}/get/{$this->shortRef()}.zip";
     }
 
     public function version(): string
@@ -65,11 +67,11 @@ class PushEvent extends Input implements Deletable, Importable
 
     public function url(): string
     {
-        return $this->repository->htmlUrl;
+        return $this->repository->links->html->href;
     }
 
     public function id(): string
     {
-        return $this->repository->id;
+        return trim($this->repository->uuid, '{}');
     }
 }

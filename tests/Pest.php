@@ -21,6 +21,10 @@ use App\Models\DeployToken;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Models\User;
+use App\Sources\Bitbucket\Change;
+use App\Sources\Bitbucket\Link;
+use App\Sources\Bitbucket\Push;
+use App\Sources\Bitbucket\Reference;
 use App\Sources\Deletable;
 use App\Sources\Gitea\Event\DeleteEvent;
 use App\Sources\Gitea\Event\PushEvent;
@@ -300,13 +304,26 @@ function githubEventHeaders(Importable|Deletable $event, string $secret = 'secre
 /**
  * @return array<string, mixed>
  */
+function bitbucketEventHeaders(Importable|Deletable $event, string $secret = 'secret'): array
+{
+    $eventType = match ($event::class) {
+        \App\Sources\Bitbucket\Event\PushEvent::class => 'repo:push',
+        default => throw new RuntimeException('unknown event')
+    };
+
+    return ['X-Hub-Signature-256' => eventSignature($event, $secret), 'X-Event-Key' => $eventType];
+}
+
+/**
+ * @return array<string, mixed>
+ */
 function eventHeaders(Importable|Deletable $event, string $secret = 'secret'): array
 {
     return match ($event::class) {
         PushEvent::class, DeleteEvent::class => giteaEventHeaders($event, $secret),
         \App\Sources\GitHub\Event\DeleteEvent::class, \App\Sources\GitHub\Event\PushEvent::class => githubEventHeaders($event, $secret),
         \App\Sources\Gitlab\Event\PushEvent::class => gitlabEventHeader($secret),
-        default => throw new RuntimeException('unknown event')
+        \App\Sources\Bitbucket\Event\PushEvent::class => bitbucketEventHeaders($event, $secret),
     };
 }
 
@@ -375,6 +392,36 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     name: 'test',
                     pathWithNamespace: 'vendor/test',
                     webUrl: 'https://gitlab.com/group/test',
+                )
+            ),
+            'archivePath' => __DIR__.'/Fixtures/gitlab-jamie-test.zip',
+        ],
+        'bitbucket' => [
+            'provider' => SourceProvider::BITBUCKET,
+            'event' => new \App\Sources\Bitbucket\Event\PushEvent(
+                push: new Push(
+                    changes: [
+                        new Change(
+                            old: null,
+                            new: new Reference(
+                                name: $ref,
+                                type: $refType === 'heads' ? 'commit' : 'tag',
+                            ),
+                        ),
+                    ]
+                ),
+                repository: new \App\Sources\Bitbucket\Repository(
+                    name: 'test',
+                    fullName: 'vendor/test',
+                    uuid: '{1}',
+                    links: new \App\Sources\Bitbucket\Links(
+                        html: new Link(
+                            href: 'https://bitbucket.org/vendor/test'
+                        ),
+                        self: new Link(
+                            href: 'https://api.bitbucket.org/2.0/repositories/vendor/test'
+                        ),
+                    )
                 )
             ),
             'archivePath' => __DIR__.'/Fixtures/gitlab-jamie-test.zip',
@@ -454,6 +501,35 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                     name: 'test',
                     pathWithNamespace: 'vendor/test',
                     webUrl: 'https://gitlab.com',
+                )
+            ),
+        ],
+        'bitbucket' => [
+            'provider' => SourceProvider::BITBUCKET,
+            'event' => new \App\Sources\Bitbucket\Event\PushEvent(
+                push: new Push(
+                    changes: [
+                        new Change(
+                            old: new Reference(
+                                name: $ref,
+                                type: $refType === 'heads' ? 'commit' : 'tag',
+                            ),
+                            new: null,
+                        ),
+                    ]
+                ),
+                repository: new \App\Sources\Bitbucket\Repository(
+                    name: 'test',
+                    fullName: 'vendor/test',
+                    uuid: '{1}',
+                    links: new \App\Sources\Bitbucket\Links(
+                        html: new Link(
+                            href: 'https://bitbucket.org/vendor/test'
+                        ),
+                        self: new Link(
+                            href: 'https://api.bitbucket.org/2.0/repositories/vendor/test'
+                        ),
+                    )
                 )
             ),
         ],
