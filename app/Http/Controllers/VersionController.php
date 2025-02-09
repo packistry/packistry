@@ -14,8 +14,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 readonly class VersionController extends Controller
 {
-    public function __construct() {}
-
     public function index(Request $request, string $packageId): JsonResponse
     {
         $this->authorize(Permission::PACKAGE_READ);
