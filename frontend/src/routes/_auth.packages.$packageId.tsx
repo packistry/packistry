@@ -64,11 +64,11 @@ function PackagesComponent() {
                         source={query.data.source}
                     />
                 ) : (
-                    <LoadingSourceCard className="w-1/2" />
+                    query.data?.source !== null && <LoadingSourceCard className="w-1/2" />
                 )}
             </div>
             <SearchBar
-                name="Version"
+                name="Versions"
                 search={search.filters?.search}
                 onSearch={navigateOnSearch(navigate)}
             />

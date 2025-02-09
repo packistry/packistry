@@ -9,7 +9,7 @@ export const packageSchema = z.object({
     id: z.coerce.string(),
     name: z.string(),
     repository: repository.optional(),
-    source: source.optional(),
+    source: source.optional().nullable(),
     description: z.string().nullable(),
     totalDownloads: z.number(),
     latestVersion: z.string().nullable(),
