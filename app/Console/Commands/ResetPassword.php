@@ -14,10 +14,8 @@ use function Laravel\Prompts\search;
 
 class ResetPassword extends Command
 {
-    /** @var string */
     protected $signature = 'reset:password';
 
-    /** @var string|null */
     protected $description = 'Resets a users password';
 
     public function handle(): int

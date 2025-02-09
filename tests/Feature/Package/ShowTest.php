@@ -10,7 +10,6 @@ use App\Models\Source;
 use App\Models\User;
 use App\Models\Version;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use function Pest\Laravel\getJson;
 
@@ -30,7 +29,6 @@ it('shows package', function (?User $user, int $status): void {
 
     $response->assertExactJson(
         resourceAsJson(new PackageResource($package->fresh()->load([
-            'versions' => fn (HasMany $query) => $query->withCount('downloads'),
             'repository' => fn (BelongsTo $query) => $query->withCount('packages'),
             'source',
         ])))

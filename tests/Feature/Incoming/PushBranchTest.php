@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\SourceProvider;
+use App\Http\Resources\VersionResource;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
@@ -21,14 +22,7 @@ it('creates dev version for new branch', function (Repository $repository, Sourc
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
 
-    $response->assertExactJson([
-        'package_id' => $version->package->id,
-        'name' => $version->name,
-        'shasum' => $version->shasum,
-        'updated_at' => $version->updated_at,
-        'created_at' => $version->created_at,
-        'id' => $version->id,
-    ]);
+    $response->assertExactJson(resourceAsJson(new VersionResource($version)));
 })
     ->with(rootAndSubRepository())
     ->with(providerPushEvents(
@@ -55,14 +49,7 @@ it('overwrites dev version for same branch', function (Repository $repository, S
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
 
-    $response->assertExactJson([
-        'id' => $version->id,
-        'package_id' => $version->package->id,
-        'name' => $version->name,
-        'shasum' => $version->shasum,
-        'created_at' => $version->created_at,
-        'updated_at' => $version->updated_at,
-    ]);
+    $response->assertExactJson(resourceAsJson(new VersionResource($version)));
 
     expect($version->is($originalVersion))
         ->toBeTrue();

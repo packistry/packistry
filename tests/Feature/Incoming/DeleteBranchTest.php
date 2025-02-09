@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\SourceProvider;
+use App\Http\Resources\VersionResource;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
@@ -21,15 +22,7 @@ it('deletes branch', function (Repository $repository, SourceProvider $provider,
 
     webhook($repository, $package->source, ...$args)
         ->assertOk()
-        ->assertExactJson([
-            'id' => $version->id,
-            'package_id' => $version->package->id,
-            'name' => $version->name,
-            'metadata' => $version->metadata,
-            'shasum' => $version->shasum,
-            'created_at' => $version->created_at,
-            'updated_at' => $version->updated_at,
-        ]);
+        ->assertExactJson(resourceAsJson(new VersionResource($version)));
 
     expect(Version::query()->count())->toBe(0);
 })

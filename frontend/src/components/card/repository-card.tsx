@@ -21,7 +21,9 @@ export function RepositoryCard({ repository, className }: { repository: Reposito
                 <p className="text-xs text-muted-foreground">{repository.description || '-'}</p>
                 <div className="flex justify-between items-center mt-2">
                     <span className="text-2xl font-bold">
-                        {repository.packagesCount ? <>{repository.packagesCount} packages</> : null}
+                        {typeof repository.packagesCount !== 'undefined' ? (
+                            <>{repository.packagesCount} packages</>
+                        ) : null}
                     </span>
                     <RepositoryBadge repository={repository} />
                 </div>

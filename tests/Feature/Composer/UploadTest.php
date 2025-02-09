@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\TokenAbility;
+use App\Http\Resources\VersionResource;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
@@ -41,14 +42,7 @@ it('creates new version for existing package', function (Repository $repository,
     /** @var Version $version */
     $version = Version::query()->first();
 
-    $response->assertExactJson([
-        'package_id' => $package->id,
-        'name' => $version->name,
-        'shasum' => $version->shasum,
-        'updated_at' => $version->updated_at,
-        'created_at' => $version->created_at,
-        'id' => $version->id,
-    ]);
+    $response->assertExactJson(resourceAsJson(new VersionResource($version)));
 
     $fileName = $repository->archivePath('test-test-1.0.0.zip');
 
@@ -120,14 +114,7 @@ it('creates new package and version when non existing', function (Repository $re
     /** @var Version $version */
     $version = Version::query()->first();
 
-    $response->assertExactJson([
-        'package_id' => $package->id,
-        'name' => $version->name,
-        'shasum' => $version->shasum,
-        'updated_at' => $version->updated_at,
-        'created_at' => $version->created_at,
-        'id' => $version->id,
-    ]);
+    $response->assertExactJson(resourceAsJson(new VersionResource($version)));
 
     $fileName = $repository->archivePath('test-test-1.0.0.zip');
 

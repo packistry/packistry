@@ -61,7 +61,7 @@ class RepositoryController extends RepositoryAwareController
             'results' => $packagesQuery->chunkMap(fn (Package $package): array => [
                 'name' => $package->name,
                 'description' => $package->description,
-                'downloads' => $package->downloads,
+                'downloads' => $package->total_downloads,
             ]),
         ]);
     }

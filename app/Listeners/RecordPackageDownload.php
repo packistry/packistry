@@ -8,10 +8,11 @@ use App\Events\PackageDownloadEvent;
 use App\Models\Download;
 use App\Models\Token;
 use App\Models\Version;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class RecordPackageDownload
+class RecordPackageDownload implements ShouldQueue
 {
     /**
      * @throws Throwable
@@ -39,7 +40,10 @@ class RecordPackageDownload
                 ->downloads()
                 ->save($download);
 
-            $event->package->downloads += 1;
+            $version->total_downloads += 1;
+            $version->save();
+
+            $event->package->total_downloads += 1;
             $event->package->save();
         });
     }

@@ -11,7 +11,7 @@ export const packageSchema = z.object({
     repository: repository.optional(),
     source: source.optional(),
     description: z.string().nullable(),
-    downloads: z.number(),
+    totalDownloads: z.number(),
     latestVersion: z.string().nullable(),
     versions: versionSchema.array().optional(),
     createdAt: z.coerce.date(),
@@ -25,7 +25,7 @@ export const packageQuery = paginatedQuery({
         repositoryId: z.string().optional(),
         search: z.string().optional(),
     }),
-    sort: z.enum(['downloads', '-downloads', 'name', '-name']),
+    sort: z.enum(['totalDownloads', '-totalDownloads', 'name', '-name']),
 })
 
 export type PackageQuery = z.infer<typeof packageQuery>
@@ -39,6 +39,13 @@ export function fetchPackages(query: PackageQuery) {
 
 export function fetchPackage(packageId: string | number) {
     return get(packageSchema, `/packages/${packageId}`)
+}
+
+export const downloadsPerDate = z.object({ date: z.string(), downloads: z.number() })
+export type DownloadsPerDate = z.infer<typeof downloadsPerDate>
+
+export function fetchPackageDownloads(packageId: string | number) {
+    return get(downloadsPerDate.array(), `/packages/${packageId}/downloads`)
 }
 
 export const storePackageInput = z.object({

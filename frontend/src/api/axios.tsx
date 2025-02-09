@@ -9,6 +9,7 @@ import { camelizeKeys, decamelizeKeys } from 'humps'
 import { z } from 'zod'
 import { setStoredUser } from '@/auth'
 import { toast } from 'sonner'
+import { UseQueryResult } from '@tanstack/react-query'
 
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
@@ -118,4 +119,8 @@ export async function del<T>(schema: z.ZodType<T>, path: string) {
 
             throw err
         })
+}
+
+export function is404(query: UseQueryResult<unknown>) {
+    return query.isError && axios.isAxiosError(query.error) && query.error.status === 404
 }

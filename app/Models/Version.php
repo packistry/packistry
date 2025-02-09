@@ -25,6 +25,7 @@ use Override;
  * @property array<string, mixed> $metadata
  * @property string $shasum
  * @property string $order
+ * @property int $total_downloads
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Download> $downloads
@@ -49,7 +50,11 @@ class Version extends Model
 
     protected $guarded = [];
 
-    protected $hidden = ['order', 'original'];
+    protected $hidden = ['order'];
+
+    protected $attributes = [
+        'total_downloads' => 0,
+    ];
 
     /**
      * @return BelongsTo<Package, $this>
@@ -96,6 +101,6 @@ class Version extends Model
 
     private function isDev(): bool
     {
-        return str_starts_with($this->package->name, 'dev-');
+        return str_starts_with($this->name, 'dev-');
     }
 }

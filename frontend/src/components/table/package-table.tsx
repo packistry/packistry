@@ -70,7 +70,7 @@ export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     },
                 },
                 {
-                    key: 'downloads',
+                    key: 'totalDownloads',
                     label: 'Downloads',
                     head: {
                         className: 'w-[150px] text-right',
@@ -80,7 +80,7 @@ export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     },
                     sorter: true,
                     render: (pkg) => {
-                        return pkg.downloads.toLocaleString()
+                        return pkg.totalDownloads.toLocaleString()
                     },
                 },
                 {

@@ -107,6 +107,8 @@ abstract class WebhookController extends RepositoryAwareController
 
         $version->delete();
 
-        return response()->json($version);
+        return response()->json(
+            new VersionResource($version)
+        );
     }
 }

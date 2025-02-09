@@ -13,18 +13,8 @@ use function Laravel\Prompts\text;
 
 class AddRepository extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'add:repository';
 
-    /**
-     * The console command description.
-     *
-     * @var string|null
-     */
     protected $description = 'Create a new repository to serve packages from';
 
     /**

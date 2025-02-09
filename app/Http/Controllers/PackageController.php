@@ -9,10 +9,10 @@ use App\Actions\Packages\Inputs\StorePackageInput;
 use App\Actions\Packages\StorePackage;
 use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
+use App\Models\Download;
 use App\Models\Package;
 use App\SearchFilter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -38,7 +38,7 @@ readonly class PackageController extends Controller
                 AllowedFilter::exact('repository_id'),
             ])
             ->allowedSorts([
-                'downloads',
+                'total_downloads',
                 'name',
             ])
             ->paginate((int) $request->query('size', '10'));
@@ -70,7 +70,6 @@ readonly class PackageController extends Controller
             ->findOrFail($packageId);
 
         $package->load([
-            'versions' => fn (HasMany $query) => $query->withCount('downloads'),
             'repository' => fn (BelongsTo $query) => $query->withCount('packages'),
             'source' => fn (BelongsTo $query) => $query,
         ]);
@@ -91,5 +90,17 @@ readonly class PackageController extends Controller
         return response()->json(
             new PackageResource($package)
         );
+    }
+
+    public function downloads(string $packageId): JsonResponse
+    {
+        $this->authorize(Permission::PACKAGE_READ);
+
+        $package = Package::userScoped()
+            ->findOrFail($packageId);
+
+        $dates = Download::perDayForPackages(90, $package->id);
+
+        return response()->json($dates);
     }
 }

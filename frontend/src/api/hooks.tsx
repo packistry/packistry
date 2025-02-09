@@ -10,6 +10,7 @@ import {
     fetchDashboard,
     fetchDeployTokens,
     fetchPackage,
+    fetchPackageDownloads,
     fetchPackages,
     fetchPersonalTokens,
     fetchRepositories,
@@ -33,6 +34,7 @@ import {
     UserQuery,
 } from '@/api'
 import { useAuth } from '@/auth'
+import { fetchPackageVersions, VersionQuery } from '@/api/version'
 
 const repositoriesKey = ['repositories']
 const packagesKey = ['packages']
@@ -94,10 +96,24 @@ export function useDeleteRepository() {
     })
 }
 
+export function usePackageDownloads(packageId: string | number) {
+    return useQuery({
+        queryFn: () => fetchPackageDownloads(packageId),
+        queryKey: [...packagesKey, packageId, 'downloads'],
+    })
+}
+
 export function usePackages(query: PackageQuery) {
     return useQuery({
         queryFn: () => fetchPackages(query),
         queryKey: [...packagesKey, query],
+    })
+}
+
+export function usePackageVersions(packageId: string | number, query: VersionQuery) {
+    return useQuery({
+        queryFn: () => fetchPackageVersions(packageId, query),
+        queryKey: [...packagesKey, packageId, 'versions', query],
     })
 }
 

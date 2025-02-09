@@ -14,10 +14,8 @@ use function Laravel\Prompts\multisearch;
 
 class DeleteUser extends Command
 {
-    /** @var string */
     protected $signature = 'delete:user';
 
-    /** @var string|null */
     protected $description = 'Delete a user';
 
     public function handle(DestroyUser $destroyUser): int
