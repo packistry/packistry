@@ -19,9 +19,6 @@ export function VersionTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     key: 'name',
                     label: 'Name',
                     sorter: true,
-                    head: {
-                        className: 'w-[300px]',
-                    },
                     cell: {
                         className: 'font-medium',
                     },
@@ -29,6 +26,9 @@ export function VersionTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                 {
                     key: 'createdAt',
                     label: 'Created At',
+                    head: {
+                        className: 'w-[300px]',
+                    },
                     sorter: true,
                     render: (version) => {
                         return format(version.createdAt, 'PPP')
