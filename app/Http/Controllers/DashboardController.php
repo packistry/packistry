@@ -46,7 +46,11 @@ readonly class DashboardController extends Controller
             $dashboard['sources'] = Source::query()->count();
         }
 
-        $dashboard['downloads'] = Download::query()->count();
+        $packageIds = $user->can(Permission::UNSCOPED)
+            ? null
+            : Package::userScoped()->pluck('id')->toArray();
+
+        $dashboard['downloads'] = Download::perDayForPackages(90, $packageIds);
 
         return $dashboard;
     }

@@ -51,4 +51,45 @@ class Download extends Model
     {
         return $this->belongsTo(Version::class);
     }
+
+    /**
+     * @param  int|int[]  $packageIds
+     * @return array{date: string, downloads: int}[]
+     */
+    public static function perDayForPackages(int $days, int|array|null $packageIds = []): array
+    {
+        $startDate = now()->subDays($days - 1)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $query = self::query()
+            ->whereBetween('created_date', [$startDate, $endDate]);
+
+        if ($packageIds !== null) {
+            $query
+                ->whereIn('package_id', is_array($packageIds) ? $packageIds : [$packageIds]);
+        }
+
+        $query
+            ->selectRaw('created_date, COUNT(*) as count')
+            ->groupBy('created_date');
+
+        $downloads = $query->pluck('count', 'created_date');
+
+        $dates = [];
+
+        $currentDate = $startDate->copy();
+
+        for ($i = 0; $i < round($startDate->diffInDays($endDate)); $i++) {
+            $dateKey = $currentDate->format('Y-m-d');
+
+            $dates[] = [
+                'date' => $dateKey,
+                'downloads' => $downloads->get($dateKey, 0),
+            ];
+
+            $currentDate->addDay();
+        }
+
+        return $dates;
+    }
 }

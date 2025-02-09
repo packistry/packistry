@@ -23,7 +23,7 @@ function AuthLayout() {
     return (
         <>
             <Sidebar />
-            <main className="w-full">
+            <main className="w-full overflow-y-hidden">
                 <header className="flex items-center justify-end h-16 px-4 bg-background border-b">
                     <div className="flex items-center space-x-4">
                         <ThemeToggle />
@@ -31,8 +31,13 @@ function AuthLayout() {
                         <AuthDropdownMenu />
                     </div>
                 </header>
-                <div className="container mx-auto px-4 py-8 space-y-6">
-                    <Outlet />
+                <div
+                    style={{ height: 'calc(100vh - 64px)' }}
+                    className="overflow-y-auto"
+                >
+                    <div className="container mx-auto px-4 py-8 space-y-6">
+                        <Outlet />
+                    </div>
                 </div>
             </main>
         </>

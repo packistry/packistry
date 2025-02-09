@@ -36,7 +36,11 @@ it('downloads a version', function (Repository $repository, ?Authenticatable $au
 
     /** @var Package $package */
     $package = Package::query()->first();
-    expect($package->downloads)->toBe(1);
+    /** @var Version $version */
+    $version = Version::query()->first();
+
+    expect($package->total_downloads)->toBe(1)
+        ->and($version->total_downloads)->toBe(1);
 })
     ->with(rootAndSubRepository(
         public: true
@@ -68,7 +72,11 @@ it('downloads version from private repository', function (Repository $repository
 
         /** @var Package $package */
         $package = Package::query()->first();
-        expect($package->downloads)->toBe(1);
+        /** @var Version $version */
+        $version = Version::query()->first();
+
+        expect($package->total_downloads)->toBe(1)
+            ->and($version->total_downloads)->toBe(1);
     }
 })
     ->with(rootAndSubRepository())

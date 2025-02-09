@@ -1,33 +1,54 @@
 import * as React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { packageQuery } from '@/api'
-import { z } from 'zod'
-import { usePackage } from '@/api/hooks'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { format } from 'date-fns'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { usePackage, usePackageDownloads, usePackageVersions } from '@/api/hooks'
 import { RepositoryCard } from '@/components/card/repository-card'
 import { SourceCard } from '@/components/card/source-card'
 import { LoadingRepositoryCard } from '@/components/card/loading-repository-card'
 import { LoadingSourceCard } from '@/components/card/loading-source-card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { versionQuery } from '@/api/version'
+import { VersionTable } from '@/components/table/version-table'
+import { navigateOnSort } from '@/components/paginated-table'
+import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
+import { DownloadsCard } from '@/components/card/downloads-card'
+import { Heading } from '@/components/page/Heading'
+import { Empty } from '@/components/Empty'
+import { Button } from '@/components/ui/button'
+import { PackageIcon } from 'lucide-react'
+import { is404 } from '@/api/axios'
 
 export const Route = createFileRoute('/_auth/packages/$packageId')({
-    validateSearch: packageQuery.extend({
-        open: z.boolean().optional(),
-    }),
+    validateSearch: versionQuery,
     component: PackagesComponent,
 })
 
 function PackagesComponent() {
     const { packageId } = Route.useParams()
+    const search = Route.useSearch()
 
+    const navigate = useNavigate()
     const query = usePackage(packageId)
-    console.log(query.data?.versions)
-    const versions = query.data?.versions || []
+    const downloads = usePackageDownloads(packageId)
+    const versions = usePackageVersions(packageId, search)
+
+    if (is404(query)) {
+        return (
+            <Empty
+                icon={<PackageIcon />}
+                title="Package not found"
+                className="mt-24"
+                button={
+                    <Link to="/packages">
+                        <Button>Back to Packages</Button>
+                    </Link>
+                }
+            />
+        )
+    }
 
     return (
         <>
-            <h1 className="text-3xl font-bold">{query.data?.name || <Skeleton className="w-96 h-8" />}</h1>
+            <Heading title={query.data?.name} />
+            <DownloadsCard data={downloads.data} />
             <div className="flex gap-4">
                 {query.data?.repository ? (
                     <RepositoryCard
@@ -46,26 +67,16 @@ function PackagesComponent() {
                     <LoadingSourceCard className="w-1/2" />
                 )}
             </div>
-            {!query.isPending && (
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="">Version</TableHead>
-                            <TableHead className="w-[200px]">Created At</TableHead>
-                            <TableHead className="text-right w-[100px]">Downloads</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {versions.map((version) => (
-                            <TableRow key={version.id}>
-                                <TableCell className="font-medium">{version.name}</TableCell>
-                                <TableCell>{version.createdAt ? format(version.createdAt, 'PPP') : 'Never'}</TableCell>
-                                <TableCell className="text-right">{version.downloadsCount?.toLocaleString()}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            )}
+            <SearchBar
+                name="Version"
+                search={search.filters?.search}
+                onSearch={navigateOnSearch(navigate)}
+            />
+            <VersionTable
+                query={versions}
+                sort={search.sort}
+                onSort={navigateOnSort(navigate)}
+            />
         </>
     )
 }

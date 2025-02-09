@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\SourceProvider;
+use App\Http\Resources\VersionResource;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
@@ -22,14 +23,7 @@ it('creates version for new tag', function (Repository $repository, SourceProvid
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
 
-    $response->assertExactJson([
-        'package_id' => $version->package->id,
-        'name' => '1.0.0',
-        'shasum' => $version->shasum,
-        'updated_at' => $version->updated_at,
-        'created_at' => $version->created_at,
-        'id' => $version->id,
-    ]);
+    $response->assertExactJson(resourceAsJson(new VersionResource($version)));
 })
     ->with(rootAndSubRepository())
     ->with(providerPushEvents(
@@ -56,14 +50,7 @@ it('overwrites version for same tag', function (Repository $repository, SourcePr
     /** @var Version $version */
     $version = Version::query()->latest('id')->first();
 
-    $response->assertExactJson([
-        'id' => $version->id,
-        'package_id' => $version->package->id,
-        'name' => $version->name,
-        'shasum' => $version->shasum,
-        'created_at' => $version->created_at,
-        'updated_at' => $version->updated_at,
-    ]);
+    $response->assertExactJson(resourceAsJson(new VersionResource($version)));
 
     expect($version->is($originalVersion))
         ->toBeTrue();

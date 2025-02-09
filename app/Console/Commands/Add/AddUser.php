@@ -18,10 +18,8 @@ use function Laravel\Prompts\text;
 
 class AddUser extends Command
 {
-    /** @var string */
     protected $signature = 'add:user';
 
-    /** @var string|null */
     protected $description = 'Add a user';
 
     public function handle(StoreUser $storeUser): int

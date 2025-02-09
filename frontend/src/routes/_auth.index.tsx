@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CodeIcon, DatabaseIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
 import { useDashboard } from '@/api/hooks'
 import { Heading } from '@/components/page/Heading'
+import { DownloadsCard } from '@/components/card/downloads-card'
 
 export const Route = createFileRoute('/_auth/')({
     component: HomeComponent,
@@ -15,6 +16,7 @@ function HomeComponent() {
     return (
         <>
             <Heading title="Dashboard" />
+            <DownloadsCard data={query.data?.downloads} />
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {typeof query.data?.repositories !== 'undefined' && (
                     <Card>
@@ -31,7 +33,7 @@ function HomeComponent() {
                 {typeof query.data?.packages !== 'undefined' && (
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Packages</CardTitle>
+                            <CardTitle className="text-sm font-medium">Packages</CardTitle>
                             <PackageIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
@@ -74,15 +76,6 @@ function HomeComponent() {
                         </CardContent>
                     </Card>
                 )}
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total downloads</CardTitle>
-                        <CodeIcon className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{query.data?.downloads}</div>
-                    </CardContent>
-                </Card>
             </div>
         </>
     )

@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { user } from '@/api/user'
 import axios from 'axios'
 import { ValidationError } from '@/hooks/useForm'
+import { downloadsPerDate } from '@/api/package'
 
 export * from './pagination'
 export * from './repository'
@@ -23,7 +24,7 @@ export const dashboard = z.object({
     users: z.number().optional(),
     tokens: z.number().optional(),
     sources: z.number().optional(),
-    downloads: z.number(),
+    downloads: downloadsPerDate.array(),
 })
 
 export function fetchDashboard() {

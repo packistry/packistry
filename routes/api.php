@@ -11,6 +11,7 @@ use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VersionController;
 use App\Http\Controllers\Webhook;
 use App\Http\Middleware\AcceptsJsonOrRedirectApp;
 use App\Http\Middleware\ForceJson;
@@ -59,6 +60,11 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
 
         Route::apiResource('/packages', PackageController::class)
             ->only(['index', 'store', 'destroy', 'show']);
+
+        Route::apiResource('/packages/{packageId}/versions', VersionController::class)
+            ->only(['index']);
+
+        Route::get('/packages/{packageId}/downloads', [PackageController::class, 'downloads']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::patch('/me', [AuthController::class, 'update']);

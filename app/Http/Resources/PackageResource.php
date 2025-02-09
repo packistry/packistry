@@ -34,7 +34,7 @@ class PackageResource extends JsonResource
             'repository' => new RepositoryResource($this->whenLoaded('repository')),
             'source' => new SourceResource($this->whenLoaded('source')),
             'description' => $this->description,
-            'downloads' => $this->downloads,
+            'total_downloads' => $this->total_downloads,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

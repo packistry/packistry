@@ -34,7 +34,7 @@ it('searches filled repository', function (Repository $repository, ?Authenticata
                 ->get()
                 ->map(fn (Package $package): array => [
                     'description' => $package->description,
-                    'downloads' => $package->downloads,
+                    'downloads' => $package->total_downloads,
                     'name' => $package->name,
                 ]),
         ]);

@@ -25,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $latest_version
  * @property PackageType $type
  * @property string|null $description
- * @property int $downloads
+ * @property int $total_downloads
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Repository $repository
@@ -50,7 +50,7 @@ class Package extends Model
     ];
 
     protected $attributes = [
-        'downloads' => 0,
+        'total_downloads' => 0,
     ];
 
     /**
