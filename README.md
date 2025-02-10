@@ -2,7 +2,7 @@
 
 Packistry is a self-hosted Composer repository designed to handle your PHP package distribution. It supports importing from multiple sources like GitHub, GitLab, Gitea and Bitbucket, with seamless updates using webhooks. Packistry allows you to effortlessly run your own composer repository with just a few commands, giving you full control over your packages, access management, and security.
 
-- Explore our docs at **[https://packistry.github.io/ »](https://packistry.github.io/)**
+- Explore the docs at **[https://packistry.github.io/ »](https://packistry.github.io/)**
 
 ### Features
 
@@ -24,6 +24,31 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Machine Access Control**: Generate deploy tokens to allow machines (e.g., build systems or CI/CD pipelines) to access private repositories, ensuring smooth, secure automation.
 
 Packistry combines ease of use, flexibility, and security to give you complete control over your PHP package distribution in a self-hosted environment. Whether you're managing a private project, a team of developers, or an open-source initiative, Packistry streamlines your workflow with minimal configuration and maximum control.
+
+### Running Packistry
+
+You can easily run Packistry using Docker.
+
+First, generate an app key:
+```
+echo APP_KEY=base64:$(openssl rand -base64 32)
+```
+
+Set the APP_KEY and start the container:
+
+```
+docker run -p 80:80 -e APP_KEY=REPLACE_WITH_VALUE_FROM_STEP_ABOVE -v ./:/data  ghcr.io/packistry/packistry:latest
+```
+
+Run the following command to create a user:
+
+```
+docker exec -it $(docker ps | grep ":80->" | awk '{print $1}') packistry add:user
+```
+
+Now, open http://localhost in your browser and log in with the newly created user. Note: Webhooks will not be delivered to localhost.
+
+- Explore the docs at **[https://packistry.github.io/ »](https://packistry.github.io/)** for more options to run Packistry.
 
 ## Dependencies
 
