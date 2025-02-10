@@ -17,7 +17,7 @@
     "@eslint/js": "^9.20.0",
     "@tailwindcss/postcss": "^4.0.6",
     "@tanstack/eslint-plugin-query": "^5.66.1",
-    "@tanstack/router-plugin": "^1.102.1",
+    "@tanstack/router-plugin": "^1.102.2",
     "@types/humps": "^2.0.6",
     "@types/lodash": "^4.17.15",
     "@types/node": "^22.13.1",
