@@ -37,7 +37,7 @@ echo APP_KEY=base64:$(openssl rand -base64 32)
 Set the APP_KEY and start the container:
 
 ```
-docker run -p 80:80 -e APP_KEY=REPLACE_WITH_VALUE_FROM_STEP_ABOVE -v ./:/data  ghcr.io/packistry/packistry:latest
+docker run -p 80:80 -e APP_KEY=REPLACE_WITH_VALUE_FROM_STEP_ABOVE -v ./:/data ghcr.io/packistry/packistry:latest
 ```
 
 Run the following command to create a user:
