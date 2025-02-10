@@ -38,6 +38,7 @@ jobs:
       - name: Build and Push AMD64
         uses: docker/build-push-action@v6
         with:
+          context: .
           platforms: linux/amd64
           push: true
           tags: ghcr.io/packistry/packistry:latest-amd64
@@ -73,6 +74,7 @@ jobs:
       - name: Build and Push ARM64
         uses: docker/build-push-action@v6
         with:
+          context: .
           platforms: linux/arm64
           push: true
           tags: ghcr.io/packistry/packistry:latest-arm64
