@@ -61,6 +61,9 @@ ENV WORKER_NUMPROCS=2
 RUN addgroup -S $GROUP && adduser -S $USER -G $GROUP
 RUN chown -R $GROUP:$USER /var/www/html
 
+RUN mkdir /data
+RUN chown -R $GROUP:$USER /data
+
 USER $USER
 
 EXPOSE 80
