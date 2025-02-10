@@ -13,7 +13,7 @@ RUN apk add --no-cache \
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-FROM node:22-slim AS builder_frontend
+FROM node:23-slim AS builder_frontend
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
