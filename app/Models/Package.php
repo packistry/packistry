@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $repository_id
  * @property int|null $source_id
- * @property string $provider_id
+ * @property string|null $provider_id
  * @property string $name
  * @property string|null $latest_version
  * @property PackageType $type
@@ -34,9 +34,9 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $versions_count
  *
  * @method static PackageFactory factory($count = null, $state = [])
- * @method static Builder|Package newModelQuery()
- * @method static Builder|Package newQuery()
- * @method static Builder|Package query()
+ * @method static Builder<static>|Package newModelQuery()
+ * @method static Builder<static>|Package newQuery()
+ * @method static Builder<static>|Package query()
  *
  * @mixin Eloquent
  */

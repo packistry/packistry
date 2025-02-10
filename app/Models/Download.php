@@ -15,19 +15,20 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $package_id
- * @property int $version_id
+ * @property int|null $version_id
  * @property int|null $token_id
  * @property string $version_name
  * @property string|null $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $created_date
  * @property-read Package $package
- * @property-read Version $version
+ * @property-read Version|null $version
  *
  * @method static DownloadFactory factory($count = null, $state = [])
- * @method static Builder|Download newModelQuery()
- * @method static Builder|Download newQuery()
- * @method static Builder|Download query()
+ * @method static Builder<static>|Download newModelQuery()
+ * @method static Builder<static>|Download newQuery()
+ * @method static Builder<static>|Download query()
  *
  * @mixin Eloquent
  */

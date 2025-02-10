@@ -27,9 +27,9 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $packages_count
  *
  * @method static RepositoryFactory factory($count = null, $state = [])
- * @method static Builder|Repository newModelQuery()
- * @method static Builder|Repository newQuery()
- * @method static Builder|Repository query()
+ * @method static Builder<static>|Repository newModelQuery()
+ * @method static Builder<static>|Repository newQuery()
+ * @method static Builder<static>|Repository query()
  *
  * @mixin Eloquent
  */

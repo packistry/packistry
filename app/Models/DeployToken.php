@@ -23,13 +23,16 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection<int, Repository> $repositories
+ * @property-read int|null $repositories_count
  * @property-read Token|null $token
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
  *
- * @method static Builder|DeployToken newModelQuery()
- * @method static Builder|DeployToken newQuery()
- * @method static Builder|DeployToken query()
+ * @method static DeployTokenFactory factory($count = null, $state = [])
+ * @method static Builder<static>|DeployToken newModelQuery()
+ * @method static Builder<static>|DeployToken newQuery()
+ * @method static Builder<static>|DeployToken query()
  *
  * @mixin Eloquent
  */

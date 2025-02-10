@@ -26,13 +26,13 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string $name
+ * @property Role $role
  * @property string $email
  * @property Carbon|null $email_verified_at
- * @property mixed $password
+ * @property string $password
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property Role $role
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, Repository> $repositories
@@ -41,9 +41,9 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $tokens_count
  *
  * @method static UserFactory factory($count = null, $state = [])
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
+ * @method static Builder<static>|User newModelQuery()
+ * @method static Builder<static>|User newQuery()
+ * @method static Builder<static>|User query()
  *
  * @mixin Eloquent
  */

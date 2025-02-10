@@ -22,20 +22,20 @@ use Override;
  * @property int $id
  * @property int $package_id
  * @property string $name
- * @property array<string, mixed> $metadata
+ * @property array<array-key, mixed> $metadata
  * @property string $shasum
  * @property string $order
- * @property int $total_downloads
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int $total_downloads
  * @property-read Collection<int, Download> $downloads
  * @property-read int|null $downloads_count
  * @property-read Package $package
  *
  * @method static VersionFactory factory($count = null, $state = [])
- * @method static Builder|Version newModelQuery()
- * @method static Builder|Version newQuery()
- * @method static Builder|Version query()
+ * @method static Builder<static>|Version newModelQuery()
+ * @method static Builder<static>|Version newQuery()
+ * @method static Builder<static>|Version query()
  *
  * @mixin Eloquent
  */

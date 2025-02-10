@@ -20,16 +20,20 @@ use RuntimeException;
  * @property int $tokenable_id
  * @property string $name
  * @property string $token
- * @property string[]|null $abilities
+ * @property array<array-key, mixed>|null $abilities
  * @property Carbon|null $last_used_at
  * @property Carbon|null $expires_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read Model|Eloquent $tokenable
  *
- * @method static Builder|Token newModelQuery()
- * @method static Builder|Token newQuery()
- * @method static Builder|Token query()
+ * @method static Builder<static>|Token newModelQuery()
+ * @method static Builder<static>|Token newQuery()
+ * @method static Builder<static>|Token onlyTrashed()
+ * @method static Builder<static>|Token query()
+ * @method static Builder<static>|Token withTrashed()
+ * @method static Builder<static>|Token withoutTrashed()
  *
  * @mixin Eloquent
  */
