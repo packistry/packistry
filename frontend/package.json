@@ -29,7 +29,7 @@
     "eslint": "^9.20.0",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^15.14.0",
-    "postcss": "^8.5.1",
+    "postcss": "^8.5.2",
     "prettier": "^3.5.0",
     "tailwindcss": "^4.0.6",
     "typescript-eslint": "^8.24.0",
