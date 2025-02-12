@@ -8,9 +8,9 @@ use App\Models\Source;
 
 use function Pest\Laravel\postJson;
 
-$event = ['ref' => 'refs/tags/0.1.3'];
+it('requires valid signature', function (Repository $repository): void {
+    $event = ['ref' => 'refs/tags/0.1.3'];
 
-it('requires valid signature', function (Repository $repository) use ($event): void {
     $source = Source::factory()
         ->provider(SourceProvider::GITHUB)
         ->create();

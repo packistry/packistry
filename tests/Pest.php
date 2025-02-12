@@ -22,6 +22,7 @@ use App\Models\Source;
 use App\Models\User;
 use App\Sources\Bitbucket\Change;
 use App\Sources\Bitbucket\Link;
+use App\Sources\Bitbucket\Links;
 use App\Sources\Bitbucket\Push;
 use App\Sources\Bitbucket\Reference;
 use App\Sources\Deletable;
@@ -42,6 +43,9 @@ use function PHPUnit\Framework\assertNotNull;
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
+
+pest()->extend(Tests\TestCase::class)
+    ->in('Unit');
 
 /**
  * @param  Permission|Permission[]  $permissions
@@ -365,7 +369,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                 ref: "refs/$refType/$ref",
                 after: 'after',
                 before: 'before',
-                checkoutSha: 'checkoutsha',
+                checkoutSha: 'checkout-sha',
                 project: new Project(
                     id: 1,
                     name: 'test',
@@ -393,7 +397,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     name: 'test',
                     fullName: 'vendor/test',
                     uuid: '{1}',
-                    links: new \App\Sources\Bitbucket\Links(
+                    links: new Links(
                         html: new Link(
                             href: 'https://bitbucket.org/vendor/test'
                         ),
@@ -501,7 +505,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                     name: 'test',
                     fullName: 'vendor/test',
                     uuid: '{1}',
-                    links: new \App\Sources\Bitbucket\Links(
+                    links: new Links(
                         html: new Link(
                             href: 'https://bitbucket.org/vendor/test'
                         ),

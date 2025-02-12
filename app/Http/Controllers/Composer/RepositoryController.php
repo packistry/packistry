@@ -11,6 +11,7 @@ use App\Enums\TokenAbility;
 use App\Events\PackageDownloadEvent;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
@@ -216,6 +217,10 @@ class RepositoryController extends RepositoryAwareController
         } catch (VersionNotFoundException) {
             return response()->json([
                 'version' => ['no version provided'],
+            ], 422);
+        } catch (NameNotFoundException) {
+            return response()->json([
+                'name' => ['no name provided'],
             ], 422);
         } catch (FailedToOpenArchiveException) {
             return response()->json([
