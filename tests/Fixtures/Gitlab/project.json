@@ -1,0 +1,389 @@
+{
+    "id": 278964,
+    "description": "GitLab is an open source end-to-end software development platform with built-in version control, issue tracking, code review, CI/CD, and more. Self-host GitLab on your own servers, in a container, or on a cloud provider.",
+    "name": "GitLab",
+    "name_with_namespace": "GitLab.org / GitLab",
+    "path": "gitlab",
+    "path_with_namespace": "gitlab-org/gitlab",
+    "created_at": "2015-05-20T10:47:11.949Z",
+    "default_branch": "master",
+    "tag_list": [
+        "hacktoberfest",
+        "javascript",
+        "ruby",
+        "vue.js"
+    ],
+    "topics": [
+        "hacktoberfest",
+        "javascript",
+        "ruby",
+        "vue.js"
+    ],
+    "ssh_url_to_repo": "git@gitlab.com:gitlab-org/gitlab.git",
+    "http_url_to_repo": "https://gitlab.com/gitlab-org/gitlab.git",
+    "web_url": "https://gitlab.com/gitlab-org/gitlab",
+    "readme_url": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md",
+    "forks_count": 10684,
+    "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/278964/project_avatar.png",
+    "star_count": 5448,
+    "last_activity_at": "2025-02-13T18:59:47.515Z",
+    "namespace": {
+        "id": 9970,
+        "name": "GitLab.org",
+        "path": "gitlab-org",
+        "kind": "group",
+        "full_path": "gitlab-org",
+        "parent_id": null,
+        "avatar_url": "/uploads/-/system/group/avatar/9970/project_avatar.png",
+        "web_url": "https://gitlab.com/groups/gitlab-org"
+    },
+    "container_registry_image_prefix": "registry.gitlab.com/gitlab-org/gitlab",
+    "_links": {
+        "self": "https://gitlab.com/api/v4/projects/278964",
+        "issues": "https://gitlab.com/api/v4/projects/278964/issues",
+        "merge_requests": "https://gitlab.com/api/v4/projects/278964/merge_requests",
+        "repo_branches": "https://gitlab.com/api/v4/projects/278964/repository/branches",
+        "labels": "https://gitlab.com/api/v4/projects/278964/labels",
+        "events": "https://gitlab.com/api/v4/projects/278964/events",
+        "members": "https://gitlab.com/api/v4/projects/278964/members",
+        "cluster_agents": "https://gitlab.com/api/v4/projects/278964/cluster_agents"
+    },
+    "packages_enabled": true,
+    "empty_repo": false,
+    "archived": false,
+    "visibility": "public",
+    "resolve_outdated_diff_discussions": false,
+    "container_expiration_policy": {
+        "cadence": "1d",
+        "enabled": true,
+        "keep_n": 100,
+        "older_than": "14d",
+        "name_regex": ".*",
+        "name_regex_keep": "(?:v.+|master|main|\\d+\\.\\d+\\.\\d+(-rc\\d+)?(-ee)?)",
+        "next_run_at": "2025-02-14T14:13:50.417Z"
+    },
+    "repository_object_format": "sha1",
+    "issues_enabled": true,
+    "merge_requests_enabled": true,
+    "wiki_enabled": false,
+    "jobs_enabled": true,
+    "snippets_enabled": true,
+    "container_registry_enabled": true,
+    "service_desk_enabled": true,
+    "can_create_merge_request_in": true,
+    "issues_access_level": "enabled",
+    "repository_access_level": "enabled",
+    "merge_requests_access_level": "enabled",
+    "forking_access_level": "enabled",
+    "wiki_access_level": "disabled",
+    "builds_access_level": "enabled",
+    "snippets_access_level": "enabled",
+    "pages_access_level": "enabled",
+    "analytics_access_level": "enabled",
+    "container_registry_access_level": "enabled",
+    "security_and_compliance_access_level": "private",
+    "releases_access_level": "enabled",
+    "environments_access_level": "enabled",
+    "feature_flags_access_level": "enabled",
+    "infrastructure_access_level": "enabled",
+    "monitor_access_level": "enabled",
+    "model_experiments_access_level": "enabled",
+    "model_registry_access_level": "enabled",
+    "emails_disabled": false,
+    "emails_enabled": true,
+    "shared_runners_enabled": true,
+    "lfs_enabled": true,
+    "creator_id": 5497,
+    "import_status": "finished",
+    "open_issues_count": 59048,
+    "description_html": "<p data-sourcepos=\"1:1-1:220\" dir=\"auto\">GitLab is an open source end-to-end software development platform with built-in version control, issue tracking, code review, CI/CD, and more. Self-host GitLab on your own servers, in a container, or on a cloud provider.</p>",
+    "updated_at": "2025-02-13T19:20:56.762Z",
+    "ci_config_path": "",
+    "public_jobs": true,
+    "shared_with_groups": [
+        {
+            "group_id": 2584649,
+            "group_name": "managers",
+            "group_full_path": "gitlab-org/release/managers",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 3887968,
+            "group_name": "rails-backend",
+            "group_full_path": "gitlab-org/maintainers/rails-backend",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 5747833,
+            "group_name": "eng-prod",
+            "group_full_path": "gl-dx/eng-prod",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 5924764,
+            "group_name": "database",
+            "group_full_path": "gitlab-org/maintainers/database",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 3205033,
+            "group_name": "Developer Experience",
+            "group_full_path": "gl-dx",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 1356356,
+            "group_name": "GitLab docs team",
+            "group_full_path": "gl-docsteam",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 7196368,
+            "group_name": "analytics-instrumentation",
+            "group_full_path": "gitlab-org/analytics-section/analytics-instrumentation",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 8435172,
+            "group_name": "Compliance Engineering",
+            "group_full_path": "gitlab-org/software-supply-chain-security/compliance/engineering",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 3910297,
+            "group_name": "GitLab Delivery",
+            "group_full_path": "gitlab-org/delivery",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 6150316,
+            "group_name": "frontend",
+            "group_full_path": "gitlab-org/maintainers/frontend",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 13279104,
+            "group_name": "maintainers",
+            "group_full_path": "gl-dx/maintainers",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 84273238,
+            "group_name": "Secret Detection Team",
+            "group_full_path": "gitlab-org/secure/secret-detection",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 59455638,
+            "group_name": "Engineering",
+            "group_full_path": "gitlab-org/foundations/engineering",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 4654006,
+            "group_name": "Application Security",
+            "group_full_path": "gitlab-com/gl-security/appsec",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 8306194,
+            "group_name": "Authentication Group",
+            "group_full_path": "gitlab-org/software-supply-chain-security/authentication",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 10589162,
+            "group_name": "cicd-templates",
+            "group_full_path": "gitlab-org/maintainers/cicd-templates",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 58054119,
+            "group_name": "tw-leadership",
+            "group_full_path": "gitlab-org/tw-leadership",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 55739553,
+            "group_name": "approvers",
+            "group_full_path": "gitlab-org/software-supply-chain-security/authentication/approvers",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 8306188,
+            "group_name": "Compliance Group",
+            "group_full_path": "gitlab-org/software-supply-chain-security/compliance",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 58138550,
+            "group_name": "Development Leaders",
+            "group_full_path": "gitlab-org/development-leaders",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 60317720,
+            "group_name": "tooling-maintainers",
+            "group_full_path": "gl-dx/tooling-maintainers",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 53590082,
+            "group_name": "cicd-verify",
+            "group_full_path": "gitlab-org/maintainers/cicd-verify",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 69408690,
+            "group_name": "Backend",
+            "group_full_path": "gitlab-org/maintainers/workspaces/backend",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 57857366,
+            "group_name": "Verify Frontend Engineers",
+            "group_full_path": "gitlab-org/ci-cd/verify/frontend",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 75871867,
+            "group_name": "kas-version-maintainers",
+            "group_full_path": "gitlab-org/maintainers/kas-version-maintainers",
+            "group_access_level": 40,
+            "expires_at": null
+        },
+        {
+            "group_id": 54485028,
+            "group_name": "Technical Writing",
+            "group_full_path": "gitlab-org/technical-writing",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 67749417,
+            "group_name": "migration maintainers",
+            "group_full_path": "gitlab-org/search-team/migration-maintainers",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 65846816,
+            "group_name": "Backend Approvers",
+            "group_full_path": "gitlab-org/ci-cd/runner-fleet-team/backend-approvers",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 72508290,
+            "group_name": "clickhouse",
+            "group_full_path": "gitlab-org/maintainers/clickhouse",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 77671062,
+            "group_name": "approvers",
+            "group_full_path": "gitlab-org/software-supply-chain-security/authorization/approvers",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 5927426,
+            "group_name": "Static Analysis Group",
+            "group_full_path": "gitlab-org/secure/static-analysis",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 57696361,
+            "group_name": "FE",
+            "group_full_path": "gitlab-org/fulfillment/utilization/fe",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 57696357,
+            "group_name": "BE",
+            "group_full_path": "gitlab-org/fulfillment/utilization/be",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 57706471,
+            "group_name": "Engineers",
+            "group_full_path": "gitlab-org/fulfillment/utilization/engineers",
+            "group_access_level": 30,
+            "expires_at": null
+        },
+        {
+            "group_id": 1413584,
+            "group_name": "gl-gitaly",
+            "group_full_path": "gl-gitaly",
+            "group_access_level": 30,
+            "expires_at": null
+        }
+    ],
+    "only_allow_merge_if_pipeline_succeeds": true,
+    "allow_merge_on_skipped_pipeline": false,
+    "request_access_enabled": false,
+    "only_allow_merge_if_all_discussions_are_resolved": true,
+    "remove_source_branch_after_merge": true,
+    "printing_merge_request_link_enabled": true,
+    "merge_method": "merge",
+    "squash_option": "default_on",
+    "enforce_auth_checks_on_uploads": true,
+    "suggestion_commit_message": "",
+    "merge_commit_template": "Merge branch '%{source_branch}' into '%{target_branch}' \r\n\r\n%{title}\r\n\r\n%{issues}\r\n\r\nSee merge request %{url}\r\n\r\nMerged-by: %{merged_by}\r\n%{approved_by}\r\n%{reviewed_by}\r\n%{co_authored_by}",
+    "squash_commit_template": "%{first_commit}",
+    "issue_branch_template": null,
+    "warn_about_potentially_unwanted_characters": true,
+    "autoclose_referenced_issues": false,
+    "max_artifacts_size": null,
+    "approvals_before_merge": 1,
+    "mirror": false,
+    "external_authorization_classification_label": "",
+    "marked_for_deletion_at": null,
+    "marked_for_deletion_on": null,
+    "requirements_enabled": true,
+    "requirements_access_level": "enabled",
+    "security_and_compliance_enabled": false,
+    "compliance_frameworks": [
+        "Product"
+    ],
+    "issues_template": "",
+    "merge_requests_template": "",
+    "merge_pipelines_enabled": true,
+    "merge_trains_enabled": true,
+    "merge_trains_skip_train_allowed": false,
+    "only_allow_merge_if_all_status_checks_passed": false,
+    "allow_pipeline_trigger_approve_deployment": false,
+    "prevent_merge_without_jira_issue": false,
+    "permissions": {
+        "project_access": null,
+        "group_access": null
+    }
+}

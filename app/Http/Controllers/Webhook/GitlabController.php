@@ -15,7 +15,7 @@ class GitlabController extends WebhookController
         $this->authorizeWebhook($request);
 
         return match ($request->header('X-Gitlab-Event')) {
-            'Push Hook' => $this->pushOrDelete(PushEvent::from($request)),
+            'Push Hook', 'Tag Push Hook' => $this->pushOrDelete(PushEvent::from($request)),
             default => response()->json([
                 'event' => ['unknown event type'],
             ], 422)

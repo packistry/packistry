@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Actions\Sources;
 
 use App\Actions\Sources\Inputs\StoreSourceInput;
+use App\Exceptions\FailedToParseUrlException;
+use App\Exceptions\InvalidTokenException;
 use App\Models\Source;
 use App\Normalizer;
 use Illuminate\Support\Str;
-use Throwable;
 
 class StoreSource
 {
     /**
-     * @throws Throwable
+     * @throws InvalidTokenException|FailedToParseUrlException
      */
     public function handle(StoreSourceInput $input): Source
     {

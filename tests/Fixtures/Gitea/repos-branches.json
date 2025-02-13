@@ -1,0 +1,80 @@
+[
+    {
+        "name": "main",
+        "commit": {
+            "id": "3510152e3671880d483b111a2a66c38f924ac147",
+            "message": "Fix Makefile make docker (#641)\n\nFix #640\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/641\n",
+            "url": "https://gitea.com/gitea/act_runner/commit/3510152e3671880d483b111a2a66c38f924ac147",
+            "author": {
+                "name": "Lunny Xiao",
+                "email": "lunny@noreply.gitea.com",
+                "username": "lunny"
+            },
+            "committer": {
+                "name": "Lunny Xiao",
+                "email": "lunny@noreply.gitea.com",
+                "username": "lunny"
+            },
+            "verification": {
+                "verified": false,
+                "reason": "gpg.error.not_signed_commit",
+                "signature": "",
+                "signer": null,
+                "payload": ""
+            },
+            "timestamp": "2025-01-29T03:27:47Z",
+            "added": null,
+            "removed": null,
+            "modified": null
+        },
+        "protected": true,
+        "required_approvals": 2,
+        "enable_status_check": true,
+        "status_check_contexts": [
+            "checks / check and test (pull_request)"
+        ],
+        "user_can_push": false,
+        "user_can_merge": false,
+        "effective_branch_protection_name": ""
+    },
+    {
+        "name": "lunny/upgrade_act",
+        "commit": {
+            "id": "df97923656f5d339e13f3f73a08185c8e0e790cc",
+            "message": "Upgrade act from v0.261.2 -> v0.261.3\n",
+            "url": "https://gitea.com/gitea/act_runner/commit/df97923656f5d339e13f3f73a08185c8e0e790cc",
+            "author": {
+                "name": "Lunny Xiao",
+                "email": "xiaolunwen@gmail.com",
+                "username": "lunny"
+            },
+            "committer": {
+                "name": "Lunny Xiao",
+                "email": "xiaolunwen@gmail.com",
+                "username": "lunny"
+            },
+            "verification": {
+                "verified": true,
+                "reason": "lunny / C3B7C91B632F738A",
+                "signature": "-----BEGIN PGP SIGNATURE-----\n\niQIzBAABCAAdFiEEumb2f9c/cFjXEtMIw7fJG2Mvc4oFAmcBloUACgkQw7fJG2Mv\nc4rS1w/+L83kwblbCGdmbELrvTINz4pyq392//oO5XxWhH7yNjqYc/7Ve4ltYnOc\nSDiBYtAWvZfMD3iTzCiilru5sflCwruFkcnPwk+WFg7TjSZrCb2AY3bunFrWWQaL\npOy4MKhE9/bZ9cRYgkfNHsmTvJamjBO5yEDcav7HxDJucqFnEmV4+N3aggQJNlWL\n7AKCXSiEUT82l8d8qPArr91PeRZx3cDddgmZ7/HBhU4b7cQwc4Qr94aTCUN7K9Q+\nUqL5dGORHRlTj4O2myi2G23AfPBd/UmWTtmRfFQ8RsqByS5WVIuenNWEeNo0IXyu\nU68ptH5Wc6KV/iragxYWXemEvPlWcDX0yX0eYSM3WGxvS93HE8jPoRd41TRgt9Ro\neuoHZ1ef74ntqePfhNfaacRJDvo8lIxOFyrEHcmmZ4TMF6k5HA9dGzUHMzKlNyiz\nHibSxvKphTwRYoPCXMnSBxJPZDmfG+7jrfr1i/dJK2JhyU/sJsuThD6n/Zy9TWS3\neSRiOwDZULlL2ihAFn2nl9AnX+YH3yjOh3pImHK35T8Bie3K8u7HnmbHsiSoA0h0\nYnErpT5urcYphE/2+SO/D9YLSwYC33Vs1sk+Dznl4GnCC0CgHjJB5u6E8w7DdGMc\ntSFGlEkj2Fhtw148tFVb76IP9KPOxZ9odrfoRDX+AcwvFISHc2g=\n=TFpX\n-----END PGP SIGNATURE-----\n",
+                "signer": {
+                    "name": "lunny",
+                    "email": "xiaolunwen@gmail.com",
+                    "username": ""
+                },
+                "payload": "tree b239c168b72c95cc71e25cefa0b1e82e18288c33\nparent 0e2a3e00f5b32d5407f4f929a1ae61d3df825362\nauthor Lunny Xiao <xiaolunwen@gmail.com> 1728157317 -0700\ncommitter Lunny Xiao <xiaolunwen@gmail.com> 1728157317 -0700\n\nUpgrade act from v0.261.2 -> v0.261.3\n"
+            },
+            "timestamp": "2024-10-05T12:41:57-07:00",
+            "added": null,
+            "removed": null,
+            "modified": null
+        },
+        "protected": false,
+        "required_approvals": 0,
+        "enable_status_check": false,
+        "status_check_contexts": [],
+        "user_can_push": false,
+        "user_can_merge": false,
+        "effective_branch_protection_name": ""
+    }
+]

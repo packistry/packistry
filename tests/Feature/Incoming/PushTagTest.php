@@ -62,7 +62,7 @@ it('has correct zip url for tag', function (SourceProvider $provider, Importable
     $url = match ($provider) {
         SourceProvider::GITEA => 'https://gitea.com/vendor/test/archive/v1.0.0.zip',
         SourceProvider::GITHUB => 'https://github.com/vendor/test/archive/v1.0.0.zip',
-        SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkoutsha',
+        SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkout-sha',
         SourceProvider::BITBUCKET => 'https://bitbucket.org/vendor/test/get/v1.0.0.zip',
     };
 
@@ -76,7 +76,7 @@ it('has correct zip url for branch', function (SourceProvider $provider, Importa
     $url = match ($provider) {
         SourceProvider::GITEA => 'https://gitea.com/vendor/test/archive/feature/my-feature.zip',
         SourceProvider::GITHUB => 'https://github.com/vendor/test/archive/feature/my-feature.zip',
-        SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkoutsha',
+        SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkout-sha',
         SourceProvider::BITBUCKET => 'https://bitbucket.org/vendor/test/get/feature/my-feature.zip',
     };
 
