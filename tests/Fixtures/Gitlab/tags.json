@@ -1,0 +1,548 @@
+[
+    {
+        "name": "v17.6.5-ee",
+        "message": "Version v17.6.5-ee",
+        "target": "569a90b3249575139c87f2efe28d463fc4523cb1",
+        "commit": {
+            "id": "53bac28a6c50e5c1efa8b8d2520b24f32993682f",
+            "short_id": "53bac28a",
+            "created_at": "2025-02-11T23:15:42.000+00:00",
+            "parent_ids": [
+                "7a91c629695ec71872b865438c8f44d319d9dabc"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-02-11T23:15:42.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-02-11T23:15:42.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/53bac28a6c50e5c1efa8b8d2520b24f32993682f"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-02-11T23:20:52.000Z"
+    },
+    {
+        "name": "v17.7.4-ee",
+        "message": "Version v17.7.4-ee",
+        "target": "04879cd2206434124e2b9eacfba48c52cc68e706",
+        "commit": {
+            "id": "fd7fac14bde2a6aede8d3d68558c4761364e13df",
+            "short_id": "fd7fac14",
+            "created_at": "2025-02-11T23:07:43.000+00:00",
+            "parent_ids": [
+                "c7486cbedf12b048dcf7001960f4a3a5816d1102"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-02-11T23:07:43.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-02-11T23:07:43.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/fd7fac14bde2a6aede8d3d68558c4761364e13df"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-02-11T23:12:49.000Z"
+    },
+    {
+        "name": "v17.8.2-ee",
+        "message": "Version v17.8.2-ee",
+        "target": "44fc9c259406330f74de3c6603565a16c8c0fcde",
+        "commit": {
+            "id": "290b47ded8be87247276edd4d9117662c70366c3",
+            "short_id": "290b47de",
+            "created_at": "2025-02-11T23:00:12.000+00:00",
+            "parent_ids": [
+                "a77633a4cc71232717aec578e7c852139d895712"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-02-11T23:00:12.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-02-11T23:00:12.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/290b47ded8be87247276edd4d9117662c70366c3"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-02-11T23:05:20.000Z"
+    },
+    {
+        "name": "v17.6.4-ee",
+        "message": "Version v17.6.4-ee",
+        "target": "ef5c2714db1f4d5a45aea16b04fd2cb044a30bac",
+        "commit": {
+            "id": "895b46185b5908d7ac6ca2bfb578950b3c31a572",
+            "short_id": "895b4618",
+            "created_at": "2025-01-22T06:20:05.000+00:00",
+            "parent_ids": [
+                "164c51f9ce94c29c1048c9c645580aeaaf8c59dc"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-22T06:20:05.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-01-22T06:20:05.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/895b46185b5908d7ac6ca2bfb578950b3c31a572"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-22T06:28:12.000Z"
+    },
+    {
+        "name": "v17.7.3-ee",
+        "message": "Version v17.7.3-ee",
+        "target": "50a77b12178649ebffdd9c031fe39f4a9103293c",
+        "commit": {
+            "id": "2aa74e88172ac60f71fd52f9bbf525f5dfab4a9a",
+            "short_id": "2aa74e88",
+            "created_at": "2025-01-22T06:07:20.000+00:00",
+            "parent_ids": [
+                "2927e21fc2c700b1e36fe4e79d9db6ec53ad5241"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-22T06:07:20.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-01-22T06:07:20.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/2aa74e88172ac60f71fd52f9bbf525f5dfab4a9a"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-22T06:17:32.000Z"
+    },
+    {
+        "name": "v17.8.1-ee",
+        "message": "Version v17.8.1-ee",
+        "target": "ee662c323735295f2323420dee2daf4b669b06cb",
+        "commit": {
+            "id": "a303ad659b5ac357f7fc47e48d10f1827db340ac",
+            "short_id": "a303ad65",
+            "created_at": "2025-01-22T04:08:57.000+00:00",
+            "parent_ids": [
+                "d69d658b5f048e16edc3ae1616626cfd8daa6f1a"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-22T04:08:57.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-01-22T04:08:57.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/a303ad659b5ac357f7fc47e48d10f1827db340ac"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-22T04:17:08.000Z"
+    },
+    {
+        "name": "v17.8.0-ee",
+        "message": "Version v17.8.0-ee",
+        "target": "5fe2df864ce42fc58057827aca734a9d2154377b",
+        "commit": {
+            "id": "f03594b9e09b648c839e9c008286a24c93c82373",
+            "short_id": "f03594b9",
+            "created_at": "2025-01-15T09:47:21.000+00:00",
+            "parent_ids": [
+                "5f11b1d52b72613ff7279ab544bd8dd7bec85f71"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-15T09:47:21.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2025-01-15T09:47:21.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/f03594b9e09b648c839e9c008286a24c93c82373"
+        },
+        "release": {
+            "tag_name": "v17.8.0-ee",
+            "description": "![31 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=31&style=for-the-badge \"New features added in this release\")\n![3706 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=3706&style=for-the-badge \"Total features\")\n\n##### [Verify](https://about.gitlab.com/stages-devops-lifecycle/verify/)\n\n<details><summary>[Hosted runners on Linux for GitLab Dedicated now in limited availability](https://docs.gitlab.com/ee/administration/dedicated/hosted_runners.html) <i>(self-managed only)</i>: <code>GitLab Dedicated</code>, <code>GitLab Hosted Runners</code></summary>\n\n> We are excited to introduce the limited availability of hosted runners on Linux for GitLab Dedicated.\n> \n> Managing fleets of runners can be complex and require significant experience to ensure all CI/CD jobs can\n> scale to meet the demands of developers.\n> \n> Hosted runners for GitLab Dedicated allow you to use fully managed runners for CI/CD jobs.\n> They eliminate the need to maintain your own runner infrastructure, and provide the same\n> security, flexibility, and efficiency of GitLab Dedicated to runners.\n> \n> Hosted runners scale automatically to meet your CI/CD demands to ensure\n> optimal performance during peak times and for large projects.\n> The limited availability release includes Linux runners in various sizes,\n> ranging from 2 to 32 vCPUs, with 8 to 128 GB of memory.\n> \n> To request access to hosted runners for GitLab Dedicated during the limited availability phase,\n> contact your GitLab representative.\n\n</details>\n\n<details><summary>[Large M2 Pro hosted runners on macOS (Beta)](https://docs.gitlab.com/ee/ci/runners/hosted_runners/macos.html) <i>(SaaS only)</i>: <code>GitLab Hosted Runners</code></summary>\n\n> We bring M2 Pro performance to mobile DevOps teams!\n> \n> With up to 2 times the performance of M1 runners and 6 times the performance of x86-64 macOS runners,\n> you can increase your development team's velocity when building and deploying applications.\n> \n> Fully integrated to GitLab CI/CD and available on-demand, teams can now seamlessly create, test,\n> and deploy applications faster for the Apple ecosystem.\n> \n> Try out the new M2 Pro runners today by using `saas-macos-large-m2pro` as the tag in your `.gitlab-ci.yml` file.\n\n</details>\n\n\n\n#### [Ultimate](https://about.gitlab.com/pricing/ultimate/)\n\n![11 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=11&style=flat-square \"New features added to this tier in this release\")\n![589 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=589&style=flat-square \"Total features in this tier\")\n\n<details><summary>SAST scanning in VS Code</summary>\n\n> We're excited to announce that real-time GitLab SAST scanning is now available in VS Code as an experimental feature.\n> \n> You can now scan your project files directly in VS Code, before you've committed or pushed them, so you can find and fix security vulnerabilities faster. A SAST scanning side panel displays your scan results and updates as you make changes to your code. Hover over the vulnerability result to see a detailed description or open it in a separate editor window for more context. Reference our [documentation](https://docs.gitlab.com/ee/editor_extensions/visual_studio_code/#perform-sast-scanning) to get started.\n> \n> This feature is available for GitLab.com customers on the Ultimate tier. We welcome your [feedback](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1775) and are excited to mature this functionality in the upcoming milestones.\n> \n> For a demonstration, watch this [video of SAST scanning in VS Code](https://www.youtube.com/watch?v=KOYdVdA6ZCs).\n\n</details>\n\n\n\n##### [Plan](https://about.gitlab.com/stages-devops-lifecycle/plan/)\n\n<details><summary>[Epic ancestors](https://docs.gitlab.com/ee/user/group/epics/#relationships-between-epics-and-other-items): <code>Portfolio Management</code></summary>\n\n> Navigating your [epic hierarchy](https://docs.gitlab.com/ee/user/group/epics/#relationships-between-epics-and-other-items) just got easier with the redesigned Ancestry widget, now prominently displayed at the top of each epic in a breadcrumb-like format. You can quickly grasp the relationships between epics by seeing both immediate and ultimate parents at a glance, helping you maintain a clear overview of your project structure and easily move between related epics.\n> \n> Your administrator must enable [the new look for epics](https://docs.gitlab.com/ee/user/group/epics/epic_work_items.html).\n\n</details>\n\n<details><summary>[Epic health status](https://docs.gitlab.com/ee/user/group/epics/manage_epics.html#health-status.): <code>Portfolio Management</code></summary>\n\n> You can now easily communicate the progress of your projects with the new health status feature for epics. By setting the status to \"On track,\" \"Needs attention,\" or \"At risk,\" you'll have a quick visual indicator of your epic's health, allowing you to manage risk and keep stakeholders informed about the project's overall status.\n> \n> Your administrator must enable [the new look for epics](https://docs.gitlab.com/ee/user/group/epics/epic_work_items.html).\n\n</details>\n\n<details><summary>[Epic parent](https://docs.gitlab.com/ee/user/group/epics/#relationships-between-epics-and-other-items): <code>Portfolio Management</code></summary>\n\n> You can now easily manage your epic hierarchy by adding a parent directly from an epic, just as you would for an issue. This streamlined process gives you more flexibility in organizing your work, allowing you to quickly establish relationships between epics and maintain a clear structure for your projects.\n> \n> Your administrator must enable [the new look for epics](https://docs.gitlab.com/ee/user/group/epics/epic_work_items.html).\n\n</details>\n\n\n\n##### [Application security testing](https://about.gitlab.com/stages-devops-lifecycle/application_security_testing/)\n\n<details><summary>[Secret detection now includes remediation steps](https://docs.gitlab.com/ee/user/application_security/secret_detection/): <code>Secret Detection</code></summary>\n\n> It's important to fix exposed secrets quickly to minimize the risk of attackers using exposed credentials to break into your systems. Proper remediation requires multiple steps beyond just removing the secret, such as rotating credentials and investigating potential unauthorized access. To help keep your systems secure, secret detection now includes specific remediation steps for each type of detected secret. This guidance helps you systematically address exposures and reduce the risk of security breaches. Remediation steps will appear on all vulnerabilities upon the completion of a pipeline.\n\n</details>\n\n\n\n##### [Security risk management](https://about.gitlab.com/stages-devops-lifecycle/security_risk_management/)\n\n<details><summary>[Find the commit that resolved a vulnerability](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-resolution): <code>Vulnerability Management</code></summary>\n\n> Previously, when a vulnerability was no longer detected, we did not provide users a way to see when or where a vulnerability was resolved.\n> Now, we display a link to the commit SHA where the vulnerability was resolved, providing better traceability and insight into the resolution process. This makes it easier for security and development teams to collaborate and manage vulnerabilities more effectively.\n</details>\n\n<details><summary>[Support multiple distinct approval actions in merge request approval policies](https://docs.gitlab.com/ee/user/application_security/policies/merge_request_approval_policies.html): <code>Security Policy Management</code></summary>\n\n> Previously, merge request approval policies supported only a single approval rule per policy, allowing for one set of approvers stacked with an “OR” condition. As a result, it was more challenging to enforce layered security approvals from varied roles, individual approvers, or separate groups.\n> \n> With this update, you can create up to five approval rules for each merge request approval policy, allowing for more flexible and robust approval policies. Each rule can specify different approvers or roles and each rule is evaluated independently. For example, security teams can define complex approval workflows such as requiring one approver from Group A and one from Group B, or one from a specific role and another from a specified group, ensuring compliance and enhanced control in sensitive workflows.\n> \n> Example uses of this improvement include:\n> \n> - **Distinct role approvals:** One approval from a Developer role and another from a Maintainer role.\n> - **Role and group approvals**: One approval from Developer or Maintainer and a separate approval from a member of the Security Group.\n> - **Distinct group approvals:** One approval from a member of the Python Experts Group and another separate approval from a member of the Security Group.\n\n</details>\n\n<details><summary>[Add vulnerabilities as supported webhook events](https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html#vulnerability-events): <code>Webhooks</code>, <code>Vulnerability Management</code></summary>\n\n> Introducing a webhook integration that generates events for actions related to vulnerabilities to allow you to automate and integrate with external resources. For example, events are generated when vulnerabilities are created or the status of a vunerability changes.\n> \n> <!--What is the problem and solution you're proposing? This content sets the overall vision for the feature and serves as the release notes that will populate in various places, including the [release post blog](https://about.gitlab.com/releases/categories/releases/) and [Gitlab project releases](https://gitlab.com/gitlab-org/gitlab/-/releases). \"-->\n\n</details>\n\n<details><summary>[Enforce centralized workflow rules for the `override_ci` strategy](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html#override_project_ci): <code>Security Policy Management</code></summary>\n\n> In pipeline execution policies, the `override_ci` strategy now supports the use of workflow rules to aid in policy enforcement for jobs defined in the policy, as well as jobs defined in the project's configuration when using `include:project`. By defining workflow rules in the policy, you can filter out jobs executed by the pipeline execution policy based on particular rules, such as by configuring rules that prevent the use of branch pipelines in projects.\n> \n> To isolate the use of workflow rules to target only jobs defined in your policy, the best practice is to define the rules for the job instead of globally in the policy. Alternatively, you can group jobs and rules using a separate `include` field.\n> \n> Previously, when using the `override_ci` strategy, workflow rules could only be applied to jobs defined in the pipeline execution policy.\n> \n> The `inject_ci` strategy remains unchanged and workflow rules can only be used to control when policy jobs are enforced, without affecting the project's workflow rules.\n\n</details>\n\n<details><summary>[Make `skip_ci` configurable for pipeline execution policies](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html#skip_ci-type): <code>Security Policy Management</code></summary>\n\n> We've introduced a new configuration option for Pipeline Execution Policies (PEPs) that allows for more flexibility in handling the `[skip ci]` directive. This feature addresses scenarios where certain automated processes, such as semantic releases, where it's necessary to bypass pipeline execution while still ensuring critical security and compliance checks are performed.\n> \n> To use this feature, set `skip_ci` to `allowed: false` in the pipeline execution policy YAML configuration or enable **Prevent users from skipping pipelines** in the policy editor. Then, specify the users or service accounts that are allowed to use `[skip ci]`. By default all users will be blocked from skipping pipeline execution jobs unless they are excluded within the `skip_ci` configuration as an exception.\n\n</details>\n\n<details><summary>[Manage concurrency of scheduled scan execution pipelines](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html#concurrency-control): <code>Security Policy Management</code></summary>\n\n> To improve the scalability of global scheduled scan execution policies, we have introduced a new capability to configure a time window in a scan execution policy. The `time_window` property defines the time period in which the policy creates and executes new schedules to ensure optimal performance. \n> \n> To use the new property, update your policy using YAML mode and follow the [`time_window` schema](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html#time_window-schema). You can provide a value in seconds for the window of time in which the schedules should run. For example, `86400` for a 24 hour time window. Then supply the `distribution: random` field and value to enforce the schedules to execute at random times across the defined time window.\n\n</details>\n\n\n\n#### [Premium](https://about.gitlab.com/pricing/premium/)\n\n![7 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=7&style=flat-square \"New features added to this tier in this release\")\n![684 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=684&style=flat-square \"Total features in this tier\")\n\n<details><summary>[View subgroups and projects pending deletion](https://docs.gitlab.com/ee/user/group/#view-groups-pending-deletion): <code>Groups & Projects</code></summary>\n\n> When you mark a group for deletion, you need visibility into all affected subgroups and projects. Previously, only the group marked for deletion displayed a \"Pending deletion\" label, but not their subgroups and projects, making it difficult to identify which content was scheduled for deletion.\n> \n> Now, when a group is marked for deletion, all of its subgroups and projects will display a \"Pending deletion\" label. This improved visibility helps you quickly distinguish between active and soon-to-be deleted content across your entire group hierarchy.\n\n</details>\n\n\n\n##### [Plan](https://about.gitlab.com/stages-devops-lifecycle/plan/)\n\n<details><summary>[Customizable colors for epics](https://docs.gitlab.com/ee/user/group/epics/manage_epics.html#epic-color): <code>Portfolio Management</code></summary>\n\n> You now have more flexibility in categorizing your epics with an expanded set of color options, including pre-existing values and custom RGB or hex codes. This enhanced visual customization allows you to easily associate epics with squads, company initiatives, or hierarchy levels, making it simpler to prioritize and organize your work on roadmaps and epic boards.\n> \n> Your administrator must enable [the new look for epics](https://docs.gitlab.com/ee/user/group/epics/epic_work_items.html).\n\n</details>\n\n<details><summary>[Track time spent on epics](https://docs.gitlab.com/ee/user/project/time_tracking.html): <code>Portfolio Management</code></summary>\n\n> You can now track time directly in epics, giving you more granular control over your project's time management. This new feature allows you to log time spent on different aspects of your project, helping you monitor progress, stay on schedule, and keep your budget in check as you work through sprints and milestones.\n\n</details>\n\n<details><summary>[Show iteration field on child items in epics, issues, and objectives](https://docs.gitlab.com/ee/user/group/iterations): <code>Portfolio Management</code></summary>\n\n> When viewing epic detail, planners need to be able to see which child issues are planned into iterations (sprints) and which are not yet planned. This will allow teams to more easily make sure that all defined work is slated into sprints.\n> \n> For epics, your administrator must enable [the new look for epics](https://docs.gitlab.com/ee/user/group/epics/epic_work_items.html).\n\n</details>\n\n<details><summary>[Webhooks for epics](https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html): <code>Portfolio Management</code></summary>\n\n> Supercharge your workflow automation with the epic webhooks, allowing you to receive real-time updates in your preferred tools whenever changes occur in your epics. By integrating GitLab with your other services, you can enhance collaboration, stay on top of project developments, and streamline your processes without constantly switching between applications.\n> \n> Your administrator must enable [the new look for epics](https://docs.gitlab.com/ee/user/group/epics/epic_work_items.html).\n\n</details>\n\n\n\n##### [Create](https://about.gitlab.com/stages-devops-lifecycle/create/)\n\n<details><summary>[Use roles to define project members as Code Owners](https://docs.gitlab.com/ee/user/project/codeowners/reference.html#add-a-role-as-a-code-owner): <code>Source Code Management</code></summary>\n\n> You can now use roles as Code Owners in your `CODEOWNERS` file to manage role-based expertise and approvals more efficiently. Instead of listing individual users or creating groups, you can use the following syntax:\n> \n> - `@@developers` - References all users with the Developer role.\n> - `@@maintainers` - References all users with the Maintainer role. \n> - `@@owners` - References all users with the Owner role.\n> \n> For example, add `* @@maintainers` to require approval from any maintainer for all changes in the repository.\n> \n> This simplifies Code Owner management as team members join, leave, or change roles in your project. The `CODEOWNERS` file remains current without manual updates, because GitLab automatically includes all users who have the specified role.\n\n</details>\n\n\n\n##### [Software supply chain security](https://about.gitlab.com/stages-devops-lifecycle/software_supply_chain_security/)\n\n<details><summary>[Scaling UI performance for the 'Frameworks' report tab in the Compliance Center](https://docs.gitlab.com/ee/user/compliance/compliance_center/compliance_frameworks_report.html): <code>Compliance Management</code></summary>\n\n> With GitLab 17.8, we have made changes to the backend to ensure the compliance center remains quick and responsive,\n> even if you have 1,000's of compliance frameworks in the **Frameworks** report tab of the compliance center.\n> \n> Additionally, when looking for more information and clicking on a framework in the **Frameworks** tab, GitLab\n> returns up to 1,000 projects that are attached to that particular framework as part of the information in the\n> right-hand side pop up menu.\n\n</details>\n\n\n\n#### Core\n\n![11 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=11&style=flat-square \"New features added to this tier in this release\")\n![2321 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=2321&style=flat-square \"Total features in this tier\")\n\n<details><summary>[View paused Flux reconciliations on the dashboard for Kubernetes](https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html): <code>Deployment Management</code></summary>\n\n> Previously, when you suspended Flux reconciliation from the dashboard for Kubernetes, there was no clear indicator of the suspended state. We've added a new \"Paused\" status to the existing set of status indicators, making it clear when Flux reconciliation is suspended and providing better visibility into the state of your deployments.\n\n</details>\n\n<details><summary>[Search for pods on the dashboard for Kubernetes](https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html): <code>Environment Management</code>, <code>Deployment Management</code></summary>\n\n> On the dashboard for Kubernetes, finding specific pods in large deployments can be time-consuming. A new search bar lets you quickly filter pods by name. The search works across all available pods, and you can combine it with status filters to find exactly the pods you need to monitor or troubleshoot.\n\n</details>\n\n<details><summary>[Track multiple to-do items in an issue or merge request](https://docs.gitlab.com/ee/user/todos.html#actions-that-create-to-do-items): <code>Notifications</code></summary>\n\n> You can now keep track of multiple discussions and mentions within a single issue or merge request. With the new multiple to-do items feature, you'll receive separate to-do items for each mention or action, ensuring you don't miss important updates or requests for your attention. This enhancement helps you manage your work more effectively and respond to your team's needs more efficiently.\n\n</details>\n\n<details><summary>[Project creation protection for groups now includes Owners](https://docs.gitlab.com/ee/user/group/index.html#specify-who-can-add-projects-to-a-group): <code>Groups & Projects</code></summary>\n\n> Project creation can be restricted to specific roles in a group using the **Allowed to create projects** setting. The Owner role is now available as an option, enabling you to restrict new project creation to users with the Owner role for the group. This role was previously unavailable in the selection options. \n> \n> Thank you [@yasuk](https://gitlab.com/yasuk) for this community contribution!\n\n</details>\n\n<details><summary>[List the deployments related to a release](https://docs.gitlab.com/ee/user/project/releases/): <code>Environment Management</code>, <code>Deployment Management</code></summary>\n\n> While GitLab has long supported creating releases from Git tags and tracking deployments, this information previously lived in multiple separate places that were difficult to piece together. Now, you can see all deployments related to a release directly on the release page. Release managers can quickly verify where a release has been deployed and which environments are pending deployment. This complements the existing deployment page integration that shows release notes for tagged deployments.\n> \n> We would like to express our gratitude to [Anton Kalmykov](https://gitlab.com/antonkalmykov) for contributing both features to GitLab.\n\n</details>\n\n\n\n##### [Plan](https://about.gitlab.com/stages-devops-lifecycle/plan/)\n\n<details><summary>[Primary domain redirect for GitLab Pages](https://docs.gitlab.com/ee/user/project/pages/#primary-domain): <code>Pages</code></summary>\n\n> You can now set a primary domain in GitLab Pages to automatically redirect all requests from custom domains to your primary domain. This helps maintain SEO rankings and provides a consistent brand experience by directing visitors to your preferred domain, regardless of which URL they initially use to access your site.\n\n</details>\n\n\n\n##### [Verify](https://about.gitlab.com/stages-devops-lifecycle/verify/)\n\n<details><summary>[Pipeline limits available in GitLab Community Edition](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#set-cicd-limits) <i>(self-managed only)</i>: <code>Continuous Integration (CI)</code></summary>\n\n> Administrators can now control pipeline resource usage by setting CI/CD limits for their GitLab Community Edition installations. Previously, this feature was only available in GitLab Enterprise Edition.\n\n</details>\n\n\n\n##### [Package](https://about.gitlab.com/stages-devops-lifecycle/package/)\n\n<details><summary>[Safeguard your dependencies with protected packages](https://docs.gitlab.com/ee/user/packages/package_registry/package_protection_rules.html): <code>Package Registry</code></summary>\n\n> We're thrilled to introduce support for protected PyPI packages, a new feature designed to enhance the security and stability of your GitLab package registry. In the fast-paced world of software development, accidental modification or deletion of packages can disrupt entire development processes. Protected packages address this issue by allowing you to safeguard your most important dependencies against unintended changes.\n> \n> From GitLab 17.8, you can protect PyPI packages by creating protection rules. If a package is matched by a protection rule, only specified users can update or delete the package. With this feature, you can prevent accidental changes, improve compliance with regulatory requirements, and streamline your workflows by reducing the need for manual oversight.\n\n</details>\n\n<details><summary>[Enhance security with protected container repositories](https://docs.gitlab.com/ee/user/packages/container_registry/container_repository_protection_rules.html): <code>Container Registry</code></summary>\n\n> We're thrilled to announce the rollout of protected container repositories, a new feature in GitLab's container registry that addresses security and control challenges in managing container images. Organizations often struggle with unauthorized access to sensitive container repositories, accidental modifications, lack of granular control, and difficulties in maintaining compliance. This solution provides enhanced security through strict access controls, granular permissions for push, pull, and management operations, and seamless integration with GitLab CI/CD pipelines.\n> \n> Protected container repositories offers value to users by reducing the risk of security breaches and accidental changes to critical assets. This feature streamlines workflows by maintaining security without sacrificing development speed, improves overall governance of the container registry, and provides peace of mind knowing that important container assets are protected according to organizational needs. \n> \n> This feature and the [protected packages](https://gitlab.com/groups/gitlab-org/-/epics/5574) feature are both community contributions from `gerardo-navarro` and the Siemens crew. Thank you Gerardo and the rest of the crew from Siemens for their many contributions to GitLab! If you are interesting in learning more about how Gerardo and the Siemens crew contributed this change, check out this [video](https://www.youtube.com/watch?v=5-nQ1_Mi7zg) in which Gerardo shares his learnings and best practices for contributing to GitLab based on his experience as an external contributor.\n\n</details>\n\n\n\n##### [Modelops](https://about.gitlab.com/stages-devops-lifecycle/modelops/)\n\n<details><summary>[GitLab MLOps Python Client Beta](https://gitlab.com/gitlab-org/modelops/mlops/gitlab-mlops): <code>MLOps</code></summary>\n\n> Data scientists and Machine Learning engineers primarily work in Python environments, but integrating their machine learning workflows with GitLab's MLOps features often requires context switching and understanding of GitLab's API structure. This can create friction in their development process and slow down their ability to track experiments, manage model artifacts, and collaborate with team members.\n> \n> The new GitLab MLOps Python client provides a seamless, Pythonic interface to GitLab's MLOps features. Data scientists can now interact with GitLab's [experiment tracking](https://docs.gitlab.com/ee/user/project/ml/experiment_tracking/) and [model registry](https://docs.gitlab.com/ee/user/project/ml/model_registry/) capabilities directly from their Python scripts and notebooks. The client includes:\n> \n> - **GitLab Experiment Tracking**: Easily track machine learning experiments within GitLab.\n> - **Model Registry Integration**: Register and manage models in GitLab's model registry.\n> - **Experiment Management**: Create and manage experiments directly from the client.\n> - **Run Tracking**: Initiate and monitor training runs with ease.\n> \n> This integration allows data scientists to focus on model development while automatically capturing their ML lifecycle metadata in GitLab. The Python client works seamlessly with existing ML workflows and requires minimal setup, making GitLab's MLOps features more accessible to the data science community.\n> \n> We welcome the wider Python and data science community to contributions and share feedback directly in our [project's repository](https://gitlab.com/gitlab-org/modelops/mlops/gitlab-mlops)\n\n</details>\n\n<details><summary>[Machine learning model experiments tracking in GA](https://docs.gitlab.com/ee/user/project/ml/experiment_tracking/): <code>MLOps</code></summary>\n\n> When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature engineering to improve the performance of the model. Keeping track of all this metadata and the associated artifacts so that the data scientist can later replicate the experiment is not trivial. Machine learning experiment tracking enables them to log parameters, metrics, and artifacts directly into GitLab, giving easy access later on while also keeping all experimental data within your GitLab environment. This feature is now generally available with enhanced data displays, enhanced permissions, deeper integration with GitLab, and bug fixes.\n\n</details>\n\n\n"
+        },
+        "protected": true,
+        "created_at": "2025-01-15T09:58:37.000Z"
+    },
+    {
+        "name": "v17.7.2-ee",
+        "message": "Version v17.7.2-ee",
+        "target": "8b233d5b121bdbee91ff68110f66d699a8b4cfec",
+        "commit": {
+            "id": "e2760d8d33495ca8eb675dce3fbadb28c3d31958",
+            "short_id": "e2760d8d",
+            "created_at": "2025-01-14T23:54:33.000+00:00",
+            "parent_ids": [
+                "f658047bf0f2d3952dcee29c9b97c80cf0dc01b6"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-14T23:54:33.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2025-01-14T23:54:33.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/e2760d8d33495ca8eb675dce3fbadb28c3d31958"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-15T00:06:49.000Z"
+    },
+    {
+        "name": "v17.8.0-rc42-ee",
+        "message": "Version v17.8.0-rc42-ee",
+        "target": "cccb302efdaa30af448658d11afcaccff3fdbee0",
+        "commit": {
+            "id": "2ed66de8a0d11eea8d75e0d7df60a021a24d0c4d",
+            "short_id": "2ed66de8",
+            "created_at": "2025-01-14T21:48:24.000+00:00",
+            "parent_ids": [
+                "605d0d3ce7dae3d6d67a0c55ebcdac49cd13ad2c"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-14T21:48:24.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2025-01-14T21:48:24.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/2ed66de8a0d11eea8d75e0d7df60a021a24d0c4d"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-14T22:19:46.000Z"
+    },
+    {
+        "name": "v17.5.5-ee",
+        "message": "Version v17.5.5-ee",
+        "target": "2206d799f803305eddaf7de540497fc61bf0ac87",
+        "commit": {
+            "id": "0340daef06280ec9013da1c6330694de204cad4d",
+            "short_id": "0340daef",
+            "created_at": "2025-01-08T08:51:26.000+00:00",
+            "parent_ids": [
+                "e6004923526b064cd5a230de361df31189341e9b"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-08T08:51:26.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-01-08T08:51:26.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/0340daef06280ec9013da1c6330694de204cad4d"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-08T09:00:37.000Z"
+    },
+    {
+        "name": "v17.6.3-ee",
+        "message": "Version v17.6.3-ee",
+        "target": "e8cd96fb7c4dae63282fc5fe6649e4b70d36733f",
+        "commit": {
+            "id": "c3e8793de11e6cbfa919c1b97933e15404f1687e",
+            "short_id": "c3e8793d",
+            "created_at": "2025-01-08T08:41:45.000+00:00",
+            "parent_ids": [
+                "6aeb5c76536b7141759fb052b2aae08793acbb20"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-08T08:41:45.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-01-08T08:41:45.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/c3e8793de11e6cbfa919c1b97933e15404f1687e"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-08T08:48:51.000Z"
+    },
+    {
+        "name": "v17.7.1-ee",
+        "message": "Version v17.7.1-ee",
+        "target": "c3730927d35de9a961be530ff3a4f2019dfac9d1",
+        "commit": {
+            "id": "3c8f631cd0ad8efb987effc4447b1d9b25f35b61",
+            "short_id": "3c8f631c",
+            "created_at": "2025-01-08T08:29:11.000+00:00",
+            "parent_ids": [
+                "b9903be7d0aa5d9680016b75c49893b375cd7372"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2025-01-08T08:29:11.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2025-01-08T08:29:11.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/3c8f631cd0ad8efb987effc4447b1d9b25f35b61"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2025-01-08T08:39:23.000Z"
+    },
+    {
+        "name": "v17.7.0-ee",
+        "message": "Version v17.7.0-ee",
+        "target": "b3d0f51c7dd699fa19e3f2895e5b4b48da814577",
+        "commit": {
+            "id": "1fd574ee5710155adf5307fba45132264dcb64a1",
+            "short_id": "1fd574ee",
+            "created_at": "2024-12-18T06:10:01.000+00:00",
+            "parent_ids": [
+                "a145e5ccfaac6bdf51b6708be078eb6d29f7cf18"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-18T06:10:01.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-12-18T06:10:01.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/1fd574ee5710155adf5307fba45132264dcb64a1"
+        },
+        "release": {
+            "tag_name": "v17.7.0-ee",
+            "description": "![25 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=25&style=for-the-badge \"New features added in this release\")\n![3675 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=3675&style=for-the-badge \"Total features\")\n\n##### [Verify](https://about.gitlab.com/stages-devops-lifecycle/verify/)\n\n<details><summary>[Small hosted runner on Linux Arm available to all Tiers](https://docs.gitlab.com/ee/ci/runners/hosted_runners/linux.html) <i>(SaaS only)</i>: <code>GitLab Hosted Runners</code></summary>\n\n> We are excited to introduce the small hosted runner on Linux Arm for GitLab.com, available for all tiers.\n> This 2 vCPUs Arm runner is fully integrated with GitLab CI/CD and allows you to\n> build and test applications natively on the Arm architecture.\n> \n> We are determined to provide the industry’s fastest CI/CD build speed and look forward to seeing teams achieve even shorter feedback cycles and ultimately deliver software faster.\n\n</details>\n\n\n\n##### [Software supply chain security](https://about.gitlab.com/stages-devops-lifecycle/software_supply_chain_security/)\n\n<details><summary>[Group and project access tokens in credentials inventory](https://docs.gitlab.com/ee/user/group/credentials_inventory.html) <i>(SaaS only)</i>: <code>System Access</code></summary>\n\n> Group and project access tokens are now visible in the credentials inventory on GitLab.com. Previously, only personal access tokens and SSH keys were visible. Additional token types in the inventory allow for a more complete picture of credentials across the group.\n\n</details>\n\n<details><summary>[New API endpoint to list enterprise users](https://docs.gitlab.com/ee/api/group_enterprise_users.html) <i>(SaaS only)</i>: <code>System Access</code></summary>\n\n> Group Owners can now use a dedicated API endpoint to list enterprise users and any associated attributes.\n\n</details>\n\n\n\n#### [Ultimate](https://about.gitlab.com/pricing/ultimate/)\n\n![7 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=7&style=flat-square \"New features added to this tier in this release\")\n![578 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=578&style=flat-square \"Total features in this tier\")\n\n<details><summary>[Instance administrators can control which integrations can be enabled](https://docs.gitlab.com/ee/administration/settings/project_integration_management.html#integration-allowlist) <i>(self-managed only)</i>: <code>Integrations</code></summary>\n\n> Instance administrators can now configure an allowlist to control which integrations can be enabled on a GitLab instance. If an empty allowlist is configured, no integrations are allowed on the instance. After an allowlist is configured, new GitLab integrations are not on the allowlist by default.\n> \n> Previously enabled integrations that are later blocked by the allowlist settings are disabled. If these integrations are allowed again, they are re-enabled with their existing configuration.\n\n</details>\n\n\n\n##### [Application security testing](https://about.gitlab.com/stages-devops-lifecycle/application_security_testing/)\n\n<details><summary>[Improved detection accuracy in Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html): <code>SAST</code></summary>\n\n> We've updated Advanced SAST to detect the following vulnerability classes more accurately:\n> \n> - C#: OS command injection and SQL injection.\n> - Go: path traversal.\n> - Java: code injection, CRLF injection in headers or logs, cross-site request forgery (CSRF), improper certificate validation, insecure deserialization, unsafe reflection, and XML external entity (XXE) injection.\n> - JavaScript: code injection.\n> \n> We've also improved detection of user input sources for C# (ASP.NET) and Java (JSF, HttpServlet) and updated severity levels for consistency.\n> \n> To see which types of vulnerabilities Advanced SAST detects in each language, see [Advanced SAST coverage](https://docs.gitlab.com/ee/user/application_security/sast/advanced_sast_coverage.html).\n> To use this improved cross-file, cross-function scanning, [enable Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html#enable-advanced-sast-scanning).\n> If you've already enabled Advanced SAST, the new rules are [automatically activated](https://docs.gitlab.com/ee/user/application_security/sast/rules.html#how-rule-updates-are-released).\n\n</details>\n\n<details><summary>[Efficient risk prioritization with KEV](https://docs.gitlab.com/ee/api/graphql/reference/#cveenrichmenttype): <code>Software Composition Analysis</code></summary>\n\n> In GitLab 17.7, we added support for the Known Exploited Vulnerabilities Catalog (KEV). The [KEV Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) is maintained by CISA and curates listings of CVEs that have been exploited in the wild. You can leverage KEV to better prioritize scan results and to help evaluate the potential impact a vulnerability may have on your environment.\n> \n> This data is available to composition analysis users through GraphQL. There is [planned work](https://gitlab.com/gitlab-org/gitlab/-/issues/427441) to support displaying this data in the GitLab UI.\n\n</details>\n\n<details><summary>[Expanded Code Flow view for Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html#vulnerability-code-flow): <code>SAST</code></summary>\n\n> The Advanced SAST [code flow view](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html#vulnerability-code-flow) is now available wherever vulnerabilities are shown, including the:\n> \n> - [Vulnerability Report](https://docs.gitlab.com/ee/user/application_security/vulnerability_report/).\n> - [Merge request security widget](https://docs.gitlab.com/ee/user/application_security/sast/#merge-request-widget).\n> - [Pipeline security report](https://docs.gitlab.com/ee/user/application_security/vulnerability_report/pipeline.html).\n> - [Merge request changes view](https://docs.gitlab.com/ee/user/application_security/sast/#merge-request-changes-view).\n> \n> The new views are enabled on GitLab.com. On GitLab self-managed, the new views are on by default starting in GitLab 17.7 (MR changes view) and GitLab 17.6 (all other views). For details on supported versions and feature flags, see [code flow feature availability](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html#code-flow-feature-availability).\n> \n> To learn more about Advanced SAST, see [the announcement blog](https://about.gitlab.com/blog/2024/09/19/gitlab-advanced-sast-is-now-generally-available).\n\n</details>\n\n<details><summary>[Enable secret push protection in your groups with APIs](https://docs.gitlab.com/ee/api/group_security_settings.html): <code>Secret Detection</code></summary>\n\n> With this release, you can now enable secret push protection on all projects in your group via the [REST API](https://docs.gitlab.com/ee/api/group_security_settings.html) and the [GraphQL API](https://docs.gitlab.com/ee/api/graphql/reference/index.html#mutationsetgroupsecretpushprotection). This allows you to efficiently enable secret push protection on a per-group basis instead of project by project. Audit events are logged every time push protection is enabled or disabled.\n\n</details>\n\n\n\n##### [Software supply chain security](https://about.gitlab.com/stages-devops-lifecycle/software_supply_chain_security/)\n\n<details><summary>[Remove Owner base role from custom roles](https://docs.gitlab.com/ee/user/custom_roles.html#create-a-custom-role): <code>Permissions</code></summary>\n\n> The Owner base role is no longer available when creating a custom role as it provided no additional value because permissions are additive. Existing custom roles with the Owner base role are not impacted by this change.\n\n</details>\n\n\n\n##### [Security risk management](https://about.gitlab.com/stages-devops-lifecycle/security_risk_management/)\n\n<details><summary>[Auto-resolve vulnerabilities when not found in subsequent scans](https://docs.gitlab.com/ee/user/application_security/policies/vulnerability_management_policy.html): <code>Vulnerability Management</code></summary>\n\n> GitLab's [security scanning tools](https://docs.gitlab.com/ee/user/application_security/#security-scanning-tools) help identify known vulnerabilities and potential weaknesses in your application code. Scanning feature branches surfaces new weaknesses or vulnerabilities so they can be remediated before merging. In the case of vulnerabilities already in your project's default branch, fixing these in a feature branch will mark the vulnerability as no longer detected when the next default branch scan runs. While it is informative to know which vulnerabilities are no longer detected, each must still be manually marked as Resolved to close them. This can be time consuming if there are many of these to resolve, even when using the new [Activity filter](https://docs.gitlab.com/ee/user/application_security/vulnerability_report/#activity-filter) and [bulk-changing status](https://docs.gitlab.com/ee/user/application_security/vulnerability_report/#change-status-of-vulnerabilities).\n> \n> We are introducing a new policy type _Vulnerability Management policy_ for users who want vulnerabilities automatically set to Resolved when no longer detected by automated scanning. Simply configure a new policy with the new Auto-resolve option and apply it to the appropriate project(s). You can even configure the policy to only Auto-resolve vulnerabilities of a certain severity or from specific security scanners. Once in place, the next time the project's default branch is scanned, any existing vulnerabilities that are no longer found will be marked as Resolved. The action updates the vulnerability record with an activity note, timestamp when the action occurred, and the pipeline the vulnerability was determined to be removed in.\n\n</details>\n\n\n\n#### [Premium](https://about.gitlab.com/pricing/premium/)\n\n![3 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=3&style=flat-square \"New features added to this tier in this release\")\n![677 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=677&style=flat-square \"Total features in this tier\")\n\n##### [Create](https://about.gitlab.com/stages-devops-lifecycle/create/)\n\n<details><summary>[New `/help` command in GitLab Duo Chat](https://docs.gitlab.com/ee/user/gitlab_duo_chat/examples.html#gitlab-duo-chat-slash-commands): <code>Editor Extensions</code>, <code>Duo Chat</code></summary>\n\n> Discover GitLab Duo Chat's powerful features! Just type `/help` in the chat message field to explore everything it can do for you.\n> \n> Give it a try and see how GitLab Duo Chat can make your work smoother and more efficient.\n\n</details>\n\n\n\n##### [Verify](https://about.gitlab.com/stages-devops-lifecycle/verify/)\n\n<details><summary>[Track CI/CD component usage across projects](https://docs.gitlab.com/ee/api/graphql/reference/index.html#cicatalogresourcecomponentusage): <code>Pipeline Composition</code></summary>\n\n> Central DevOps teams often need to track where their CI/CD components are used across pipelines to better manage and optimize them. Without visibility, it's challenging to identify outdated component use, understand adoption rates, or support component life cycles.\n> \n> To address this, we've added a new GraphQL query that enables DevOps teams to view a list of projects where a component is used across their organization's pipelines.\n> This capability empowers DevOps teams to enhance productivity and make better decisions by providing crucial insights.\n\n</details>\n\n\n\n##### [Software supply chain security](https://about.gitlab.com/stages-devops-lifecycle/software_supply_chain_security/)\n\n<details><summary>[Navigation and usability improvements for the compliance center](https://docs.gitlab.com/ee/user/compliance/compliance_center/compliance_frameworks_report.html): <code>Compliance Management</code></summary>\n\n> We continue to make iterative and important improvements to the compliance center's user experience for both groups\n> and projects.\n> \n> With GitLab 17.7, we shipped two key improvements:\n> \n> - Users can now filter by groups in the **Projects** tab of the compliance center, which gives another option\n>   to users to apply, filter, and search for the appropriate project, and the compliance framework attached to that\n>   project.\n> - A project's compliance center now has a **Frameworks** tab, which allows users to search for compliance\n>   frameworks attached to that particular project.\n> \n> Please note that adding or editing frameworks is still done on groups, not projects.\n\n</details>\n\n\n\n#### Core\n\n![12 new features](https://img.shields.io/static/v1?color=108548&label=new+features&labelColor=525252&message=12&style=flat-square \"New features added to this tier in this release\")\n![2310 total badges](https://img.shields.io/static/v1?color=1F75CB&label=total+features&labelColor=525252&message=2310&style=flat-square \"Total features in this tier\")\n\n<details><summary>[Omnibus improvements](https://docs.gitlab.com/omnibus/) <i>(self-managed only)</i>: <code>Omnibus Package</code></summary>\n\n> Because of a bug, FIPS Linux packages for GitLab 17.6 and earlier did not use the system Libgcrypt, but the same Libgcrypt bundled with regular Linux packages.\n> \n> This issue is fixed for all FIPS Linux packages for GitLab 17.7, except for AmazonLinux 2. The Libgcrypt version of AmazonLinux 2 is not compatible with the GPGME and GnuPG versions shipped with the FIPS Linux packages.\n> \n> FIPS Linux packages for AmazonLinux 2 will continue to use the same Libgcrypt bundled with the regular Linux packages, otherwise we would have to downgrade GPGME and GnuPG.\n\n</details>\n\n<details><summary>[Setting `environment.action: access` and `prepare` resets the `auto_stop_in` timer](https://docs.gitlab.com/ee/ci/yaml/#environmentauto_stop_in): <code>Deployment Management</code></summary>\n\n> Previously, when using the `action: prepare`, `action: verify`, and `action: access` jobs together with the `auto_stop_in` setting, the timer was not reset. Starting in 18.0, `action: prepare` and `action: access` will reset the timer, while `action: verify` leaves it untouched.\n> \n> For now, you can change to the new implementation by enabling the `prevent_blocking_non_deployment_jobs` feature flag.\n> \n> Multiple breaking changes are intended to differentiate the behavior of the `environment.action: prepare | verify | access` values. The `environment.action: access` keyword will remain the closest to its current behavior, except for the timer reset.\n> \n> To prevent future compatibility issues, you should review your use of these keywords.\n> Learn more about these proposed changes in the following issues:\n> \n> - [Issue 437132](https://gitlab.com/gitlab-org/gitlab/-/issues/437132)\n> - [Issue 437133](https://gitlab.com/gitlab-org/gitlab/-/issues/437133)\n> - [Issue 437142](https://gitlab.com/gitlab-org/gitlab/-/issues/437142)\n\n</details>\n\n<details><summary>[Kubernetes 1.31 support](https://docs.gitlab.com/ee/user/clusters/agent/#supported-kubernetes-versions-for-gitlab-features): <code>Deployment Management</code></summary>\n\n> This release adds full support for Kubernetes version 1.31, released in August 2024. If you deploy your apps to Kubernetes, you can now upgrade your connected clusters to the most recent version and take advantage of all its features.\n> \n> For more information, see our [Kubernetes support policy and other supported Kubernetes versions](https://docs.gitlab.com/ee/user/clusters/agent/#supported-kubernetes-versions-for-gitlab-features).\n\n</details>\n\n<details><summary>[Set namespace and Flux resource path from CI/CD job](https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html): <code>Environment Management</code>, <code>Deployment Management</code></summary>\n\n> To use the dashboard for Kubernetes, you need to select an agent for Kubernetes connection from the environment settings, and optionally configure a namespace and a Flux resource to track the reconciliation status. In GitLab 17.6, we added support for selecting an agent with a CI/CD configuration. However, configuring the namespace and the Flux resource still required you to use the UI or make an API call. In 17.7, you can fully configure the dashboard using the CI/CD syntax with the `environment.kubernetes.namespace` and `environment.kubernetes.flux_resource_path` attributes.\n\n</details>\n\n<details><summary>SCA Vulnerability Prioritizer</summary>\n\n> This experimental feature is another step in helping users prioritize vulnerabilities identified during [Dependency Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html) or [Container Scanning](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html). Users may include this CI/CD component in their `.gitlab-ci.yml` file, which will generate a prioritization report for vulnerabilities found in the project. The report will print to the pipeline output.\n> \n> The component queries the GitLab GraphQL API to retrieve vulnerability data and prioritizes as follows:\n> \n> 1. Vulnerabilities with known exploits (KEV) are the top priority.\n> 2. Vulnerabilities with high EPSS scores.\n> 3. Higher severity vulnerabilities.\n> \n> Only detected and confirmed vulnerabilities are shown. Currently, the component relies on EPSS and KEV data to help prioritize vulnerabilities. EPSS and KEV data are only found on CVEs, which are collected through dependency and container scanning. To learn more, please refer to the [Vulnerability Prioritizer](https://gitlab.com/components/vulnerability-prioritizer).\n> \n> As always, we welcome your feedback. Please add any questions or comments to the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509508).\n\n</details>\n\n<details><summary>[New user contribution and membership mapping available in direct transfer](https://docs.gitlab.com/ee/user/project/import/#user-contribution-and-membership-mapping): <code>Importers</code></summary>\n\n> The new method of user contribution and membership mapping is now available when you migrate between GitLab instances by [direct transfer](https://docs.gitlab.com/ee/user/group/import/index.html). This feature offers flexibility and control for both users managing the import process and users receiving contribution reassignments. With the new method, you can:\n> \n> - Reassign memberships and contributions to existing users on the destination instance after the import has completed. Any memberships and contributions you import are first mapped to placeholder users. All contributions appear associated with placeholders until you reassign them on the destination instance.\n> - Map memberships and contributions for users with different email addresses on source and destination instances.\n> \n> When you reassign a contribution to a user on the destination instance, the user can accept or reject the reassignment.\n> \n> For more information, see [streamline migrations with user contribution and membership mapping](https://about.gitlab.com/blog/2024/11/25/streamline-migrations-with-user-contribution-and-membership-mapping/). To leave feedback, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).\n\n</details>\n\n\n\n##### [Plan](https://about.gitlab.com/stages-devops-lifecycle/plan/)\n\n<details><summary>[Unicode 15.1 emoji support 🦖🍋‍🟩🐦‍🔥](https://gitlab-org.gitlab.io/ruby/gems/tanuki_emoji/): <code>Markdown</code></summary>\n\n> In previous versions of GitLab, emoji support was limited to an older Unicode standard, which meant some newer emojis were unavailable.\n> \n> GitLab 17.7 introduces support for Unicode 15.1, bringing the latest emoji additions. This includes exciting new options like the t-rex 🦖, lime 🍋‍🟩, and phoenix 🐦‍🔥, allowing you to express yourself with the most up-to-date symbols.\n> \n> Additionally, this update enhances emoji diversity, ensuring greater representation across cultures, languages,\n> and identities, helping everyone feel included when communicating on the platform.\n\n</details>\n\n<details><summary>[Set your preferred text editor as default](https://docs.gitlab.com/ee/user/profile/preferences.html#set-the-default-text-editor): <code>Text Editors</code></summary>\n\n> In this version, we're introducing the ability to set a default text editor for a more personalized editing experience. With this change, you can now choose between the rich text editor, the plain text editor, or opt for no default, allowing flexibility in how you create and edit content. \n> \n> This update ensures smoother workflows by aligning the editor interface with individual preferences or team standards. With this enhancement, GitLab continues to prioritize customization and usability for all users.\n\n</details>\n\n<details><summary>[New Planner user role](https://docs.gitlab.com/ee/user/permissions.html): <code>Portfolio Management</code></summary>\n\n> We've introduced the new Planner role to give you tailored access to Agile planning tools like epics, roadmaps, and Kanban boards without over-provisioning [permissions](https://docs.gitlab.com/ee/user/permissions.html). This change helps you collaborate more effectively while keeping your workflows secure and aligned with the principle of least privilege.\n\n</details>\n\n\n\n##### [Software supply chain security](https://about.gitlab.com/stages-devops-lifecycle/software_supply_chain_security/)\n\n<details><summary>[Extended token expiration notifications](https://docs.gitlab.com/ee/security/tokens/): <code>System Access</code></summary>\n\n> Previously, token expiration email notifications were only sent seven days before expiry. Now, these notifications are also sent 30 and 60 days before expiry. The increased frequency and date range of notifications makes users more aware of tokens that may be expiring soon. \n\n</details>\n\n<details><summary>[New description field for access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token): <code>System Access</code></summary>\n\n> When creating a personal, project, group, or impersonation access token, you can now optionally enter a description of that token. This helps provide extra context about the token, such as where and how is it used.\n\n</details>\n\n<details><summary>[Rotate personal, project, and group access tokens in the UI](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#revoke-or-rotate-a-personal-access-token): <code>System Access</code></summary>\n\n> You can now use the UI to rotate personal, project, and group access tokens. Previously, you had to use the API to do this.\n> \n> Thank you [shangsuru](https://gitlab.com/shangsuru) for your contribution!\n\n</details>\n\n\n"
+        },
+        "protected": true,
+        "created_at": "2024-12-18T06:15:08.000Z"
+    },
+    {
+        "name": "v17.7.0-rc42-ee",
+        "message": "Version v17.7.0-rc42-ee",
+        "target": "e65d221797c50e34c2a5fdaf9808b93c25f00635",
+        "commit": {
+            "id": "49b38e97c14b0036bd65ee42d8c1db5d40392483",
+            "short_id": "49b38e97",
+            "created_at": "2024-12-17T09:39:21.000+00:00",
+            "parent_ids": [
+                "adf6415661a8fbf6680d959f2c428b128374e22c"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-17T09:39:21.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-12-17T09:39:21.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/49b38e97c14b0036bd65ee42d8c1db5d40392483"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-12-17T09:49:32.000Z"
+    },
+    {
+        "name": "v17.4.6-ee",
+        "message": "Version v17.4.6-ee",
+        "target": "63e89bb0ffcda9f82db7004e73183c139dcf6854",
+        "commit": {
+            "id": "25a55583bbcf724ad625848d48a529467e7c7097",
+            "short_id": "25a55583",
+            "created_at": "2024-12-10T19:18:37.000+00:00",
+            "parent_ids": [
+                "a3a4ef33e030258792e0990e973df7de6a65e2d7"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-10T19:18:37.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2024-12-10T19:18:37.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/25a55583bbcf724ad625848d48a529467e7c7097"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-12-10T19:27:44.000Z"
+    },
+    {
+        "name": "v17.5.4-ee",
+        "message": "Version v17.5.4-ee",
+        "target": "0184aab0a951477a63f8f51f9a6edf6198adfa55",
+        "commit": {
+            "id": "0397324ed14bb7f0ede422841d713fd22349302f",
+            "short_id": "0397324e",
+            "created_at": "2024-12-10T19:07:09.000+00:00",
+            "parent_ids": [
+                "03360a2639c5a21f57f598a853965dccd5ebccc4"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-10T19:07:09.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2024-12-10T19:07:09.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/0397324ed14bb7f0ede422841d713fd22349302f"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-12-10T19:16:17.000Z"
+    },
+    {
+        "name": "v17.6.2-ee",
+        "message": "Version v17.6.2-ee",
+        "target": "6f265d4d986ff70194cce2111c0564d50d417f6f",
+        "commit": {
+            "id": "6ff444aad3a327c384b0859be326d042dde090ee",
+            "short_id": "6ff444aa",
+            "created_at": "2024-12-10T18:54:24.000+00:00",
+            "parent_ids": [
+                "91b1243e5ea7c23ae1890aa734d8dadc094393e9"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-10T18:54:24.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2024-12-10T18:54:24.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/6ff444aad3a327c384b0859be326d042dde090ee"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-12-10T19:04:30.000Z"
+    },
+    {
+        "name": "v17.6.2-rc31-ee",
+        "message": "Version v17.6.2-rc31-ee",
+        "target": "a4d06f43abafc1b2ff83060b885ba975a033235e",
+        "commit": {
+            "id": "f605299d0f8b25be022e5582432b046e117b6f0d",
+            "short_id": "f605299d",
+            "created_at": "2024-12-03T13:45:20.000+00:00",
+            "parent_ids": [
+                "aed2aaddcf498f0a4ac7db402c9fef888374e0c2"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-03T13:45:20.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-12-03T13:45:20.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/f605299d0f8b25be022e5582432b046e117b6f0d"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-12-03T13:59:34.000Z"
+    },
+    {
+        "name": "v17.6.2-rc30-ee",
+        "message": "Version v17.6.2-rc30-ee",
+        "target": "a2e1935cf57805829bf2daea9d8be378ba36054c",
+        "commit": {
+            "id": "8c98faa1465d6d04b230df81c1ff800f66caf91b",
+            "short_id": "8c98faa1",
+            "created_at": "2024-12-02T17:45:31.000+00:00",
+            "parent_ids": [
+                "2a4dcd4e18c42a2c67ad7b9596d6c8fcd2b5ec61"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-12-02T17:45:31.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-12-02T17:45:31.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/8c98faa1465d6d04b230df81c1ff800f66caf91b"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-12-02T17:57:42.000Z"
+    },
+    {
+        "name": "v17.4.5-ee",
+        "message": "Version v17.4.5-ee",
+        "target": "b731cec1ffac984236b8a73fddb75e238ce1253a",
+        "commit": {
+            "id": "3ead12a16d7bd8f1c481504e03042aaf6e10f108",
+            "short_id": "3ead12a1",
+            "created_at": "2024-11-26T08:46:55.000+00:00",
+            "parent_ids": [
+                "357e6a8443827496ccb542d4ab6a2fbd93bc5acb"
+            ],
+            "title": "Update VERSION files",
+            "message": "Update VERSION files\n\n[merge-train skip]",
+            "author_name": "GitLab Release Tools Bot",
+            "author_email": "delivery-team+release-tools@gitlab.com",
+            "authored_date": "2024-11-26T08:46:55.000+00:00",
+            "committer_name": "GitLab Release Tools Bot",
+            "committer_email": "delivery-team+release-tools@gitlab.com",
+            "committed_date": "2024-11-26T08:46:55.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/3ead12a16d7bd8f1c481504e03042aaf6e10f108"
+        },
+        "release": null,
+        "protected": true,
+        "created_at": "2024-11-26T08:58:01.000Z"
+    }
+]

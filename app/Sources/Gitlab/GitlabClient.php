@@ -70,7 +70,7 @@ class GitlabClient extends Client
                 id: $item['id'],
                 fullName: $item['path_with_namespace'],
                 name: $item['name'],
-                url: $item['_links']['self'].'/repository',
+                url: $item['_links']['self'],
                 webUrl: $item['web_url'],
             ), $data);
 
@@ -85,7 +85,8 @@ class GitlabClient extends Client
      */
     public function branches(Project $project): array
     {
-        $response = $this->http()->get("$project->url/branches")->throw();
+        // @todo add pagination
+        $response = $this->http()->get("$project->url/repository/branches", ['per_page' => 100])->throw();
 
         $data = $response->json();
 
@@ -110,7 +111,8 @@ class GitlabClient extends Client
      */
     public function tags(Project $project): array
     {
-        $response = $this->http()->get("$project->url/tags")->throw();
+        // @todo add pagination
+        $response = $this->http()->get("$project->url/repository/tags", ['per_page' => 100])->throw();
 
         $data = $response->json();
 
@@ -157,7 +159,7 @@ class GitlabClient extends Client
             id: $item['id'],
             fullName: $item['path_with_namespace'],
             name: $item['name'],
-            url: $item['_links']['self'].'/repository',
+            url: $item['_links']['self'],
             webUrl: $item['web_url'],
         );
     }

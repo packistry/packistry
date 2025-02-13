@@ -5,7 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\PackageType;
+use App\Exceptions\ArchiveInvalidContentTypeException;
+use App\Exceptions\ComposerJsonNotFoundException;
+use App\Exceptions\FailedToFetchArchiveException;
+use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\NameNotFoundException;
+use App\Exceptions\VersionNotFoundException;
 use App\Models\Scopes\UserScope;
+use App\Sources\Importable;
 use Database\Factories\PackageFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +21,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 
 /**
@@ -87,5 +95,22 @@ class Package extends Model
 
         return self::query()
             ->withGlobalScope('user', new UserScope($user));
+    }
+
+    /**
+     * @throws FailedToFetchArchiveException
+     * @throws ArchiveInvalidContentTypeException
+     * @throws FailedToOpenArchiveException
+     * @throws ComposerJsonNotFoundException
+     * @throws NameNotFoundException
+     * @throws VersionNotFoundException
+     * @throws ConnectionException
+     */
+    public function import(Importable $importable): Version
+    {
+        return $this->source->client()->import(
+            package: $this,
+            importable: $importable,
+        );
     }
 }

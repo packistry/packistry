@@ -7,10 +7,10 @@ namespace App\Sources;
 readonly class Tag implements Importable
 {
     public function __construct(
-        private string $id,
-        private string $name,
-        private string $url,
-        private string $zipUrl,
+        public string $id,
+        public string $name,
+        public string $url,
+        public string $zipUrl,
     ) {
         //
     }

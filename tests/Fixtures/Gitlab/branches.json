@@ -1,0 +1,441 @@
+[
+    {
+        "name": "00alkorba",
+        "commit": {
+            "id": "95ffae76ca05765a4842f7af10b3977d04bc1221",
+            "short_id": "95ffae76",
+            "created_at": "2024-09-12T19:12:41.000+00:00",
+            "parent_ids": [
+                "811eea26b79bae97580bc4567041cd6de7a32a1d",
+                "af2aa6e6d831b0509aef7d0a75b93178bf5e2c28"
+            ],
+            "title": "Merge branch 'aqualls-crosslink-deactivate' into 'master' ",
+            "message": "Merge branch 'aqualls-crosslink-deactivate' into 'master' \n\nCross-link between SaaS / self-managed user removals\n\nSee merge request https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166003\n\nMerged-by: Phillip Wells \u003cpwells@gitlab.com\u003e\nApproved-by: Phillip Wells \u003cpwells@gitlab.com\u003e\nReviewed-by: Phillip Wells \u003cpwells@gitlab.com\u003e\nCo-authored-by: Amy Qualls \u003caqualls@gitlab.com\u003e",
+            "author_name": "Phillip Wells",
+            "author_email": "pwells@gitlab.com",
+            "authored_date": "2024-09-12T19:12:41.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-09-12T19:12:41.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/95ffae76ca05765a4842f7af10b3977d04bc1221"
+        },
+        "merged": true,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/00alkorba"
+    },
+    {
+        "name": "0a68660b-mr-iid",
+        "commit": {
+            "id": "899798758025f2618b6524a0509098f554132776",
+            "short_id": "89979875",
+            "created_at": "2020-05-26T18:02:06.000+01:00",
+            "parent_ids": [
+                "0a68660bb188cf3cdf73be65c0149936c88f4570"
+            ],
+            "title": "Correct merge request IID!",
+            "message": "Correct merge request IID!\n",
+            "author_name": "Sean McGivern",
+            "author_email": "sean@gitlab.com",
+            "authored_date": "2020-05-26T18:00:38.000+01:00",
+            "committer_name": "Sean McGivern",
+            "committer_email": "sean@gitlab.com",
+            "committed_date": "2020-05-26T18:02:06.000+01:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/899798758025f2618b6524a0509098f554132776"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/0a68660b-mr-iid"
+    },
+    {
+        "name": "1-quarantine-16316e8e-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "2d7f9b2a3e70fed4176d0bfcdef70f84989db086",
+            "short_id": "2d7f9b2a",
+            "created_at": "2024-02-27T12:05:46.000+00:00",
+            "parent_ids": [
+                "123d0aef1e76aa8e741b51c4afa439d917fda7bf"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-27T12:05:46.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-27T12:05:46.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/2d7f9b2a3e70fed4176d0bfcdef70f84989db086"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-16316e8e-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "1-quarantine-7510d3e1-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "a9d7bdb7388e6adb0f0bd320ffbf501f79726029",
+            "short_id": "a9d7bdb7",
+            "created_at": "2024-02-27T12:50:33.000+00:00",
+            "parent_ids": [
+                "6f3649743b7bf4c73e666e96617b955e4d553018"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-27T12:50:33.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-27T12:50:33.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/a9d7bdb7388e6adb0f0bd320ffbf501f79726029"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-7510d3e1-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "1-quarantine-82ca48bb-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "2306452a77d55f64b511ec910669d981e03a7670",
+            "short_id": "2306452a",
+            "created_at": "2024-02-27T11:19:41.000+00:00",
+            "parent_ids": [
+                "3ed20a0d29cef4c66ad9ee0212c32df3c16d8a48"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-27T11:19:41.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-27T11:19:41.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/2306452a77d55f64b511ec910669d981e03a7670"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-82ca48bb-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "1-quarantine-942bc674-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "10ec15a2e98904152850a35c168391d172c0730c",
+            "short_id": "10ec15a2",
+            "created_at": "2024-02-27T12:21:45.000+00:00",
+            "parent_ids": [
+                "6f3649743b7bf4c73e666e96617b955e4d553018"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-27T12:21:45.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-27T12:21:45.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/10ec15a2e98904152850a35c168391d172c0730c"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-942bc674-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "1-quarantine-b792fd58-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "aa8a4ca6c708c46347a9fd2a6e42858dcbf230ae",
+            "short_id": "aa8a4ca6",
+            "created_at": "2024-02-06T12:49:05.000+00:00",
+            "parent_ids": [
+                "917e4ada6de9977bef21f6cb8ae07c94d6ebc5cc"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-06T12:49:05.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-06T12:49:05.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/aa8a4ca6c708c46347a9fd2a6e42858dcbf230ae"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-b792fd58-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "1-quarantine-c4fd79c7-Create-Commit-data-user-views-raw-email-patch",
+        "commit": {
+            "id": "90b07e057eaf4979c4024b0ebc7291b08c817480",
+            "short_id": "90b07e05",
+            "created_at": "2024-02-27T12:57:07.000+00:00",
+            "parent_ids": [
+                "dfbafec6d5306f550ca6ae1deb161c16ff6d52ca"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Commit data user views raw email patch\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-27T12:57:07.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-27T12:57:07.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/90b07e057eaf4979c4024b0ebc7291b08c817480"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-c4fd79c7-Create-Commit-data-user-views-raw-email-patch"
+    },
+    {
+        "name": "1-quarantine-d26253bf-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "b73b9eb65e281985f5fe6e9db3fbee0cec1153fb",
+            "short_id": "b73b9eb6",
+            "created_at": "2024-02-27T11:58:16.000+00:00",
+            "parent_ids": [
+                "123d0aef1e76aa8e741b51c4afa439d917fda7bf"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-27T11:58:16.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-27T11:58:16.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/b73b9eb65e281985f5fe6e9db3fbee0cec1153fb"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-d26253bf-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "1-quarantine-d33b7f91-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push",
+        "commit": {
+            "id": "602754c4f544b32b2757c868470cfeb84c9969d8",
+            "short_id": "602754c4",
+            "created_at": "2024-02-06T12:08:16.000+00:00",
+            "parent_ids": [
+                "accbb3c0c26a84af92237b5043008dd8ab2035b4"
+            ],
+            "title": "Quarantine end-to-end test",
+            "message": "Quarantine end-to-end test\n\nQuarantine Create Protected branch support when developers and mainta...\n",
+            "author_name": "Sanad Liaquat",
+            "author_email": "sliaquat@gitlab.com",
+            "authored_date": "2024-02-06T12:08:16.000+00:00",
+            "committer_name": "GitLab",
+            "committer_email": "noreply@gitlab.com",
+            "committed_date": "2024-02-06T12:08:16.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/602754c4f544b32b2757c868470cfeb84c9969d8"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/1-quarantine-d33b7f91-Create-Protected-branch-support-when-developers-and-maintainers-are-not-allowed-to-push-to-a-protected-branch-user-without-push-rights-fails-to-push"
+    },
+    {
+        "name": "10-0-stable-ee",
+        "commit": {
+            "id": "c4f8f026db2c5b2fce673076ea0c03498bd9a5c5",
+            "short_id": "c4f8f026",
+            "created_at": "2017-12-18T21:57:25.000+01:00",
+            "parent_ids": [
+                "127679b5b260f88a928d6ec472785fb7be481966",
+                "4c622bb72ff114600723496725fdc68b3062cf51"
+            ],
+            "title": "Merge 10-0-stable into 10-0-stable-ee",
+            "message": "Merge 10-0-stable into 10-0-stable-ee\n",
+            "author_name": "Winnie Hellmann",
+            "author_email": "winnie@gitlab.com",
+            "authored_date": "2017-12-18T21:57:25.000+01:00",
+            "committer_name": "Winnie Hellmann",
+            "committer_email": "winnie@gitlab.com",
+            "committed_date": "2017-12-18T21:57:25.000+01:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/c4f8f026db2c5b2fce673076ea0c03498bd9a5c5"
+        },
+        "merged": false,
+        "protected": true,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/10-0-stable-ee"
+    },
+    {
+        "name": "10-0-stable-ee-with-ce-2017-09-18",
+        "commit": {
+            "id": "915c530717ce6bae628bbb31ba7c822ecb3d820b",
+            "short_id": "915c5307",
+            "created_at": "2017-09-18T07:50:43.000+02:00",
+            "parent_ids": [
+                "d1fe8c4a0be7d8121ab5d8e98fa01234d00b3244",
+                "7bc31e138b9c9f72d978b802f17d75e33554a5b2"
+            ],
+            "title": "Merge remote-tracking branch 'ce/10-0-stable' into 10-0-stable-ee-with-ce-2017-09-18",
+            "message": "Merge remote-tracking branch 'ce/10-0-stable' into 10-0-stable-ee-with-ce-2017-09-18\n",
+            "author_name": "Jarka Kadlecova",
+            "author_email": "jarka@gitlab.com",
+            "authored_date": "2017-09-18T07:50:43.000+02:00",
+            "committer_name": "Jarka Kadlecova",
+            "committer_email": "jarka@gitlab.com",
+            "committed_date": "2017-09-18T07:50:43.000+02:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/915c530717ce6bae628bbb31ba7c822ecb3d820b"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/10-0-stable-ee-with-ce-2017-09-18"
+    },
+    {
+        "name": "10-1-stable-ee",
+        "commit": {
+            "id": "554b056c94fa9802897c36a85eb7e408b7888d94",
+            "short_id": "554b056c",
+            "created_at": "2018-01-18T14:27:49.000-02:00",
+            "parent_ids": [
+                "55d026de5b6060aa7c47f1d513cb8c368b01c642"
+            ],
+            "title": "Update VERSION to 10.1.7-ee",
+            "message": "Update VERSION to 10.1.7-ee\n",
+            "author_name": "Oswaldo Ferreira",
+            "author_email": "oswaldo@gitlab.com",
+            "authored_date": "2018-01-18T14:27:49.000-02:00",
+            "committer_name": "Oswaldo Ferreira",
+            "committer_email": "oswaldo@gitlab.com",
+            "committed_date": "2018-01-18T14:27:49.000-02:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/554b056c94fa9802897c36a85eb7e408b7888d94"
+        },
+        "merged": false,
+        "protected": true,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/10-1-stable-ee"
+    },
+    {
+        "name": "10-2-stable-ee",
+        "commit": {
+            "id": "715dcf730813e3938ef6013ca28cb9f492a7346d",
+            "short_id": "715dcf73",
+            "created_at": "2018-02-07T10:13:14.000-06:00",
+            "parent_ids": [
+                "d26b67559e28e02de7bc583d05dc635aee7aa517"
+            ],
+            "title": "Update VERSION to 10.2.8-ee",
+            "message": "Update VERSION to 10.2.8-ee\n",
+            "author_name": "Robert Speicher",
+            "author_email": "rspeicher@gmail.com",
+            "authored_date": "2018-02-07T10:13:14.000-06:00",
+            "committer_name": "Robert Speicher",
+            "committer_email": "rspeicher@gmail.com",
+            "committed_date": "2018-02-07T10:13:14.000-06:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/715dcf730813e3938ef6013ca28cb9f492a7346d"
+        },
+        "merged": false,
+        "protected": true,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/10-2-stable-ee"
+    },
+    {
+        "name": "10-2-stable-ee-with-ce-2017-11-30",
+        "commit": {
+            "id": "020782baf0ae3b4facb135f028e439c2028aadeb",
+            "short_id": "020782ba",
+            "created_at": "2017-11-30T16:59:21.000+00:00",
+            "parent_ids": [
+                "9d7c488145114f6dfd6a58fd08f3dd0af4fd50e7",
+                "07886087156029b552aba1d089aaa482fad90905"
+            ],
+            "title": "Merge remote-tracking branch 'ce/10-2-stable' into 10-2-stable-ee-with-ce-2017-11-30",
+            "message": "Merge remote-tracking branch 'ce/10-2-stable' into 10-2-stable-ee-with-ce-2017-11-30\n",
+            "author_name": "Tiago Botelho",
+            "author_email": "tiagonbotelho@hotmail.com",
+            "authored_date": "2017-11-30T16:59:21.000+00:00",
+            "committer_name": "Tiago Botelho",
+            "committer_email": "tiagonbotelho@hotmail.com",
+            "committed_date": "2017-11-30T16:59:21.000+00:00",
+            "trailers": {},
+            "extended_trailers": {},
+            "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/020782baf0ae3b4facb135f028e439c2028aadeb"
+        },
+        "merged": false,
+        "protected": false,
+        "developers_can_push": false,
+        "developers_can_merge": false,
+        "can_push": false,
+        "default": false,
+        "web_url": "https://gitlab.com/gitlab-org/gitlab/-/tree/10-2-stable-ee-with-ce-2017-11-30"
+    }
+]
