@@ -11,21 +11,18 @@ jobs:
   pest-sqlite:
     runs-on: ubuntu-latest
     steps:
-      - &setup-php
-        name: Setup PHP
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
 
-      - &checkout
-        uses: actions/checkout@v4
-
-      - &validate-composer
-        name: Validate composer.json and composer.lock
+      - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
-      - &cache-composer
-        name: Cache Composer packages
+      - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v4
         with:
@@ -34,16 +31,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
-      - &install-dependencies
-        name: Install dependencies
+      - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - &run-migrations
-        name: Run Migrations
+      - name: Run Migrations
         run: php artisan migrate --force
 
-      - &run-tests
-        name: Run Pest Tests
+      - name: Run Pest Tests
         run: ./vendor/bin/pest --parallel
 
   pest-mysql:
@@ -65,11 +59,28 @@ jobs:
           --health-retries=3
 
     steps:
-      - *setup-php
-      - *checkout
-      - *validate-composer
-      - *cache-composer
-      - *install-dependencies
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
       - name: Set MySQL Environment
         run: |
@@ -78,8 +89,11 @@ jobs:
           echo "DB_USERNAME=packistry" >> .env
           echo "DB_PASSWORD=packistry" >> .env
 
-      - *run-migrations
-      - *run-tests
+      - name: Run Migrations
+        run: php artisan migrate --force
+
+      - name: Run Pest Tests
+        run: ./vendor/bin/pest --parallel
 
   pest-postgres:
     runs-on: ubuntu-latest
@@ -93,17 +107,34 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U laravel"
+          --health-cmd="pg_isready -U packistry"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
 
     steps:
-      - *setup-php
-      - *checkout
-      - *validate-composer
-      - *cache-composer
-      - *install-dependencies
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
       - name: Set PostgreSQL Environment
         run: |
@@ -112,5 +143,8 @@ jobs:
           echo "DB_USERNAME=packistry" >> .env
           echo "DB_PASSWORD=packistry" >> .env
 
-      - *run-migrations
-      - *run-tests
+      - name: Run Migrations
+        run: php artisan migrate --force
+
+      - name: Run Pest Tests
+        run: ./vendor/bin/pest --parallel
