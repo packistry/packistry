@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sources', function (Blueprint $table) {
-            $table->json('metadata')->default('{}')->after('secret');
+            $table->json('metadata')->after('secret');
         });
     }
 
