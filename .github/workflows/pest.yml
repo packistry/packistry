@@ -1,4 +1,4 @@
-name: PHP Tests
+name: Pest
 
 on:
   - push

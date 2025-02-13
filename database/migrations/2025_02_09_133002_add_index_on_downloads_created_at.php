@@ -14,7 +14,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('downloads', function (Blueprint $table) {
-            $table->date('created_date')->virtualAs('DATE(created_at)')->after('created_at');
+            if (DB::getDriverName() === 'pgsql') {
+                $table->date('created_date')->storedAs('DATE(created_at)')->after('created_at');
+            } else {
+                $table->date('created_date')->virtualAs('DATE(created_at)')->after('created_at');
+            }
 
             $table->index(['package_id', 'created_date'], 'downloads_package_id_created_at_index');
             $table->index(['created_date'], 'downloads_created_at_index');
