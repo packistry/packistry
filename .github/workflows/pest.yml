@@ -1,0 +1,116 @@
+name: PHP Tests
+
+on:
+  - push
+  - pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  pest-sqlite:
+    runs-on: ubuntu-latest
+    steps:
+      - &setup-php
+        name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - &checkout
+        uses: actions/checkout@v4
+
+      - &validate-composer
+        name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - &cache-composer
+        name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - &install-dependencies
+        name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - &run-migrations
+        name: Run Migrations
+        run: php artisan migrate --force
+
+      - &run-tests
+        name: Run Pest Tests
+        run: ./vendor/bin/pest --parallel
+
+  pest-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: packistry
+          MYSQL_USER: packistry
+          MYSQL_PASSWORD: packistry
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --host=localhost --user=root --password=root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - *setup-php
+      - *checkout
+      - *validate-composer
+      - *cache-composer
+      - *install-dependencies
+
+      - name: Set MySQL Environment
+        run: |
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_DATABASE=packistry" >> .env
+          echo "DB_USERNAME=packistry" >> .env
+          echo "DB_PASSWORD=packistry" >> .env
+
+      - *run-migrations
+      - *run-tests
+
+  pest-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: packistry
+          POSTGRES_USER: packistry
+          POSTGRES_PASSWORD: packistry
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U laravel"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - *setup-php
+      - *checkout
+      - *validate-composer
+      - *cache-composer
+      - *install-dependencies
+
+      - name: Set PostgreSQL Environment
+        run: |
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_DATABASE=packistry" >> .env
+          echo "DB_USERNAME=packistry" >> .env
+          echo "DB_PASSWORD=packistry" >> .env
+
+      - *run-migrations
+      - *run-tests

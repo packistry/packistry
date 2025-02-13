@@ -1,4 +1,4 @@
-name: PHP Lint
+name: Pint
 
 on:
   - push
@@ -8,10 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-
+  pint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Setup PHP with PECL extension
         uses: shivammathur/setup-php@v2
@@ -33,12 +31,6 @@ jobs:
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
-
-      - name: Pest
-        run: ./vendor/bin/pest --parallel
-
-      - name: PHPStan
-        run: ./vendor/bin/phpstan analyse --memory-limit=2G
 
       - name: Pint
         run: ./vendor/bin/pint --test
