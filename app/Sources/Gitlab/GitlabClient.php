@@ -40,44 +40,23 @@ class GitlabClient extends Client
      */
     public function projects(?string $search = null): array
     {
-        $perPage = 100;
-
-        $initialResponse = $this->http()->get('/api/v4/projects', [
-            'per_page' => 1,
+        $response = $this->http()->get('/api/v4/projects', [
+            'per_page' => 100,
             'search' => $search,
-            'search_namespaces' => true,
+            'search_namespaces' => ! str_starts_with('https://gitlab.com', $this->url), // throws 500 on gitlab.com?
         ])->throw();
 
-        $totalProjects = (int) $initialResponse->header('X-Total-Pages');
-        $totalPages = ceil($totalProjects / $perPage);
+        $response->throw();
 
-        $responses = $this->http()
-            ->pool(fn (Pool $pool): array => array_map(
-                fn (float $page) => $this->requestOptions($pool)
-                    ->get('/api/v4/projects', [
-                        'page' => $page,
-                        'per_page' => $perPage,
-                        'search' => $search,
-                    ]), range(1, $totalPages)));
+        $data = $response->json();
 
-        $allProjects = [];
-
-        foreach ($responses as $response) {
-            $response->throw();
-
-            $data = $response->json();
-            $projects = array_map(fn (array $item): Project => new Project(
-                id: $item['id'],
-                fullName: $item['path_with_namespace'],
-                name: $item['name'],
-                url: $item['_links']['self'],
-                webUrl: $item['web_url'],
-            ), $data);
-
-            $allProjects = array_merge($allProjects, $projects);
-        }
-
-        return $allProjects;
+        return array_map(fn (array $item): Project => new Project(
+            id: $item['id'],
+            fullName: $item['path_with_namespace'],
+            name: $item['name'],
+            url: $item['_links']['self'],
+            webUrl: $item['web_url'],
+        ), $data);
     }
 
     /**
@@ -101,7 +80,7 @@ class GitlabClient extends Client
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $project->url,
-                zipUrl: "$project->url/archive.zip?sha=$sha",
+                zipUrl: "$project->url/repository/archive.zip?sha=$sha",
             );
         }, $data);
     }
@@ -127,7 +106,7 @@ class GitlabClient extends Client
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $project->url,
-                zipUrl: "$project->url/archive.zip?sha=$sha",
+                zipUrl: "$project->url/repository/archive.zip?sha=$sha",
             );
         }, $data);
     }

@@ -49,7 +49,7 @@ it('fetches projects', function () {
         'https://gitlab.com/api/v4/projects?*' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/projects.json'), headers: ['X-Total-Pages' => 1]),
     ]);
 
-    $projects = $this->gitLab->projects("quality");
+    $projects = $this->gitLab->projects('quality');
 
     expect($projects)
         ->toHaveCount(1)
@@ -89,12 +89,12 @@ it('fetches project tags', function () {
         ->id->toBe('278964')
         ->name->toBe('v17.6.5-ee')
         ->url->toBe('https://gitlab.com/api/v4/projects/278964')
-        ->zipUrl->toBe('https://gitlab.com/api/v4/projects/278964/archive.zip?sha=53bac28a6c50e5c1efa8b8d2520b24f32993682f');
+        ->zipUrl->toBe('https://gitlab.com/api/v4/projects/278964/repository/archive.zip?sha=53bac28a6c50e5c1efa8b8d2520b24f32993682f');
 });
 
 it('fetches project branches', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects/278964/repository/branches?per_page=100' => Http::response(File::get(__DIR__ . '/../Fixtures/GitLab/branches.json')),
+        'https://gitlab.com/api/v4/projects/278964/repository/branches?per_page=100' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/branches.json')),
     ]);
 
     $branches = $this->gitLab->branches($this->project);
@@ -105,12 +105,12 @@ it('fetches project branches', function () {
         ->id->toBe('278964')
         ->name->toBe('00alkorba')
         ->url->toBe('https://gitlab.com/api/v4/projects/278964')
-        ->zipUrl->toBe('https://gitlab.com/api/v4/projects/278964/archive.zip?sha=95ffae76ca05765a4842f7af10b3977d04bc1221');
+        ->zipUrl->toBe('https://gitlab.com/api/v4/projects/278964/repository/archive.zip?sha=95ffae76ca05765a4842f7af10b3977d04bc1221');
 });
 
 it('creates webhook', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects/278964/hooks' => Http::response(File::get(__DIR__ . '/../Fixtures/GitLab/webhook.json')),
+        'https://gitlab.com/api/v4/projects/278964/hooks' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/webhook.json')),
     ]);
 
     /** @var Repository $repository */
