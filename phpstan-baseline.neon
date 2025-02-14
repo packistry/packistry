@@ -1,4 +1,5 @@
 parameters:
+	tmpDir: .phpstan
 	ignoreErrors:
 		-
 			message: '#^Parameter \#1 \$builder \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\) of method App\\Models\\Scopes\\UserScope\:\:apply\(\) should be contravariant with parameter \$builder \(Illuminate\\Database\\Eloquent\\Builder\) of method Illuminate\\Database\\Eloquent\\Scope\:\:apply\(\)$#'

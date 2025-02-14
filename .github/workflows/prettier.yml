@@ -1,4 +1,4 @@
-name: JS Lint
+name: Prettier
 
 on:
   - push
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  lint:
+  prettier:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,11 +33,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: ESLint
-        run: pnpm run eslint
-
       - name: Prettier
         run: pnpm run prettier
-
-      - name: Check types
-        run: pnpm run check-types
