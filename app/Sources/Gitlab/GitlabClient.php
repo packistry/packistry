@@ -64,25 +64,37 @@ class GitlabClient extends Client
      */
     public function branches(Project $project): array
     {
-        // @todo add pagination
-        $response = $this->http()->get("$project->url/repository/branches", ['per_page' => 100])->throw();
+        $branches = [];
+        $perPage = 100;
+        $page = 1;
 
-        $data = $response->json();
+        do {
+            $response = $this->http()->get("$project->url/repository/branches", [
+                'per_page' => $perPage,
+                'page' => $page,
+            ])->throw();
 
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
+            $data = $response->json();
 
-        return array_map(function (array $item) use ($project): Branch {
-            $sha = $item['commit']['id'];
+            if (is_null($data)) {
+                throw new RuntimeException($response->getBody()->getContents());
+            }
 
-            return new Branch(
-                id: (string) $project->id,
-                name: $item['name'],
-                url: $project->url,
-                zipUrl: "$project->url/repository/archive.zip?sha=$sha",
-            );
-        }, $data);
+            foreach ($data as $branch) {
+                $sha = $branch['commit']['id'];
+
+                $branches[] = new Branch(
+                    id: (string) $project->id,
+                    name: $branch['name'],
+                    url: $project->url,
+                    zipUrl: "$project->url/repository/archive.zip?sha=$sha",
+                );
+            }
+
+            $page++;
+        } while ($response->header('x-next-page'));
+
+        return $branches;
     }
 
     /**
@@ -90,25 +102,37 @@ class GitlabClient extends Client
      */
     public function tags(Project $project): array
     {
-        // @todo add pagination
-        $response = $this->http()->get("$project->url/repository/tags", ['per_page' => 100])->throw();
+        $tags = [];
+        $perPage = 100;
+        $page = 1;
 
-        $data = $response->json();
+        do {
+            $response = $this->http()->get("$project->url/repository/tags", [
+                'per_page' => $perPage,
+                'page' => $page,
+            ])->throw();
 
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
+            $data = $response->json();
 
-        return array_map(function (array $item) use ($project): Tag {
-            $sha = $item['commit']['id'];
+            if (is_null($data)) {
+                throw new RuntimeException($response->getBody()->getContents());
+            }
 
-            return new Tag(
-                id: (string) $project->id,
-                name: $item['name'],
-                url: $project->url,
-                zipUrl: "$project->url/repository/archive.zip?sha=$sha",
-            );
-        }, $data);
+            foreach ($data as $tag) {
+                $sha = $tag['commit']['id'];
+
+                $tags[] = new Tag(
+                    id: (string) $project->id,
+                    name: $tag['name'],
+                    url: $project->url,
+                    zipUrl: "$project->url/repository/archive.zip?sha=$sha",
+                );
+            }
+
+            $page++;
+        } while ($response->header('x-next-page'));
+
+        return $tags;
     }
 
     /**
