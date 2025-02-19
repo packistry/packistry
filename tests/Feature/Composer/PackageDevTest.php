@@ -28,11 +28,11 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
                         ...$version->metadata,
                         'name' => $package->name,
                         'version' => $version->name,
-                        'type' => 'library',
+                        'type' => $package->type,
                         'time' => $version->created_at,
                         'dist' => [
                             'type' => 'zip',
-                            'url' => url("$package->name/$version->name"),
+                            'url' => $repository->url("/$package->name/$version->name"),
                             'shasum' => $version->shasum,
                         ],
                     ])->toArray(),

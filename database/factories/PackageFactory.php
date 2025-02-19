@@ -30,7 +30,7 @@ class PackageFactory extends Factory
         return [
             'name' => "$vendor/$name",
             'provider_id' => fake()->uuid,
-            'type' => fake()->randomElement(PackageType::cases()),
+            'type' => fake()->randomElement(PackageType::cases())->value,
         ];
     }
 

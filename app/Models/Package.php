@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\PackageType;
 use App\Models\Scopes\UserScope;
 use Database\Factories\PackageFactory;
 use Eloquent;
@@ -23,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $provider_id
  * @property string $name
  * @property string|null $latest_version
- * @property PackageType $type
+ * @property string $type
  * @property string|null $description
  * @property int $total_downloads
  * @property Carbon|null $created_at
@@ -44,10 +43,6 @@ class Package extends Model
 {
     /** @use HasFactory<PackageFactory> */
     use HasFactory;
-
-    protected $casts = [
-        'type' => PackageType::class,
-    ];
 
     protected $attributes = [
         'total_downloads' => 0,

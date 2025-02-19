@@ -67,7 +67,7 @@ it('searches by query', function (Repository $repository, ?Authenticatable $auth
                 'name' => 'test/test',
             ]))
             ->has(Package::factory()->state([
-                'type' => PackageType::LIBRARY,
+                'type' => PackageType::LIBRARY->value,
             ])->count(9))
     ))
     ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
@@ -97,10 +97,10 @@ it('searches by type', function (Repository $repository, ?Authenticatable $auth,
         closure: fn (RepositoryFactory $factory) => $factory
             ->has(Package::factory()->state([
                 'name' => 'test/test',
-                'type' => PackageType::COMPOSER_PLUGIN,
+                'type' => PackageType::COMPOSER_PLUGIN->value,
             ]))
             ->has(Package::factory()->state([
-                'type' => PackageType::LIBRARY,
+                'type' => PackageType::LIBRARY->value,
             ])->count(9))
     ))
     ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));

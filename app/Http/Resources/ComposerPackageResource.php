@@ -30,11 +30,11 @@ class ComposerPackageResource extends JsonResource
                         ...$version->metadata,
                         'name' => $this->name,
                         'version' => $version->name,
-                        'type' => 'library',
+                        'type' => $this->type,
                         'time' => $version->created_at,
                         'dist' => [
                             'type' => 'zip',
-                            'url' => url("$this->name/$version->name"),
+                            'url' => $this->repository->url("/$this->name/$version->name"),
                             'shasum' => $version->shasum,
                         ],
                     ]),
