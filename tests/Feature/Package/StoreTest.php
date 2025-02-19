@@ -98,7 +98,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
         ->provider_id->toBe('1')
         ->name->toBe('test/test')
         ->latest_version->toBe('1.0.0')
-        ->and($package)->type->toBe(PackageType::LIBRARY)
+        ->and($package)->type->toBe(PackageType::LIBRARY->value)
         ->description->toBe('description');
 
     /** @var Version $version */

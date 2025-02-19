@@ -77,7 +77,7 @@ class StorePackage
                 $package->source_id = $source->id;
 
                 $package->name = 'Importing '.$project->fullName;
-                $package->type = PackageType::LIBRARY;
+                $package->type = PackageType::LIBRARY->value;
 
                 $package->save();
             }

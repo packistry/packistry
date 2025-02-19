@@ -102,6 +102,8 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
+        $package->setRelation('repository', $this->repository());
+
         return response()->json(new ComposerPackageResource($package));
     }
 
@@ -126,6 +128,8 @@ class RepositoryController extends RepositoryAwareController
                     ->where('name', 'like', 'dev-%'),
             ])
             ->firstOrFail();
+
+        $package->setRelation('repository', $this->repository());
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -198,7 +202,7 @@ class RepositoryController extends RepositoryAwareController
         if (is_null($package)) {
             $package = new Package;
             $package->repository_id = $this->repository()->id;
-            $package->type = PackageType::LIBRARY;
+            $package->type = PackageType::LIBRARY->value;
             $package->name = "$vendor/$name";
 
             $package->save();

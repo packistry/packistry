@@ -38,9 +38,9 @@ class CreateFromZip
         $package->name = $name;
 
         $package->description = $decoded['description'] ?? null;
-        $package->type = array_key_exists('type', $decoded)
-            ? PackageType::tryFrom($decoded['type']) ?? PackageType::LIBRARY
-            : PackageType::LIBRARY;
+        $package->type = array_key_exists('type', $decoded) && $decoded['type'] !== '' && $decoded['type'] !== null
+            ? $decoded['type']
+            : PackageType::LIBRARY->value;
 
         if ($package->isDirty()) {
             $package->save();
