@@ -30,6 +30,7 @@ class RepositoryResource extends JsonResource
             'public' => $this->public,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'url' => $this->url(),
             'packages_count' => $this->whenCounted('packages'),
         ];
     }

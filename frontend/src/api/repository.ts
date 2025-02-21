@@ -8,6 +8,7 @@ export const repository = z.object({
     path: z.string().nullable(),
     description: z.string().nullable(),
     public: z.boolean(),
+    url: z.string(),
     packagesCount: z.number().optional(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

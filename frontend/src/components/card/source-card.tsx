@@ -17,7 +17,7 @@ export function SourceCard({ source, className }: { source: Source; className?: 
             className={cn('overflow-hidden', className)}
         >
             <CardContent className="p-0">
-                <div className={`p-4 ${providerColors[source.provider] || 'bg-primary text-primary-foreground'}`}>
+                <div className={`p-6 pb-4 ${providerColors[source.provider] || 'bg-primary text-primary-foreground'}`}>
                     <div className="flex justify-between items-center">
                         <h3 className="font-semibold text-lg">{source.name}</h3>
                         <ProviderIcon className="h-6 w-6" />
@@ -31,7 +31,7 @@ export function SourceCard({ source, className }: { source: Source; className?: 
                         </p>
                     </div>
                 </div>
-                <div className="p-4">
+                <div className="p-6 pt-4">
                     <div className="flex justify-between items-center mb-4">
                         <Badge
                             variant="outline"
