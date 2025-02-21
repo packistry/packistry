@@ -50,7 +50,7 @@ class Repository extends Model
         return $this->hasMany(Package::class);
     }
 
-    public function url(string $url): string
+    public function url(string $url = ''): string
     {
         $prefix = is_null($this->path) ? '' : "/r/$this->path";
 

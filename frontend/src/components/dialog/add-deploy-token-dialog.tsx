@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Info, PlusIcon } from 'lucide-react'
+import { ClipboardIcon, Info, PlusIcon } from 'lucide-react'
 import * as React from 'react'
 import { useStoreDeployToken } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
@@ -31,10 +31,30 @@ export function AddDeployTokenDialog(props: AddDeployTokenDialog) {
         onSuccess({ plainText }) {
             toast('Deploy Token has been created', {
                 description: plainText,
-                action: {
-                    label: 'Copy',
-                    onClick: () => navigator.clipboard.writeText(plainText),
-                },
+                action: (
+                    <div className="flex gap-2 flex-col items-start">
+                        <Button
+                            size="xs"
+                            onClick={() => navigator.clipboard.writeText(plainText)}
+                        >
+                            <ClipboardIcon size={15} />
+                        </Button>
+                        <Button
+                            size="xs"
+                            onClick={() =>
+                                navigator.clipboard.writeText(
+                                    `composer config bearer.${window.location.host} "${plainText}"`
+                                )
+                            }
+                        >
+                            <ClipboardIcon
+                                size={15}
+                                className="mr-1"
+                            />
+                            command
+                        </Button>
+                    </div>
+                ),
             })
             form.reset()
             dialogProps.onOpenChange(false)

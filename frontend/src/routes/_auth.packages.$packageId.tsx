@@ -15,6 +15,7 @@ import { Empty } from '@/components/Empty'
 import { Button } from '@/components/ui/button'
 import { PackageIcon } from 'lucide-react'
 import { is404 } from '@/api/axios'
+import { CopyCommandTooltip } from '@/components/ui/tooltip'
 
 export const Route = createFileRoute('/_auth/packages/$packageId')({
     validateSearch: versionQuery,
@@ -29,6 +30,7 @@ function PackagesComponent() {
     const query = usePackage(packageId)
     const downloads = usePackageDownloads(packageId)
     const versions = usePackageVersions(packageId, search)
+    const command = `composer require ${query.data?.name}`
 
     if (is404(query)) {
         return (
@@ -47,9 +49,11 @@ function PackagesComponent() {
 
     return (
         <>
-            <Heading title={query.data?.name} />
+            <Heading title={query.data?.name}>
+                <CopyCommandTooltip command={command} />
+            </Heading>
             <DownloadsCard data={downloads.data} />
-            <div className="flex gap-4">
+            <div className="flex gap-4 items-start">
                 {query.data?.repository ? (
                     <RepositoryCard
                         className="w-1/2"

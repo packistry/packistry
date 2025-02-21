@@ -1,8 +1,12 @@
 import * as React from 'react'
 import { ReactNode } from 'react'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { TooltipProps } from '@radix-ui/react-tooltip'
 
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { ClipboardIcon } from 'lucide-react'
 
 const TooltipProvider = TooltipPrimitive.Provider
 
@@ -29,15 +33,20 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName
 const TextTooltip = ({
     disabled = false,
     content,
+    tooltip,
     children,
 }: {
     disabled?: boolean
-    content: string
+    content: ReactNode
     children: ReactNode
+    tooltip?: TooltipProps
 }) => {
     return (
         <TooltipProvider>
-            <Tooltip>
+            <Tooltip
+                delayDuration={0}
+                {...tooltip}
+            >
                 <TooltipTrigger type="button">{children}</TooltipTrigger>
                 {!disabled && (
                     <TooltipContent>
@@ -48,4 +57,30 @@ const TextTooltip = ({
         </TooltipProvider>
     )
 }
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, TextTooltip }
+
+const CopyCommandTooltip = ({ command }: { command: string }) => {
+    return (
+        <TextTooltip
+            content={
+                <>
+                    Copy command to clipboard <br />
+                    <code className="mt-2 block">{command}</code>
+                </>
+            }
+        >
+            <Button
+                variant="outline"
+                className="text-xs"
+                size="sm"
+                onClick={() =>
+                    navigator.clipboard.writeText(command).then(() => {
+                        toast('Copied command to clipboard')
+                    })
+                }
+            >
+                <ClipboardIcon size={15} />
+            </Button>
+        </TextTooltip>
+    )
+}
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, TextTooltip, CopyCommandTooltip }
