@@ -27,11 +27,8 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property AuthenticationProvider $provider
  * @property string $client_id
  * @property string $client_secret
- * @property string|null $icon_url
  * @property string|null $discovery_url
- * @property string|null $authorize_url
- * @property string|null $token_url
- * @property string|null $userinfo_url
+ * @property string|null $icon_url
  * @property Role $default_user_role
  * @property bool $active
  * @property Carbon|null $created_at

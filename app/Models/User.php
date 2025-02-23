@@ -36,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property string|null $external_id
  * @property int|null $authentication_source_id
+ * @property-read AuthenticationSource|null $authenticationSource
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, Repository> $repositories
@@ -43,7 +44,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
  *
- * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder<static>|User newModelQuery()
  * @method static Builder<static>|User newQuery()
  * @method static Builder<static>|User query()
