@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
+            'authentication_source' => new AuthenticationSourceResource($this->whenLoaded('authenticationSource')),
             'permissions' => $this->role->permissions(),
             'repositories' => RepositoryResource::collection($this->whenLoaded('repositories')),
             'created_at' => $this->created_at,

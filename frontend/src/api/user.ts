@@ -3,13 +3,15 @@ import { del, get, patch, post } from '@/api/axios'
 import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
 import { permission } from '@/permission'
 import { repository } from '@/api/repository'
+import { authenticationSource } from '@/api/authentication-source'
+import { role } from '@/api/role'
 
-export const role = z.enum(['admin', 'user'])
 export const user = z.object({
     id: z.coerce.string(),
     name: z.string(),
     email: z.string(),
     role,
+    authenticationSource: authenticationSource.optional().nullable(),
     repositories: repository.array().optional(),
     permissions: permission.array(),
     createdAt: z.coerce.date(),

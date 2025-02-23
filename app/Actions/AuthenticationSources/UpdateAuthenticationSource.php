@@ -20,7 +20,7 @@ class UpdateAuthenticationSource
     public function handle(AuthenticationSource $source, UpdateAuthenticationSourceInput $input): AuthenticationSource
     {
         if ($source->discovery_url !== $input->discoveryUrl && $input->provider === AuthenticationProvider::OIDC) {
-            OIDCConfiguration::validateDiscoveryUrl($input->discoveryUrl);
+            OIDCConfiguration::validateDiscoveryUrl($input->discoveryUrl ?? throw new InvalidDiscoveryUrlException);
         }
 
         return DB::transaction(function () use ($source, $input) {

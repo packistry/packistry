@@ -1,9 +1,9 @@
 import { z } from 'zod'
 import { del, get, patch, post } from '@/api/axios'
 import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
-import { role } from '@/api/user'
 import { authenticationProvider } from '@/api/authentication-provider'
 import { repository } from '@/api/repository'
+import { role } from '@/api/role'
 
 const publicAuthenticationSource = z.object({
     id: z.coerce.string(),
@@ -12,7 +12,7 @@ const publicAuthenticationSource = z.object({
     redirectUrl: z.string(),
 })
 
-const authenticationSource = z.object({
+export const authenticationSource = z.object({
     id: z.coerce.string(),
     name: z.string(),
     iconUrl: z.string().nullable(),

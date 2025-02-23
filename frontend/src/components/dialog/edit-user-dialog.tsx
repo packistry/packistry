@@ -44,7 +44,10 @@ export function EditUserDialog({ user, trigger }: { trigger?: ReactNode; user: U
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <UserFormElements form={form} />
+                        <UserFormElements
+                            form={form}
+                            user={user}
+                        />
                         <div className="flex justify-between">
                             <Button
                                 type="submit"

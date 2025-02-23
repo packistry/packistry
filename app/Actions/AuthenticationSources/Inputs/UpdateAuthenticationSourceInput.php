@@ -21,7 +21,7 @@ class UpdateAuthenticationSourceInput extends Input
         public AuthenticationProvider $provider,
         public string $clientId,
         public string $clientSecret,
-        public string $discoveryUrl,
+        public ?string $discoveryUrl = '',
         public bool $active = true,
         public Role $defaultUserRole = Role::USER,
         public ?array $defaultUserRepositories = []

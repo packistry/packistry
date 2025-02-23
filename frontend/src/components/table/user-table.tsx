@@ -49,6 +49,14 @@ export function UserTable(props: Omit<PaginatedTableProps<UseQueryResult<Paginat
                     ),
                 },
                 {
+                    key: 'authenticationSource',
+                    label: 'Authentication Source',
+                    head: {
+                        className: 'w-[200px]',
+                    },
+                    render: (user) => user.authenticationSource?.name || 'Local',
+                },
+                {
                     key: 'role',
                     label: 'Role',
                     sorter: true,
