@@ -302,7 +302,7 @@ export function useLogin() {
         onSuccess(user) {
             auth.login(user)
 
-            queryClient.invalidateQueries()
+            queryClient.clear()
         },
     })
 }
