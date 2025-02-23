@@ -6,7 +6,7 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
 
 ### Features
 
-- **Private Repository Support**: Keep your sensitive or proprietary packages secure by hosting them in private repositories.
+- **Private Repository Support**: Keep your proprietary packages secure by hosting them in private repositories.
 
 - **Token-Based Authentication**: Ensure secure access to your repositories with token-based authentication. This allows you to manage permissions for both users and automated systems (machines), providing granular control over who can view or modify your repositories.
 
@@ -16,7 +16,7 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Gitea**
     - **Bitbucket**
 
-  Stays up to date automatically, as Packistry uses **webhooks** to pull the latest changes from your source repositories.
+  Stays up to date automatically, as Packistry uses **webhooks** to pull the latest changes from your source.
 
 - **Comprehensive Repository Management**:
     - **Public/Private Repository Options**: Define repositories as public or private based on your project needs.
@@ -24,7 +24,7 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Machine Access Control**: Generate deploy tokens to allow machines (e.g., build systems or CI/CD pipelines) to access private repositories, ensuring smooth, secure automation.
 
 - **Authentication Sources**: Packistry supports **Single Sign-On (SSO)** through OAuth 2.0 and OpenID Connect.
-    - **OpenID Connect**: Authenticate using an OIDC provider, such as Okta, Keycloak, or Microsoft Azure AD (Entra ID).
+    - **OpenID Connect**: Authenticate using an OIDC provider, such as Okta or Microsoft Azure AD (Entra ID).
     - **GitHub**: Authenticate using your GitHub account.
     - **GitLab**: Authenticate using your GitLab credentials.
     - **Bitbucket**: Authenticate via Bitbucket's OAuth.
