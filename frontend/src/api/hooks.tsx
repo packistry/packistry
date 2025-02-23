@@ -35,12 +35,21 @@ import {
 } from '@/api'
 import { useAuth } from '@/auth'
 import { fetchPackageVersions, VersionQuery } from '@/api/version'
+import {
+    AuthenticationSourceQuery,
+    deleteAuthenticationSource,
+    fetchAuthenticationSources,
+    fetchPublicAuthenticationSources,
+    storeAuthenticationSource,
+    updateAuthenticationSource,
+} from '@/api/authentication-source'
 
 const repositoriesKey = ['repositories']
 const packagesKey = ['packages']
 const usersKey = ['users']
 const sourcesKey = ['sources']
 const deployTokenKey = ['deploy-tokens']
+const authenticationSourceKey = ['authentication-sources']
 const personalTokenKey = ['personal-tokens']
 
 export function useRepositories(query: RepositoryQuery) {
@@ -381,6 +390,62 @@ export function useDeleteDeployToken() {
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: deployTokenKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function usePublicAuthenticationSources() {
+    return useQuery({
+        queryFn: fetchPublicAuthenticationSources,
+        queryKey: ['public', 'authentication-sources'],
+    })
+}
+
+export function useAuthenticationSources(query: AuthenticationSourceQuery) {
+    return useQuery({
+        queryFn: () => fetchAuthenticationSources(query),
+        queryKey: [...authenticationSourceKey, query],
+    })
+}
+
+export function useStoreAuthenticationSource() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: storeAuthenticationSource,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: authenticationSourceKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useUpdateAuthenticationSource() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateAuthenticationSource,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: authenticationSourceKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useDeleteAuthenticationSource() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: deleteAuthenticationSource,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: authenticationSourceKey,
                 exact: false,
             })
         },

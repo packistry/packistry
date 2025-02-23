@@ -44,6 +44,8 @@ export const storeUserInput = z.object({
     repositories: z.string().array(),
 })
 
+export type StoreUserInput = z.infer<typeof storeUserInput>
+
 export function storeUser(input: z.infer<typeof storeUserInput>) {
     return post(user, '/users', input)
 }

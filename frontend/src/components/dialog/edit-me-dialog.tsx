@@ -7,7 +7,7 @@ import { useForm } from '@/hooks/useForm'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { DialogProps } from '@/components/dialog/dialog'
 import { useAuth } from '@/auth'
-import { FormInput } from '@/components/form/elements/FormInput'
+import { FormInput } from '@/components/form/elements/form-input'
 import { UserIcon } from 'lucide-react'
 
 export function EditMeDialog(props: DialogProps) {

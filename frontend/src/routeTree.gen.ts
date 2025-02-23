@@ -19,6 +19,7 @@ import { Route as AuthSourcesImport } from './routes/_auth.sources'
 import { Route as AuthRepositoriesImport } from './routes/_auth.repositories'
 import { Route as AuthPersonalTokensImport } from './routes/_auth.personal-tokens'
 import { Route as AuthDeployTokensImport } from './routes/_auth.deploy-tokens'
+import { Route as AuthAuthenticationSourcesImport } from './routes/_auth.authentication-sources'
 import { Route as AuthPackagesIndexImport } from './routes/_auth.packages.index'
 import { Route as AuthPackagesPackageIdImport } from './routes/_auth.packages.$packageId'
 
@@ -71,6 +72,12 @@ const AuthDeployTokensRoute = AuthDeployTokensImport.update({
     getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthAuthenticationSourcesRoute = AuthAuthenticationSourcesImport.update({
+    id: '/authentication-sources',
+    path: '/authentication-sources',
+    getParentRoute: () => AuthRoute,
+} as any)
+
 const AuthPackagesIndexRoute = AuthPackagesIndexImport.update({
     id: '/packages/',
     path: '/packages/',
@@ -100,6 +107,13 @@ declare module '@tanstack/react-router' {
             fullPath: '/login'
             preLoaderRoute: typeof LoginImport
             parentRoute: typeof rootRoute
+        }
+        '/_auth/authentication-sources': {
+            id: '/_auth/authentication-sources'
+            path: '/authentication-sources'
+            fullPath: '/authentication-sources'
+            preLoaderRoute: typeof AuthAuthenticationSourcesImport
+            parentRoute: typeof AuthImport
         }
         '/_auth/deploy-tokens': {
             id: '/_auth/deploy-tokens'
@@ -163,6 +177,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthRouteChildren {
+    AuthAuthenticationSourcesRoute: typeof AuthAuthenticationSourcesRoute
     AuthDeployTokensRoute: typeof AuthDeployTokensRoute
     AuthPersonalTokensRoute: typeof AuthPersonalTokensRoute
     AuthRepositoriesRoute: typeof AuthRepositoriesRoute
@@ -174,6 +189,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+    AuthAuthenticationSourcesRoute: AuthAuthenticationSourcesRoute,
     AuthDeployTokensRoute: AuthDeployTokensRoute,
     AuthPersonalTokensRoute: AuthPersonalTokensRoute,
     AuthRepositoriesRoute: AuthRepositoriesRoute,
@@ -189,6 +205,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 export interface FileRoutesByFullPath {
     '': typeof AuthRouteWithChildren
     '/login': typeof LoginRoute
+    '/authentication-sources': typeof AuthAuthenticationSourcesRoute
     '/deploy-tokens': typeof AuthDeployTokensRoute
     '/personal-tokens': typeof AuthPersonalTokensRoute
     '/repositories': typeof AuthRepositoriesRoute
@@ -201,6 +218,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
     '/login': typeof LoginRoute
+    '/authentication-sources': typeof AuthAuthenticationSourcesRoute
     '/deploy-tokens': typeof AuthDeployTokensRoute
     '/personal-tokens': typeof AuthPersonalTokensRoute
     '/repositories': typeof AuthRepositoriesRoute
@@ -215,6 +233,7 @@ export interface FileRoutesById {
     __root__: typeof rootRoute
     '/_auth': typeof AuthRouteWithChildren
     '/login': typeof LoginRoute
+    '/_auth/authentication-sources': typeof AuthAuthenticationSourcesRoute
     '/_auth/deploy-tokens': typeof AuthDeployTokensRoute
     '/_auth/personal-tokens': typeof AuthPersonalTokensRoute
     '/_auth/repositories': typeof AuthRepositoriesRoute
@@ -230,6 +249,7 @@ export interface FileRouteTypes {
     fullPaths:
         | ''
         | '/login'
+        | '/authentication-sources'
         | '/deploy-tokens'
         | '/personal-tokens'
         | '/repositories'
@@ -241,6 +261,7 @@ export interface FileRouteTypes {
     fileRoutesByTo: FileRoutesByTo
     to:
         | '/login'
+        | '/authentication-sources'
         | '/deploy-tokens'
         | '/personal-tokens'
         | '/repositories'
@@ -253,6 +274,7 @@ export interface FileRouteTypes {
         | '__root__'
         | '/_auth'
         | '/login'
+        | '/_auth/authentication-sources'
         | '/_auth/deploy-tokens'
         | '/_auth/personal-tokens'
         | '/_auth/repositories'
@@ -289,6 +311,7 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
+        "/_auth/authentication-sources",
         "/_auth/deploy-tokens",
         "/_auth/personal-tokens",
         "/_auth/repositories",
@@ -301,6 +324,10 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_auth/authentication-sources": {
+      "filePath": "_auth.authentication-sources.tsx",
+      "parent": "/_auth"
     },
     "/_auth/deploy-tokens": {
       "filePath": "_auth.deploy-tokens.tsx",

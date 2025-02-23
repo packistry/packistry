@@ -4,10 +4,10 @@ import { useDeployToken } from '@/api/hooks'
 import { deployTokenQuery } from '@/api/deploy-token'
 import { DeployTokenTable } from '@/components/table/deploy-token-table'
 import { AddDeployTokenDialog } from '@/components/dialog/add-deploy-token-dialog'
-import { Heading } from '@/components/page/Heading'
+import { Heading } from '@/components/page/heading'
 import { z } from 'zod'
 import { useSearchDialog } from '@/components/dialog/use-search-dialog'
-import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
+import { navigateOnSearch, SearchBar } from '@/components/page/search-bar'
 import { navigateOnSort } from '@/components/paginated-table'
 
 export const Route = createFileRoute('/_auth/deploy-tokens')({

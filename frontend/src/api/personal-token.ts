@@ -37,6 +37,8 @@ export const storePersonalTokenInput = z.object({
     expiresAt: z.coerce.date().nullable(),
 })
 
+export type StorePersonalTokenInput = z.infer<typeof storePersonalTokenInput>
+
 export function storePersonalToken(input: z.infer<typeof storePersonalTokenInput>) {
     return post(
         z.object({

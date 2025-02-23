@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { CodeIcon, DatabaseIcon, HomeIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
+import { CodeIcon, DatabaseIcon, FingerprintIcon, HomeIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import React, { JSXElementConstructor } from 'react'
 import {
+    AUTHENTICATION_SOURCE_READ,
     DASHBOARD,
     DEPLOY_TOKEN_READ,
     PACKAGE_READ,
@@ -28,6 +29,12 @@ const navItems: NavItem[] = [
     { name: 'Sources', href: '/sources', icon: CodeIcon, permission: SOURCE_READ },
     { name: 'Users', href: '/users', icon: UsersIcon, permission: USER_READ },
     { name: 'Deploy Tokens', href: '/deploy-tokens', icon: KeyIcon, permission: DEPLOY_TOKEN_READ },
+    {
+        name: 'Authentication Sources',
+        href: '/authentication-sources',
+        icon: FingerprintIcon,
+        permission: AUTHENTICATION_SOURCE_READ,
+    },
 ]
 
 export function Sidebar() {

@@ -1,11 +1,11 @@
-import { FormInput } from '@/components/form/elements/FormInput'
+import { FormInput } from '@/components/form/elements/form-input'
 import * as React from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/FormRepositorySearchCheckboxGroup'
-import { FormRadioGroup } from '@/components/form/elements/FormRadioGroup'
+import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/form-repository-search-checkbox-group'
+import { FormRadioGroup } from '@/components/form/elements/form-radio-group'
+import { StoreUserInput } from '@/api'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function UserFormElements({ form }: { form: UseFormReturn<any, any, any> }) {
+export function UserFormElements({ form }: { form: UseFormReturn<StoreUserInput> }) {
     const role = form.watch('role')
 
     return (

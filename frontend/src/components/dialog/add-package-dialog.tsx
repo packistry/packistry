@@ -2,10 +2,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import * as React from 'react'
-import { FormRepositorySelect } from '@/components/form/elements/FormRepositorySelect'
-import { FormSourceSelect } from '@/components/form/elements/FormSourceSelect'
-import { FormSourceProjectCheckboxGroup } from '@/components/form/elements/FormSourceProjectCheckboxGroup'
-import { FormSwitch } from '@/components/form/elements/FormSwitch'
+import { FormRepositorySelect } from '@/components/form/elements/form-repository-select'
+import { FormSourceSelect } from '@/components/form/elements/form-source-select'
+import { FormSourceProjectCheckboxGroup } from '@/components/form/elements/form-source-project-checkbox-group'
+import { FormSwitch } from '@/components/form/elements/form-switch'
 import { Form } from '@/components/ui/form'
 import { useStorePackage } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
@@ -70,7 +70,7 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
                             <>
                                 <FormSourceProjectCheckboxGroup
                                     source={source}
-                                    description={'Select one or more projects to add as packages.'}
+                                    description="Select one or more projects to add as packages."
                                     control={form.control}
                                 />
                                 <FormSwitch

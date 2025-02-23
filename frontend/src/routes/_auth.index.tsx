@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CodeIcon, DatabaseIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
 import { useDashboard } from '@/api/hooks'
-import { Heading } from '@/components/page/Heading'
+import { Heading } from '@/components/page/heading'
 import { DownloadsCard } from '@/components/card/downloads-card'
 
 export const Route = createFileRoute('/_auth/')({

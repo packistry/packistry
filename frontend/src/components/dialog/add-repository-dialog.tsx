@@ -49,7 +49,7 @@ export function AddRepositoryDialog(props: DialogProps) {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <RepositoryFormElements control={form.control} />
+                        <RepositoryFormElements form={form} />
                         <Button
                             loading={isPending}
                             type="submit"

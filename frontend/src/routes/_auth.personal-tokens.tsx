@@ -4,10 +4,10 @@ import { usePersonalToken } from '@/api/hooks'
 import { AddPersonalTokenDialog } from '@/components/dialog/add-personal-token-dialog'
 import { PersonalTokenTable } from '@/components/table/personal-token-table'
 import { personalTokenQuery } from '@/api'
-import { Heading } from '@/components/page/Heading'
+import { Heading } from '@/components/page/heading'
 import { z } from 'zod'
 import { useSearchDialog } from '@/components/dialog/use-search-dialog'
-import { navigateOnSearch, SearchBar } from '@/components/page/SearchBar'
+import { navigateOnSearch, SearchBar } from '@/components/page/search-bar'
 
 export const Route = createFileRoute('/_auth/personal-tokens')({
     validateSearch: personalTokenQuery.extend({

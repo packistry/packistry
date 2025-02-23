@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthenticationSourceController;
 use App\Http\Controllers\Composer;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeployTokenController;
@@ -37,6 +38,12 @@ if (! function_exists('repositoryRoutes')) {
     }
 }
 
+Route::middleware(['web'])->group(function (): void {
+    Route::get('/auths', [AuthController::class, 'sources']);
+    Route::get('/auths/{authenticationSourceId}/redirect', [AuthController::class, 'redirect']);
+    Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
+});
+
 Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): void {
     Route::post('/login', [AuthController::class, 'login']);
 
@@ -65,6 +72,9 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
             ->only(['index']);
 
         Route::get('/packages/{packageId}/downloads', [PackageController::class, 'downloads']);
+
+        Route::apiResource('/authentication-sources', AuthenticationSourceController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::patch('/me', [AuthController::class, 'update']);

@@ -8,7 +8,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "start": "vite",
-    "prettier": "prettier -c ./**/*.{ts,tsx} --write",
+    "prettier": "prettier -c ./src/**/*.{ts,tsx} --write",
     "eslint": "eslint ./src/**/*.{ts,tsx}",
     "check-types": "tsc --noemit"
   },
