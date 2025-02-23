@@ -104,7 +104,7 @@ export function AuthenticationSourceFormElements({
                 )}
                 <FormSwitch
                     label="Active"
-                    description="Enable or disable this authentication source. When deactivated, users will be unable to sign in using this source."
+                    description="Enable or disable this authentication source. When deactivated, users will be unable to sign in using this source. Personal tokens from users using this source will remain active."
                     name="active"
                     control={form.control}
                 />
