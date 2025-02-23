@@ -19,11 +19,7 @@ export function EditUserDialog({ user, trigger }: { trigger?: ReactNode; user: U
             repositories: user.repositories?.map(({ id }) => id) || '',
             password: '',
         },
-        onSuccess(user) {
-            form.setValue(
-                'repositories',
-                user.repositories?.map(({ id }) => id)
-            )
+        onSuccess() {
             form.resetField('password')
             setIsDialogOpen(false)
         },

@@ -11,10 +11,11 @@ import { FormInput } from '@/components/form/elements/form-input'
 import { UserIcon } from 'lucide-react'
 
 export function EditMeDialog(props: DialogProps) {
-    const { user, login } = useAuth()
+    const { user } = useAuth()
     const mutation = useUpdateMe()
     const dialogProps = useInnerDialog(props)
     const isLocal = user?.authenticationSource === null
+
     const { form, onSubmit, isPending } = useForm({
         mutation,
         defaultValues: {
@@ -23,8 +24,7 @@ export function EditMeDialog(props: DialogProps) {
             password: '',
             passwordConfirmation: '',
         },
-        onSuccess(user) {
-            login(user)
+        onSuccess() {
             form.resetField('currentPassword')
             form.resetField('password')
             form.resetField('passwordConfirmation')

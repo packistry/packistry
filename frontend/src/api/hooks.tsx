@@ -263,31 +263,11 @@ export function useUpdateUser() {
 
     return useMutation({
         mutationFn: updateUser,
-        onSuccess(patch) {
-            queryClient.setQueriesData(
-                {
-                    queryKey: usersKey,
-                },
-                (data: undefined | Awaited<ReturnType<typeof fetchUsers>>) => {
-                    if (!data) {
-                        return data
-                    }
-
-                    return {
-                        ...data,
-                        data: data.data.map((user) => {
-                            if (user.id === patch.id) {
-                                return {
-                                    ...user,
-                                    ...patch,
-                                }
-                            }
-
-                            return user
-                        }),
-                    }
-                }
-            )
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: usersKey,
+                exact: false,
+            })
         },
     })
 }
@@ -414,7 +394,7 @@ export function useAuthenticationSources(query: AuthenticationSourceQuery) {
 export function useMe() {
     return useQuery({
         queryFn: fetchMe,
-        queryKey: ['me'],
+        queryKey: [...usersKey, 'me'],
     })
 }
 

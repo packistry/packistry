@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { logout as apiLogout, User } from '@/api'
 import { Permission } from '@/permission'
 
@@ -16,6 +16,10 @@ const AuthContext = React.createContext<AuthContext | null>(null)
 export function AuthProvider({ children, user }: { children: React.ReactNode; user: User | null }) {
     const [authUser, setUser] = useState<User | null>(user)
     const isAuthenticated = !!authUser
+
+    useEffect(() => {
+        setUser(user)
+    }, [user])
 
     const logout = useCallback(async () => {
         await apiLogout()
