@@ -1,34 +1,39 @@
-import { FormInput } from '@/components/form/elements/FormInput'
+import { FormInput } from '@/components/form/elements/form-input'
 import * as React from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/FormRepositorySearchCheckboxGroup'
-import { FormRadioGroup } from '@/components/form/elements/FormRadioGroup'
+import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/form-repository-search-checkbox-group'
+import { FormRadioGroup } from '@/components/form/elements/form-radio-group'
+import { StoreUserInput, User } from '@/api'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function UserFormElements({ form }: { form: UseFormReturn<any, any, any> }) {
+export function UserFormElements({ form, user }: { form: UseFormReturn<StoreUserInput>; user?: User }) {
     const role = form.watch('role')
+    const isLocal = typeof user === 'undefined' || user.authenticationSource === null
 
     return (
         <>
             <FormInput
                 label="Name"
                 name="name"
+                disabled={!isLocal}
                 description="Enter the name of ther user to be added."
                 control={form.control}
             />
             <FormInput
                 label="Email"
                 name="email"
+                disabled={!isLocal}
                 description="Provide a unique email for the user"
                 control={form.control}
             />
-            <FormInput
-                label="Password"
-                name="password"
-                description="Enter a password for this user"
-                type="password"
-                control={form.control}
-            />
+            {isLocal && (
+                <FormInput
+                    label="Password"
+                    name="password"
+                    description="Enter a password for this user"
+                    type="password"
+                    control={form.control}
+                />
+            )}
             <FormRadioGroup
                 label="Role"
                 name="role"

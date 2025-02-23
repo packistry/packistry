@@ -52,6 +52,8 @@ export const storeSourceInput = z.object({
     metadata: z.any(),
 })
 
+export type StoreSourceInput = z.infer<typeof storeSourceInput>
+
 export function storeSource(input: z.infer<typeof storeSourceInput>) {
     return post(source, '/sources', input)
 }
@@ -63,6 +65,8 @@ export const updateSourceInput = z.object({
     token: z.string().optional(),
     metadata: z.any(),
 })
+
+export type UpdateSourceInput = z.infer<typeof updateSourceInput>
 
 export function updateSource(input: z.infer<typeof updateSourceInput>) {
     return patch(source, `/sources/${input.id}`, input)

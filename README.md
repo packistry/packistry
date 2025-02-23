@@ -6,7 +6,7 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
 
 ### Features
 
-- **Private Repository Support**: Keep your sensitive or proprietary packages secure by hosting them in private repositories.
+- **Private Repository Support**: Keep your proprietary packages secure by hosting them in private repositories.
 
 - **Token-Based Authentication**: Ensure secure access to your repositories with token-based authentication. This allows you to manage permissions for both users and automated systems (machines), providing granular control over who can view or modify your repositories.
 
@@ -16,12 +16,19 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Gitea**
     - **Bitbucket**
 
-  Stays up to date automatically, as Packistry uses **webhooks** to pull the latest changes from your source repositories.
+  Stays up to date automatically, as Packistry uses **webhooks** to pull the latest changes from your source.
 
 - **Comprehensive Repository Management**:
     - **Public/Private Repository Options**: Define repositories as public or private based on your project needs.
     - **Human Access Control**: Create user accounts to assign and manage access to your private repositories, ensuring only authorized individuals can interact with sensitive content.
     - **Machine Access Control**: Generate deploy tokens to allow machines (e.g., build systems or CI/CD pipelines) to access private repositories, ensuring smooth, secure automation.
+
+- **Authentication Sources**: Packistry supports **Single Sign-On (SSO)** through OAuth 2.0 and OpenID Connect.
+    - **OpenID Connect**: Authenticate using an OIDC provider, such as Okta or Microsoft Azure AD (Entra ID).
+    - **GitHub**: Authenticate using your GitHub account.
+    - **GitLab**: Authenticate using your GitLab credentials.
+    - **Bitbucket**: Authenticate via Bitbucket's OAuth.
+    - **Google**: Use Google authentication for login.
 
 Packistry combines ease of use, flexibility, and security to give you complete control over your PHP package distribution in a self-hosted environment. Whether you're managing a private project, a team of developers, or an open-source initiative, Packistry streamlines your workflow with minimal configuration and maximum control.
 

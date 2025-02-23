@@ -41,7 +41,7 @@ export function EditRepositoryDialog({ repository, trigger }: { trigger?: ReactN
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <RepositoryFormElements control={form.control} />
+                        <RepositoryFormElements form={form} />
                         <div className="flex justify-between">
                             <Button
                                 loading={isPending}

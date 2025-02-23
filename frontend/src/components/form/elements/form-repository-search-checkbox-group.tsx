@@ -4,7 +4,7 @@ import { useRepositories } from '@/api/hooks'
 import {
     FormSearchCheckboxGroup,
     FormSearchCheckboxGroupProps,
-} from '@/components/form/elements/FormSearchCheckboxGroup'
+} from '@/components/form/elements/form-search-checkbox-group'
 
 export type FormRepositorySearchCheckboxGroupProps = {
     filters?: Parameters<typeof useRepositories>[0]['filters']

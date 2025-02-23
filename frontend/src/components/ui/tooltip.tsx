@@ -1,12 +1,11 @@
 import * as React from 'react'
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import { TooltipProps } from '@radix-ui/react-tooltip'
 
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { ClipboardIcon } from 'lucide-react'
+import { CheckIcon, ClipboardIcon } from 'lucide-react'
 
 const TooltipProvider = TooltipPrimitive.Provider
 
@@ -35,11 +34,13 @@ const TextTooltip = ({
     content,
     tooltip,
     children,
+    onClick,
 }: {
     disabled?: boolean
     content: ReactNode
     children: ReactNode
     tooltip?: TooltipProps
+    onClick?: () => void
 }) => {
     return (
         <TooltipProvider>
@@ -47,7 +48,13 @@ const TextTooltip = ({
                 delayDuration={0}
                 {...tooltip}
             >
-                <TooltipTrigger type="button">{children}</TooltipTrigger>
+                <TooltipTrigger
+                    onClick={onClick}
+                    className="cursor-pointer"
+                    type="button"
+                >
+                    {children}
+                </TooltipTrigger>
                 {!disabled && (
                     <TooltipContent>
                         <p>{content}</p>
@@ -59,8 +66,20 @@ const TextTooltip = ({
 }
 
 const CopyCommandTooltip = ({ command }: { command: string }) => {
+    const [copied, setCopied] = useState(false)
+
+    const handleCopy = useCallback(() => {
+        navigator.clipboard.writeText(command).then(() => {
+            setCopied(true)
+            toast('Copied command to clipboard')
+
+            setTimeout(() => setCopied(false), 2000)
+        })
+    }, [command])
+
     return (
         <TextTooltip
+            onClick={handleCopy}
             content={
                 <>
                     Copy command to clipboard <br />
@@ -68,18 +87,7 @@ const CopyCommandTooltip = ({ command }: { command: string }) => {
                 </>
             }
         >
-            <Button
-                variant="outline"
-                className="text-xs"
-                size="sm"
-                onClick={() =>
-                    navigator.clipboard.writeText(command).then(() => {
-                        toast('Copied command to clipboard')
-                    })
-                }
-            >
-                <ClipboardIcon size={15} />
-            </Button>
+            {copied ? <CheckIcon size={15} /> : <ClipboardIcon size={15} />}
         </TextTooltip>
     )
 }

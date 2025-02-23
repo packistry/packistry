@@ -11,6 +11,7 @@
         "laravel/octane": "^2.6.1",
         "laravel/prompts": "^0.3.4",
         "laravel/sanctum": "^4.0.8",
+        "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.29",
         "spatie/laravel-data": "^4.13",

@@ -10,7 +10,7 @@ export function DeleteSourceButton({ source, ...props }: DeleteSourceButtonProps
 
     return (
         <Button
-            variant="destructive"
+            variant="ghost"
             onClick={() => mutation.mutate(source.id)}
             dangerous={{
                 title: 'Delete Source?',

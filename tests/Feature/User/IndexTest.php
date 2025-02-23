@@ -21,7 +21,7 @@ it('indexes', function (?User $user, int $status): void {
     $response->assertJsonPath(
         'data',
         resourceAsJson(
-            UserResource::collection(User::query()->with('repositories')->get()),
+            UserResource::collection(User::query()->with('repositories', 'authenticationSource')->get()),
         ),
     );
 
@@ -35,7 +35,7 @@ it('searches', function (?User $user, int $status): void {
         ])
         ->create();
 
-    $user->load('repositories');
+    $user->load('repositories', 'authenticationSource');
 
     getJson("/users?filter[search]=$name")
         ->assertStatus($status)

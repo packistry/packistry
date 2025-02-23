@@ -26,6 +26,10 @@ export const PERSONAL_TOKEN_CREATE = 'personal_token_create'
 export const PERSONAL_TOKEN_READ = 'personal_token_read'
 export const PERSONAL_TOKEN_UPDATE = 'personal_token_update'
 export const PERSONAL_TOKEN_DELETE = 'personal_token_delete'
+export const AUTHENTICATION_SOURCE_CREATE = 'authentication_source_create'
+export const AUTHENTICATION_SOURCE_READ = 'authentication_source_read'
+export const AUTHENTICATION_SOURCE_UPDATE = 'authentication_source_update'
+export const AUTHENTICATION_SOURCE_DELETE = 'authentication_source_delete'
 
 export const permissions = [
     DASHBOARD,
@@ -54,6 +58,10 @@ export const permissions = [
     PERSONAL_TOKEN_READ,
     PERSONAL_TOKEN_UPDATE,
     PERSONAL_TOKEN_DELETE,
+    AUTHENTICATION_SOURCE_CREATE,
+    AUTHENTICATION_SOURCE_READ,
+    AUTHENTICATION_SOURCE_UPDATE,
+    AUTHENTICATION_SOURCE_DELETE,
 ] as const
 
 export const permission = z.enum(permissions)

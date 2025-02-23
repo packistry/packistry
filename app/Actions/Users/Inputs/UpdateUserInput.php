@@ -19,8 +19,8 @@ class UpdateUserInput extends Input
         public string|Optional $name,
         #[Email]
         public string|Optional $email,
-        public Role|Optional $role,
-        public array|Optional $repositories,
+        public Role|Optional $role = new Optional,
+        public array|Optional $repositories = new Optional,
         #[Password(6)]
         public ?string $password = null,
     ) {

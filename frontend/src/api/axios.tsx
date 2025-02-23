@@ -7,7 +7,6 @@ import axios, {
 } from 'axios'
 import { camelizeKeys, decamelizeKeys } from 'humps'
 import { z } from 'zod'
-import { setStoredUser } from '@/auth'
 import { toast } from 'sonner'
 import { UseQueryResult } from '@tanstack/react-query'
 
@@ -67,8 +66,7 @@ api.interceptors.response.use(
                 })
             }
 
-            if (error.response?.status === 401) {
-                setStoredUser(null)
+            if (error.response?.status === 401 && error.config?.url !== '/me') {
                 window.location.reload()
             }
         }

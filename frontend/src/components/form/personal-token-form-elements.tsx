@@ -1,18 +1,18 @@
-import { FormInput } from '@/components/form/elements/FormInput'
+import { FormInput } from '@/components/form/elements/form-input'
 import * as React from 'react'
-import { Control } from 'react-hook-form'
-import { FormCheckboxGroup } from '@/components/form/elements/FormCheckboxGroup'
-import { FormDatePicker } from '@/components/form/elements/FormDatePicker'
+import { UseFormReturn } from 'react-hook-form'
+import { FormCheckboxGroup } from '@/components/form/elements/form-checkbox-group'
+import { FormDatePicker } from '@/components/form/elements/form-date-picker'
+import { StorePersonalTokenInput } from '@/api'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function PersonalTokenFormElements({ control }: { control: Control<any> }) {
+export function PersonalTokenFormElements({ form }: { form: UseFormReturn<StorePersonalTokenInput> }) {
     return (
         <>
             <FormInput
                 label="Token Name"
                 name="name"
                 description="Enter a name for this token to easily identify its purpose."
-                control={control}
+                control={form.control}
             />
             <FormCheckboxGroup
                 options={[
@@ -22,13 +22,13 @@ export function PersonalTokenFormElements({ control }: { control: Control<any> }
                 name="abilities"
                 label="Access Rights"
                 description="Give write access, if you want to upload package zips to a repository"
-                control={control}
+                control={form.control}
             />
             <FormDatePicker
                 label="Expiration Date"
                 name="expiresAt"
                 description="Optionally set an expiration date, after which it will no longer be valid."
-                control={control}
+                control={form.control}
             />
         </>
     )

@@ -1,13 +1,20 @@
-import { FormInput } from '@/components/form/elements/FormInput'
+import { FormInput } from '@/components/form/elements/form-input'
 import * as React from 'react'
 import { ReactElement } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { FormSourceProviderSelect } from '@/components/form/elements/FormSourceProviderSelect'
+import { FormSourceProviderSelect } from '@/components/form/elements/form-source-provider-select'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Info } from 'lucide-react'
 import { providerNames, providerUrls, SourceProvider } from '@/api/source-provider'
+import { StoreSourceInput, UpdateSourceInput } from '@/api'
 
-export function SourceFormElements({ form, disableProvider }: { form: UseFormReturn; disableProvider?: boolean }) {
+export function SourceFormElements({
+    form,
+    disableProvider,
+}: {
+    form: UseFormReturn<StoreSourceInput | UpdateSourceInput>
+    disableProvider?: boolean
+}) {
     const url = form.watch('url')
     const provider = form.watch('provider') as SourceProvider | undefined | ''
 

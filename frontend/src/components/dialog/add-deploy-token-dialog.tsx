@@ -87,7 +87,7 @@ export function AddDeployTokenDialog(props: AddDeployTokenDialog) {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <DeployTokenFormElements control={form.control} />
+                        <DeployTokenFormElements form={form} />
                         <Button
                             type="submit"
                             loading={isPending}

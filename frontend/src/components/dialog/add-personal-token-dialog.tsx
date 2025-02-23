@@ -86,7 +86,7 @@ export function AddPersonalTokenDialog(props: AddPersonalTokenDialog) {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <PersonalTokenFormElements control={form.control} />
+                        <PersonalTokenFormElements form={form} />
                         <Button
                             type="submit"
                             loading={isPending}

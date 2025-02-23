@@ -3,7 +3,7 @@ import * as React from 'react'
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { FormElement } from '@/components/form/elements/element'
-import { Empty, EmptyProps } from '@/components/Empty'
+import { Empty, EmptyProps } from '@/components/empty'
 
 type Option = {
     value: string

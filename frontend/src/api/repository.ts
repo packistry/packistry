@@ -39,6 +39,8 @@ export const storeRepositoryInput = z.object({
     public: z.boolean(),
 })
 
+export type StoreRepositoryInput = z.infer<typeof storeRepositoryInput>
+
 export function storeRepository(input: z.infer<typeof storeRepositoryInput>) {
     return post(repository, '/repositories', input)
 }
@@ -50,6 +52,8 @@ export const updateRepositoryInput = z.object({
     description: z.string(),
     public: z.boolean(),
 })
+
+export type UpdateRepositoryInput = z.infer<typeof updateRepositoryInput>
 
 export function updateRepository({ id, ...input }: z.infer<typeof updateRepositoryInput>) {
     return patch(repository, `/repositories/${id}`, input)

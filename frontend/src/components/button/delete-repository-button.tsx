@@ -10,7 +10,7 @@ export function DeleteRepositoryButton({ repository, ...props }: DeleteRepositor
 
     return (
         <Button
-            variant="destructive"
+            variant="ghost"
             onClick={() => mutation.mutate(repository.id)}
             dangerous={{
                 title: 'Delete Repository?',

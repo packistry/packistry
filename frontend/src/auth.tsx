@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { useCallback, useContext, useState } from 'react'
-import { logout as apiLogout, User, user } from '@/api'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { logout as apiLogout, User } from '@/api'
 import { Permission } from '@/permission'
+import { useQueryClient } from '@tanstack/react-query'
 
 export interface AuthContext {
     isAuthenticated: boolean
-    login: (user: User) => Promise<void>
+    login: (user: User) => void
     logout: () => Promise<void>
     user: User | null
     can: (permission: Permission) => boolean
@@ -13,61 +14,41 @@ export interface AuthContext {
 
 const AuthContext = React.createContext<AuthContext | null>(null)
 
-const key = 'packistry.auth.user'
+export function AuthProvider({ children, user }: { children: React.ReactNode; user: User | null }) {
+    const [authUser, setUser] = useState<User | null>(user)
+    const isAuthenticated = !!authUser
+    const queryClient = useQueryClient()
 
-function getStoredUser() {
-    try {
-        const json = localStorage.getItem(key)
-
-        if (json === null) {
-            return json
-        }
-
-        return user.parse(JSON.parse(json))
-    } catch {
-        setStoredUser(null)
-        window.location.reload()
-    }
-
-    return null
-}
-
-export function setStoredUser(user: User | null) {
-    if (user) {
-        localStorage.setItem(key, JSON.stringify(user))
-        return
-    }
-
-    localStorage.removeItem(key)
-}
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(getStoredUser())
-    const isAuthenticated = !!user
+    useEffect(() => {
+        setUser(user)
+    }, [user])
 
     const logout = useCallback(async () => {
         await apiLogout()
-        setStoredUser(null)
+        queryClient.clear()
         setUser(null)
     }, [])
 
-    const login = useCallback(async (user: User) => {
-        setStoredUser(user)
+    const login = useCallback((user: User) => {
         setUser(user)
     }, [])
 
     const can = useCallback(
         (permission: Permission) => {
-            if (user === null) {
+            if (authUser === null) {
                 return false
             }
 
-            return user.permissions.includes(permission)
+            return authUser.permissions.includes(permission)
         },
-        [user]
+        [authUser]
     )
 
-    return <AuthContext.Provider value={{ isAuthenticated, user, login, logout, can }}>{children}</AuthContext.Provider>
+    return (
+        <AuthContext.Provider value={{ isAuthenticated, user: authUser, login, logout, can }}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
 export function useAuth() {

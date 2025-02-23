@@ -36,6 +36,7 @@ readonly class UserController extends Controller
                 SearchFilter::allowed(['name', 'email']),
             ])
             ->allowedSorts(['name', 'email', 'role'])
+            ->with('authenticationSource')
             ->paginate((int) $request->query('size', '10'));
 
         return UserResource::collection($users)

@@ -39,6 +39,8 @@ export const storeDeployTokenInput = z.object({
     repositories: z.string().array(),
 })
 
+export type StoreDeployTokenInput = z.infer<typeof storeDeployTokenInput>
+
 export function storeDeployToken(input: z.infer<typeof storeDeployTokenInput>) {
     return post(
         z.object({

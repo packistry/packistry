@@ -38,4 +38,9 @@ enum Permission: string
     case PERSONAL_TOKEN_READ = 'personal_token_read';
     case PERSONAL_TOKEN_UPDATE = 'personal_token_update';
     case PERSONAL_TOKEN_DELETE = 'personal_token_delete';
+
+    case AUTHENTICATION_SOURCE_CREATE = 'authentication_source_create';
+    case AUTHENTICATION_SOURCE_READ = 'authentication_source_read';
+    case AUTHENTICATION_SOURCE_UPDATE = 'authentication_source_update';
+    case AUTHENTICATION_SOURCE_DELETE = 'authentication_source_delete';
 }

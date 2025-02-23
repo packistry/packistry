@@ -9,6 +9,7 @@ import {
     DeployTokenQuery,
     fetchDashboard,
     fetchDeployTokens,
+    fetchMe,
     fetchPackage,
     fetchPackageDownloads,
     fetchPackages,
@@ -35,12 +36,21 @@ import {
 } from '@/api'
 import { useAuth } from '@/auth'
 import { fetchPackageVersions, VersionQuery } from '@/api/version'
+import {
+    AuthenticationSourceQuery,
+    deleteAuthenticationSource,
+    fetchAuthenticationSources,
+    fetchPublicAuthenticationSources,
+    storeAuthenticationSource,
+    updateAuthenticationSource,
+} from '@/api/authentication-source'
 
 const repositoriesKey = ['repositories']
 const packagesKey = ['packages']
 const usersKey = ['users']
 const sourcesKey = ['sources']
 const deployTokenKey = ['deploy-tokens']
+const authenticationSourceKey = ['authentication-sources']
 const personalTokenKey = ['personal-tokens']
 
 export function useRepositories(query: RepositoryQuery) {
@@ -253,31 +263,11 @@ export function useUpdateUser() {
 
     return useMutation({
         mutationFn: updateUser,
-        onSuccess(patch) {
-            queryClient.setQueriesData(
-                {
-                    queryKey: usersKey,
-                },
-                (data: undefined | Awaited<ReturnType<typeof fetchUsers>>) => {
-                    if (!data) {
-                        return data
-                    }
-
-                    return {
-                        ...data,
-                        data: data.data.map((user) => {
-                            if (user.id === patch.id) {
-                                return {
-                                    ...user,
-                                    ...patch,
-                                }
-                            }
-
-                            return user
-                        }),
-                    }
-                }
-            )
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: usersKey,
+                exact: false,
+            })
         },
     })
 }
@@ -310,9 +300,9 @@ export function useLogin() {
     return useMutation({
         mutationFn: login,
         onSuccess(user) {
-            queryClient.invalidateQueries().then(() => {
-                auth.login(user)
-            })
+            auth.login(user)
+
+            queryClient.clear()
         },
     })
 }
@@ -381,6 +371,69 @@ export function useDeleteDeployToken() {
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: deployTokenKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function usePublicAuthenticationSources() {
+    return useQuery({
+        queryFn: fetchPublicAuthenticationSources,
+        queryKey: ['public', 'authentication-sources'],
+    })
+}
+
+export function useAuthenticationSources(query: AuthenticationSourceQuery) {
+    return useQuery({
+        queryFn: () => fetchAuthenticationSources(query),
+        queryKey: [...authenticationSourceKey, query],
+    })
+}
+
+export function useMe() {
+    return useQuery({
+        queryFn: fetchMe,
+        queryKey: [...usersKey, 'me'],
+    })
+}
+
+export function useStoreAuthenticationSource() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: storeAuthenticationSource,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: authenticationSourceKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useUpdateAuthenticationSource() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateAuthenticationSource,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: authenticationSourceKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useDeleteAuthenticationSource() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: deleteAuthenticationSource,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: authenticationSourceKey,
                 exact: false,
             })
         },

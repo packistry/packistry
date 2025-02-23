@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -33,6 +34,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $external_id
+ * @property int|null $authentication_source_id
+ * @property-read AuthenticationSource|null $authenticationSource
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, Repository> $repositories
@@ -86,6 +90,14 @@ class User extends Model implements AuthenticatableContract, Tokenable
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
+    }
+
+    /**
+     * @return BelongsTo<AuthenticationSource, $this>
+     */
+    public function authenticationSource(): BelongsTo
+    {
+        return $this->belongsTo(AuthenticationSource::class);
     }
 
     public function can(Permission $permission): bool

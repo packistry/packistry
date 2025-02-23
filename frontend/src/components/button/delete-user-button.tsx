@@ -10,7 +10,7 @@ export function DeleteUserButton({ user }: { user: Pick<User, 'id'> }) {
     const { user: authUser } = useAuth()
     return (
         <Button
-            variant="destructive"
+            variant="ghost"
             disabled={user.id === authUser?.id}
             onClick={() => mutation.mutate(user.id)}
             dangerous={{
