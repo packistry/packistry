@@ -5,6 +5,7 @@ import { routeTree } from './routeTree.gen'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from '@/auth'
+import { useMe } from '@/api/hooks'
 
 const router = createRouter({
     routeTree,
@@ -33,6 +34,7 @@ const queryClient = new QueryClient({
 
 function InnerApp() {
     const auth = useAuth()
+
     return (
         <RouterProvider
             router={router}
@@ -42,12 +44,16 @@ function InnerApp() {
 }
 
 function App() {
+    const query = useMe()
+
+    if (query.isLoading) {
+        return
+    }
+
     return (
-        <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <InnerApp />
-            </AuthProvider>
-        </QueryClientProvider>
+        <AuthProvider user={query.data || null}>
+            <InnerApp />
+        </AuthProvider>
     )
 }
 
@@ -55,5 +61,9 @@ const rootElement = document.getElementById('app')!
 
 if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement)
-    root.render(<App />)
+    root.render(
+        <QueryClientProvider client={queryClient}>
+            <App />
+        </QueryClientProvider>
+    )
 }

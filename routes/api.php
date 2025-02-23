@@ -77,6 +77,7 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
             ->only(['index', 'store', 'update', 'destroy']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/me', [AuthController::class, 'show']);
         Route::patch('/me', [AuthController::class, 'update']);
     });
 });

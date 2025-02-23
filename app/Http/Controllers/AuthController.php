@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Users\Inputs\StoreUserInput;
+use App\Actions\AuthenticationSources\HandleAuthenticationSourceCallback;
 use App\Actions\Users\Inputs\UpdateMeInput;
-use App\Actions\Users\Inputs\UpdateUserInput;
-use App\Actions\Users\StoreUser;
 use App\Actions\Users\UpdateMe;
-use App\Actions\Users\UpdateUser;
-use App\Enums\Role;
 use App\Http\Resources\PublicAuthenticationSourceResource;
 use App\Http\Resources\UserResource;
 use App\Models\AuthenticationSource;
+use App\Models\User;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 
@@ -43,8 +40,13 @@ class AuthController
 
         $request->session()->regenerate();
 
+        /** @var User $user */
+        $user = auth()->user();
+
+        $user->load('authenticationSource');
+
         return response()->json(
-            new UserResource(auth()->user())
+            new UserResource($user)
         );
     }
 
@@ -53,6 +55,18 @@ class AuthController
         Auth::guard('web')->logout();
 
         return response()->json(null, 204);
+    }
+
+    public function show(): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $user->load('authenticationSource');
+
+        return response()->json(
+            new UserResource($user)
+        );
     }
 
     /**
@@ -73,6 +87,9 @@ class AuthController
         return response()->json(PublicAuthenticationSourceResource::collection($sources));
     }
 
+    /**
+     * @throws RequestException|ConnectionException
+     */
     public function redirect(Request $request, int $sourceId): RedirectResponse
     {
         $source = AuthenticationSource::active()->findOrFail($sourceId);
@@ -80,48 +97,15 @@ class AuthController
         return $source->provider($request)->redirect();
     }
 
-    public function callback(Request $request, StoreUser $store, UpdateUser $update, int $sourceId): RedirectResponse
+    public function callback(Request $request, HandleAuthenticationSourceCallback $callback, int $sourceId): RedirectResponse
     {
-        $source = AuthenticationSource::active()->findOrFail($sourceId);
-
         try {
-            $user = $source->provider($request)->user();
+            $user = $callback->handle(
+                request: $request,
+                source: AuthenticationSource::active()->findOrFail($sourceId)
+            );
 
-            $email = $user->getEmail();
-
-            if ($email === null) {
-                throw new RuntimeException('Email not provided');
-            }
-
-            $authUser = $source
-                ->users()
-                ->where('external_id', $user->getId())
-                ->first();
-
-            if ($authUser !== null) {
-                $update->handle($authUser, new UpdateUserInput(
-                    name: $user->getName() ?? '',
-                    email: $email,
-                ));
-            }
-
-            if ($authUser === null) {
-                $authUser = $store->handle(
-                    new StoreUserInput(
-                        name: $user->getName() ?? '',
-                        email: $email,
-                        role: Role::USER,
-                        password: Str::random(),
-                        repositories: $source->repositories->pluck('id')->toArray(),
-                    )
-                );
-
-                $authUser->external_id = $user->getId();
-                $authUser->authentication_source_id = $sourceId;
-                $authUser->save();
-            }
-
-            Auth::login($authUser);
+            Auth::login($user);
 
             return redirect('/');
         } catch (Throwable $e) {

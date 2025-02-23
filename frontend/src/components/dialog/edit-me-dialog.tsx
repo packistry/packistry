@@ -14,7 +14,7 @@ export function EditMeDialog(props: DialogProps) {
     const { user, login } = useAuth()
     const mutation = useUpdateMe()
     const dialogProps = useInnerDialog(props)
-
+    const isLocal = user?.authenticationSource === null
     const { form, onSubmit, isPending } = useForm({
         mutation,
         defaultValues: {
@@ -54,43 +54,56 @@ export function EditMeDialog(props: DialogProps) {
                         <FormInput
                             label="Name"
                             name="name"
-                            description="Update your name."
+                            disabled={!isLocal}
+                            description={
+                                !isLocal
+                                    ? `Name is automatically updated on sign in with ${user?.authenticationSource?.name}`
+                                    : 'Update your name.'
+                            }
                             control={form.control}
                         />
                         <FormInput
                             label="Email"
                             name="email"
                             disabled
-                            description="Ask an administrator to update your email."
+                            description={
+                                !isLocal
+                                    ? `Email is automatically updated on sign in with ${user?.authenticationSource?.name}`
+                                    : 'Ask an administrator to update your email.'
+                            }
                             control={form.control}
                         />
-                        <FormInput
-                            label="Current Password"
-                            name="currentPassword"
-                            description="Enter your current password."
-                            type="password"
-                            control={form.control}
-                        />
-                        <FormInput
-                            label="New Password"
-                            name="password"
-                            description="Enter your new password."
-                            type="password"
-                            control={form.control}
-                        />
-                        <FormInput
-                            label="Confirm New Password"
-                            name="passwordConfirmation"
-                            description="Confirm your new password."
-                            type="password"
-                            control={form.control}
-                        />
-                        <Button
-                            type="submit"
-                            loading={isPending}
-                        >
-                            Update
-                        </Button>
+                        {isLocal && (
+                            <>
+                                <FormInput
+                                    label="Current Password"
+                                    name="currentPassword"
+                                    description="Enter your current password."
+                                    type="password"
+                                    control={form.control}
+                                />
+                                <FormInput
+                                    label="New Password"
+                                    name="password"
+                                    description="Enter your new password."
+                                    type="password"
+                                    control={form.control}
+                                />
+                                <FormInput
+                                    label="Confirm New Password"
+                                    name="passwordConfirmation"
+                                    description="Confirm your new password."
+                                    type="password"
+                                    control={form.control}
+                                />
+                                <Button
+                                    type="submit"
+                                    loading={isPending}
+                                >
+                                    Update
+                                </Button>
+                            </>
+                        )}
                     </form>
                 </Form>
             </DialogContent>

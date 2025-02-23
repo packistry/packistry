@@ -43,6 +43,7 @@ export interface ButtonProps
         description: string
         confirm?: ButtonProps
         cancel?: ButtonProps
+        className?: string
     }
 }
 
@@ -92,7 +93,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                             {buttonContent}
                         </Comp>
                     </PopoverTrigger>
-                    <PopoverContent className="w-64">
+                    <PopoverContent className={cn('min-w-[325px]', dangerous.className)}>
                         <div className="grid gap-4">
                             <div className="space-y-2">
                                 <h4 className="font-medium leading-none">{dangerous.title}</h4>

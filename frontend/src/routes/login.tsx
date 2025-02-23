@@ -35,12 +35,9 @@ export default function LoginComponent() {
             password: '',
         },
         onSuccess() {
-            // @todo ?
-            setTimeout(() => {
-                navigate({
-                    to: search.redirect || fallback,
-                })
-            }, 100)
+            navigate({
+                to: search.redirect || fallback,
+            })
         },
     })
 

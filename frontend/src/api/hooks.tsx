@@ -9,6 +9,7 @@ import {
     DeployTokenQuery,
     fetchDashboard,
     fetchDeployTokens,
+    fetchMe,
     fetchPackage,
     fetchPackageDownloads,
     fetchPackages,
@@ -319,9 +320,9 @@ export function useLogin() {
     return useMutation({
         mutationFn: login,
         onSuccess(user) {
-            queryClient.invalidateQueries().then(() => {
-                auth.login(user)
-            })
+            auth.login(user)
+
+            queryClient.invalidateQueries()
         },
     })
 }
@@ -407,6 +408,13 @@ export function useAuthenticationSources(query: AuthenticationSourceQuery) {
     return useQuery({
         queryFn: () => fetchAuthenticationSources(query),
         queryKey: [...authenticationSourceKey, query],
+    })
+}
+
+export function useMe() {
+    return useQuery({
+        queryFn: fetchMe,
+        queryKey: ['me'],
     })
 }
 

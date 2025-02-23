@@ -79,3 +79,7 @@ export const updateMeInput = z.object({
 export function updateMe(input: z.infer<typeof updateMeInput>) {
     return patch(user, '/me', input)
 }
+
+export function fetchMe() {
+    return get(user, '/me')
+}
