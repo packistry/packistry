@@ -10135,16 +10135,16 @@
         },
         {
             "name": "ergebnis/phpstan-rules",
-            "version": "2.6.1",
+            "version": "2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/phpstan-rules.git",
-                "reference": "483c4028aea61154d93ca8de200e92eb64b43299"
+                "reference": "30e790621fbad05573ef9cd355279fff5122e080"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/phpstan-rules/zipball/483c4028aea61154d93ca8de200e92eb64b43299",
-                "reference": "483c4028aea61154d93ca8de200e92eb64b43299",
+                "url": "https://api.github.com/repos/ergebnis/phpstan-rules/zipball/30e790621fbad05573ef9cd355279fff5122e080",
+                "reference": "30e790621fbad05573ef9cd355279fff5122e080",
                 "shasum": ""
             },
             "require": {
@@ -10156,13 +10156,13 @@
                 "doctrine/orm": "^2.20.0 || ^3.3.0",
                 "ergebnis/composer-normalize": "^2.45.0",
                 "ergebnis/license": "^2.6.0",
-                "ergebnis/php-cs-fixer-config": "^6.41.0",
-                "ergebnis/phpunit-slow-test-detector": "^2.17.0",
+                "ergebnis/php-cs-fixer-config": "^6.43.0",
+                "ergebnis/phpunit-slow-test-detector": "^2.18.0",
                 "nette/di": "^3.1.10",
                 "phpstan/extension-installer": "^1.4.3",
                 "phpstan/phpstan-deprecation-rules": "^2.0.1",
-                "phpstan/phpstan-phpunit": "^2.0.3",
-                "phpstan/phpstan-strict-rules": "^2.0.1",
+                "phpstan/phpstan-phpunit": "^2.0.4",
+                "phpstan/phpstan-strict-rules": "^2.0.3",
                 "phpunit/phpunit": "^9.6.21",
                 "psr/container": "^2.0.2",
                 "symfony/finder": "^5.4.45",
@@ -10203,7 +10203,7 @@
                 "security": "https://github.com/ergebnis/phpstan-rules/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/phpstan-rules"
             },
-            "time": "2025-01-16T13:33:47+00:00"
+            "time": "2025-02-18T11:20:05+00:00"
         },
         {
             "name": "fakerphp/faker",
