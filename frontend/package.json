@@ -66,7 +66,7 @@
     "react-hook-form": "^7.54.2",
     "recharts": "^2.15.1",
     "sonner": "^1.7.4",
-    "tailwind-merge": "^3.0.1",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.7.3",
     "use-debounce": "^10.0.4",
