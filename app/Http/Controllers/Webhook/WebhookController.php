@@ -40,7 +40,8 @@ abstract class WebhookController extends RepositoryAwareController
 
     public function push(Importable $event): JsonResponse
     {
-        $package = $this->source()->packages()
+        $package = $this->repository()->packages()
+            ->where('source_id', $this->source()->id)
             ->where('provider_id', $event->id())
             ->firstOrFail();
 
@@ -90,7 +91,8 @@ abstract class WebhookController extends RepositoryAwareController
      */
     public function delete(Deletable $event): JsonResponse
     {
-        $package = $this->source()->packages()
+        $package = $this->repository()->packages()
+            ->where('source_id', $this->source()->id)
             ->where('provider_id', $event->id())
             ->firstOrFail();
 
