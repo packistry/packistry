@@ -23,6 +23,7 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
             'packages' => [
                 $package->name => $package->versions()
                     ->where('name', 'like', 'dev-%')
+                    ->orWhere('name', 'like', '%-dev')
                     ->get()
                     ->map(fn (Version $version) => [
                         ...$version->metadata,

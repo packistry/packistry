@@ -48,7 +48,7 @@ class PushEvent extends Input implements Deletable, Importable
             return $this->shortRef();
         }
 
-        return "dev-{$this->shortRef()}";
+        return Normalizer::devVersion($this->shortRef());
     }
 
     public function url(): string

@@ -67,7 +67,7 @@ class PackageFactory extends Factory
             ->has(
                 Version::factory()
                     ->state(new Sequence(
-                        fn (Sequence $sequence): array => ['name' => 'dev-patch-'.$sequence->index],
+                        fn (Sequence $sequence): array => ['name' => $sequence->index % 2 === 0 ? 'dev-patch-'.$sequence->index : "v$sequence->index.x-dev"],
                     ))
                     ->count($count)
             );
