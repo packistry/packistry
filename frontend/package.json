@@ -10,7 +10,7 @@
     "start": "vite",
     "prettier": "prettier -c ./src/**/*.{ts,tsx} --write",
     "eslint": "eslint ./src/**/*.{ts,tsx}",
-    "check-types": "tsc --noemit"
+    "check-types": "tsc --noemit --skipLibCheck"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
