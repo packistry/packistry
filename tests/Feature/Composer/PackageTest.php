@@ -23,18 +23,22 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
         ->assertExactJson([
             'minified' => 'composer/2.0',
             'packages' => [
-                $package->name => $package->versions->map(fn (Version $version) => [
-                    ...$version->metadata,
-                    'name' => $package->name,
-                    'version' => $version->name,
-                    'type' => $package->type,
-                    'time' => $version->created_at,
-                    'dist' => [
-                        'type' => 'zip',
-                        'url' => $package->repository->url("/$package->name/$version->name"),
-                        'shasum' => $version->shasum,
-                    ],
-                ])->toArray(),
+                $package->name => $package->versions()
+                    ->where('name', 'not like', 'dev-%')
+                    ->where('name', 'not like', '%-dev')
+                    ->get()
+                    ->map(fn (Version $version) => [
+                        ...$version->metadata,
+                        'name' => $package->name,
+                        'version' => $version->name,
+                        'type' => $package->type,
+                        'time' => $version->created_at,
+                        'dist' => [
+                            'type' => 'zip',
+                            'url' => $package->repository->url("/$package->name/$version->name"),
+                            'shasum' => $version->shasum,
+                        ],
+                    ])->toArray(),
             ],
         ]);
 })
@@ -48,6 +52,7 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
                     ))
                     ->count(10)
                 )
+                ->devVersions(10)
                 ->state([
                     'name' => 'test/test',
                 ])

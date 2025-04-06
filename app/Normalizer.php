@@ -37,7 +37,7 @@ class Normalizer
      */
     public static function version(string $version): string
     {
-        if (! str_starts_with($version, 'dev-')) {
+        if (! str_starts_with($version, 'dev-') && ! str_ends_with($version, '-dev')) {
             $result = preg_match('/\d+\.\d+\.\d+/', $version, $matches);
 
             if ($result === 0 || $result === false) {
@@ -48,5 +48,18 @@ class Normalizer
         }
 
         return $version;
+    }
+
+    public static function devVersion(string $version): string
+    {
+        if (preg_match('/^v?\d+(\.\w+)*$/', $version) !== 1) {
+            return "dev-$version";
+        }
+
+        if (str_ends_with($version, '.x')) {
+            return $version.'-dev';
+        }
+
+        return $version.'.x-dev';
     }
 }

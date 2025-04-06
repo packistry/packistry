@@ -98,7 +98,8 @@ class RepositoryController extends RepositoryAwareController
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
-                    ->where('name', 'not like', 'dev-%'),
+                    ->where('name', 'not like', 'dev-%')
+                    ->where('name', 'not like', '%-dev'),
             ])
             ->firstOrFail();
 
@@ -125,7 +126,8 @@ class RepositoryController extends RepositoryAwareController
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
-                    ->where('name', 'like', 'dev-%'),
+                    ->where('name', 'like', 'dev-%')
+                    ->orWhere('name', 'like', '%-dev'),
             ])
             ->firstOrFail();
 

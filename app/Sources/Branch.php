@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Sources;
 
+use App\Normalizer;
+
 readonly class Branch implements Importable
 {
     public function __construct(
@@ -22,7 +24,7 @@ readonly class Branch implements Importable
 
     public function version(): string
     {
-        return "dev-$this->name";
+        return Normalizer::devVersion($this->name);
     }
 
     public function url(): string

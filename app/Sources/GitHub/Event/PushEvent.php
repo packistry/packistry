@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\GitHub\Event;
 
+use App\Normalizer;
 use App\Sources\GitHub\Input;
 use App\Sources\GitHub\Repository;
 use App\Sources\Importable;
@@ -38,7 +39,7 @@ class PushEvent extends Input implements Importable
             return $this->shortRef();
         }
 
-        return "dev-{$this->shortRef()}";
+        return Normalizer::devVersion($this->shortRef());
     }
 
     public function url(): string

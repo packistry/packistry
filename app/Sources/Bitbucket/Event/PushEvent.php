@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sources\Bitbucket\Event;
 
+use App\Normalizer;
 use App\Sources\Bitbucket\Change;
 use App\Sources\Bitbucket\Input;
 use App\Sources\Bitbucket\Push;
@@ -60,9 +61,11 @@ class PushEvent extends Input implements Deletable, Importable
 
     public function version(): string
     {
-        return $this->isTag()
-            ? $this->shortRef()
-            : "dev-{$this->shortRef()}";
+        if ($this->isTag()) {
+            return $this->shortRef();
+        }
+
+        return Normalizer::devVersion($this->shortRef());
     }
 
     public function url(): string
