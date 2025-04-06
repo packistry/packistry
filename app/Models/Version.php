@@ -101,6 +101,6 @@ class Version extends Model
 
     private function isDev(): bool
     {
-        return str_starts_with($this->name, 'dev-');
+        return str_starts_with($this->name, 'dev-') || str_ends_with($this->name, '-dev');
     }
 }
