@@ -6,6 +6,7 @@ namespace App;
 
 use App\Exceptions\FailedToParseUrlException;
 use App\Exceptions\VersionNotFoundException;
+use Composer\Semver\VersionParser;
 
 class Normalizer
 {
@@ -70,5 +71,39 @@ class Normalizer
         }
 
         return $version.'.x-dev';
+    }
+
+    public static function versionOrder(string $version): string
+    {
+        if (str_starts_with($version, 'dev-')) {
+            return $version;
+        }
+
+        $parser = new VersionParser();
+        $normalized = $parser->normalize($version);
+
+        [$numericId, $buildId] = str_contains($normalized, '-')
+            ? explode('-', $normalized)
+            : [$normalized, null];
+
+        $numericVersion = str($numericId)
+            ->explode('.')
+            ->map(fn (string $number) => str_pad($number, 7, '0', STR_PAD_LEFT))
+            ->join('.');
+
+        if (is_null($buildId)) {
+            return "{$numericVersion}~";
+        }
+
+        $buildVersion = str($buildId)
+            ->replaceMatches('/^([a-zA-Z]+)([0-9]*)$/', '$1.$2', 1)
+            ->explode('.')
+            ->map(fn (string $part, int $index) => match ($index) {
+                0 => strtolower($part),
+                default => str_pad($part, 3, '0', STR_PAD_LEFT),
+            })
+            ->join('.');
+
+        return "{$numericVersion}-{$buildVersion}";
     }
 }

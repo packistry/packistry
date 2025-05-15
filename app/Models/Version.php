@@ -78,15 +78,7 @@ class Version extends Model
         static::addGlobalScope(new OrderScope('order'));
         static::creating(function (Version $version): void {
             $version->name = Normalizer::version($version->name);
-
-            $order = str_starts_with($version->name, 'dev-')
-                ? $version->name
-                : Str::of($version->name)
-                    ->explode('.')
-                    ->map(fn (string $part) => Str::padLeft($part, 3, '0'))
-                    ->implode('.');
-
-            $version->order = $order;
+            $version->order = Normalizer::versionOrder($version->name);
         });
 
         static::created(function (Version $version): void {
