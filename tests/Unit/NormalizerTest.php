@@ -27,4 +27,9 @@ it('normalizes version', function (string $url, string $expected): void {
         'branch' => ['dev-feature', 'dev-feature'],
         'tag' => ['1.0.0', '1.0.0'],
         'tag with v prefix' => ['v1.0.0', '1.0.0'],
+        'rc tag' => ['1.0-RC', '1.0-RC'],
+        'rc tag with number' => ['1.0-RC1', '1.0-RC1'],
+        'rc tag with v prefix' => ['v1.0-RC1', '1.0-RC1'],
+        'non-semver segments' => ['1.2.3.4', '1.2.3.4'],
+        'non-semver segments with v prefix' => ['v1.2.3.4', '1.2.3.4'],
     ]);

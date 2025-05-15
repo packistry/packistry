@@ -37,17 +37,26 @@ class Normalizer
      */
     public static function version(string $version): string
     {
-        if (! str_starts_with($version, 'dev-') && ! str_ends_with($version, '-dev')) {
-            $result = preg_match('/\d+\.\d+\.\d+/', $version, $matches);
-
-            if ($result === 0 || $result === false) {
-                throw new VersionNotFoundException;
-            }
-
-            return $matches[0];
+        if (str_starts_with($version, 'dev-') || str_ends_with($version, '-dev')) {
+            return $version;
         }
 
-        return $version;
+        $validPatterns = [
+            '/^v?(\d+\.){2,}\d+$/',
+            '/^v?(\d+\.){1,}\d+-[a-zA-Z]+\d*$/',
+        ];
+
+        foreach ($validPatterns as $pattern) {
+            if (preg_match($pattern, $version)) {
+                return trim($version, 'v');
+            }
+        }
+
+        if (preg_match('/^v?(\d+\.){2,}\d+$/', $version)) {
+            return trim($version, 'v');
+        }
+
+        throw new VersionNotFoundException;
     }
 
     public static function devVersion(string $version): string
