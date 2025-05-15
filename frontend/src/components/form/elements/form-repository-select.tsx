@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { FormSelect, FormSelectProps } from '@/components/form/elements/form-select'
-import { Optional } from '@tanstack/react-query'
+import { Optional } from '@/helpers'
 import { useRepositories } from '@/api/hooks'
 import { CodeIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'

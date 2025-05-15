@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { FormSelect, FormSelectProps } from '@/components/form/elements/form-select'
-import { Optional } from '@tanstack/react-query'
 import { useSources } from '@/api/hooks'
 import { CodeIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { Optional } from '@/helpers'
 
 export function FormSourceSelect(props: Omit<Optional<FormSelectProps, 'name' | 'label'>, 'options'>) {
     const query = useSources()
