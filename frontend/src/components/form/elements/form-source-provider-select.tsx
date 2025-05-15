@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { Optional } from '@tanstack/react-query'
+import { Optional } from '@/helpers'
 import { FormSelect, FormSelectProps } from '@/components/form/elements/form-select'
 import { providerNames, sourceProviders } from '@/api/source-provider'
 

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import { FormSelectProps } from '@/components/form/elements/form-select'
-import { Optional } from '@tanstack/react-query'
+import { Optional } from '@/helpers'
 import { useSourceProjects } from '@/api/hooks'
 import { FormSearchCheckboxGroup } from '@/components/form/elements/form-search-checkbox-group'
 import { CircleX } from 'lucide-react'
