@@ -61,7 +61,7 @@ it('overwrites version for same tag', function (Repository $repository, SourcePr
 it('has correct zip url for tag', function (SourceProvider $provider, Importable $event, ...$rest): void {
     $url = match ($provider) {
         SourceProvider::GITEA => 'https://gitea.com/vendor/test/archive/v1.0.0.zip',
-        SourceProvider::GITHUB => 'https://github.com/vendor/test/archive/v1.0.0.zip',
+        SourceProvider::GITHUB => 'https://api.github.com/repos/vendor/test/zipball/refs/tags/v1.0.0',
         SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkout-sha',
         SourceProvider::BITBUCKET => 'https://bitbucket.org/vendor/test/get/v1.0.0.zip',
     };
@@ -75,7 +75,7 @@ it('has correct zip url for tag', function (SourceProvider $provider, Importable
 it('has correct zip url for branch', function (SourceProvider $provider, Importable $event, ...$rest): void {
     $url = match ($provider) {
         SourceProvider::GITEA => 'https://gitea.com/vendor/test/archive/feature/my-feature.zip',
-        SourceProvider::GITHUB => 'https://github.com/vendor/test/archive/feature/my-feature.zip',
+        SourceProvider::GITHUB => 'https://api.github.com/repos/vendor/test/zipball/refs/heads/feature/my-feature',
         SourceProvider::GITLAB => 'https://gitlab.com/api/v4/projects/1/repository/archive.zip?sha=checkout-sha',
         SourceProvider::BITBUCKET => 'https://bitbucket.org/vendor/test/get/feature/my-feature.zip',
     };

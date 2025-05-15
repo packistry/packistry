@@ -358,7 +358,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     name: 'test',
                     fullName: 'vendor/test',
                     htmlUrl: 'https://github.com/vendor/test',
-                    url: 'https://github.com/vendor/test',
+                    url: 'https://api.github.com/repos/vendor/test',
                 )
             ),
             'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',

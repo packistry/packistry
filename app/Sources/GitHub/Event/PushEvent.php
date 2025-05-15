@@ -30,7 +30,7 @@ class PushEvent extends Input implements Importable
 
     public function zipUrl(): string
     {
-        return "{$this->repository->htmlUrl}/archive/{$this->shortRef()}.zip";
+        return "{$this->repository->url}/zipball/{$this->ref}";
     }
 
     public function version(): string
