@@ -42,18 +42,7 @@ class Normalizer
             return $version;
         }
 
-        $validPatterns = [
-            '/^v?(\d+\.){2,}\d+$/',
-            '/^v?(\d+\.){1,}\d+-[a-zA-Z]+\d*$/',
-        ];
-
-        foreach ($validPatterns as $pattern) {
-            if (preg_match($pattern, $version)) {
-                return trim($version, 'v');
-            }
-        }
-
-        if (preg_match('/^v?(\d+\.){2,}\d+$/', $version)) {
+        if (preg_match('/^v?(\d+\.){1,}\d+(-[a-zA-Z]+\d*)?$/', $version)) {
             return trim($version, 'v');
         }
 
