@@ -66,7 +66,7 @@ class GitHubClient extends Client
             id: (string) $project->id,
             name: $item['name'],
             url: Normalizer::url($project->webUrl),
-            zipUrl: "$project->webUrl/archive/{$item['name']}.zip",
+            zipUrl: "{$project->url}/zipball/refs/heads/{$item['name']}",
         ), $data);
     }
 
