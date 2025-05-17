@@ -42,7 +42,7 @@ class Normalizer
             return $version;
         }
 
-        if (preg_match('/^v?(\d+\.){0,3}\d+(-[a-zA-Z]+\d*)?$/', $version)) {
+        if ((bool) preg_match('/^v?(\d+\.){1,3}\d+(-[a-zA-Z]+\d*)?$/', $version)) {
             return trim($version, 'v');
         }
 
