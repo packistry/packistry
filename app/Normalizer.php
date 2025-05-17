@@ -79,7 +79,7 @@ class Normalizer
             return $version;
         }
 
-        $parser = new VersionParser();
+        $parser = new VersionParser;
         $normalized = $parser->normalize($version);
 
         [$numericId, $buildId] = str_contains($normalized, '-')
