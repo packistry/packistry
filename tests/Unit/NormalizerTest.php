@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Exceptions\VersionNotFoundException;
 use App\Normalizer;
 
 it('normalizes url', function (string $url, string $expected): void {
@@ -30,11 +31,18 @@ it('normalizes version', function (string $url, string $expected): void {
         'rc tag' => ['1.0-RC', '1.0-RC'],
         'short rc tag with number' => ['1.0-RC1', '1.0-RC1'],
         'short rc tag with v prefix' => ['v1.0-RC1', '1.0-RC1'],
-        'short rc tag with number' => ['1.0.0-RC1', '1.0.0-RC1'],
-        'short rc tag with v prefix' => ['v1.0.0-RC1', '1.0.0-RC1'],
+        'rc tag with number' => ['1.0.0-RC1', '1.0.0-RC1'],
+        'rc tag with v prefix' => ['v1.0.0-RC1', '1.0.0-RC1'],
         'non-semver segments' => ['1.2.3.4', '1.2.3.4'],
         'non-semver segments with v prefix' => ['v1.2.3.4', '1.2.3.4'],
     ]);
+
+it('fails to normalize unsupported versions', function (string $version): void {
+    expect(fn (): string => Normalizer::version($version))
+        ->toThrow(VersionNotFoundException::class);
+})->with([
+    '5-digit segments' => ['v1.0.0.0.0'],
+]);
 
 it('converts version to sort order', function (string $version, string $expected): void {
     expect(Normalizer::versionOrder($version))->toEqual($expected);
