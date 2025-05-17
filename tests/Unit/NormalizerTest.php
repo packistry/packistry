@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Exceptions\VersionNotFoundException;
 use App\Normalizer;
 
 it('normalizes url', function (string $url, string $expected): void {
@@ -27,4 +28,31 @@ it('normalizes version', function (string $url, string $expected): void {
         'branch' => ['dev-feature', 'dev-feature'],
         'tag' => ['1.0.0', '1.0.0'],
         'tag with v prefix' => ['v1.0.0', '1.0.0'],
+        'short rc tag with number' => ['1.0-RC1', '1.0-RC1'],
+        'short rc tag with v prefix' => ['v1.0-RC1', '1.0-RC1'],
+        'rc tag with number' => ['1.0.0-RC1', '1.0.0-RC1'],
+        'rc tag with v prefix' => ['v1.0.0-RC1', '1.0.0-RC1'],
+        '4 version segments' => ['1.2.3.4', '1.2.3.4'],
+        '4 version segments with v prefix' => ['v1.2.3.4', '1.2.3.4'],
     ]);
+
+it('fails to normalize unsupported versions', function (string $version): void {
+    expect(fn (): string => Normalizer::version($version))
+        ->toThrow(VersionNotFoundException::class);
+})->with([
+    '5-digit segments' => ['v1.0.0.0.0'],
+]);
+
+it('converts version to sort order', function (string $version, string $expected): void {
+    expect(Normalizer::versionOrder($version))->toEqual($expected);
+})->with([
+    ['1.0.0', '0000001.0000000.0000000.0000000~'],
+    ['1.2.3', '0000001.0000002.0000003.0000000~'],
+    ['100.2.3', '0000100.0000002.0000003.0000000~'],
+    ['2.100.2.3', '0000002.0000100.0000002.0000003~'],
+    ['4.20.3', '0000004.0000020.0000003.0000000~'],
+    ['3.0.0-RC1', '0000003.0000000.0000000.0000000-rc.001'],
+    ['3.0.0-RC10', '0000003.0000000.0000000.0000000-rc.010'],
+    ['3.0.0-RC', '0000003.0000000.0000000.0000000-rc.000'],
+    ['dev-foo', 'dev-foo'],
+]);
