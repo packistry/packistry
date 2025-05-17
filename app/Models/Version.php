@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Scopes\OrderScope;
 use App\Normalizer;
+use Composer\Semver\VersionParser;
 use Database\Factories\VersionFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -82,7 +83,7 @@ class Version extends Model
         });
 
         static::created(function (Version $version): void {
-            if ($version->isDev()) {
+            if (! $version->isStable()) {
                 return;
             }
 
@@ -91,8 +92,10 @@ class Version extends Model
         });
     }
 
-    private function isDev(): bool
+    private function isStable(): bool
     {
-        return str_starts_with($this->name, 'dev-') || str_ends_with($this->name, '-dev');
+        $parser = new VersionParser;
+
+        return $parser->parseStability($this->name) === 'stable';
     }
 }
