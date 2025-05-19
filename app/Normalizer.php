@@ -77,7 +77,10 @@ class Normalizer
 
         $numericVersion = str($numericId)
             ->explode('.')
-            ->map(fn (string $number) => str_pad($number, 7, '0', STR_PAD_LEFT))
+            ->map(fn (string $number, int $index) => match ($index) {
+                0 => str_pad($number, 2, '0', STR_PAD_LEFT),
+                default => str_pad($number, 7, '0', STR_PAD_LEFT),
+            })
             ->join('.');
 
         if (is_null($buildId)) {
@@ -89,9 +92,9 @@ class Normalizer
             ->explode('.')
             ->map(fn (string $part, int $index) => match ($index) {
                 0 => strtolower($part),
-                default => str_pad($part, 3, '0', STR_PAD_LEFT),
+                default => str_pad($part, 2, '0', STR_PAD_LEFT),
             })
-            ->join('.');
+            ->join('');
 
         return "{$numericVersion}-{$buildVersion}";
     }
