@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Scopes\OrderScope;
 use App\Normalizer;
+use Composer\Semver\VersionParser;
 use Database\Factories\VersionFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Override;
 
 /**
@@ -78,19 +78,11 @@ class Version extends Model
         static::addGlobalScope(new OrderScope('order'));
         static::creating(function (Version $version): void {
             $version->name = Normalizer::version($version->name);
-
-            $order = str_starts_with($version->name, 'dev-')
-                ? $version->name
-                : Str::of($version->name)
-                    ->explode('.')
-                    ->map(fn (string $part) => Str::padLeft($part, 3, '0'))
-                    ->implode('.');
-
-            $version->order = $order;
+            $version->order = Normalizer::versionOrder($version->name);
         });
 
         static::created(function (Version $version): void {
-            if ($version->isDev()) {
+            if (! $version->isStable()) {
                 return;
             }
 
@@ -99,8 +91,10 @@ class Version extends Model
         });
     }
 
-    private function isDev(): bool
+    private function isStable(): bool
     {
-        return str_starts_with($this->name, 'dev-') || str_ends_with($this->name, '-dev');
+        $parser = new VersionParser;
+
+        return $parser->parseStability($this->name) === 'stable';
     }
 }

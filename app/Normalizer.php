@@ -6,6 +6,7 @@ namespace App;
 
 use App\Exceptions\FailedToParseUrlException;
 use App\Exceptions\VersionNotFoundException;
+use Composer\Semver\VersionParser;
 
 class Normalizer
 {
@@ -37,17 +38,15 @@ class Normalizer
      */
     public static function version(string $version): string
     {
-        if (! str_starts_with($version, 'dev-') && ! str_ends_with($version, '-dev')) {
-            $result = preg_match('/\d+\.\d+\.\d+/', $version, $matches);
-
-            if ($result === 0 || $result === false) {
-                throw new VersionNotFoundException;
-            }
-
-            return $matches[0];
+        if (str_starts_with($version, 'dev-') || str_ends_with($version, '-dev')) {
+            return $version;
         }
 
-        return $version;
+        if ((bool) preg_match('/^v?(\d+\.){1,3}\d+(-[a-zA-Z]+\d*)?$/', $version)) {
+            return trim($version, 'v');
+        }
+
+        throw new VersionNotFoundException;
     }
 
     public static function devVersion(string $version): string
@@ -61,5 +60,42 @@ class Normalizer
         }
 
         return $version.'.x-dev';
+    }
+
+    public static function versionOrder(string $version): string
+    {
+        if (str_starts_with($version, 'dev-')) {
+            return $version;
+        }
+
+        $parser = new VersionParser;
+        $normalized = $parser->normalize($version);
+
+        [$numericId, $buildId] = str_contains($normalized, '-')
+            ? explode('-', $normalized)
+            : [$normalized, null];
+
+        $numericVersion = str($numericId)
+            ->explode('.')
+            ->map(fn (string $number, int $index) => match ($index) {
+                0 => str_pad($number, 2, '0', STR_PAD_LEFT),
+                default => str_pad($number, 7, '0', STR_PAD_LEFT),
+            })
+            ->join('.');
+
+        if (is_null($buildId)) {
+            return "{$numericVersion}~";
+        }
+
+        $buildVersion = str($buildId)
+            ->replaceMatches('/^([a-zA-Z]+)([0-9]*)$/', '$1.$2', 1)
+            ->explode('.')
+            ->map(fn (string $part, int $index) => match ($index) {
+                0 => strtolower($part),
+                default => str_pad($part, 2, '0', STR_PAD_LEFT),
+            })
+            ->join('');
+
+        return "{$numericVersion}-{$buildVersion}";
     }
 }

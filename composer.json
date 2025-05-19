@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.4",
         "ext-zip": "*",
+        "composer/semver": "^3.4",
         "laravel/framework": "^12.1",
         "laravel/octane": "^2.6.1",
         "laravel/prompts": "^0.3.4",
