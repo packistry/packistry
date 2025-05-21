@@ -27,11 +27,7 @@ class VersionFactory extends Factory
         $vendor = fake()->word();
         $name = fake()->word();
 
-        $major = fake()->numberBetween(0, 10);
-        $minor = fake()->numberBetween(0, 10);
-        $patch = fake()->numberBetween(0, 10);
-
-        $version = "$major.$minor.$patch";
+        $version = fake()->unique()->regexify('\d{1,2}\.\d{1,2}\.\d{1,2}(-alpha|-beta|-RC|-stable)?(\d|\.\d)?');
 
         return [
             'name' => $version,
