@@ -44,6 +44,7 @@ import {
     storeAuthenticationSource,
     updateAuthenticationSource,
 } from '@/api/authentication-source'
+import { fetchBatches, pruneBatches } from '@/api/batch'
 
 const repositoriesKey = ['repositories']
 const packagesKey = ['packages']
@@ -51,6 +52,7 @@ const usersKey = ['users']
 const sourcesKey = ['sources']
 const deployTokenKey = ['deploy-tokens']
 const authenticationSourceKey = ['authentication-sources']
+const batchesKey = ['batches']
 const personalTokenKey = ['personal-tokens']
 
 export function useRepositories(query: RepositoryQuery) {
@@ -434,6 +436,28 @@ export function useDeleteAuthenticationSource() {
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: authenticationSourceKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useBatches({ refetchInterval }: { refetchInterval?: number }) {
+    return useQuery({
+        queryFn: fetchBatches,
+        queryKey: [...batchesKey],
+        refetchInterval,
+    })
+}
+
+export function usePruneBatches() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: pruneBatches,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: [...batchesKey],
                 exact: false,
             })
         },

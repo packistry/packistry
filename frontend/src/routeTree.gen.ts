@@ -18,6 +18,7 @@ import { Route as AuthUsersImport } from './routes/_auth.users'
 import { Route as AuthSourcesImport } from './routes/_auth.sources'
 import { Route as AuthRepositoriesImport } from './routes/_auth.repositories'
 import { Route as AuthPersonalTokensImport } from './routes/_auth.personal-tokens'
+import { Route as AuthImportBatchesImport } from './routes/_auth.import-batches'
 import { Route as AuthDeployTokensImport } from './routes/_auth.deploy-tokens'
 import { Route as AuthAuthenticationSourcesImport } from './routes/_auth.authentication-sources'
 import { Route as AuthPackagesIndexImport } from './routes/_auth.packages.index'
@@ -26,277 +27,300 @@ import { Route as AuthPackagesPackageIdImport } from './routes/_auth.packages.$p
 // Create/Update Routes
 
 const LoginRoute = LoginImport.update({
-    id: '/login',
-    path: '/login',
-    getParentRoute: () => rootRoute,
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const AuthRoute = AuthImport.update({
-    id: '/_auth',
-    getParentRoute: () => rootRoute,
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const AuthIndexRoute = AuthIndexImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthUsersRoute = AuthUsersImport.update({
-    id: '/users',
-    path: '/users',
-    getParentRoute: () => AuthRoute,
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthSourcesRoute = AuthSourcesImport.update({
-    id: '/sources',
-    path: '/sources',
-    getParentRoute: () => AuthRoute,
+  id: '/sources',
+  path: '/sources',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthRepositoriesRoute = AuthRepositoriesImport.update({
-    id: '/repositories',
-    path: '/repositories',
-    getParentRoute: () => AuthRoute,
+  id: '/repositories',
+  path: '/repositories',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthPersonalTokensRoute = AuthPersonalTokensImport.update({
-    id: '/personal-tokens',
-    path: '/personal-tokens',
-    getParentRoute: () => AuthRoute,
+  id: '/personal-tokens',
+  path: '/personal-tokens',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthImportBatchesRoute = AuthImportBatchesImport.update({
+  id: '/import-batches',
+  path: '/import-batches',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthDeployTokensRoute = AuthDeployTokensImport.update({
-    id: '/deploy-tokens',
-    path: '/deploy-tokens',
-    getParentRoute: () => AuthRoute,
+  id: '/deploy-tokens',
+  path: '/deploy-tokens',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthAuthenticationSourcesRoute = AuthAuthenticationSourcesImport.update({
-    id: '/authentication-sources',
-    path: '/authentication-sources',
-    getParentRoute: () => AuthRoute,
+  id: '/authentication-sources',
+  path: '/authentication-sources',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthPackagesIndexRoute = AuthPackagesIndexImport.update({
-    id: '/packages/',
-    path: '/packages/',
-    getParentRoute: () => AuthRoute,
+  id: '/packages/',
+  path: '/packages/',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthPackagesPackageIdRoute = AuthPackagesPackageIdImport.update({
-    id: '/packages/$packageId',
-    path: '/packages/$packageId',
-    getParentRoute: () => AuthRoute,
+  id: '/packages/$packageId',
+  path: '/packages/$packageId',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-    interface FileRoutesByPath {
-        '/_auth': {
-            id: '/_auth'
-            path: ''
-            fullPath: ''
-            preLoaderRoute: typeof AuthImport
-            parentRoute: typeof rootRoute
-        }
-        '/login': {
-            id: '/login'
-            path: '/login'
-            fullPath: '/login'
-            preLoaderRoute: typeof LoginImport
-            parentRoute: typeof rootRoute
-        }
-        '/_auth/authentication-sources': {
-            id: '/_auth/authentication-sources'
-            path: '/authentication-sources'
-            fullPath: '/authentication-sources'
-            preLoaderRoute: typeof AuthAuthenticationSourcesImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/deploy-tokens': {
-            id: '/_auth/deploy-tokens'
-            path: '/deploy-tokens'
-            fullPath: '/deploy-tokens'
-            preLoaderRoute: typeof AuthDeployTokensImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/personal-tokens': {
-            id: '/_auth/personal-tokens'
-            path: '/personal-tokens'
-            fullPath: '/personal-tokens'
-            preLoaderRoute: typeof AuthPersonalTokensImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/repositories': {
-            id: '/_auth/repositories'
-            path: '/repositories'
-            fullPath: '/repositories'
-            preLoaderRoute: typeof AuthRepositoriesImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/sources': {
-            id: '/_auth/sources'
-            path: '/sources'
-            fullPath: '/sources'
-            preLoaderRoute: typeof AuthSourcesImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/users': {
-            id: '/_auth/users'
-            path: '/users'
-            fullPath: '/users'
-            preLoaderRoute: typeof AuthUsersImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/': {
-            id: '/_auth/'
-            path: '/'
-            fullPath: '/'
-            preLoaderRoute: typeof AuthIndexImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/packages/$packageId': {
-            id: '/_auth/packages/$packageId'
-            path: '/packages/$packageId'
-            fullPath: '/packages/$packageId'
-            preLoaderRoute: typeof AuthPackagesPackageIdImport
-            parentRoute: typeof AuthImport
-        }
-        '/_auth/packages/': {
-            id: '/_auth/packages/'
-            path: '/packages'
-            fullPath: '/packages'
-            preLoaderRoute: typeof AuthPackagesIndexImport
-            parentRoute: typeof AuthImport
-        }
+  interface FileRoutesByPath {
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/authentication-sources': {
+      id: '/_auth/authentication-sources'
+      path: '/authentication-sources'
+      fullPath: '/authentication-sources'
+      preLoaderRoute: typeof AuthAuthenticationSourcesImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/deploy-tokens': {
+      id: '/_auth/deploy-tokens'
+      path: '/deploy-tokens'
+      fullPath: '/deploy-tokens'
+      preLoaderRoute: typeof AuthDeployTokensImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/import-batches': {
+      id: '/_auth/import-batches'
+      path: '/import-batches'
+      fullPath: '/import-batches'
+      preLoaderRoute: typeof AuthImportBatchesImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/personal-tokens': {
+      id: '/_auth/personal-tokens'
+      path: '/personal-tokens'
+      fullPath: '/personal-tokens'
+      preLoaderRoute: typeof AuthPersonalTokensImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/repositories': {
+      id: '/_auth/repositories'
+      path: '/repositories'
+      fullPath: '/repositories'
+      preLoaderRoute: typeof AuthRepositoriesImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/sources': {
+      id: '/_auth/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof AuthSourcesImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/users': {
+      id: '/_auth/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthUsersImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/': {
+      id: '/_auth/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/packages/$packageId': {
+      id: '/_auth/packages/$packageId'
+      path: '/packages/$packageId'
+      fullPath: '/packages/$packageId'
+      preLoaderRoute: typeof AuthPackagesPackageIdImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/packages/': {
+      id: '/_auth/packages/'
+      path: '/packages'
+      fullPath: '/packages'
+      preLoaderRoute: typeof AuthPackagesIndexImport
+      parentRoute: typeof AuthImport
+    }
+  }
 }
 
 // Create and export the route tree
 
 interface AuthRouteChildren {
-    AuthAuthenticationSourcesRoute: typeof AuthAuthenticationSourcesRoute
-    AuthDeployTokensRoute: typeof AuthDeployTokensRoute
-    AuthPersonalTokensRoute: typeof AuthPersonalTokensRoute
-    AuthRepositoriesRoute: typeof AuthRepositoriesRoute
-    AuthSourcesRoute: typeof AuthSourcesRoute
-    AuthUsersRoute: typeof AuthUsersRoute
-    AuthIndexRoute: typeof AuthIndexRoute
-    AuthPackagesPackageIdRoute: typeof AuthPackagesPackageIdRoute
-    AuthPackagesIndexRoute: typeof AuthPackagesIndexRoute
+  AuthAuthenticationSourcesRoute: typeof AuthAuthenticationSourcesRoute
+  AuthDeployTokensRoute: typeof AuthDeployTokensRoute
+  AuthImportBatchesRoute: typeof AuthImportBatchesRoute
+  AuthPersonalTokensRoute: typeof AuthPersonalTokensRoute
+  AuthRepositoriesRoute: typeof AuthRepositoriesRoute
+  AuthSourcesRoute: typeof AuthSourcesRoute
+  AuthUsersRoute: typeof AuthUsersRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+  AuthPackagesPackageIdRoute: typeof AuthPackagesPackageIdRoute
+  AuthPackagesIndexRoute: typeof AuthPackagesIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-    AuthAuthenticationSourcesRoute: AuthAuthenticationSourcesRoute,
-    AuthDeployTokensRoute: AuthDeployTokensRoute,
-    AuthPersonalTokensRoute: AuthPersonalTokensRoute,
-    AuthRepositoriesRoute: AuthRepositoriesRoute,
-    AuthSourcesRoute: AuthSourcesRoute,
-    AuthUsersRoute: AuthUsersRoute,
-    AuthIndexRoute: AuthIndexRoute,
-    AuthPackagesPackageIdRoute: AuthPackagesPackageIdRoute,
-    AuthPackagesIndexRoute: AuthPackagesIndexRoute,
+  AuthAuthenticationSourcesRoute: AuthAuthenticationSourcesRoute,
+  AuthDeployTokensRoute: AuthDeployTokensRoute,
+  AuthImportBatchesRoute: AuthImportBatchesRoute,
+  AuthPersonalTokensRoute: AuthPersonalTokensRoute,
+  AuthRepositoriesRoute: AuthRepositoriesRoute,
+  AuthSourcesRoute: AuthSourcesRoute,
+  AuthUsersRoute: AuthUsersRoute,
+  AuthIndexRoute: AuthIndexRoute,
+  AuthPackagesPackageIdRoute: AuthPackagesPackageIdRoute,
+  AuthPackagesIndexRoute: AuthPackagesIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 export interface FileRoutesByFullPath {
-    '': typeof AuthRouteWithChildren
-    '/login': typeof LoginRoute
-    '/authentication-sources': typeof AuthAuthenticationSourcesRoute
-    '/deploy-tokens': typeof AuthDeployTokensRoute
-    '/personal-tokens': typeof AuthPersonalTokensRoute
-    '/repositories': typeof AuthRepositoriesRoute
-    '/sources': typeof AuthSourcesRoute
-    '/users': typeof AuthUsersRoute
-    '/': typeof AuthIndexRoute
-    '/packages/$packageId': typeof AuthPackagesPackageIdRoute
-    '/packages': typeof AuthPackagesIndexRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/authentication-sources': typeof AuthAuthenticationSourcesRoute
+  '/deploy-tokens': typeof AuthDeployTokensRoute
+  '/import-batches': typeof AuthImportBatchesRoute
+  '/personal-tokens': typeof AuthPersonalTokensRoute
+  '/repositories': typeof AuthRepositoriesRoute
+  '/sources': typeof AuthSourcesRoute
+  '/users': typeof AuthUsersRoute
+  '/': typeof AuthIndexRoute
+  '/packages/$packageId': typeof AuthPackagesPackageIdRoute
+  '/packages': typeof AuthPackagesIndexRoute
 }
 
 export interface FileRoutesByTo {
-    '/login': typeof LoginRoute
-    '/authentication-sources': typeof AuthAuthenticationSourcesRoute
-    '/deploy-tokens': typeof AuthDeployTokensRoute
-    '/personal-tokens': typeof AuthPersonalTokensRoute
-    '/repositories': typeof AuthRepositoriesRoute
-    '/sources': typeof AuthSourcesRoute
-    '/users': typeof AuthUsersRoute
-    '/': typeof AuthIndexRoute
-    '/packages/$packageId': typeof AuthPackagesPackageIdRoute
-    '/packages': typeof AuthPackagesIndexRoute
+  '/login': typeof LoginRoute
+  '/authentication-sources': typeof AuthAuthenticationSourcesRoute
+  '/deploy-tokens': typeof AuthDeployTokensRoute
+  '/import-batches': typeof AuthImportBatchesRoute
+  '/personal-tokens': typeof AuthPersonalTokensRoute
+  '/repositories': typeof AuthRepositoriesRoute
+  '/sources': typeof AuthSourcesRoute
+  '/users': typeof AuthUsersRoute
+  '/': typeof AuthIndexRoute
+  '/packages/$packageId': typeof AuthPackagesPackageIdRoute
+  '/packages': typeof AuthPackagesIndexRoute
 }
 
 export interface FileRoutesById {
-    __root__: typeof rootRoute
-    '/_auth': typeof AuthRouteWithChildren
-    '/login': typeof LoginRoute
-    '/_auth/authentication-sources': typeof AuthAuthenticationSourcesRoute
-    '/_auth/deploy-tokens': typeof AuthDeployTokensRoute
-    '/_auth/personal-tokens': typeof AuthPersonalTokensRoute
-    '/_auth/repositories': typeof AuthRepositoriesRoute
-    '/_auth/sources': typeof AuthSourcesRoute
-    '/_auth/users': typeof AuthUsersRoute
-    '/_auth/': typeof AuthIndexRoute
-    '/_auth/packages/$packageId': typeof AuthPackagesPackageIdRoute
-    '/_auth/packages/': typeof AuthPackagesIndexRoute
+  __root__: typeof rootRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_auth/authentication-sources': typeof AuthAuthenticationSourcesRoute
+  '/_auth/deploy-tokens': typeof AuthDeployTokensRoute
+  '/_auth/import-batches': typeof AuthImportBatchesRoute
+  '/_auth/personal-tokens': typeof AuthPersonalTokensRoute
+  '/_auth/repositories': typeof AuthRepositoriesRoute
+  '/_auth/sources': typeof AuthSourcesRoute
+  '/_auth/users': typeof AuthUsersRoute
+  '/_auth/': typeof AuthIndexRoute
+  '/_auth/packages/$packageId': typeof AuthPackagesPackageIdRoute
+  '/_auth/packages/': typeof AuthPackagesIndexRoute
 }
 
 export interface FileRouteTypes {
-    fileRoutesByFullPath: FileRoutesByFullPath
-    fullPaths:
-        | ''
-        | '/login'
-        | '/authentication-sources'
-        | '/deploy-tokens'
-        | '/personal-tokens'
-        | '/repositories'
-        | '/sources'
-        | '/users'
-        | '/'
-        | '/packages/$packageId'
-        | '/packages'
-    fileRoutesByTo: FileRoutesByTo
-    to:
-        | '/login'
-        | '/authentication-sources'
-        | '/deploy-tokens'
-        | '/personal-tokens'
-        | '/repositories'
-        | '/sources'
-        | '/users'
-        | '/'
-        | '/packages/$packageId'
-        | '/packages'
-    id:
-        | '__root__'
-        | '/_auth'
-        | '/login'
-        | '/_auth/authentication-sources'
-        | '/_auth/deploy-tokens'
-        | '/_auth/personal-tokens'
-        | '/_auth/repositories'
-        | '/_auth/sources'
-        | '/_auth/users'
-        | '/_auth/'
-        | '/_auth/packages/$packageId'
-        | '/_auth/packages/'
-    fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | ''
+    | '/login'
+    | '/authentication-sources'
+    | '/deploy-tokens'
+    | '/import-batches'
+    | '/personal-tokens'
+    | '/repositories'
+    | '/sources'
+    | '/users'
+    | '/'
+    | '/packages/$packageId'
+    | '/packages'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/login'
+    | '/authentication-sources'
+    | '/deploy-tokens'
+    | '/import-batches'
+    | '/personal-tokens'
+    | '/repositories'
+    | '/sources'
+    | '/users'
+    | '/'
+    | '/packages/$packageId'
+    | '/packages'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/login'
+    | '/_auth/authentication-sources'
+    | '/_auth/deploy-tokens'
+    | '/_auth/import-batches'
+    | '/_auth/personal-tokens'
+    | '/_auth/repositories'
+    | '/_auth/sources'
+    | '/_auth/users'
+    | '/_auth/'
+    | '/_auth/packages/$packageId'
+    | '/_auth/packages/'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-    AuthRoute: typeof AuthRouteWithChildren
-    LoginRoute: typeof LoginRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-    AuthRoute: AuthRouteWithChildren,
-    LoginRoute: LoginRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 
-export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -313,6 +337,7 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "children": [
         "/_auth/authentication-sources",
         "/_auth/deploy-tokens",
+        "/_auth/import-batches",
         "/_auth/personal-tokens",
         "/_auth/repositories",
         "/_auth/sources",
@@ -331,6 +356,10 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/_auth/deploy-tokens": {
       "filePath": "_auth.deploy-tokens.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/import-batches": {
+      "filePath": "_auth.import-batches.tsx",
       "parent": "/_auth"
     },
     "/_auth/personal-tokens": {

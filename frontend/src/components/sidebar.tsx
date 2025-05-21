@@ -1,10 +1,20 @@
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { CodeIcon, DatabaseIcon, FingerprintIcon, HomeIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
+import {
+    CodeIcon,
+    DatabaseIcon,
+    DownloadIcon,
+    FingerprintIcon,
+    HomeIcon,
+    KeyIcon,
+    PackageIcon,
+    UsersIcon,
+} from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import React, { JSXElementConstructor } from 'react'
 import {
     AUTHENTICATION_SOURCE_READ,
+    BATCH_READ,
     DASHBOARD,
     DEPLOY_TOKEN_READ,
     PACKAGE_READ,
@@ -34,6 +44,12 @@ const navItems: NavItem[] = [
         href: '/authentication-sources',
         icon: FingerprintIcon,
         permission: AUTHENTICATION_SOURCE_READ,
+    },
+    {
+        name: 'Import Batches',
+        href: '/import-batches',
+        icon: DownloadIcon,
+        permission: BATCH_READ,
     },
 ]
 

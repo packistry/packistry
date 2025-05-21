@@ -30,6 +30,8 @@ export const AUTHENTICATION_SOURCE_CREATE = 'authentication_source_create'
 export const AUTHENTICATION_SOURCE_READ = 'authentication_source_read'
 export const AUTHENTICATION_SOURCE_UPDATE = 'authentication_source_update'
 export const AUTHENTICATION_SOURCE_DELETE = 'authentication_source_delete'
+export const BATCH_READ = 'batch_read'
+export const BATCH_DELETE = 'batch_delete'
 
 export const permissions = [
     DASHBOARD,
@@ -62,6 +64,8 @@ export const permissions = [
     AUTHENTICATION_SOURCE_READ,
     AUTHENTICATION_SOURCE_UPDATE,
     AUTHENTICATION_SOURCE_DELETE,
+    BATCH_READ,
+    BATCH_DELETE,
 ] as const
 
 export const permission = z.enum(permissions)
