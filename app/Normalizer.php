@@ -42,8 +42,14 @@ class Normalizer
             return $version;
         }
 
-        if ((bool) preg_match('/^v?(\d+\.){1,3}\d+(-[a-zA-Z]+\d*)?$/', $version)) {
-            return trim($version, 'v');
+        $matches = [];
+
+        if ((bool) preg_match('/^v?(?<version>(\d+\.){1,3}\d+)(-(?<pre_release_id>[a-zA-Z0-9]+)\.?(?<build_id>\d*))?$/', $version, $matches)) {
+            return trim(vsprintf('%s-%s%s', [
+                $matches['version'],
+                $matches['pre_release_id'] ?? '',
+                $matches['build_id'] ?? '',
+            ]), '-');
         }
 
         throw new VersionNotFoundException;

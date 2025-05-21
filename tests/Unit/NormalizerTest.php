@@ -34,6 +34,8 @@ it('normalizes version', function (string $url, string $expected): void {
         'rc tag with v prefix' => ['v1.0.0-RC1', '1.0.0-RC1'],
         '4 version segments' => ['1.2.3.4', '1.2.3.4'],
         '4 version segments with v prefix' => ['v1.2.3.4', '1.2.3.4'],
+        'rc tag with a dot' => ['1.1.0-beta.2', '1.1.0-beta2'],
+        'rc tag with a dot and v prefix' => ['v1.1.0-beta.2', '1.1.0-beta2'],
     ]);
 
 it('fails to normalize unsupported versions', function (string $version): void {
@@ -55,4 +57,5 @@ it('converts version to sort order', function (string $version, string $expected
     ['3.0.0-RC10', '03.0000000.0000000.0000000-rc10'],
     ['3.0.0-RC', '03.0000000.0000000.0000000-rc00'],
     ['dev-foo', 'dev-foo'],
+    ['v1.1.0-beta.2', '01.0000001.0000000.0000000-beta02'],
 ]);
