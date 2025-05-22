@@ -12,15 +12,13 @@ use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\FailedToOpenArchiveException;
 use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
-use App\Jobs\ImportBranches;
-use App\Jobs\ImportTags;
+use App\Jobs\Batches\PackageImportBatch;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Sources\Project;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -76,23 +74,13 @@ class StorePackage
                 $package->provider_id = (string) $project->id;
                 $package->source_id = $source->id;
 
-                $package->name = 'Importing '.$project->fullName;
+                $package->name = $project->fullName;
                 $package->type = PackageType::LIBRARY->value;
 
                 $package->save();
             }
 
-            Bus::batch([
-                new ImportBranches($source, $package, $project),
-                new ImportTags($source, $package, $project),
-            ])
-                ->finally(function () use ($package): void {
-                    if (! str_starts_with($package->name, 'Importing')) {
-                        return;
-                    }
-
-                    $package->delete();
-                })
+            PackageImportBatch::make($source, $package, $project)
                 ->dispatch();
 
             $packages[] = $package;

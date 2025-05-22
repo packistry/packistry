@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticationSourceController;
+use App\Http\Controllers\BatchController;
 use App\Http\Controllers\Composer;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeployTokenController;
@@ -79,6 +80,9 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'show']);
         Route::patch('/me', [AuthController::class, 'update']);
+
+        Route::get('/batches', [BatchController::class, 'index']);
+        Route::delete('/batches', [BatchController::class, 'destroy']);
     });
 });
 

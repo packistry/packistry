@@ -43,4 +43,7 @@ enum Permission: string
     case AUTHENTICATION_SOURCE_READ = 'authentication_source_read';
     case AUTHENTICATION_SOURCE_UPDATE = 'authentication_source_update';
     case AUTHENTICATION_SOURCE_DELETE = 'authentication_source_delete';
+
+    case BATCH_READ = 'batch_read';
+    case BATCH_DELETE = 'batch_delete';
 }
