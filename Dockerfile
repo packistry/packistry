@@ -13,6 +13,8 @@ RUN apk add --no-cache \
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+WORKDIR /var/www/html
+
 FROM node:24-slim AS builder_frontend
 
 ENV PNPM_HOME="/pnpm"
