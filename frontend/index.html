@@ -1,12 +1,28 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Packistry</title>
-  </head>
-  <body>
+    <link id="favicon" rel="icon" href="/src/assets/dark/favicon.ico" />
+    <script>
+        const assetPath = '/src/assets/'
+
+        function effectiveTheme() {
+            const theme = localStorage.getItem('vite-ui-theme')
+
+            if (theme === 'light' || theme === 'dark') {
+                return theme;
+            }
+
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+
+        document.getElementById('favicon').href = `${assetPath}${effectiveTheme()}/favicon.ico`
+    </script>
+</head>
+<body>
     <div id="app"></div>
     <script type="module" src="/src/main.tsx"></script>
-  </body>
+</body>
 </html>
