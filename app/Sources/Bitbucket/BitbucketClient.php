@@ -50,6 +50,11 @@ class BitbucketClient extends Client
         ])->throw();
 
         $totalProjects = (int) ($initialResponse['size'] ?? 0);
+
+        if ($totalProjects === 0) {
+            return [];
+        }
+
         $totalPages = ceil($totalProjects / $perPage);
 
         $responses = $this->http()
@@ -72,7 +77,7 @@ class BitbucketClient extends Client
             }
 
             $projects = array_map(fn (array $item): Project => new Project(
-                id: $item['slug'],
+                id: trim($item['uuid'], '{}'),
                 fullName: $item['full_name'],
                 name: $item['name'],
                 url: $item['links']['self']['href'],
@@ -180,14 +185,14 @@ class BitbucketClient extends Client
      */
     public function project(string $id): Project
     {
-        $workspace = $this->workspace();
-        $url = "/2.0/repositories/$workspace";
-        $response = $this->http()->get("$url/$id");
-        $item = $response->json();
+        $url = "/2.0/repositories/{$this->workspace()}";
 
-        if (! isset($item['slug'])) {
-            throw new RuntimeException('Repository not found.');
-        }
+        $response = $this->http()->get($url, [
+            'q' => "uuid=\"$id\"",
+        ]);
+
+        $item = $response->json();
+        $item = $item['values'][0] ?? $item;
 
         return new Project(
             id: trim($item['uuid'], '{}'),
@@ -230,6 +235,6 @@ class BitbucketClient extends Client
     {
         $workspace = $this->metadata['workspace'] ?? null;
 
-        return $workspace !== null && $workspace !== '' ? "$workspace/" : '';
+        return $workspace !== null && $workspace !== '' ? $workspace : '';
     }
 }
