@@ -17,7 +17,6 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 class BitbucketClient extends Client
@@ -78,7 +77,7 @@ class BitbucketClient extends Client
             }
 
             $projects = array_map(fn (array $item): Project => new Project(
-                id: $item['slug'],
+                id: trim($item['uuid'], '{}'),
                 fullName: $item['full_name'],
                 name: $item['name'],
                 url: $item['links']['self']['href'],
@@ -186,11 +185,11 @@ class BitbucketClient extends Client
      */
     public function project(string $id): Project
     {
-        $workspace = $this->workspace();
-        $query = http_build_query(['q' => "uuid=\"$id\""]);
-        $url = "/2.0/repositories/{$workspace}?{$query}";
+        $url = "/2.0/repositories/{$this->workspace()}";
 
-        $response = $this->http()->get($url);
+        $response = $this->http()->get($url, [
+            'q' => "uuid=\"$id\"",
+        ]);
 
         $item = $response->json();
         $item = $item['values'][0] ?? $item;
