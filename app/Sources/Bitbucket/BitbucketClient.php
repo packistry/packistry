@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Sources\Bitbucket;
 
 use App\Exceptions\InvalidTokenException;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Sources\Branch;
@@ -180,9 +181,8 @@ class BitbucketClient extends Client
      */
     public function project(string $id): Project
     {
-        $workspace = $this->workspace();
-        $url = "/2.0/repositories/$workspace";
-        $response = $this->http()->get("$url/$id");
+        $package = Package::query()->where('provider_id', $id)->firstOrFail();
+        $response = $this->http()->get("/2.0/repositories/$package->name");
         $item = $response->json();
 
         if (! isset($item['slug'])) {
