@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Sources\Bitbucket;
 
 use App\Exceptions\InvalidTokenException;
-use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Sources\Branch;
@@ -18,6 +17,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class BitbucketClient extends Client
@@ -51,6 +51,11 @@ class BitbucketClient extends Client
         ])->throw();
 
         $totalProjects = (int) ($initialResponse['size'] ?? 0);
+
+        if ($totalProjects === 0) {
+            return [];
+        }
+
         $totalPages = ceil($totalProjects / $perPage);
 
         $responses = $this->http()
@@ -181,13 +186,15 @@ class BitbucketClient extends Client
      */
     public function project(string $id): Project
     {
-        $package = Package::query()->where('provider_id', $id)->firstOrFail();
-        $response = $this->http()->get("/2.0/repositories/$package->name");
+        $workspace = $this->workspace();
+        $url = "/2.0/repositories/$workspace";
+
+        $id = Str::isUuid($id) ? '{'.$id.'}' : $id;
+
+        $response = $this->http()->get("$url/$id");
         $item = $response->json();
 
-        if (! isset($item['slug'])) {
-            throw new RuntimeException('Repository not found.');
-        }
+        $item = $item['values'][0] ?? $item;
 
         return new Project(
             id: trim($item['uuid'], '{}'),
@@ -230,6 +237,6 @@ class BitbucketClient extends Client
     {
         $workspace = $this->metadata['workspace'] ?? null;
 
-        return $workspace !== null && $workspace !== '' ? "$workspace/" : '';
+        return $workspace !== null && $workspace !== '' ? $workspace : '';
     }
 }
