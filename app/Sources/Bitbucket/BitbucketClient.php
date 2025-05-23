@@ -187,13 +187,12 @@ class BitbucketClient extends Client
     public function project(string $id): Project
     {
         $workspace = $this->workspace();
-        $url = "/2.0/repositories/$workspace";
+        $query = http_build_query(['q' => "uuid=\"$id\""]);
+        $url = "/2.0/repositories/{$workspace}?{$query}";
 
-        $id = Str::isUuid($id) ? '{'.$id.'}' : $id;
+        $response = $this->http()->get($url);
 
-        $response = $this->http()->get("$url/$id");
         $item = $response->json();
-
         $item = $item['values'][0] ?? $item;
 
         return new Project(
