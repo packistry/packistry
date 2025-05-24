@@ -21,6 +21,7 @@ import {
     login,
     PackageQuery,
     PersonalTokenQuery,
+    rebuildPackage,
     RepositoryQuery,
     storeDeployToken,
     storePackage,
@@ -155,6 +156,20 @@ export function useDeletePackage() {
 
     return useMutation({
         mutationFn: deletePackage,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useRebuildPackage() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: rebuildPackage,
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: packagesKey,

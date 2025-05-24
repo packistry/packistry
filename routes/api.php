@@ -69,6 +69,8 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
         Route::apiResource('/packages', PackageController::class)
             ->only(['index', 'store', 'destroy', 'show']);
 
+        Route::post('/packages/{packageId}/rebuild', [PackageController::class, 'rebuild']);
+
         Route::apiResource('/packages/{packageId}/versions', VersionController::class)
             ->only(['index']);
 

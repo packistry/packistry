@@ -62,3 +62,7 @@ export function storePackage(input: z.infer<typeof storePackageInput>) {
 export function deletePackage(packageId: string) {
     return del(packageSchema, `/packages/${packageId}`)
 }
+
+export function rebuildPackage(packageId: string) {
+    return post(packageSchema, `/packages/${packageId}/rebuild`, {})
+}
