@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +30,7 @@ return new class extends Migration
                         ->where('id', '!=', $package->version_id)
                         ->first();
                     
-                    if ($existingVersion) {
+                    if ($existingVersion !== null) {
 
                         DB::table('versions')
                             ->where('id', $package->version_id)
