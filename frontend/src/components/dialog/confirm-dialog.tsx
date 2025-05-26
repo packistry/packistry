@@ -1,21 +1,27 @@
 import * as React from 'react'
+import { useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export type ConfirmModalProps = {
-    open: boolean
-    onOpenChange: (open: boolean) => void
     onConfirm: () => void
     onCancel?: () => void
     title: React.ReactNode
     description?: React.ReactNode
-    children?: React.ReactNode
     loading?: boolean
     confirmText?: string
     cancelText?: string
-}
+} & DialogProps
 
-export function ConfirmModal({
+export function ConfirmDialog({
     open,
     onOpenChange,
     onConfirm,
@@ -27,19 +33,20 @@ export function ConfirmModal({
     confirmText = 'Confirm',
     cancelText = 'Cancel',
 }: ConfirmModalProps) {
-    const handleCancel = React.useCallback(() => {
+    const handleCancel = useCallback(() => {
         onCancel?.()
-        onOpenChange(false)
+        onOpenChange?.(false)
     }, [onCancel, onOpenChange])
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog
+            open={open}
+            onOpenChange={onOpenChange}
+        >
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
-                    {description && (
-                        <DialogDescription>{description}</DialogDescription>
-                    )}
+                    {description && <DialogDescription>{description}</DialogDescription>}
                 </DialogHeader>
 
                 {children}
@@ -61,4 +68,4 @@ export function ConfirmModal({
             </DialogContent>
         </Dialog>
     )
-} 
+}

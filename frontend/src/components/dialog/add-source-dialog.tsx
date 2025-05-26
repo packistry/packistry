@@ -7,9 +7,9 @@ import { useStoreSource } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { SourceFormElements } from '@/components/form/source-form-elements'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useAuth } from '@/auth'
 import { SOURCE_CREATE } from '@/permission'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export function AddSourceDialog(props: DialogProps) {
     const { can } = useAuth()
@@ -27,7 +27,7 @@ export function AddSourceDialog(props: DialogProps) {
         },
         onSuccess() {
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

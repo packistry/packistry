@@ -7,11 +7,11 @@ import { useStorePersonalToken } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { useAuth } from '@/auth'
 import { PERSONAL_TOKEN_CREATE } from '@/permission'
 import { PersonalTokenFormElements } from '@/components/form/personal-token-form-elements'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export type AddPersonalTokenDialog = DialogProps
 
@@ -56,7 +56,7 @@ export function AddPersonalTokenDialog(props: AddPersonalTokenDialog) {
                 ),
             })
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

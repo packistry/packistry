@@ -9,8 +9,14 @@ import { useForm } from '@/hooks/useForm'
 import { Source } from '@/api'
 import { SourceFormElements } from '@/components/form/source-form-elements'
 import { DeleteSourceButton } from '@/components/button/delete-source-button'
+import { DialogProps } from '@radix-ui/react-dialog'
 
-export function EditSourceDialog({ source, trigger }: { source: Source; trigger?: ReactNode }) {
+export type EditSourceDialogProps = {
+    source: Source
+    trigger?: ReactNode
+} & DialogProps
+
+export function EditSourceDialog({ source, trigger }: EditSourceDialogProps) {
     const mutation = useUpdateSource()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 

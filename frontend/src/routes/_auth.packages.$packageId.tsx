@@ -53,7 +53,7 @@ function PackagesComponent() {
             <Heading title={query.data?.name}>
                 <div className="flex items-center space-x-4">
                     <CopyCommandTooltip command={command} />
-                    {query.data && <PackageActionsDropdownMenu pkg={query.data} />}
+                    <PackageActionsDropdownMenu pkg={query.data} />
                 </div>
             </Heading>
             <DownloadsCard data={downloads.data} />

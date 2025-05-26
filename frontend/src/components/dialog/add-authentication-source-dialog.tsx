@@ -4,12 +4,12 @@ import { PlusIcon } from 'lucide-react'
 import * as React from 'react'
 import { useStoreAuthenticationSource } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { useAuth } from '@/auth'
 import { AUTHENTICATION_SOURCE_CREATE } from '@/permission'
 import { Form } from '@/components/ui/form'
 import { AuthenticationSourceFormElements } from '@/components/form/authentication-source-form-elements'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export type AddAuthenticationSourceDialogProps = DialogProps
 
@@ -33,7 +33,7 @@ export function AddAuthenticationSourceDialog(props: AddAuthenticationSourceDial
         },
         onSuccess() {
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

@@ -6,12 +6,12 @@ import { useStoreDeployToken } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { toast } from 'sonner'
 import { DeployTokenFormElements } from '@/components/form/deploy-token-form-elements'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { useAuth } from '@/auth'
 import { DEPLOY_TOKEN_CREATE } from '@/permission'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Form } from '@/components/ui/form'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export type AddDeployTokenDialog = DialogProps
 
@@ -57,7 +57,7 @@ export function AddDeployTokenDialog(props: AddDeployTokenDialog) {
                 ),
             })
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

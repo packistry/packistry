@@ -8,8 +8,14 @@ import { useForm } from '@/hooks/useForm'
 import { UserFormElements } from '@/components/form/user-form-elements'
 import { User } from '@/api'
 import { DeleteUserButton } from '@/components/button/delete-user-button'
+import { DialogProps } from '@radix-ui/react-dialog'
 
-export function EditUserDialog({ user, trigger }: { trigger?: ReactNode; user: User }) {
+export type EditUserDialogProps = {
+    trigger?: ReactNode
+    user: User
+} & DialogProps
+
+export function EditUserDialog({ user, trigger }: EditUserDialogProps) {
     const mutation = useUpdateUser()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const { form, onSubmit, isPending } = useForm({

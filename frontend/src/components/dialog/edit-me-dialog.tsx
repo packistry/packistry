@@ -5,10 +5,10 @@ import { Form } from '@/components/ui/form'
 import { useUpdateMe } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useAuth } from '@/auth'
 import { FormInput } from '@/components/form/elements/form-input'
 import { UserIcon } from 'lucide-react'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export function EditMeDialog(props: DialogProps) {
     const { user } = useAuth()
@@ -28,7 +28,7 @@ export function EditMeDialog(props: DialogProps) {
             form.resetField('currentPassword')
             form.resetField('password')
             form.resetField('passwordConfirmation')
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 
