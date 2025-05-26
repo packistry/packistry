@@ -7,9 +7,9 @@ import { useStoreRepository } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { RepositoryFormElements } from '@/components/form/repository-form-elements'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useAuth } from '@/auth'
 import { REPOSITORY_CREATE } from '@/permission'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export function AddRepositoryDialog(props: DialogProps) {
     const { can } = useAuth()
@@ -26,7 +26,7 @@ export function AddRepositoryDialog(props: DialogProps) {
         },
         onSuccess() {
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

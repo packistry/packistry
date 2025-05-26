@@ -8,8 +8,14 @@ import { Repository } from '@/api'
 import { DeleteRepositoryButton } from '@/components/button/delete-repository-button'
 import { RepositoryFormElements } from '@/components/form/repository-form-elements'
 import { Form } from '@/components/ui/form'
+import { DialogProps } from '@radix-ui/react-dialog'
 
-export function EditRepositoryDialog({ repository, trigger }: { trigger?: ReactNode; repository: Repository }) {
+export type EditRepositoryDialogProps = {
+    trigger?: ReactNode
+    repository: Repository
+} & DialogProps
+
+export function EditRepositoryDialog({ repository, trigger }: EditRepositoryDialogProps) {
     const mutation = useUpdateRepository()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 

@@ -8,14 +8,14 @@ import { AuthenticationSourceFormElements } from '@/components/form/authenticati
 import { Form } from '@/components/ui/form'
 import { AuthenticationSource } from '@/api/authentication-source'
 import { DeleteAuthenticationSourceButton } from '@/components/button/delete-authentication-source-button'
+import { DialogProps } from '@radix-ui/react-dialog'
 
-export function EditAuthenticationSourceDialog({
-    authenticationSource,
-    trigger,
-}: {
-    trigger?: ReactNode
+export type EditAuthenticationSourceDialogProps = {
     authenticationSource: AuthenticationSource
-}) {
+    trigger?: ReactNode
+} & DialogProps
+
+export function EditAuthenticationSourceDialog({ authenticationSource, trigger }: EditAuthenticationSourceDialogProps) {
     const mutation = useUpdateAuthenticationSource()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 

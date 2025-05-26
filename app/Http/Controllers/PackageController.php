@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Packages\DestroyPackage;
 use App\Actions\Packages\Inputs\StorePackageInput;
+use App\Actions\Packages\RebuildPackage;
 use App\Actions\Packages\StorePackage;
 use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
@@ -24,6 +25,7 @@ readonly class PackageController extends Controller
     public function __construct(
         private StorePackage $storePackage,
         private DestroyPackage $destroyPackage,
+        private RebuildPackage $rebuildPackage,
     ) {
         //
     }
@@ -102,5 +104,22 @@ readonly class PackageController extends Controller
         $dates = Download::perDayForPackages(90, $package->id);
 
         return response()->json($dates);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function rebuild(string $packageId): JsonResponse
+    {
+        $this->authorize(Permission::PACKAGE_UPDATE);
+
+        $package = Package::userScoped()
+            ->findOrFail($packageId);
+
+        $this->rebuildPackage->handle($package);
+
+        return response()->json(
+            new PackageResource($package)
+        );
     }
 }

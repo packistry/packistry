@@ -7,9 +7,9 @@ import { useStoreUser } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { UserFormElements } from '@/components/form/user-form-elements'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
-import { DialogProps } from '@/components/dialog/dialog'
 import { useAuth } from '@/auth'
 import { USER_CREATE } from '@/permission'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export function AddUserDialog(props: DialogProps) {
     const { can } = useAuth()
@@ -27,7 +27,7 @@ export function AddUserDialog(props: DialogProps) {
         },
         onSuccess() {
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

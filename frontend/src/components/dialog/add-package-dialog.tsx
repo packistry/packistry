@@ -9,11 +9,11 @@ import { FormSwitch } from '@/components/form/elements/form-switch'
 import { Form } from '@/components/ui/form'
 import { useStorePackage } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
-import { DialogProps } from '@/components/dialog/dialog'
 import { toast } from 'sonner'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
 import { useAuth } from '@/auth'
 import { PACKAGE_CREATE } from '@/permission'
+import { DialogProps } from '@radix-ui/react-dialog'
 
 export type AddPackageDialogProps = DialogProps
 export function AddPackageDialog(props: AddPackageDialogProps) {
@@ -33,7 +33,7 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
             toast('Package import has been started')
 
             form.reset()
-            dialogProps.onOpenChange(false)
+            dialogProps.onOpenChange?.(false)
         },
     })
 

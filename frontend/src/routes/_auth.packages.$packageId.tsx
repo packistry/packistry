@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { PackageIcon } from 'lucide-react'
 import { is404 } from '@/api/axios'
 import { CopyCommandTooltip } from '@/components/ui/tooltip'
+import { PackageActionsDropdownMenu } from '@/components/dropdown-menu/package-actions-dropdown-menu'
 
 export const Route = createFileRoute('/_auth/packages/$packageId')({
     validateSearch: versionQuery,
@@ -50,7 +51,10 @@ function PackagesComponent() {
     return (
         <>
             <Heading title={query.data?.name}>
-                <CopyCommandTooltip command={command} />
+                <div className="flex items-center space-x-4">
+                    <CopyCommandTooltip command={command} />
+                    <PackageActionsDropdownMenu pkg={query.data} />
+                </div>
             </Heading>
             <DownloadsCard data={downloads.data} />
             <div className="flex gap-4 items-start">
