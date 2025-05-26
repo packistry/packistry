@@ -106,6 +106,9 @@ readonly class PackageController extends Controller
         return response()->json($dates);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function rebuild(string $packageId): JsonResponse
     {
         $this->authorize(Permission::PACKAGE_UPDATE);
