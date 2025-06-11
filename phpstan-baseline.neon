@@ -1,16 +1,13 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Parameter \#1 \$builder \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\) of method App\\Models\\Scopes\\UserScope\:\:apply\(\) should be contravariant with parameter \$builder \(Illuminate\\Database\\Eloquent\\Builder\) of method Illuminate\\Database\\Eloquent\\Scope\:\:apply\(\)$#'
-			identifier: method.childParameterType
-			count: 1
-			path: app/Models/Scopes/UserScope.php
-
-		-
+			message: '#^Out of 546 possible param types, only 541 \- 99\.0 %% actually have it\. Add more param types to get over 100 %%$#'
 			identifier: typeCoverage.paramTypeCoverage
 			count: 1
 			path: app/Models/Token.php
+
 		-
+			message: '#^Out of 546 possible param types, only 541 \- 99\.0 %% actually have it\. Add more param types to get over 100 %%$#'
 			identifier: typeCoverage.paramTypeCoverage
 			count: 4
 			path: app/OIDCProvider.php
