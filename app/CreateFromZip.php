@@ -58,7 +58,8 @@ class CreateFromZip
         }
 
         $createdVersion->package_id = $package->id;
-        $createdVersion->name = $version;
+        $createdVersion->name = Normalizer::version($version);
+        $createdVersion->order = Normalizer::versionOrder($version);
         $createdVersion->shasum = $hash;
         $createdVersion->metadata = collect($decoded)->only([
             'description',

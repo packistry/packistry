@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Scopes\OrderScope;
-use App\Normalizer;
 use Composer\Semver\VersionParser;
 use Database\Factories\VersionFactory;
 use Eloquent;
@@ -76,11 +75,6 @@ class Version extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new OrderScope('order'));
-        static::creating(function (Version $version): void {
-            $version->name = Normalizer::version($version->name);
-            $version->order = Normalizer::versionOrder($version->name);
-        });
-
         static::created(function (Version $version): void {
             if (! $version->isStable()) {
                 return;

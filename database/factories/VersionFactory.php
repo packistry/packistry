@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Version;
+use App\Normalizer;
 use App\Traits\ComposerFromZip;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
@@ -31,6 +32,7 @@ class VersionFactory extends Factory
 
         return [
             'name' => $version,
+            'order' => Normalizer::versionOrder($version),
             'metadata' => [
                 'authors' => [
                     [
@@ -67,7 +69,8 @@ class VersionFactory extends Factory
         Storage::fake();
 
         $decoded = $this->decodedComposerJsonFromZip($path);
-        $version ??= $decoded['version'];
+        $version ??= Normalizer::version($decoded['version']);
+        $order = Normalizer::versionOrder($decoded['version']);
 
         [$vendor, $name] = explode('/', (string) $decoded['name']);
         $archiveName = "$dir$vendor-$name-$version.zip";
@@ -78,6 +81,7 @@ class VersionFactory extends Factory
 
         return $this->state(fn (array $attributes): array => [
             'name' => $version,
+            'order' => $order,
             'shasum' => hash_file('sha1', $path),
             'metadata' => collect($decoded)->only([
                 'description',
