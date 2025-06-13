@@ -17,7 +17,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use RuntimeException;
+use Illuminate\Support\LazyCollection;
 
 class GitHubClient extends Client
 {
@@ -54,20 +54,14 @@ class GitHubClient extends Client
      */
     public function branches(Project $project): array
     {
-        $response = $this->http()->get("$project->url/branches")->throw();
-
-        $data = $response->json();
-
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
-
-        return array_map(fn (array $item): Branch => new Branch(
-            id: (string) $project->id,
-            name: $item['name'],
-            url: Normalizer::url($project->webUrl),
-            zipUrl: "{$project->url}/zipball/refs/heads/{$item['name']}",
-        ), $data);
+        return $this->lazy("{$project->url}/branches")
+            ->map(fn (array $item): Branch => new Branch(
+                id: (string) $project->id,
+                name: $item['name'],
+                url: Normalizer::url($project->webUrl),
+                zipUrl: "{$project->url}/zipball/refs/heads/{$item['name']}",
+            ))
+            ->all();
     }
 
     /**
@@ -75,20 +69,14 @@ class GitHubClient extends Client
      */
     public function tags(Project $project): array
     {
-        $response = $this->http()->get("$project->url/tags")->throw();
-
-        $data = $response->json();
-
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
-
-        return array_map(fn (array $item): Tag => new Tag(
-            id: (string) $project->id,
-            name: $item['name'],
-            url: Normalizer::url($project->webUrl),
-            zipUrl: $item['zipball_url'],
-        ), $data);
+        return $this->lazy("{$project->url}/tags")
+            ->map(fn (array $item): Tag => new Tag(
+                id: (string) $project->id,
+                name: $item['name'],
+                url: Normalizer::url($project->webUrl),
+                zipUrl: $item['zipball_url'],
+            ))
+            ->all();
     }
 
     /**
@@ -178,5 +166,39 @@ class GitHubClient extends Client
         }
 
         throw new InvalidTokenException(missingScopes: ['webhooks read and write']);
+    }
+
+    private function lazy(string $uri, array $params = []): LazyCollection
+    {
+        return LazyCollection::make(function () use ($uri, $params) {
+            $nextUri = match ($params) {
+                [] => $uri,
+                default => "{$uri}?".http_build_query($params),
+            };
+
+            while ($nextUri) {
+                $response = $this->http()->get($nextUri)
+                    ->throw();
+
+                $data = $response->json();
+
+                foreach ($data as $item) {
+                    yield $item;
+                }
+
+                $link = $response->header('link');
+
+                if (blank($link)) {
+                    break;
+                }
+
+                $matches = [];
+                preg_match('/<([^>]+?)>; rel="next"/', $link, $matches);
+
+                $nextUri = isset($matches[1])
+                    ? $matches[1]
+                    : null;
+            }
+        });
     }
 }
