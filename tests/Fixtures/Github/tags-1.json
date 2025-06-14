@@ -1,0 +1,302 @@
+[
+  {
+    "name": "v0.11.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.11.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.11.0",
+    "commit": {
+      "sha": "12fbdacf217db460ea8f1f8a1ba703bced1d53f0",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/12fbdacf217db460ea8f1f8a1ba703bced1d53f0"
+    },
+    "node_id": "REF_kwDOM7qS87FyZWZzL3RhZ3MvdjAuMTEuMA"
+  },
+  {
+    "name": "v0.10.3",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.10.3",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.10.3",
+    "commit": {
+      "sha": "4ba04a20a054fd8a0ad69de0c4f1e765293b59da",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/4ba04a20a054fd8a0ad69de0c4f1e765293b59da"
+    },
+    "node_id": "REF_kwDOM7qS87FyZWZzL3RhZ3MvdjAuMTAuMw"
+  },
+  {
+    "name": "v0.10.2",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.10.2",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.10.2",
+    "commit": {
+      "sha": "97bf3fc848ac960104b0504ec8e12126aa73d439",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/97bf3fc848ac960104b0504ec8e12126aa73d439"
+    },
+    "node_id": "REF_kwDOM7qS87FyZWZzL3RhZ3MvdjAuMTAuMg"
+  },
+  {
+    "name": "v0.10.1",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.10.1",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.10.1",
+    "commit": {
+      "sha": "34c72ae741a27f036a98d1c949db692497743519",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/34c72ae741a27f036a98d1c949db692497743519"
+    },
+    "node_id": "REF_kwDOM7qS87FyZWZzL3RhZ3MvdjAuMTAuMQ"
+  },
+  {
+    "name": "v0.10.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.10.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.10.0",
+    "commit": {
+      "sha": "622f12135401099168d167b107ff50c5a0072928",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/622f12135401099168d167b107ff50c5a0072928"
+    },
+    "node_id": "REF_kwDOM7qS87FyZWZzL3RhZ3MvdjAuMTAuMA"
+  },
+  {
+    "name": "v0.9.3",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.9.3",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.9.3",
+    "commit": {
+      "sha": "988cabd081e6087bb50a5cefe3ca3b0fc96a0f2d",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/988cabd081e6087bb50a5cefe3ca3b0fc96a0f2d"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOS4z"
+  },
+  {
+    "name": "v0.9.2",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.9.2",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.9.2",
+    "commit": {
+      "sha": "ff080e8f5b03363eac3a522de3f84a539b96153d",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/ff080e8f5b03363eac3a522de3f84a539b96153d"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOS4y"
+  },
+  {
+    "name": "v0.9.1",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.9.1",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.9.1",
+    "commit": {
+      "sha": "aa9bbd163dd4fe1d09ec466dbb26bd6d2928dd47",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/aa9bbd163dd4fe1d09ec466dbb26bd6d2928dd47"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOS4x"
+  },
+  {
+    "name": "v0.9.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.9.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.9.0",
+    "commit": {
+      "sha": "45e7a7644d839643dba71b1f005471035bf15a46",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/45e7a7644d839643dba71b1f005471035bf15a46"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOS4w"
+  },
+  {
+    "name": "v0.8.4",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.8.4",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.8.4",
+    "commit": {
+      "sha": "1b054bad0f4c9c73235844284f1bb0e398f8f502",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/1b054bad0f4c9c73235844284f1bb0e398f8f502"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOC40"
+  },
+  {
+    "name": "v0.8.3",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.8.3",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.8.3",
+    "commit": {
+      "sha": "144ac477f92a0e71695a26aa10d3d64a5693a967",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/144ac477f92a0e71695a26aa10d3d64a5693a967"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOC4z"
+  },
+  {
+    "name": "v0.8.2",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.8.2",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.8.2",
+    "commit": {
+      "sha": "6f870760f7f47adbc2b5a1037626b16651eefeea",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/6f870760f7f47adbc2b5a1037626b16651eefeea"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOC4y"
+  },
+  {
+    "name": "v0.8.1",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.8.1",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.8.1",
+    "commit": {
+      "sha": "6ef29f17fe3dfd3a10a0a127a25f726958455e43",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/6ef29f17fe3dfd3a10a0a127a25f726958455e43"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOC4x"
+  },
+  {
+    "name": "v0.8.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.8.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.8.0",
+    "commit": {
+      "sha": "e10377c6ff9e876afc128281752b5ca6e89171e0",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/e10377c6ff9e876afc128281752b5ca6e89171e0"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuOC4w"
+  },
+  {
+    "name": "v0.7.7",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.7",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.7",
+    "commit": {
+      "sha": "685878b15f606e870fcfa096f4ab764d13177d5c",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/685878b15f606e870fcfa096f4ab764d13177d5c"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy43"
+  },
+  {
+    "name": "v0.7.6",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.6",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.6",
+    "commit": {
+      "sha": "b88cc1db6943b3286d99cdf95cab6204f58a8d50",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/b88cc1db6943b3286d99cdf95cab6204f58a8d50"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy42"
+  },
+  {
+    "name": "v0.7.5",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.5",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.5",
+    "commit": {
+      "sha": "df12bef5abaa6293508a9bc888c2d1fd03dbc723",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/df12bef5abaa6293508a9bc888c2d1fd03dbc723"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy41"
+  },
+  {
+    "name": "v0.7.4",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.4",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.4",
+    "commit": {
+      "sha": "3f573f5ab4f6b15994d924b3da524c9e77f6a586",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/3f573f5ab4f6b15994d924b3da524c9e77f6a586"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy40"
+  },
+  {
+    "name": "v0.7.3",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.3",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.3",
+    "commit": {
+      "sha": "46d6b1955daa5500aa4b531365f590ace44aef09",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/46d6b1955daa5500aa4b531365f590ace44aef09"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy4z"
+  },
+  {
+    "name": "v0.7.2",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.2",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.2",
+    "commit": {
+      "sha": "579d66ee5b1131546c31a5212f7a015752e41f07",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/579d66ee5b1131546c31a5212f7a015752e41f07"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy4y"
+  },
+  {
+    "name": "v0.7.1",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.1",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.1",
+    "commit": {
+      "sha": "ffc872f3cc727cc4b82737c4c47cd5035beb55fb",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/ffc872f3cc727cc4b82737c4c47cd5035beb55fb"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy4x"
+  },
+  {
+    "name": "v0.7.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.7.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.7.0",
+    "commit": {
+      "sha": "372dfd1369d9aaa313cfb89ff92adb6df887ec3d",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/372dfd1369d9aaa313cfb89ff92adb6df887ec3d"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNy4w"
+  },
+  {
+    "name": "v0.6.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.6.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.6.0",
+    "commit": {
+      "sha": "5c39fc88711ac3b6e589f45f5201e1dee04707a8",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/5c39fc88711ac3b6e589f45f5201e1dee04707a8"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNi4w"
+  },
+  {
+    "name": "v0.5.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.5.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.5.0",
+    "commit": {
+      "sha": "24ec9345273d41a58fb5464ada55da043041bcd7",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/24ec9345273d41a58fb5464ada55da043041bcd7"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNS4w"
+  },
+  {
+    "name": "v0.4.1",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.4.1",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.4.1",
+    "commit": {
+      "sha": "0ef3093e54e5a0cd723b19939581cfa4353a3691",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/0ef3093e54e5a0cd723b19939581cfa4353a3691"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNC4x"
+  },
+  {
+    "name": "v0.4.0",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.4.0",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.4.0",
+    "commit": {
+      "sha": "c010b154777c026bbbb8a9422cd3f9bcd4cbaa92",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/c010b154777c026bbbb8a9422cd3f9bcd4cbaa92"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuNC4w"
+  },
+  {
+    "name": "v0.3.4",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.3.4",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.3.4",
+    "commit": {
+      "sha": "46983cfb5f7933b704a5e4704e6c15a9602e84e4",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/46983cfb5f7933b704a5e4704e6c15a9602e84e4"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuMy40"
+  },
+  {
+    "name": "v0.3.3",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.3.3",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.3.3",
+    "commit": {
+      "sha": "61ae1bd39a5148e2dbfb98eb0b1a50311c90cde8",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/61ae1bd39a5148e2dbfb98eb0b1a50311c90cde8"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuMy4z"
+  },
+  {
+    "name": "v0.3.2",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.3.2",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.3.2",
+    "commit": {
+      "sha": "6b1345dad842e0086ca542351dfc07beb2f451b4",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/6b1345dad842e0086ca542351dfc07beb2f451b4"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuMy4y"
+  },
+  {
+    "name": "v0.3.1",
+    "zipball_url": "https://api.github.com/repos/packistry/packistry/zipball/refs/tags/v0.3.1",
+    "tarball_url": "https://api.github.com/repos/packistry/packistry/tarball/refs/tags/v0.3.1",
+    "commit": {
+      "sha": "fca8e5e2957e82186181217fa0d14de9a988ee14",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/fca8e5e2957e82186181217fa0d14de9a988ee14"
+    },
+    "node_id": "REF_kwDOM7qS87ByZWZzL3RhZ3MvdjAuMy4x"
+  }
+]
