@@ -19,6 +19,7 @@ use App\Models\Version;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\LazyCollection;
 use SensitiveParameter;
 
 abstract class Client
@@ -83,14 +84,14 @@ abstract class Client
     abstract public function project(string $id): Project;
 
     /**
-     * @return Branch[]
+     * @return LazyCollection<int, Branch>
      */
-    abstract public function branches(Project $project): array;
+    abstract public function branches(Project $project): LazyCollection;
 
     /**
-     * @return Tag[]
+     * @return LazyCollection<int, Tag>
      */
-    abstract public function tags(Project $project): array;
+    abstract public function tags(Project $project): LazyCollection;
 
     /**
      * @throws RequestException

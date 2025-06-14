@@ -1,0 +1,86 @@
+[
+  {
+    "name": "v0.1.5",
+    "message": "Document persisting `/data` for docker container (#160)\n\n`/data` must be kept between container restarts.\n\nCo-authored-by: Valentin Brandl <mail@vbrandl.net>\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/160\nReviewed-by: Lunny Xiao <xiaolunwen@gmail.com>\nReviewed-by: techknowlogick <techknowlogick@noreply.gitea.io>\nCo-authored-by: vbrandl <vbrandl@noreply.gitea.io>\nCo-committed-by: vbrandl <vbrandl@noreply.gitea.io>",
+    "id": "7c71c94366ae77ca16665fb71ed1ee12d2e448fb",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/7c71c94366ae77ca16665fb71ed1ee12d2e448fb",
+      "sha": "7c71c94366ae77ca16665fb71ed1ee12d2e448fb",
+      "created": "2023-04-29T03:05:00+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.5.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.5.tar.gz"
+  },
+  {
+    "name": "v0.1.4",
+    "message": "v0.1.4",
+    "id": "1bc4da5c41dd5c75eb249d1d8d22906ba9f510f9",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/1bc4da5c41dd5c75eb249d1d8d22906ba9f510f9",
+      "sha": "0cf31b2d22440d1ab724a9f97a386e6dff9948d6",
+      "created": "2023-04-27T15:17:20+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.4.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.4.tar.gz"
+  },
+  {
+    "name": "v0.1.3",
+    "message": "Workflow commands (#149)\n\nEstablishes a simple framework for supporting workflow commands.\n\nFully implements `::add-mask::`, `::debug::`, and `::stop-commands::`.\n\nAddresses #148\n\nCo-authored-by: Jason Song <i@wolfogre.com>\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/149\nReviewed-by: Jason Song <i@wolfogre.com>\nCo-authored-by: Søren L. Hansen <sorenisanerd@gmail.com>\nCo-committed-by: Søren L. Hansen <sorenisanerd@gmail.com>",
+    "id": "c8cc7b2448ac45c3d6eeff5f68479dd5b18f6d6e",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/c8cc7b2448ac45c3d6eeff5f68479dd5b18f6d6e",
+      "sha": "c8cc7b2448ac45c3d6eeff5f68479dd5b18f6d6e",
+      "created": "2023-04-27T12:32:48+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.3.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.3.tar.gz"
+  },
+  {
+    "name": "v0.1.2",
+    "message": "Special the release tag signing sub key (#121)\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/121",
+    "id": "fcc016e9b38de8959a7c86803691cee73ee0f196",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/fcc016e9b38de8959a7c86803691cee73ee0f196",
+      "sha": "fcc016e9b38de8959a7c86803691cee73ee0f196",
+      "created": "2023-04-13T18:56:15+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.2.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.2.tar.gz"
+  },
+  {
+    "name": "v0.1.1",
+    "message": "add release tag (#111)\n\nFix #108\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/111\nReviewed-by: Jason Song <i@wolfogre.com>\nCo-authored-by: Lunny Xiao <xiaolunwen@gmail.com>\nCo-committed-by: Lunny Xiao <xiaolunwen@gmail.com>",
+    "id": "10d639cc6b9c44990537c291a90e0aa020ae4f12",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/10d639cc6b9c44990537c291a90e0aa020ae4f12",
+      "sha": "10d639cc6b9c44990537c291a90e0aa020ae4f12",
+      "created": "2023-04-11T14:04:08+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.1.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.1.tar.gz"
+  },
+  {
+    "name": "v0.1.0",
+    "message": "Refactor to new framework (#98)\n\n- Adjust directory structure\n```text\n├── internal\n│   ├── app\n│   │   ├── artifactcache\n│   │   ├── cmd\n│   │   ├── poll\n│   │   └── run\n│   └── pkg\n│       ├── client\n│       ├── config\n│       ├── envcheck\n│       ├── labels\n│       ├── report\n│       └── ver\n└── main.go\n```\n- New pkg `labels` to parse label\n- New pkg `report` to report logs to Gitea\n- Remove pkg `engine`, use `envcheck` to check if docker running.\n- Rewrite `runtime` to `run`\n- Rewrite `poller` to `poll`\n- Simplify some code and remove what's useless.\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/98\nReviewed-by: Lunny Xiao <xiaolunwen@gmail.com>\nCo-authored-by: Jason Song <i@wolfogre.com>\nCo-committed-by: Jason Song <i@wolfogre.com>",
+    "id": "220efa69c0bb9d0970a36b441b33d5b3216d8c3d",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/220efa69c0bb9d0970a36b441b33d5b3216d8c3d",
+      "sha": "220efa69c0bb9d0970a36b441b33d5b3216d8c3d",
+      "created": "2023-04-04T21:32:04+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.0.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.0.tar.gz"
+  },
+  {
+    "name": "v0.0.1",
+    "message": "v0.0.1\n\ninitial tag",
+    "id": "f0fb5a1e156f17fd4d23823d83df8567a8512c34",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/f0fb5a1e156f17fd4d23823d83df8567a8512c34",
+      "sha": "c133be12d8a3115f25edd4e860683cd0f582500e",
+      "created": "2023-02-26T12:20:33+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.0.1.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.0.1.tar.gz"
+  }
+]

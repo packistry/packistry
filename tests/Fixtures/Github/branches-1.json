@@ -1,0 +1,26 @@
+[
+  {
+    "name": "favicon",
+    "commit": {
+      "sha": "18513692e6f610369a3339fb7fb9c7c4b3491b85",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/18513692e6f610369a3339fb7fb9c7c4b3491b85"
+    },
+    "protected": false
+  },
+  {
+    "name": "feature/rebuild-package-ui",
+    "commit": {
+      "sha": "312307c7d11b781b777d62b07ca1be735a361124",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/312307c7d11b781b777d62b07ca1be735a361124"
+    },
+    "protected": false
+  },
+  {
+    "name": "main",
+    "commit": {
+      "sha": "12fbdacf217db460ea8f1f8a1ba703bced1d53f0",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/12fbdacf217db460ea8f1f8a1ba703bced1d53f0"
+    },
+    "protected": true
+  }
+]

@@ -5,8 +5,11 @@ declare(strict_types=1);
 use App\Exceptions\InvalidTokenException;
 use App\Models\Repository;
 use App\Models\Source;
-use App\Sources\GitLab\GitlabClient;
+use App\Sources\Branch;
+use App\Sources\Gitlab\GitlabClient;
 use App\Sources\Project;
+use App\Sources\Tag;
+use Illuminate\Support\LazyCollection;
 
 beforeEach(function () {
     $this->gitLab = app(GitlabClient::class)->withOptions(
@@ -30,7 +33,7 @@ it('has token on client', function () {
 
 it('accepts token with api scope', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/personal_access_tokens/self' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/token-self.json')),
+        'https://gitlab.com/api/v4/personal_access_tokens/self' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/token-self.json')),
     ]);
 
     $this->gitLab->validateToken();
@@ -38,7 +41,7 @@ it('accepts token with api scope', function () {
 
 it('rejects token without api scope', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/personal_access_tokens/self' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/token-self-incorrect.json')),
+        'https://gitlab.com/api/v4/personal_access_tokens/self' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/token-self-incorrect.json')),
     ]);
 
     $this->gitLab->validateToken();
@@ -46,7 +49,7 @@ it('rejects token without api scope', function () {
 
 it('fetches projects', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects?*' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/projects.json'), headers: ['X-Total-Pages' => 1]),
+        'https://gitlab.com/api/v4/projects?*' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/projects.json'), headers: ['X-Total-Pages' => 1]),
     ]);
 
     $projects = $this->gitLab->projects('quality');
@@ -63,7 +66,7 @@ it('fetches projects', function () {
 
 it('fetches project', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects/278964' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/project.json')),
+        'https://gitlab.com/api/v4/projects/278964' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/project.json')),
     ]);
 
     $project = $this->gitLab->project('278964');
@@ -78,14 +81,20 @@ it('fetches project', function () {
 
 it('fetches project tags', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects/278964/repository/tags?per_page=100' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/tags.json')),
+        'https://gitlab.com/api/v4/projects/278964/repository/tags?per_page=100&page=1' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/tags.json')),
     ]);
 
-    $tags = $this->gitLab->tags($this->project);
+    $collection = $this->gitLab->tags($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $tags = $collection->collect();
 
     expect($tags)
         ->toHaveCount(20)
         ->and($tags[0])
+        ->toBeInstanceOf(Tag::class)
         ->id->toBe('278964')
         ->name->toBe('v17.6.5-ee')
         ->url->toBe('https://gitlab.com/api/v4/projects/278964')
@@ -94,14 +103,20 @@ it('fetches project tags', function () {
 
 it('fetches project branches', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects/278964/repository/branches?per_page=100' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/branches.json')),
+        'https://gitlab.com/api/v4/projects/278964/repository/branches?per_page=100&page=1' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/branches.json')),
     ]);
 
-    $branches = $this->gitLab->branches($this->project);
+    $collection = $this->gitLab->branches($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $branches = $collection->collect();
 
     expect($branches)
         ->toHaveCount(15)
         ->and($branches[0])
+        ->toBeInstanceOf(Branch::class)
         ->id->toBe('278964')
         ->name->toBe('00alkorba')
         ->url->toBe('https://gitlab.com/api/v4/projects/278964')
@@ -110,7 +125,7 @@ it('fetches project branches', function () {
 
 it('creates webhook', function () {
     Http::fake([
-        'https://gitlab.com/api/v4/projects/278964/hooks' => Http::response(File::get(__DIR__.'/../Fixtures/GitLab/webhook.json')),
+        'https://gitlab.com/api/v4/projects/278964/hooks' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/webhook.json')),
     ]);
 
     /** @var Repository $repository */

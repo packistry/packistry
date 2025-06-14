@@ -27,14 +27,15 @@ class ImportTags implements ShouldQueue
 
     public function handle(): void
     {
-        $tags = $this->source->client()->tags($this->project);
+        $batch = $this->batch();
 
-        $jobs = array_map(fn (Importable $tag) => new ImportImportable(
-            $this->source,
-            $this->package,
-            $tag,
-        ), array_reverse($tags));
-
-        $this->batch()?->add($jobs);
+        $this->source->client()->tags($this->project)
+            ->each(function (Importable $tag) use ($batch): void {
+                $batch?->add(new ImportImportable(
+                    $this->source,
+                    $this->package,
+                    $tag,
+                ));
+            });
     }
 }

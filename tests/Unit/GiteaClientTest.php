@@ -3,8 +3,11 @@
 declare(strict_types=1);
 
 use App\Exceptions\InvalidTokenException;
+use App\Sources\Branch;
 use App\Sources\Gitea\GiteaClient;
 use App\Sources\Project;
+use App\Sources\Tag;
+use Illuminate\Support\LazyCollection;
 
 beforeEach(function () {
     $this->gitea = app(GiteaClient::class)->withOptions(
@@ -22,8 +25,6 @@ beforeEach(function () {
 
     Http::fake([
         'gitea.com/api/v1/repos/search*' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-search.json')),
-        'gitea.com/api/v1/repos/gitea/act_runner/branches' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-branches.json')),
-        'gitea.com/api/v1/repos/gitea/act_runner/tags' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-tags.json')),
     ]);
 });
 
@@ -57,11 +58,23 @@ it('can fetch projects', function () {
 });
 
 it('can fetch project branches', function () {
-    $branches = $this->gitea->branches($this->project);
+    Http::fake([
+        'gitea.com/api/v1/repos/gitea/act_runner/branches?page=1' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-branches-1.json')),
+        'gitea.com/api/v1/repos/gitea/act_runner/branches?page=2' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-branches-2.json')),
+        'gitea.com/api/v1/repos/gitea/act_runner/branches?page=3' => Http::response('[]'),
+    ]);
 
-    expect(count($branches))
-        ->toBe(2)
+    $collection = $this->gitea->branches($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $branches = $collection->collect();
+
+    expect($branches)
+        ->toHaveCount(2)
         ->and($branches[0])
+        ->toBeInstanceOf(Branch::class)
         ->id()->toBe('35024')
         ->version()->toBe('dev-main')
         ->url()->toBe('https://gitea.com')
@@ -69,11 +82,23 @@ it('can fetch project branches', function () {
 });
 
 it('can fetch project tags', function () {
-    $tags = $this->gitea->tags($this->project);
+    Http::fake([
+        'gitea.com/api/v1/repos/gitea/act_runner/tags?page=1' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-tags-1.json')),
+        'gitea.com/api/v1/repos/gitea/act_runner/tags?page=2' => Http::response(File::get(__DIR__.'/../Fixtures/Gitea/repos-tags-2.json')),
+        'gitea.com/api/v1/repos/gitea/act_runner/tags?page=3' => Http::response('[]'),
+    ]);
 
-    expect(count($tags))
-        ->toBe(22)
+    $collection = $this->gitea->tags($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $tags = $collection->collect();
+
+    expect($tags)
+        ->toHaveCount(22)
         ->and($tags[0])
+        ->toBeInstanceOf(Tag::class)
         ->id()->toBe('35024')
         ->version()->toBe('v0.2.11')
         ->url()->toBe('https://gitea.com')

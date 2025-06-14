@@ -1,0 +1,182 @@
+[
+  {
+    "name": "v0.2.11",
+    "message": "Bump goreleaser-action to use v2 by default (#604)\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/604\nCo-authored-by: Jason Song <i@wolfogre.com>\nCo-committed-by: Jason Song <i@wolfogre.com>",
+    "id": "b075e3a1d5a0ca4f1cfc5dc3a7e6dc187aa9d23a",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/b075e3a1d5a0ca4f1cfc5dc3a7e6dc187aa9d23a",
+      "sha": "b075e3a1d5a0ca4f1cfc5dc3a7e6dc187aa9d23a",
+      "created": "2024-09-24T08:46:21Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.11.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.11.tar.gz"
+  },
+  {
+    "name": "v0.2.10",
+    "message": "Bump act to v0.261.1 (#535)\n\nRelated to https://gitea.com/gitea/act/compare/v0.261.0...v0.261.1\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/535",
+    "id": "ec03f19650fa70eeacf3b2492d2e7e2154a7c9b4",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/ec03f19650fa70eeacf3b2492d2e7e2154a7c9b4",
+      "sha": "ec03f19650fa70eeacf3b2492d2e7e2154a7c9b4",
+      "created": "2024-04-10T07:07:56Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.10.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.10.tar.gz"
+  },
+  {
+    "name": "v0.2.9",
+    "message": "Ensure declare to use new labels (#530)\n\nEnsure \"declare\" is supported, to use new labels, see https://gitea.com/gitea/act_runner/pulls/529\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/530\nReviewed-by: Lunny Xiao <xiaolunwen@gmail.com>",
+    "id": "be2df361ef19bbf979f826da999169dc2b0ac298",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/be2df361ef19bbf979f826da999169dc2b0ac298",
+      "sha": "be2df361ef19bbf979f826da999169dc2b0ac298",
+      "created": "2024-04-02T07:39:40Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.9.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.9.tar.gz"
+  },
+  {
+    "name": "v0.2.8",
+    "message": "Set gitea token to release (#524)\n\nFollow https://gitea.com/gitea/act_runner/src/commit/a7eca813eae1747a7323c0e88e01b7417293ffe9/.gitea/workflows/release-tag.yml#L39\n\nIt works before unexpectedly because of https://github.com/nektos/act/pull/2089\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/524",
+    "id": "1760899d27961e07cd121438d0c90481656a69ce",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/1760899d27961e07cd121438d0c90481656a69ce",
+      "sha": "1760899d27961e07cd121438d0c90481656a69ce",
+      "created": "2024-03-27T10:51:45Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.8.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.8.tar.gz"
+  },
+  {
+    "name": "v0.2.7",
+    "message": "Bump act to v0.260.0 (#522)\n\nRelated to https://gitea.com/gitea/act/issues/99.\n\nAlso update other main dependencies.\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/522\nReviewed-by: Zettat123 <zettat123@noreply.gitea.com>",
+    "id": "23ec12b8cf8dfd5c477a3e94b6adc4a8446bbe9f",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/23ec12b8cf8dfd5c477a3e94b6adc4a8446bbe9f",
+      "sha": "23ec12b8cf8dfd5c477a3e94b6adc4a8446bbe9f",
+      "created": "2024-03-27T03:17:04Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.7.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.7.tar.gz"
+  },
+  {
+    "name": "v0.2.6",
+    "message": "v0.2.6 - Node20 Actions support",
+    "id": "7d60da369c7f006fdfd565246722ab04b6856802",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/7d60da369c7f006fdfd565246722ab04b6856802",
+      "sha": "d07fbfc8c3baacbc7cbbd548c0990c96c5c10e1a",
+      "created": "2023-09-24T19:35:02Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.6.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.6.tar.gz"
+  },
+  {
+    "name": "v0.2.5",
+    "message": "v0.2.5",
+    "id": "2ffc33d00f9bf42321875804dc3c43e756061356",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/2ffc33d00f9bf42321875804dc3c43e756061356",
+      "sha": "9fc823e4b11bbd286332f462fe6349982b409112",
+      "created": "2023-08-02T12:36:54+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.5.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.5.tar.gz"
+  },
+  {
+    "name": "v0.2.4",
+    "message": "v0.2.4",
+    "id": "d7ef2f9c426147acb6744113cf86f14d39c57043",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/d7ef2f9c426147acb6744113cf86f14d39c57043",
+      "sha": "12999b61dd20b788657c7f2b61cf0209e38b030d",
+      "created": "2023-07-28T13:20:11+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.4.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.4.tar.gz"
+  },
+  {
+    "name": "v0.2.3",
+    "message": "Upgrade act (#269)\n\nFollow https://gitea.com/gitea/act/pulls/71.\nFix https://gitea.com/gitea/act_runner/issues/266\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/269\nCo-authored-by: Zettat123 <zettat123@gmail.com>\nCo-committed-by: Zettat123 <zettat123@gmail.com>",
+    "id": "c6006ee69966aa31dba02ceb72c44803aa4afd56",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/c6006ee69966aa31dba02ceb72c44803aa4afd56",
+      "sha": "c6006ee69966aa31dba02ceb72c44803aa4afd56",
+      "created": "2023-07-03T04:15:46Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.3.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.3.tar.gz"
+  },
+  {
+    "name": "v0.2.2",
+    "message": "Add support for finding docker daemon from common socket paths (#263)\n\nCaused by #260\n\nact_runner will fail to start if user does not set `docker_host` configuration and `DOCKER_HOST` env. This PR adds the support for finding docker daemon from common socket paths so act_runner could detect the docker socket from these paths.\n\nThe `commonSocketPaths` is from [nektos/act](https://github.com/nektos/act/blob/e60018a6d9403b27bfd1a1ed6111a6e9de0032fd/cmd/root.go#L124-L131)\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/263\nCo-authored-by: Zettat123 <zettat123@noreply.gitea.com>\nCo-committed-by: Zettat123 <zettat123@noreply.gitea.com>",
+    "id": "f2629f2ea3cbf665dc32961671dfb5a8f629e601",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/f2629f2ea3cbf665dc32961671dfb5a8f629e601",
+      "sha": "f2629f2ea3cbf665dc32961671dfb5a8f629e601",
+      "created": "2023-07-01T01:27:54Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.2.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.2.tar.gz"
+  },
+  {
+    "name": "v0.2.1",
+    "message": "Revert supporting multiple default actions URLs and use github for exec by default (#262)\n\n## :warning: BREAKING :warning:\n\nFollow https://github.com/go-gitea/gitea/pull/25581 and gitea/act#70 .\n\n- Revert \"Parse multiple default actions URLs (#200)\"\n- Revert \"fix defaultActionsUrls config for exec (#233)\"\n- Use `https://github.com` for exec by default.\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/262",
+    "id": "cf48ed88ba0400858feb40bffe7ec08ab37ef88b",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/cf48ed88ba0400858feb40bffe7ec08ab37ef88b",
+      "sha": "cf48ed88ba0400858feb40bffe7ec08ab37ef88b",
+      "created": "2023-06-30T07:53:18Z"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.1.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.1.tar.gz"
+  },
+  {
+    "name": "v0.2.0",
+    "message": "v0.2.0",
+    "id": "a8512ac2fec6d207469f55f68675b40a65a3d97a",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/a8512ac2fec6d207469f55f68675b40a65a3d97a",
+      "sha": "45bfe0a9b247b4ec9b00ea90e56437159e5adcf3",
+      "created": "2023-06-15T13:45:14+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.0.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.2.0.tar.gz"
+  },
+  {
+    "name": "v0.1.8",
+    "message": "v0.1.8",
+    "id": "81d99a954ecceda640cfe07d4f9fd2bb34cbf0f2",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/81d99a954ecceda640cfe07d4f9fd2bb34cbf0f2",
+      "sha": "d5e4baed54aeafcf75e8b47c547e5f4fb665aea5",
+      "created": "2023-05-10T13:28:30+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.8.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.8.tar.gz"
+  },
+  {
+    "name": "v0.1.7",
+    "message": "Skip counting log length when parseLogRow return nil (#176)\n\nFix:\n![image](/attachments/93e29bc0-3599-4f7e-8b90-512562a5d711)\n\nRegression of #149, `LogLength` could be incorrect.\n\nIt may be related to https://github.com/go-gitea/gitea/issues/24458\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/176\nReviewed-by: Zettat123 <zettat123@noreply.gitea.io>\nReviewed-by: wxiaoguang <wxiaoguang@noreply.gitea.io>",
+    "id": "de4160b0231dcb0678fb454dc740535b9c23df59",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/de4160b0231dcb0678fb454dc740535b9c23df59",
+      "sha": "de4160b0231dcb0678fb454dc740535b9c23df59",
+      "created": "2023-05-06T17:00:52+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.7.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.7.tar.gz"
+  },
+  {
+    "name": "v0.1.6",
+    "message": "v0.1.6",
+    "id": "955b17fe549a6e5ff97495e04a255956b0cb28f6",
+    "commit": {
+      "url": "https://gitea.com/api/v1/repos/gitea/act_runner/git/commits/955b17fe549a6e5ff97495e04a255956b0cb28f6",
+      "sha": "b49834185777fffed9e0b4d7c3b08ad82fcdbcfa",
+      "created": "2023-05-03T03:12:25+08:00"
+    },
+    "zipball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.6.zip",
+    "tarball_url": "https://gitea.com/gitea/act_runner/archive/v0.1.6.tar.gz"
+  }
+]

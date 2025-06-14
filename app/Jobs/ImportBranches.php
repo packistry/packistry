@@ -27,14 +27,15 @@ class ImportBranches implements ShouldQueue
 
     public function handle(): void
     {
-        $branches = $this->source->client()->branches($this->project);
+        $batch = $this->batch();
 
-        $jobs = array_map(fn (Importable $tag) => new ImportImportable(
-            $this->source,
-            $this->package,
-            $tag,
-        ), array_reverse($branches));
-
-        $this->batch()?->add($jobs);
+        $this->source->client()->branches($this->project)
+            ->each(function (Importable $branch) use ($batch): void {
+                $batch?->add(new ImportImportable(
+                    $this->source,
+                    $this->package,
+                    $branch,
+                ));
+            });
     }
 }
