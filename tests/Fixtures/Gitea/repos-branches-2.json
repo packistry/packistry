@@ -1,43 +1,5 @@
 [
     {
-        "name": "main",
-        "commit": {
-            "id": "3510152e3671880d483b111a2a66c38f924ac147",
-            "message": "Fix Makefile make docker (#641)\n\nFix #640\n\nReviewed-on: https://gitea.com/gitea/act_runner/pulls/641\n",
-            "url": "https://gitea.com/gitea/act_runner/commit/3510152e3671880d483b111a2a66c38f924ac147",
-            "author": {
-                "name": "Lunny Xiao",
-                "email": "lunny@noreply.gitea.com",
-                "username": "lunny"
-            },
-            "committer": {
-                "name": "Lunny Xiao",
-                "email": "lunny@noreply.gitea.com",
-                "username": "lunny"
-            },
-            "verification": {
-                "verified": false,
-                "reason": "gpg.error.not_signed_commit",
-                "signature": "",
-                "signer": null,
-                "payload": ""
-            },
-            "timestamp": "2025-01-29T03:27:47Z",
-            "added": null,
-            "removed": null,
-            "modified": null
-        },
-        "protected": true,
-        "required_approvals": 2,
-        "enable_status_check": true,
-        "status_check_contexts": [
-            "checks / check and test (pull_request)"
-        ],
-        "user_can_push": false,
-        "user_can_merge": false,
-        "effective_branch_protection_name": ""
-    },
-    {
         "name": "lunny/upgrade_act",
         "commit": {
             "id": "df97923656f5d339e13f3f73a08185c8e0e790cc",

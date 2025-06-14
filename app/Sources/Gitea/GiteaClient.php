@@ -14,6 +14,7 @@ use App\Sources\Tag;
 use App\Sources\Traits\BearerToken;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\LazyCollection;
 use RuntimeException;
 
 class GiteaClient extends Client
@@ -44,43 +45,29 @@ class GiteaClient extends Client
     /**
      * @throws ConnectionException|RequestException
      */
-    public function branches(Project $project): array
+    public function branches(Project $project): LazyCollection
     {
-        $response = $this->http()->get("$project->url/branches")->throw();
-
-        $data = $response->json();
-
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
-
-        return array_map(fn (array $item): Branch => new Branch(
-            id: (string) $project->id,
-            name: $item['name'],
-            url: Normalizer::url($project->webUrl),
-            zipUrl: "$project->webUrl/archive/{$item['name']}.zip",
-        ), $data);
+        return $this->lazy("{$project->url}/branches")
+            ->map(fn (array $item): Branch => new Branch(
+                id: (string) $project->id,
+                name: $item['name'],
+                url: Normalizer::url($project->webUrl),
+                zipUrl: "$project->webUrl/archive/{$item['name']}.zip",
+            ));
     }
 
     /**
      * @throws ConnectionException|RequestException
      */
-    public function tags(Project $project): array
+    public function tags(Project $project): LazyCollection
     {
-        $response = $this->http()->get("$project->url/tags")->throw();
-
-        $data = $response->json();
-
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
-
-        return array_map(fn (array $item): Tag => new Tag(
-            id: (string) $project->id,
-            name: $item['name'],
-            url: Normalizer::url($project->webUrl),
-            zipUrl: $item['zipball_url'],
-        ), $data);
+        return $this->lazy("{$project->url}/tags")
+            ->map(fn (array $item): Tag => new Tag(
+                id: (string) $project->id,
+                name: $item['name'],
+                url: Normalizer::url($project->webUrl),
+                zipUrl: $item['zipball_url'],
+            ));
     }
 
     /**
@@ -144,5 +131,35 @@ class GiteaClient extends Client
         }
 
         throw new InvalidTokenException(missingScopes: ['write:repository']);
+    }
+
+    private function lazy(string $uri, array $params = []): LazyCollection
+    {
+        return LazyCollection::make(function () use ($uri, $params) {
+            $page = 1;
+
+            while (true) {
+                $response = $this->http()->get($uri, [
+                    ...$params,
+                    'page' => $page,
+                ])->throw();
+
+                $data = $response->json();
+
+                if (is_null($data)) {
+                    new RuntimeException($response->getBody()->getContents());
+                }
+
+                foreach ($data as $item) {
+                    yield $item;
+                }
+
+                if ($data === []) {
+                    break;
+                }
+
+                $page += 1;
+            };
+        });
     }
 }
