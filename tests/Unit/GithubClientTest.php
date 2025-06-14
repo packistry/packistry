@@ -36,7 +36,7 @@ it('accepts token with api scope', function () {
     Http::fake([
         'https://api.github.com/' => Http::response(
             headers: [
-                'X-OAuth-Scopes' => 'foo,bar,repo'
+                'X-OAuth-Scopes' => 'foo,bar,repo',
             ],
         ),
     ]);
@@ -48,7 +48,7 @@ it('rejects token without api scope', function () {
     Http::fake([
         'https://api.github.com/' => Http::response(
             headers: [
-                'X-OAuth-Scopes' => 'foo,bar'
+                'X-OAuth-Scopes' => 'foo,bar',
             ],
         ),
     ]);
@@ -96,7 +96,7 @@ it('fetches project tags', function () {
                 'Link' => '<https://api.github.com/repositories/867865331/tags?page=2>; rel="next", <https://api.github.com/repositories/867865331/tags?page=2>; rel="last"',
             ],
         ),
-        "https://api.github.com/repositories/867865331/tags?page=2" => Http::response(
+        'https://api.github.com/repositories/867865331/tags?page=2' => Http::response(
             File::get(__DIR__.'/../Fixtures/Github/tags-2.json'),
             headers: [
                 'Link' => '<https://api.github.com/repositories/867865331/tags?page=1>; rel="prev", <https://api.github.com/repositories/867865331/tags?page=1>; rel="first"',
@@ -126,10 +126,10 @@ it('fetches project branches', function () {
         "{$this->project->url}/branches" => Http::response(
             File::get(__DIR__.'/../Fixtures/Github/branches-1.json'),
             headers: [
-                'Link' => '<https://api.github.com/repositories/867865331/branches?page=2>; rel="next", <https://api.github.com/repositories/867865331/branches?page=2>; rel="last"'
+                'Link' => '<https://api.github.com/repositories/867865331/branches?page=2>; rel="next", <https://api.github.com/repositories/867865331/branches?page=2>; rel="last"',
             ]
         ),
-        "https://api.github.com/repositories/867865331/branches?page=2" => Http::response(File::get(__DIR__.'/../Fixtures/Github/branches-2.json')),
+        'https://api.github.com/repositories/867865331/branches?page=2' => Http::response(File::get(__DIR__.'/../Fixtures/Github/branches-2.json')),
     ]);
 
     $collection = $this->github->branches($this->project);

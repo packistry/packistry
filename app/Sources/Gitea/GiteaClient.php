@@ -161,7 +161,7 @@ class GiteaClient extends Client
                 }
 
                 $page += 1;
-            };
+            }
         });
     }
 }
