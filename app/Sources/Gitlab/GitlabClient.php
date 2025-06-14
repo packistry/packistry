@@ -66,7 +66,7 @@ class GitlabClient extends Client
     public function branches(Project $project): LazyCollection
     {
         return $this->lazy("{$project->url}/repository/branches")
-            ->map(fn (array $branch) => new Branch(
+            ->map(fn (array $branch): Branch => new Branch(
                 id: (string) $project->id,
                 name: $branch['name'],
                 url: $project->url,
@@ -80,7 +80,7 @@ class GitlabClient extends Client
     public function tags(Project $project): LazyCollection
     {
         return $this->lazy("{$project->url}/repository/tags")
-            ->map(fn (array $tag) => new Tag(
+            ->map(fn (array $tag): Tag => new Tag(
                 id: (string) $project->id,
                 name: $tag['name'],
                 url: $project->url,
