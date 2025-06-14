@@ -193,15 +193,17 @@ class BitbucketClient extends Client
         return $workspace !== null && $workspace !== '' ? $workspace : '';
     }
 
-    private function lazy(string $uri, array $params = []): LazyCollection
+    /**
+     * @return LazyCollection<int, array<string, mixed>>
+     */
+    private function lazy(string $uri): LazyCollection
     {
-        return LazyCollection::make(function () use ($uri, $params) {
+        return LazyCollection::make(function () use ($uri) {
             $perPage = 100;
             $page = 1;
 
             do {
                 $response = $this->http()->get($uri, [
-                    ...$params,
                     'pagelen' => $perPage,
                     'page' => $page,
                 ])->throw();

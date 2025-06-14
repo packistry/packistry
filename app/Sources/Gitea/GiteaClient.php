@@ -133,14 +133,16 @@ class GiteaClient extends Client
         throw new InvalidTokenException(missingScopes: ['write:repository']);
     }
 
-    private function lazy(string $uri, array $params = []): LazyCollection
+    /**
+     * @return LazyCollection<int, array<string, mixed>>
+     */
+    private function lazy(string $uri): LazyCollection
     {
-        return LazyCollection::make(function () use ($uri, $params) {
+        return LazyCollection::make(function () use ($uri) {
             $page = 1;
 
             while (true) {
                 $response = $this->http()->get($uri, [
-                    ...$params,
                     'page' => $page,
                 ])->throw();
 

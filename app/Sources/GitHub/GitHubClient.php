@@ -166,13 +166,13 @@ class GitHubClient extends Client
         throw new InvalidTokenException(missingScopes: ['webhooks read and write']);
     }
 
-    private function lazy(string $uri, array $params = []): LazyCollection
+    /**
+     * @return LazyCollection<int, array<string, mixed>>
+     */
+    private function lazy(string $uri): LazyCollection
     {
-        return LazyCollection::make(function () use ($uri, $params) {
-            $nextUri = match ($params) {
-                [] => $uri,
-                default => "{$uri}?".http_build_query($params),
-            };
+        return LazyCollection::make(function () use ($uri) {
+            $nextUri = $uri;
 
             while ($nextUri) {
                 $response = $this->http()->get($nextUri)

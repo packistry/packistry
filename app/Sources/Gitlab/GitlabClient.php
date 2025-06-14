@@ -140,15 +140,17 @@ class GitlabClient extends Client
         }
     }
 
-    private function lazy(string $url, array $params = []): LazyCollection
+    /**
+     * @return LazyCollection<int, array<string, mixed>>
+     */
+    private function lazy(string $url): LazyCollection
     {
-        return LazyCollection::make(function () use ($url, $params) {
+        return LazyCollection::make(function () use ($url) {
             $perPage = 100;
             $page = 1;
 
             do {
                 $response = $this->http()->get($url, [
-                    ...$params,
                     'per_page' => $perPage,
                     'page' => $page,
                 ])->throw();
