@@ -84,12 +84,12 @@ abstract class Client
     abstract public function project(string $id): Project;
 
     /**
-     * @return LazyCollection<int, Branch[]>
+     * @return LazyCollection<int, Branch>
      */
     abstract public function branches(Project $project): LazyCollection;
 
     /**
-     * @return LazyCollection<int, Tag[]>
+     * @return LazyCollection<int, Tag>
      */
     abstract public function tags(Project $project): LazyCollection;
 
