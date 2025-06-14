@@ -6,8 +6,11 @@ use App\Exceptions\InvalidTokenException;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Normalizer;
+use App\Sources\Branch;
 use App\Sources\GitHub\GitHubClient;
 use App\Sources\Project;
+use App\Sources\Tag;
+use Illuminate\Support\LazyCollection;
 
 beforeEach(function () {
     $this->github = app(GitHubClient::class)->withOptions(
@@ -101,11 +104,17 @@ it('fetches project tags', function () {
         ),
     ]);
 
-    $tags = $this->github->tags($this->project);
+    $collection = $this->github->tags($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $tags = $collection->collect();
 
     expect($tags)
         ->toHaveCount(36)
         ->and($tags[0])
+        ->toBeInstanceOf(Tag::class)
         ->id->toBe("{$this->project->id}")
         ->name->toBe('v0.11.0')
         ->url->toBe(Normalizer::url($this->project->webUrl))
@@ -123,11 +132,17 @@ it('fetches project branches', function () {
         "https://api.github.com/repositories/867865331/branches?page=2" => Http::response(File::get(__DIR__.'/../Fixtures/Github/branches-2.json')),
     ]);
 
-    $branches = $this->github->branches($this->project);
+    $collection = $this->github->branches($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $branches = $collection->collect();
 
     expect($branches)
         ->toHaveCount(5)
         ->and($branches[0])
+        ->toBeInstanceOf(Branch::class)
         ->id->toBe("{$this->project->id}")
         ->name->toBe('favicon')
         ->url->toBe(Normalizer::url($this->project->webUrl))

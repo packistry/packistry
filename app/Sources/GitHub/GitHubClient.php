@@ -52,7 +52,7 @@ class GitHubClient extends Client
     /**
      * @throws ConnectionException|RequestException
      */
-    public function branches(Project $project): array
+    public function branches(Project $project): LazyCollection
     {
         return $this->lazy("{$project->url}/branches")
             ->map(fn (array $item): Branch => new Branch(
@@ -60,14 +60,13 @@ class GitHubClient extends Client
                 name: $item['name'],
                 url: Normalizer::url($project->webUrl),
                 zipUrl: "{$project->url}/zipball/refs/heads/{$item['name']}",
-            ))
-            ->all();
+            ));
     }
 
     /**
      * @throws ConnectionException|RequestException
      */
-    public function tags(Project $project): array
+    public function tags(Project $project): LazyCollection
     {
         return $this->lazy("{$project->url}/tags")
             ->map(fn (array $item): Tag => new Tag(
@@ -75,8 +74,7 @@ class GitHubClient extends Client
                 name: $item['name'],
                 url: Normalizer::url($project->webUrl),
                 zipUrl: $item['zipball_url'],
-            ))
-            ->all();
+            ));
     }
 
     /**
