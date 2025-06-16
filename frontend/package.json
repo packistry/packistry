@@ -69,6 +69,6 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.8.3",
     "use-debounce": "^10.0.5",
-    "zod": "^3.25.61"
+    "zod": "^3.25.65"
   }
 }
