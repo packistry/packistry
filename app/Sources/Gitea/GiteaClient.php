@@ -12,6 +12,7 @@ use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
 use App\Sources\Traits\BearerToken;
+use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\LazyCollection;
@@ -47,7 +48,7 @@ class GiteaClient extends Client
      */
     public function branches(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/branches")
+        return $this->lazy("$project->url/branches")
             ->map(fn (array $item): Branch => new Branch(
                 id: (string) $project->id,
                 name: $item['name'],
@@ -61,7 +62,7 @@ class GiteaClient extends Client
      */
     public function tags(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/tags")
+        return $this->lazy("$project->url/tags")
             ->map(fn (array $item): Tag => new Tag(
                 id: (string) $project->id,
                 name: $item['name'],
@@ -114,7 +115,7 @@ class GiteaClient extends Client
     {
         try {
             $projects = $this->projects();
-        } catch (\Exception) {
+        } catch (Exception) {
             throw new InvalidTokenException(missingScopes: ['read:repository']);
         }
 
@@ -134,7 +135,11 @@ class GiteaClient extends Client
     }
 
     /**
-     * @return LazyCollection<int, array<string, mixed>>
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
      */
     private function lazy(string $uri): LazyCollection
     {

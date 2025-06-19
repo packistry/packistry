@@ -54,12 +54,12 @@ class GitHubClient extends Client
      */
     public function branches(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/branches")
+        return $this->lazy("$project->url/branches")
             ->map(fn (array $item): Branch => new Branch(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: Normalizer::url($project->webUrl),
-                zipUrl: "{$project->url}/zipball/refs/heads/{$item['name']}",
+                zipUrl: "$project->url/zipball/refs/heads/{$item['name']}",
             ));
     }
 
@@ -68,7 +68,7 @@ class GitHubClient extends Client
      */
     public function tags(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/tags")
+        return $this->lazy("$project->url/tags")
             ->map(fn (array $item): Tag => new Tag(
                 id: (string) $project->id,
                 name: $item['name'],
@@ -117,8 +117,8 @@ class GitHubClient extends Client
      */
     public function validateToken(): void
     {
-        // Fine-grained personal access tokens, does not respond with scopes in header
-        // lets try and manual check
+        // Fine-grained personal access tokens do not respond with scopes in the header
+        // let's try and manual check
         if (str_starts_with($this->token, 'github_pat_')) {
             $this->validateTokenManually();
 
@@ -167,7 +167,11 @@ class GitHubClient extends Client
     }
 
     /**
-     * @return LazyCollection<int, array<string, mixed>>
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
      */
     private function lazy(string $uri): LazyCollection
     {
@@ -193,9 +197,7 @@ class GitHubClient extends Client
                 $matches = [];
                 preg_match('/<([^>]+?)>; rel="next"/', $link, $matches);
 
-                $nextUri = isset($matches[1])
-                    ? $matches[1]
-                    : null;
+                $nextUri = $matches[1] ?? null;
             }
         });
     }

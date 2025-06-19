@@ -65,12 +65,12 @@ class GitlabClient extends Client
      */
     public function branches(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/repository/branches")
+        return $this->lazy("$project->url/repository/branches")
             ->map(fn (array $branch): Branch => new Branch(
                 id: (string) $project->id,
                 name: $branch['name'],
                 url: $project->url,
-                zipUrl: "{$project->url}/repository/archive.zip?sha={$branch['commit']['id']}",
+                zipUrl: "$project->url/repository/archive.zip?sha={$branch['commit']['id']}",
             ));
     }
 
@@ -79,7 +79,7 @@ class GitlabClient extends Client
      */
     public function tags(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/repository/tags")
+        return $this->lazy("$project->url/repository/tags")
             ->map(fn (array $tag): Tag => new Tag(
                 id: (string) $project->id,
                 name: $tag['name'],
@@ -141,7 +141,11 @@ class GitlabClient extends Client
     }
 
     /**
-     * @return LazyCollection<int, array<string, mixed>>
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
      */
     private function lazy(string $url): LazyCollection
     {

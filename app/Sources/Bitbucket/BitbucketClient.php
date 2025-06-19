@@ -96,12 +96,12 @@ class BitbucketClient extends Client
      */
     public function branches(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/refs/branches")
+        return $this->lazy("$project->url/refs/branches")
             ->map(fn (array $item): Branch => new Branch(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
-                zipUrl: "{$project->webUrl}/get/{$item['name']}.zip"
+                zipUrl: "$project->webUrl/get/{$item['name']}.zip"
             ));
     }
 
@@ -110,12 +110,12 @@ class BitbucketClient extends Client
      */
     public function tags(Project $project): LazyCollection
     {
-        return $this->lazy("{$project->url}/refs/tags")
+        return $this->lazy("$project->url/refs/tags")
             ->map(fn (array $item): Tag => new Tag(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
-                zipUrl: "{$project->webUrl}/get/{$item['name']}.zip"
+                zipUrl: "$project->webUrl/get/{$item['name']}.zip"
             ));
     }
 
@@ -194,7 +194,11 @@ class BitbucketClient extends Client
     }
 
     /**
-     * @return LazyCollection<int, array<string, mixed>>
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
      */
     private function lazy(string $uri): LazyCollection
     {
