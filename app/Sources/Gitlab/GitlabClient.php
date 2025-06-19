@@ -16,6 +16,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\LazyCollection;
 use RuntimeException;
 
 class GitlabClient extends Client
@@ -62,77 +63,29 @@ class GitlabClient extends Client
     /**
      * @throws ConnectionException|RequestException
      */
-    public function branches(Project $project): array
+    public function branches(Project $project): LazyCollection
     {
-        $branches = [];
-        $perPage = 100;
-        $page = 1;
-
-        do {
-            $response = $this->http()->get("$project->url/repository/branches", [
-                'per_page' => $perPage,
-                'page' => $page,
-            ])->throw();
-
-            $data = $response->json();
-
-            if (is_null($data)) {
-                throw new RuntimeException($response->getBody()->getContents());
-            }
-
-            foreach ($data as $branch) {
-                $sha = $branch['commit']['id'];
-
-                $branches[] = new Branch(
-                    id: (string) $project->id,
-                    name: $branch['name'],
-                    url: $project->url,
-                    zipUrl: "$project->url/repository/archive.zip?sha=$sha",
-                );
-            }
-
-            $page++;
-        } while ($response->header('x-next-page'));
-
-        return $branches;
+        return $this->lazy("$project->url/repository/branches")
+            ->map(fn (array $branch): Branch => new Branch(
+                id: (string) $project->id,
+                name: $branch['name'],
+                url: $project->url,
+                zipUrl: "$project->url/repository/archive.zip?sha={$branch['commit']['id']}",
+            ));
     }
 
     /**
      * @throws ConnectionException|RequestException
      */
-    public function tags(Project $project): array
+    public function tags(Project $project): LazyCollection
     {
-        $tags = [];
-        $perPage = 100;
-        $page = 1;
-
-        do {
-            $response = $this->http()->get("$project->url/repository/tags", [
-                'per_page' => $perPage,
-                'page' => $page,
-            ])->throw();
-
-            $data = $response->json();
-
-            if (is_null($data)) {
-                throw new RuntimeException($response->getBody()->getContents());
-            }
-
-            foreach ($data as $tag) {
-                $sha = $tag['commit']['id'];
-
-                $tags[] = new Tag(
-                    id: (string) $project->id,
-                    name: $tag['name'],
-                    url: $project->url,
-                    zipUrl: "$project->url/repository/archive.zip?sha=$sha",
-                );
-            }
-
-            $page++;
-        } while ($response->header('x-next-page'));
-
-        return $tags;
+        return $this->lazy("$project->url/repository/tags")
+            ->map(fn (array $tag): Tag => new Tag(
+                id: (string) $project->id,
+                name: $tag['name'],
+                url: $project->url,
+                zipUrl: "$project->url/repository/archive.zip?sha={$tag['commit']['id']}",
+            ));
     }
 
     /**
@@ -185,5 +138,39 @@ class GitlabClient extends Client
                 missingScopes: ['api']
             );
         }
+    }
+
+    /**
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
+     */
+    private function lazy(string $url): LazyCollection
+    {
+        return LazyCollection::make(function () use ($url) {
+            $perPage = 100;
+            $page = 1;
+
+            do {
+                $response = $this->http()->get($url, [
+                    'per_page' => $perPage,
+                    'page' => $page,
+                ])->throw();
+
+                $data = $response->json();
+
+                if (is_null($data)) {
+                    throw new RuntimeException($response->getBody()->getContents());
+                }
+
+                foreach ($data as $item) {
+                    yield $item;
+                }
+
+                $page++;
+            } while ($response->header('x-next-page'));
+        });
     }
 }

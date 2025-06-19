@@ -1,0 +1,18 @@
+[
+  {
+    "name": "remove-version-creating-model-event",
+    "commit": {
+      "sha": "3a3ed9a61e373310ce0ca2f7a8fc7490c9096424",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/3a3ed9a61e373310ce0ca2f7a8fc7490c9096424"
+    },
+    "protected": false
+  },
+  {
+    "name": "update-deps",
+    "commit": {
+      "sha": "c7ebb46229cdafe85d542a2aa846074302895db4",
+      "url": "https://api.github.com/repos/packistry/packistry/commits/c7ebb46229cdafe85d542a2aa846074302895db4"
+    },
+    "protected": false
+  }
+]
