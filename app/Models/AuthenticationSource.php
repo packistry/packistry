@@ -64,7 +64,6 @@ class AuthenticationSource extends Model
     protected $attributes = [
         'active' => true,
         'allow_registration' => false,
-//        'allowed_domains' => [],
     ];
 
     /**
@@ -86,7 +85,7 @@ class AuthenticationSource extends Model
             request: $request,
             clientId: $this->client_id,
             clientSecret: $this->client_secret,
-            redirectUrl: $this->callbackUrl(),
+            redirectUrl: $this->callbackUrl()
         );
     }
 

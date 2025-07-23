@@ -12,7 +12,6 @@ export function FormAuthenticationProviderDomainCheckboxGroup(props: FormAuthent
     return (
         <FormInputCheckboxGroup
             options={options}
-            // loading={query.isLoading}
             name="allowedDomains"
             label="Allowed domains"
             {...props}

@@ -34,7 +34,9 @@ export function FormInputCheckboxGroup({
         ? options
         : options.filter((option) => option.toLowerCase().includes(searchTerm.toLowerCase()))
 
-    const dynamicFilteredOptions = (searchTerm && !filteredOptions.includes(searchTerm.toLowerCase())) ? [...filteredOptions, searchTerm.toLowerCase()] : filteredOptions
+    const dynamicFilteredOptions = (searchTerm && !filteredOptions.includes(searchTerm.toLowerCase()))
+        ? [...filteredOptions, searchTerm.toLowerCase()]
+        : filteredOptions
 
     return (
         <FormField
