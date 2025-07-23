@@ -31,6 +31,8 @@ class AuthenticationSourceFactory extends Factory
             'client_id' => Str::random(),
             'client_secret' => Str::random(),
             'discovery_url' => "$baseUrl/.well-known/openid-configuration",
+            'allow_registration' => false,
+            'allowed_domains' => [],
         ];
     }
 }
