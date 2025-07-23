@@ -24,7 +24,9 @@ class StoreAuthenticationSourceInput extends Input
         public ?string $discoveryUrl = '',
         public bool $active = true,
         public Role $defaultUserRole = Role::USER,
-        public ?array $defaultUserRepositories = []
+        public ?array $defaultUserRepositories = [],
+        public ?array $allowedDomains = [],
+        public bool $allowRegistration = false
     ) {
         //
     }

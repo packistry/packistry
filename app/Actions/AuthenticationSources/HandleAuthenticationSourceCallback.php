@@ -42,6 +42,11 @@ readonly class HandleAuthenticationSourceCallback
             throw new RuntimeException('Email not provided');
         }
 
+        // check if email domain is in the allowed domain list
+        if (!$source->check_domain($email)) {
+            throw new RuntimeException('Email is not permitted');
+        }
+
         $user = $source
             ->users()
             ->where('external_id', $providedUser->getId())
@@ -55,6 +60,18 @@ readonly class HandleAuthenticationSourceCallback
         }
 
         if ($user === null) {
+            // user registration flow
+
+            // check if registration for this method is allowed
+            if (!$source->allow_registration) {
+                throw new RuntimeException('Registration on this authentication source is not allowed');
+            }
+
+            // check if email domain is in the allowed domain list
+            if (!$source->check_domain($email)) {
+                throw new RuntimeException('Email is not permitted');
+            }
+
             $user = $this->store->handle(
                 new StoreUserInput(
                     name: $providedUser->getName() ?? '',

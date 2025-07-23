@@ -15,6 +15,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -109,7 +110,8 @@ class AuthController
 
             return redirect('/');
         } catch (Throwable $e) {
-            return redirect('/login');
+            $target = Arr::query(['oauth_error' => $e->getMessage()]);
+            return redirect("/login?$target");
         }
     }
 }
