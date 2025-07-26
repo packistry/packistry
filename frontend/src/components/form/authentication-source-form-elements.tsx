@@ -7,6 +7,9 @@ import { FormSwitch } from '@/components/form/elements/form-switch'
 import { StoreAuthenticationSourceInput, UpdateAuthenticationSourceInput } from '@/api/authentication-source'
 import { FormAuthenticationProviderSelect } from '@/components/form/elements/form-authentication-provider-select'
 import { AuthenticationProvider, providerIcons } from '@/api/authentication-provider'
+import {
+    FormAuthenticationProviderDomainCheckboxGroup
+} from "@/components/form/elements/form-authentication-provider-domain";
 
 export function AuthenticationSourceFormElements({
     form,
@@ -16,6 +19,7 @@ export function AuthenticationSourceFormElements({
     const role = form.watch('defaultUserRole')
     const iconUrl = form.watch('iconUrl')
     const provider = form.watch('provider')
+    const domain = form.watch('allowedDomains')
 
     return (
         <div className="flex gap-6">
@@ -81,6 +85,13 @@ export function AuthenticationSourceFormElements({
                         />
                     )}
                 </div>
+                <FormAuthenticationProviderDomainCheckboxGroup
+                    label="Allowed domains"
+                    description="Allowed domains that able to authentication with this source."
+                    name="allowedDomains"
+                    options={domain}
+                    control={form.control}
+                />
             </div>
 
             <div className="space-y-4">
@@ -106,6 +117,12 @@ export function AuthenticationSourceFormElements({
                     label="Active"
                     description="Enable or disable this authentication source. When deactivated, users will be unable to sign in using this source. Personal tokens from users using this source will remain active."
                     name="active"
+                    control={form.control}
+                />
+                <FormSwitch
+                    label="Allow Registraion"
+                    description="Allow or reject new user registraion on this authentication source. When deactivated, new users will be unable to sign in using this source."
+                    name="allowRegistration"
                     control={form.control}
                 />
             </div>

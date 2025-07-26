@@ -8,12 +8,15 @@ import { useLogin, usePublicAuthenticationSources } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { Form } from '@/components/ui/form'
 import { Separator } from '@/components/ui/separator'
+import { CircleX } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const fallback = '/' as const
 
 export const Route = createFileRoute('/login')({
     validateSearch: z.object({
         redirect: z.string().optional().catch(''),
+        oauth_error: z.string().optional().catch(''),
     }),
     beforeLoad: ({ context, search }) => {
         if (context.auth.isAuthenticated) {
@@ -48,6 +51,14 @@ export default function LoginComponent() {
                     <CardTitle>Sign in to your account</CardTitle>
                     <CardDescription>Enter your credentials to access your account</CardDescription>
                 </CardHeader>
+
+                {(typeof search.oauth_error !== 'undefined') && (
+                    <Alert variant="darkDestructive">
+                        <CircleX className="h-4 w-4" />
+                        <AlertTitle>Unable to login</AlertTitle>
+                        <AlertDescription>{search.oauth_error}</AlertDescription>
+                    </Alert>
+                )}
 
                 <Form {...form}>
                     <form onSubmit={onSubmit}>

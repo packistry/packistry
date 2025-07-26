@@ -34,6 +34,8 @@ class AuthenticationSourceResource extends JsonResource
             'repositories' => RepositoryResource::collection($this->whenLoaded('repositories')),
             'callback_url' => $this->callbackUrl(),
             'active' => $this->active,
+            'allow_registration' => $this->allow_registration,
+            'allowed_domains' => $this->allowed_domains,
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
