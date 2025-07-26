@@ -5,7 +5,7 @@ import {
     FormInputCheckboxGroupProps,
 } from '@/components/form/elements/form-input-checkbox-group'
 
-export type FormAuthenticationProviderDomainCheckboxGroupProps = Omit<Optional<FormInputCheckboxGroupProps, 'name' | 'label'>, 'options'>
+export type FormAuthenticationProviderDomainCheckboxGroupProps = Optional<FormInputCheckboxGroupProps, 'name' | 'label'>
 export function FormAuthenticationProviderDomainCheckboxGroup(props: FormAuthenticationProviderDomainCheckboxGroupProps) {
     const options = props.options || []
 

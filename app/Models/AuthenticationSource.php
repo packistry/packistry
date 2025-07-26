@@ -33,7 +33,7 @@ use function Symfony\Component\String\u;
  * @property Role $default_user_role
  * @property bool $active
  * @property bool $allow_registration
- * @property array $allowed_domains
+ * @property array<string>|null $allowed_domains
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Repository> $repositories

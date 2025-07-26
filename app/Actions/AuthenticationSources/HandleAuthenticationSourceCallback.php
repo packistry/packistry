@@ -18,6 +18,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use RuntimeException;
 
+enum OAUTH_ERRORS: string {
+     case REGISTRATION_NOT_ALLOWED = "Registration on this authentication source is not allowed";
+     case EXPECT_EMAIL = "Email not provided";
+     case INVALID_DOMAIN = "Email is not permitted";
+};
+
 readonly class HandleAuthenticationSourceCallback
 {
     public function __construct(
@@ -39,12 +45,12 @@ readonly class HandleAuthenticationSourceCallback
         $email = $providedUser->getEmail();
 
         if ($email === null) {
-            throw new RuntimeException('Email not provided');
+            throw new RuntimeException(OAUTH_ERRORS::EXPECT_EMAIL->value);
         }
 
         // check if email domain is in the allowed domain list
         if (!$source->check_domain($email)) {
-            throw new RuntimeException('Email is not permitted');
+            throw new RuntimeException(OAUTH_ERRORS::INVALID_DOMAIN->value);
         }
 
         $user = $source
@@ -64,12 +70,7 @@ readonly class HandleAuthenticationSourceCallback
 
             // check if registration for this method is allowed
             if (!$source->allow_registration) {
-                throw new RuntimeException('Registration on this authentication source is not allowed');
-            }
-
-            // check if email domain is in the allowed domain list
-            if (!$source->check_domain($email)) {
-                throw new RuntimeException('Email is not permitted');
+                throw new RuntimeException(OAUTH_ERRORS::REGISTRATION_NOT_ALLOWED->value);
             }
 
             $user = $this->store->handle(
