@@ -20,6 +20,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Laravel\Socialite\Two\ProviderInterface;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -107,15 +108,11 @@ class AuthenticationSource extends Model
             ->where('allow_registration', true);
     }
 
-    /**
-     * @param string $email
-     * @return bool
-     */
     public function check_domain(string $email): bool
     {
         $domain = u($email)->after('@')->toString();
         // consider empty allowed domains as fallback allowed
-        if (!isset($this->allowed_domains) || count($this->allowed_domains) === 0) {
+        if (! isset($this->allowed_domains) || count($this->allowed_domains) === 0) {
             return true;
         }
 

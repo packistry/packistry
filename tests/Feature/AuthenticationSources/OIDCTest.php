@@ -18,13 +18,13 @@ beforeEach(function () {
     $this->source = AuthenticationSource::factory()->create([
         'provider' => AuthenticationProvider::OIDC,
         'allow_registration' => true,
-        'allowed_domains' => ["example.com"]
+        'allowed_domains' => ['example.com'],
     ]);
 
     $this->source_oidc_deny_registration = AuthenticationSource::factory()->create([
         'provider' => AuthenticationProvider::OIDC,
         'allow_registration' => false,
-        'allowed_domains' => ["example.com"]
+        'allowed_domains' => ['example.com'],
     ]);
 
     $baseUrl = parse_url($this->source->discovery_url)['host'];
@@ -110,7 +110,7 @@ it('handles OIDC callback and deny user creation', function () {
         ]),
     ]);
 
-    $msg = urlencode(OAUTH_ERRORS::REGISTRATION_NOT_ALLOWED->value);
+    $msg = rawurlencode(OAUTH_ERRORS::REGISTRATION_NOT_ALLOWED->value);
 
     get("{$this->source_oidc_deny_registration->callbackUrl()}?state=$state")
         ->assertRedirect("/login?oauth_error=$msg");
@@ -132,7 +132,7 @@ it('handles OIDC callback and allow user creation but domain mismatch', function
         ]),
     ]);
 
-    $msg = urlencode(OAUTH_ERRORS::INVALID_DOMAIN->value);
+    $msg = rawurlencode(OAUTH_ERRORS::INVALID_DOMAIN->value);
 
     get("{$this->source->callbackUrl()}?state=$state")
         ->assertRedirect("/login?oauth_error=$msg");
@@ -231,10 +231,10 @@ it('fails login if OIDC provider returns an error', function () {
 
     session()->put('state', $state = Str::random(40));
 
-    $msg = urlencode("HTTP request returned status code 503");
+    $msg = rawurlencode('HTTP request returned status code 503');
 
     get("{$this->source->callbackUrl()}?state=$state")
-        ->assertRedirect("/login?oauth_error=$$msg");
+        ->assertRedirect("/login?oauth_error=$msg");
 
     expect(Auth::check())->toBeFalse();
 });

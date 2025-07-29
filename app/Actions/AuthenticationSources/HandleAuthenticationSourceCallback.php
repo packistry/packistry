@@ -18,10 +18,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-enum OAUTH_ERRORS: string {
-     case REGISTRATION_NOT_ALLOWED = "Registration on this authentication source is not allowed";
-     case EXPECT_EMAIL = "Email not provided";
-     case INVALID_DOMAIN = "Email is not permitted";
+enum OAUTH_ERRORS: string
+{
+    case REGISTRATION_NOT_ALLOWED = 'Registration on this authentication source is not allowed';
+    case EXPECT_EMAIL = 'Email not provided';
+    case INVALID_DOMAIN = 'Email is not permitted';
 };
 
 readonly class HandleAuthenticationSourceCallback
@@ -49,7 +50,7 @@ readonly class HandleAuthenticationSourceCallback
         }
 
         // check if email domain is in the allowed domain list
-        if (!$source->check_domain($email)) {
+        if (! $source->check_domain($email)) {
             throw new RuntimeException(OAUTH_ERRORS::INVALID_DOMAIN->value);
         }
 
@@ -69,7 +70,7 @@ readonly class HandleAuthenticationSourceCallback
             // user registration flow
 
             // check if registration for this method is allowed
-            if (!$source->allow_registration) {
+            if (! $source->allow_registration) {
                 throw new RuntimeException(OAUTH_ERRORS::REGISTRATION_NOT_ALLOWED->value);
             }
 

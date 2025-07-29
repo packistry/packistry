@@ -13,6 +13,7 @@ class UpdateAuthenticationSourceInput extends Input
 {
     /**
      * @param  string[]  $defaultUserRepositories
+     * @param  string[]  $allowedDomains
      */
     public function __construct(
         public string $name,

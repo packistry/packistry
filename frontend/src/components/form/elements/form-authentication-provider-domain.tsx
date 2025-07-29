@@ -7,11 +7,8 @@ import {
 
 export type FormAuthenticationProviderDomainCheckboxGroupProps = Optional<FormInputCheckboxGroupProps, 'name' | 'label'>
 export function FormAuthenticationProviderDomainCheckboxGroup(props: FormAuthenticationProviderDomainCheckboxGroupProps) {
-    const options = props.options || []
-
     return (
         <FormInputCheckboxGroup
-            options={options}
             name="allowedDomains"
             label="Allowed domains"
             {...props}

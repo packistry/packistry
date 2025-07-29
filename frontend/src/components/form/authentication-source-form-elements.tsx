@@ -89,7 +89,7 @@ export function AuthenticationSourceFormElements({
                     label="Allowed domains"
                     description="Allowed domains that able to authentication with this source."
                     name="allowedDomains"
-                    options={domain}
+                    options={domain || []}
                     control={form.control}
                 />
             </div>
