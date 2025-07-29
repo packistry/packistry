@@ -24,6 +24,8 @@ export const authenticationSource = z.object({
     discoveryUrl: z.string().nullable(),
     callbackUrl: z.string(),
     active: z.boolean(),
+    allowRegistration: z.boolean(),
+    allowedDomains: z.string().array().nullable(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })
@@ -63,6 +65,8 @@ export const storeAuthenticationSourceInput = z.object({
     clientSecret: z.string(),
     discoveryUrl: z.string().nullable(),
     active: z.boolean(),
+    allowRegistration: z.boolean(),
+    allowedDomains: z.string().array().nullable(),
 })
 
 export type StoreAuthenticationSourceInput = z.infer<typeof storeAuthenticationSourceInput>
@@ -82,6 +86,8 @@ export const updateAuthenticationSourceInput = z.object({
     clientSecret: z.string(),
     discoveryUrl: z.string().nullable(),
     active: z.boolean(),
+    allowRegistration: z.boolean(),
+    allowedDomains: z.string().array().nullable(),
 })
 
 export type UpdateAuthenticationSourceInput = z.infer<typeof updateAuthenticationSourceInput>

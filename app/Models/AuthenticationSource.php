@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Laravel\Socialite\Two\ProviderInterface;
 
+use function Symfony\Component\String\u;
+
 /**
  * @property int $id
  * @property string $name
@@ -31,6 +33,8 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property string|null $icon_url
  * @property Role $default_user_role
  * @property bool $active
+ * @property bool $allow_registration
+ * @property array<string>|null $allowed_domains
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Repository> $repositories
@@ -54,10 +58,13 @@ class AuthenticationSource extends Model
         'provider' => AuthenticationProvider::class,
         'default_user_role' => Role::class,
         'active' => 'boolean',
+        'allow_registration' => 'boolean',
+        'allowed_domains' => 'array',
     ];
 
     protected $attributes = [
         'active' => true,
+        'allow_registration' => false,
     ];
 
     /**
@@ -90,6 +97,31 @@ class AuthenticationSource extends Model
     {
         return self::query()
             ->where('active', true);
+    }
+
+    /**
+     * @return Builder<$this>
+     */
+    public static function allow_registration(): Builder
+    {
+        return self::query()
+            ->where('allow_registration', true);
+    }
+
+    public function check_domain(string $email): bool
+    {
+        $domain = u($email)->after('@')->toString();
+        // consider empty allowed domains as fallback allowed
+        if (! isset($this->allowed_domains) || count($this->allowed_domains) === 0) {
+            return true;
+        }
+
+        // allow matched domain
+        if (in_array($domain, $this->allowed_domains, true)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
