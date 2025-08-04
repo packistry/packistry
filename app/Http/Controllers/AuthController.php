@@ -111,9 +111,9 @@ class AuthController
 
             return redirect('/');
         } catch (AuthenticationSourceException $e) {
-            $target = Arr::query(['oauth_error' => $e->getMessage()]);
+            $query = Arr::query(['error' => $e->getMessage()]);
 
-            return redirect("/login?$target");
+            return redirect("/login?$query");
         } catch (Throwable) {
             return redirect('/login');
         }

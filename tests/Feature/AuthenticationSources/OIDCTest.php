@@ -112,7 +112,7 @@ it('handles OIDC callback and deny user creation', function () {
     $msg = rawurlencode('Registration on this authentication source is not allowed');
 
     get("{$this->source_oidc_deny_registration->callbackUrl()}?state=$state")
-        ->assertRedirect("/login?oauth_error=$msg");
+        ->assertRedirect("/login?error=$msg");
 
     expect(Auth::check())->toBeFalse();
 });
@@ -169,7 +169,7 @@ it('handles OIDC callback and allow user creation but domain mismatch', function
     $msg = rawurlencode('Email is not permitted');
 
     get("{$this->source->callbackUrl()}?state=$state")
-        ->assertRedirect("/login?oauth_error=$msg");
+        ->assertRedirect("/login?error=$msg");
 
     expect(Auth::check())->toBeFalse();
 });
