@@ -97,15 +97,6 @@ class AuthenticationSource extends Model
             ->where('active', true);
     }
 
-    /**
-     * @return Builder<$this>
-     */
-    public static function allow_registration(): Builder
-    {
-        return self::query()
-            ->where('allow_registration', true);
-    }
-
     public function isDomainAllowed(string $email): bool
     {
         $domain = str($email)
@@ -113,7 +104,7 @@ class AuthenticationSource extends Model
             ->lower()
             ->toString();
 
-        if (! isset($this->allowed_domains) || count($this->allowed_domains) === 0) {
+        if ($this->allowed_domains === null || count($this->allowed_domains) === 0) {
             return true;
         }
 

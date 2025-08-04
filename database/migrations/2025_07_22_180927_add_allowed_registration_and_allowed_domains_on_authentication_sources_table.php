@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('authentication_sources', function (Blueprint $table) {
-            $table->json('allowed_domains')->default('[]')->after('active');
-            $table->boolean('allow_registration')->default(false)->after('active');
+            $table->json('allowed_domains')->nullable()->after('active');
+            $table->boolean('allow_registration')->default(true)->after('active');
         });
     }
 
