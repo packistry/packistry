@@ -13,6 +13,7 @@ class UpdateAuthenticationSourceInput extends Input
 {
     /**
      * @param  string[]  $defaultUserRepositories
+     * @param  string[]  $allowedDomains
      */
     public function __construct(
         public string $name,
@@ -24,7 +25,9 @@ class UpdateAuthenticationSourceInput extends Input
         public ?string $discoveryUrl = '',
         public bool $active = true,
         public Role $defaultUserRole = Role::USER,
-        public ?array $defaultUserRepositories = []
+        public ?array $defaultUserRepositories = [],
+        public ?array $allowedDomains = [],
+        public bool $allowRegistration = false
     ) {
         //
     }

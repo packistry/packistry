@@ -31,6 +31,8 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property string|null $icon_url
  * @property Role $default_user_role
  * @property bool $active
+ * @property bool $allow_registration
+ * @property array<string>|null $allowed_domains
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Repository> $repositories
@@ -54,10 +56,13 @@ class AuthenticationSource extends Model
         'provider' => AuthenticationProvider::class,
         'default_user_role' => Role::class,
         'active' => 'boolean',
+        'allow_registration' => 'boolean',
+        'allowed_domains' => 'array',
     ];
 
     protected $attributes = [
         'active' => true,
+        'allow_registration' => true,
     ];
 
     /**
@@ -90,6 +95,20 @@ class AuthenticationSource extends Model
     {
         return self::query()
             ->where('active', true);
+    }
+
+    public function isDomainAllowed(string $email): bool
+    {
+        $domain = str($email)
+            ->after('@')
+            ->lower()
+            ->toString();
+
+        if ($this->allowed_domains === null || count($this->allowed_domains) === 0) {
+            return true;
+        }
+
+        return in_array($domain, $this->allowed_domains, true);
     }
 
     /**

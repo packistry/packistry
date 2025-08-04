@@ -7,6 +7,7 @@ import { FormSwitch } from '@/components/form/elements/form-switch'
 import { StoreAuthenticationSourceInput, UpdateAuthenticationSourceInput } from '@/api/authentication-source'
 import { FormAuthenticationProviderSelect } from '@/components/form/elements/form-authentication-provider-select'
 import { AuthenticationProvider, providerIcons } from '@/api/authentication-provider'
+import { FormAuthenticationProviderDomainList } from '@/components/form/elements/form-authentication-provider-domain-list'
 
 export function AuthenticationSourceFormElements({
     form,
@@ -49,7 +50,7 @@ export function AuthenticationSourceFormElements({
                                 //
                             }
                         }}
-                        description="Enter the url where the OpenID configuration can be found. e.g. https://company.okta.com/.well-known/openid-configuration"
+                        description="Enter the URL where the OpenID configuration can be found (e.g., https://company.okta.com/.well-known/openid-configuration)."
                         control={form.control}
                     />
                 )}
@@ -69,7 +70,7 @@ export function AuthenticationSourceFormElements({
                         <FormInput
                             label="Icon URL"
                             name="iconUrl"
-                            description="Enter the url of an icon. Publicly visible on the sign in page."
+                            description="Enter the URL of an icon. Publicly visible on the sign-in page."
                             control={form.control}
                         />
                     </div>
@@ -81,6 +82,12 @@ export function AuthenticationSourceFormElements({
                         />
                     )}
                 </div>
+                <FormAuthenticationProviderDomainList
+                    label="Allowed domains"
+                    description="Domains that are allowed to authenticate with this source. If left empty, all domains are allowed."
+                    name="allowedDomains"
+                    control={form.control}
+                />
             </div>
 
             <div className="space-y-4">
@@ -102,6 +109,12 @@ export function AuthenticationSourceFormElements({
                         control={form.control}
                     />
                 )}
+                <FormSwitch
+                    label="Allow Registration"
+                    description="Allow or reject new user registration on this authentication source. When deactivated, new users will be unable to sign in using this source."
+                    name="allowRegistration"
+                    control={form.control}
+                />
                 <FormSwitch
                     label="Active"
                     description="Enable or disable this authentication source. When deactivated, users will be unable to sign in using this source. Personal tokens from users using this source will remain active."

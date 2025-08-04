@@ -39,6 +39,7 @@ it('stores', function (?User $user, int $status): void {
         'active' => fake()->boolean,
         'default_user_role' => fake()->randomElement(Role::cases()),
         'default_user_repositories' => $repositories->pluck('id'),
+        'allowed_domains' => ['example.com', 'example.Com', 'Test.com'],
     ])
         ->assertStatus($status);
 
@@ -61,6 +62,7 @@ it('stores', function (?User $user, int $status): void {
         ->client_id->toBe($attributes['client_id'])
         ->client_secret->toBe($attributes['client_secret'])
         ->discovery_url->toBe($attributes['discovery_url'])
+        ->allowed_domains->toBe(['example.com', 'test.com'])
         ->and($source->repositories->pluck('id'))->toEqual($repositories->pluck('id'));
 })
     ->with(guestAndUsers(Permission::AUTHENTICATION_SOURCE_CREATE, userWithPermission: 201));

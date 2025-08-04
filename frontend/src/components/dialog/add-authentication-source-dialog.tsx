@@ -30,6 +30,8 @@ export function AddAuthenticationSourceDialog(props: AddAuthenticationSourceDial
             clientSecret: '',
             discoveryUrl: '',
             active: true,
+            allowRegistration: true,
+            allowedDomains: [],
         },
         onSuccess() {
             form.reset()
