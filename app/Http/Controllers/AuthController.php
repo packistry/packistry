@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\AuthenticationSources\HandleAuthenticationSourceCallback;
 use App\Actions\Users\Inputs\UpdateMeInput;
 use App\Actions\Users\UpdateMe;
+use App\Exceptions\AuthenticationSourceException;
 use App\Http\Resources\PublicAuthenticationSourceResource;
 use App\Http\Resources\UserResource;
 use App\Models\AuthenticationSource;
@@ -109,10 +110,12 @@ class AuthController
             Auth::login($user);
 
             return redirect('/');
-        } catch (Throwable $e) {
+        } catch (AuthenticationSourceException $e) {
             $target = Arr::query(['oauth_error' => $e->getMessage()]);
 
             return redirect("/login?$target");
+        } catch (Throwable) {
+            return redirect('/login');
         }
     }
 }

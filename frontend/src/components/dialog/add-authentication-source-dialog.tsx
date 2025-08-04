@@ -30,7 +30,7 @@ export function AddAuthenticationSourceDialog(props: AddAuthenticationSourceDial
             clientSecret: '',
             discoveryUrl: '',
             active: true,
-            allowRegistration: false,
+            allowRegistration: true,
             allowedDomains: [],
         },
         onSuccess() {

@@ -37,7 +37,7 @@ class StoreAuthenticationSource
             $source->default_user_role = $input->defaultUserRole;
 
             $source->allow_registration = $input->allowRegistration;
-            $source->allowed_domains = $input->allowedDomains;
+            $source->allowed_domains = array_values(array_unique(array_map('strtolower', $input->allowedDomains ?? [])));
 
             $source->save();
 

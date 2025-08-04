@@ -12,7 +12,7 @@ export function FormSwitch({ control, label, name, description }: FormSwitchProp
             name={name}
             render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 max-w-10/12">
                         <FormLabel className="text-base">{label}</FormLabel>
                         {description && <FormDescription>{description}</FormDescription>}
                     </div>

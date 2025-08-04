@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Actions\AuthenticationSources\OAUTH_ERRORS;
 use App\Enums\AuthenticationProvider;
 use App\Enums\Role;
 use App\Models\AuthenticationSource;
@@ -110,12 +109,47 @@ it('handles OIDC callback and deny user creation', function () {
         ]),
     ]);
 
-    $msg = rawurlencode(OAUTH_ERRORS::REGISTRATION_NOT_ALLOWED->value);
+    $msg = rawurlencode('Registration on this authentication source is not allowed');
 
     get("{$this->source_oidc_deny_registration->callbackUrl()}?state=$state")
         ->assertRedirect("/login?oauth_error=$msg");
 
     expect(Auth::check())->toBeFalse();
+});
+
+it('allows registration from any domain with empty list', function () {
+    session()->put('state', $state = Str::random(40));
+
+    $source = AuthenticationSource::factory()->create([
+        'provider' => AuthenticationProvider::OIDC,
+        'allow_registration' => true,
+        'allowed_domains' => [],
+    ]);
+
+    $baseUrl = parse_url($source->discovery_url)['host'];
+
+    $config = new OIDCConfiguration(
+        userinfoEndpoint: "$baseUrl/oauth2/v1/userinfo",
+        tokenEndpoint: "$baseUrl/oauth2/v1/token",
+        authorizationEndpoint: "$baseUrl/oauth2/v1/authorize",
+    );
+
+    Http::fake([
+        $source->discovery_url => Http::response($config->toArray()),
+        $config->userinfoEndpoint => Http::response([
+            'sub' => '123456',
+            'name' => 'John Doe',
+            'email' => 'johndoe@example.net',
+        ]),
+        $config->tokenEndpoint => Http::response([
+            'access_token' => Str::random(),
+        ]),
+    ]);
+
+    get("{$source->callbackUrl()}?state=$state")
+        ->assertRedirect('/');
+
+    expect(Auth::check())->toBeTrue();
 });
 
 it('handles OIDC callback and allow user creation but domain mismatch', function () {
@@ -132,7 +166,7 @@ it('handles OIDC callback and allow user creation but domain mismatch', function
         ]),
     ]);
 
-    $msg = rawurlencode(OAUTH_ERRORS::INVALID_DOMAIN->value);
+    $msg = rawurlencode('Email is not permitted');
 
     get("{$this->source->callbackUrl()}?state=$state")
         ->assertRedirect("/login?oauth_error=$msg");
@@ -224,17 +258,15 @@ it('updates existing user on OIDC login with deny of user registration logic', f
         ->and(Auth::check())->toBeTrue();
 });
 
-it('fails login if OIDC provider returns an error', function () {
+it('does not show error message for other exceptions', function () {
     Http::fake([
         '*' => Http::response(status: 503),
     ]);
 
     session()->put('state', $state = Str::random(40));
 
-    $msg = rawurlencode('HTTP request returned status code 503');
-
     get("{$this->source->callbackUrl()}?state=$state")
-        ->assertRedirect("/login?oauth_error=$msg");
+        ->assertRedirect('/login');
 
     expect(Auth::check())->toBeFalse();
 });

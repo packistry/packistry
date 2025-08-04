@@ -10,20 +10,15 @@ use App\Actions\Users\StoreUser;
 use App\Actions\Users\UpdateUser;
 use App\Enums\Role;
 use App\Exceptions\EmailAlreadyTakenException;
+use App\Exceptions\EmailMissingException;
+use App\Exceptions\InvalidDomainException;
+use App\Exceptions\RegistrationNotAllowedException;
 use App\Models\AuthenticationSource;
 use App\Models\User;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use RuntimeException;
-
-enum OAUTH_ERRORS: string
-{
-    case REGISTRATION_NOT_ALLOWED = 'Registration on this authentication source is not allowed';
-    case EXPECT_EMAIL = 'Email not provided';
-    case INVALID_DOMAIN = 'Email is not permitted';
-};
 
 readonly class HandleAuthenticationSourceCallback
 {
@@ -46,12 +41,11 @@ readonly class HandleAuthenticationSourceCallback
         $email = $providedUser->getEmail();
 
         if ($email === null) {
-            throw new RuntimeException(OAUTH_ERRORS::EXPECT_EMAIL->value);
+            throw new EmailMissingException;
         }
 
-        // check if email domain is in the allowed domain list
-        if (! $source->check_domain($email)) {
-            throw new RuntimeException(OAUTH_ERRORS::INVALID_DOMAIN->value);
+        if (! $source->isDomainAllowed($email)) {
+            throw new InvalidDomainException;
         }
 
         $user = $source
@@ -67,11 +61,8 @@ readonly class HandleAuthenticationSourceCallback
         }
 
         if ($user === null) {
-            // user registration flow
-
-            // check if registration for this method is allowed
             if (! $source->allow_registration) {
-                throw new RuntimeException(OAUTH_ERRORS::REGISTRATION_NOT_ALLOWED->value);
+                throw new RegistrationNotAllowedException;
             }
 
             $user = $this->store->handle(
