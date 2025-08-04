@@ -62,7 +62,7 @@ class AuthenticationSource extends Model
 
     protected $attributes = [
         'active' => true,
-        'allow_registration' => false,
+        'allow_registration' => true,
     ];
 
     /**
