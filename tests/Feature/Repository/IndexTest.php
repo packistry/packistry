@@ -29,7 +29,7 @@ it('shows index', function (?User $user, int $status): void {
         ->withCount('packages')
         ->paginate(10);
 
-    $response = getJson('/repositories')
+    $response = getJson('/api/repositories')
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -56,15 +56,15 @@ it('searches', function (?User $user, int $status): void {
 
     $repository->loadCount('packages');
 
-    getJson("/repositories?filter[search]=$name")
+    getJson("/api/repositories?filter[search]=$name")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(RepositoryResource::collection([$repository])));
 
-    getJson("/repositories?filter[search]=$description")
+    getJson("/api/repositories?filter[search]=$description")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(RepositoryResource::collection([$repository])));
 
-    getJson('/repositories?filter[search]=something%20else')
+    getJson('/api/repositories?filter[search]=something%20else')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })
@@ -79,11 +79,11 @@ it('filters by public', function (?User $user, int $status): void {
 
     $repository->loadCount('packages');
 
-    getJson('/repositories?filter[public]=true')
+    getJson('/api/repositories?filter[public]=true')
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(RepositoryResource::collection([$repository])));
 
-    getJson('/repositories?filter[public]=false')
+    getJson('/api/repositories?filter[public]=false')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })

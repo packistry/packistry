@@ -20,7 +20,7 @@ it('shows package versions', function (?User $user, int $status): void {
     $versions = Version::query()
         ->paginate(10);
 
-    $response = getJson('/packages/1/versions')
+    $response = getJson('/api/packages/1/versions')
         ->assertStatus($status);
 
     if ($status !== 200) {

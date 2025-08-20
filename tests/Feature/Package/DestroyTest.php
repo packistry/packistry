@@ -16,7 +16,7 @@ it('destroys', function (?User $user, int $status): void {
         ->for(Repository::factory())
         ->create();
 
-    $response = deleteJson("/packages/$package->id")
+    $response = deleteJson("/api/packages/$package->id")
         ->assertStatus($status);
 
     if ($status !== 200) {

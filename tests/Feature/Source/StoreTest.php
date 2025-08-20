@@ -26,7 +26,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
         return $mock;
     });
 
-    $response = postJson('/sources', [
+    $response = postJson('/api/sources', [
         'name' => $name = fake()->name,
         'provider' => $provider,
         'url' => $url = fake()->url,

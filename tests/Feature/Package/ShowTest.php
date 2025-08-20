@@ -20,7 +20,7 @@ it('shows package', function (?User $user, int $status): void {
         ->has(Version::factory()->count(2))
         ->create();
 
-    $response = getJson("/packages/$package->id")
+    $response = getJson("/api/packages/$package->id")
         ->assertStatus($status);
 
     if ($status !== 200) {

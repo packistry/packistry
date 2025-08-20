@@ -27,7 +27,7 @@ it('updates', function (?User $user, int $status): void {
         return $mock;
     });
 
-    $response = patchJson("/sources/$source->id", [
+    $response = patchJson("/api/sources/$source->id", [
         'name' => $name = fake()->name,
         'url' => $url = fake()->url,
         'token' => $token = Str::random(),
@@ -60,7 +60,7 @@ it('does not update token when not given', function (?User $user, int $status): 
         ])
         ->create();
 
-    patchJson("/sources/$source->id", [
+    patchJson("/api/sources/$source->id", [
         'name' => $name = fake()->name,
         'url' => $url = fake()->url,
     ])

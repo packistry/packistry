@@ -13,7 +13,7 @@ use function Pest\Laravel\postJson;
 it('stores', function (?User $user, int $status, Role $role, array $repositories): void {
     Repository::factory()->create();
 
-    $response = postJson('/users', [
+    $response = postJson('/api/users', [
         'name' => $name = fake()->name,
         'email' => $email = fake()->unique()->email,
         'role' => $role,
@@ -56,7 +56,7 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
 it('has unique email', function (?User $user, int $status): void {
     $user = User::factory()->create();
 
-    postJson('/users', [
+    postJson('/api/users', [
         'name' => fake()->name,
         'email' => $user->email,
         'role' => Role::USER,
@@ -71,7 +71,7 @@ it('has unique email', function (?User $user, int $status): void {
     ->with(unscopedUser(Permission::USER_CREATE, expectedStatus: 422));
 
 it('requires valid email', function (?User $user, int $status): void {
-    postJson('/users', [
+    postJson('/api/users', [
         'name' => fake()->name,
         'email' => fake()->name,
         'role' => Role::USER,

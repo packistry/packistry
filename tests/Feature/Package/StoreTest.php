@@ -76,7 +76,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
         return $mock;
     });
 
-    postJson('/packages', [
+    postJson('/api/packages', [
         'repository' => (string) $repository->id,
         'source' => (string) $source->id,
         'projects' => [

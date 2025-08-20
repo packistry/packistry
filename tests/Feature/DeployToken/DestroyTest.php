@@ -17,7 +17,7 @@ it('destroys', function (?User $user, int $status): void {
     /** @var DeployToken $token */
     $token = DeployToken::factory()->create();
 
-    deleteJson("/deploy-tokens/$token->id")
+    deleteJson("/api/deploy-tokens/$token->id")
         ->assertStatus($status);
 
     if ($status !== 201) {

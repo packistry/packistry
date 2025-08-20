@@ -12,7 +12,7 @@ it('shows public index', function (): void {
         ->count(5)
         ->create();
 
-    getJson('/auths')
+    getJson('/api/auths')
         ->assertStatus(200)
         ->assertExactJson(
             resourceAsJson(PublicAuthenticationSourceResource::collection($sources))

@@ -29,7 +29,7 @@ it('stores', function (?User $user, int $status): void {
         ))->toArray()),
     ]);
 
-    $response = postJson('/authentication-sources', $attributes = [
+    $response = postJson('/api/authentication-sources', $attributes = [
         'name' => fake()->name,
         'provider' => AuthenticationProvider::OIDC,
         'client_id' => Str::random(),

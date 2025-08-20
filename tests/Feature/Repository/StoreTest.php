@@ -12,7 +12,7 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\postJson;
 
 it('stores', function (?User $user, int $status): void {
-    $response = postJson('/repositories', $attributes = [
+    $response = postJson('/api/repositories', $attributes = [
         'name' => fake()->name,
         'path' => $path = fake()->sentence,
         'description' => fake()->text,
@@ -37,7 +37,7 @@ it('stores', function (?User $user, int $status): void {
 it('has unique path', function (?User $user, int $status): void {
     $repository = Repository::factory()->create();
 
-    postJson('/repositories', [
+    postJson('/api/repositories', [
         'name' => $repository->name,
         'path' => $repository->path,
     ])

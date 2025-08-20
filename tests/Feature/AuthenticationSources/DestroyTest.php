@@ -14,7 +14,7 @@ it('destroys', function (?User $user, int $status): void {
     $source = AuthenticationSource::factory()
         ->create();
 
-    $response = deleteJson("/authentication-sources/$source->id")
+    $response = deleteJson("/api/authentication-sources/$source->id")
         ->assertStatus($status);
 
     if ($status !== 200) {

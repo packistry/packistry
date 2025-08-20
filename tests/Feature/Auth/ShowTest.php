@@ -8,7 +8,7 @@ use App\Models\User;
 use function Pest\Laravel\getJson;
 
 it('shows authenticated user', function (?User $user, int $status) {
-    $response = getJson('/me')
+    $response = getJson('/api/me')
         ->assertStatus($status);
 
     if ($status !== 200) {
