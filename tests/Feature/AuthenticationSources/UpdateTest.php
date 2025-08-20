@@ -30,7 +30,7 @@ it('updates', function (?User $user, int $status): void {
         ))->toArray()),
     ]);
 
-    $response = patchJson("/authentication-sources/$source->id", $attributes = [
+    $response = patchJson("/api/authentication-sources/$source->id", $attributes = [
         'name' => fake()->name,
         'provider' => AuthenticationProvider::OIDC,
         'client_id' => Str::random(),

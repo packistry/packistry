@@ -15,7 +15,7 @@ it('stores', function (?User $user, int $status): void {
     freezeSecond();
 
     Repository::factory()->create();
-    $response = postJson('/deploy-tokens', [
+    $response = postJson('/api/deploy-tokens', [
         'name' => $name = fake()->name,
         'abilities' => $abilities = [TokenAbility::REPOSITORY_READ->value],
         'expires_at' => $expiresAt = now()->addMonth()->format(DATE_RFC3339_EXTENDED),

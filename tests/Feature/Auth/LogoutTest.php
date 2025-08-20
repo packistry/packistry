@@ -10,12 +10,12 @@ it('can logout', function () {
     $user = User::factory()
         ->create();
 
-    postJson('/login', ['email' => $user->email, 'password' => 'password'])
+    postJson('/api/login', ['email' => $user->email, 'password' => 'password'])
         ->assertOk();
 
     expect(auth()->guard('web')->check())->toBeTrue();
 
-    postJson('/logout')
+    postJson('/api/logout')
         ->assertNoContent();
 
     expect(auth()->guard('web')->check())->toBeFalse();

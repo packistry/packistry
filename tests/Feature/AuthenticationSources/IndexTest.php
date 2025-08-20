@@ -14,7 +14,7 @@ it('indexes', function (?User $user, int $status): void {
 
     $sources->load('repositories');
 
-    $response = getJson('/authentication-sources')
+    $response = getJson('/api/authentication-sources')
         ->assertStatus($status);
 
     if ($status !== 200) {

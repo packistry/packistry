@@ -17,7 +17,7 @@ it('indexes', function (?User $user, int $status): void {
     $user->createToken('name');
     $user->createToken('name 2');
 
-    $response = getJson('/personal-tokens')
+    $response = getJson('/api/personal-tokens')
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -39,11 +39,11 @@ it('searches', function (?User $user, int $status): void {
 
     $token = $user->createToken('name');
 
-    getJson('/personal-tokens?filter[search]=name')
+    getJson('/api/personal-tokens?filter[search]=name')
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(PersonalTokenResource::collection([$token->accessToken])));
 
-    getJson('/personal-tokens?filter[search]=something%20else')
+    getJson('/api/personal-tokens?filter[search]=something%20else')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })

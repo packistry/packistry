@@ -15,7 +15,7 @@ it('destroys', function (?User $user, int $status): void {
 
     $token = $user->createToken('name');
 
-    deleteJson("/personal-tokens/{$token->accessToken->id}")
+    deleteJson("/api/personal-tokens/{$token->accessToken->id}")
         ->assertStatus($status);
 
     if ($status !== 200) {

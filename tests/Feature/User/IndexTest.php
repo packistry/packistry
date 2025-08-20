@@ -11,7 +11,7 @@ use function Pest\Laravel\getJson;
 it('indexes', function (?User $user, int $status): void {
     User::factory()->count(8)->create();
 
-    $response = getJson('/users')
+    $response = getJson('/api/users')
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -37,15 +37,15 @@ it('searches', function (?User $user, int $status): void {
 
     $user->load('repositories', 'authenticationSource');
 
-    getJson("/users?filter[search]=$name")
+    getJson("/api/users?filter[search]=$name")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(UserResource::collection([$user])));
 
-    getJson("/users?filter[search]=$email")
+    getJson("/api/users?filter[search]=$email")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(UserResource::collection([$user])));
 
-    getJson('/users?filter[search]=something%20else')
+    getJson('/api/users?filter[search]=something%20else')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })

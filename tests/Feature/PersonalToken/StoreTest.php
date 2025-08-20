@@ -16,7 +16,7 @@ it('stores', function (?User $user, int $status): void {
     freezeSecond();
 
     Repository::factory()->create();
-    $response = postJson('/personal-tokens', [
+    $response = postJson('/api/personal-tokens', [
         'name' => $name = fake()->name,
         'abilities' => $abilities = [TokenAbility::REPOSITORY_READ->value],
         'expires_at' => $expiresAt = now()->addMonth()->format(DATE_RFC3339_EXTENDED),

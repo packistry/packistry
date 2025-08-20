@@ -12,7 +12,7 @@ use function Pest\Laravel\getJson;
 it('indexes', function (?User $user, int $status): void {
     $sources = Source::factory()->count(10)->create();
 
-    $response = getJson('/sources')
+    $response = getJson('/api/sources')
         ->assertStatus($status);
 
     if ($status !== 200) {

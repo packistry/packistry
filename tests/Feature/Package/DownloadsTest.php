@@ -16,7 +16,7 @@ it('shows package downloads', function (?User $user, int $status): void {
         ->has(Version::factory()->count(5))
         ->create();
 
-    $response = getJson('/packages/1/downloads')
+    $response = getJson('/api/packages/1/downloads')
         ->assertStatus($status);
 
     if ($status !== 200) {

@@ -20,7 +20,7 @@ it('updates', function (?User $user, int $status): void {
         'public' => fake()->boolean(),
     ];
 
-    $response = patchJson("/repositories/$repository->id", $attributes)
+    $response = patchJson("/api/repositories/$repository->id", $attributes)
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -46,7 +46,7 @@ it('has unique path', function (?User $user, int $status): void {
         'path' => $otherRepository->path,
     ];
 
-    patchJson("/repositories/$repository->id", $attributes)
+    patchJson("/api/repositories/$repository->id", $attributes)
         ->assertStatus($status)
         ->assertExactJson(validation([
             'path' => ['Repository path has already been taken.'],

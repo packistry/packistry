@@ -27,7 +27,7 @@ it('updates', function (?User $user, int $status): void {
         'repositories' => [],
     ];
 
-    $response = patchJson("/users/$user->id", $attributes)
+    $response = patchJson("/api/users/$user->id", $attributes)
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -59,7 +59,7 @@ it('has unique email', function (?User $user, int $status): void {
         'email' => $otherUser->email,
     ];
 
-    patchJson("/users/$user->id", $attributes)
+    patchJson("/api/users/$user->id", $attributes)
         ->assertStatus($status)
         ->assertExactJson(validation([
             'email' => ['Email has already been taken.'],

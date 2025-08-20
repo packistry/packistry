@@ -13,7 +13,7 @@ import { UseQueryResult } from '@tanstack/react-query'
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
-export const baseURL = import.meta.env.DEV ? 'http://localhost' : ''
+export const baseURL = import.meta.env.DEV ? 'http://localhost/api' : '/api'
 axios.get(`${baseURL}/sanctum/csrf-cookie`)
 
 export const axiosDefaults: CreateAxiosDefaults = {

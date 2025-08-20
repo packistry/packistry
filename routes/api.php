@@ -15,7 +15,6 @@ use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersionController;
 use App\Http\Controllers\Webhook;
-use App\Http\Middleware\AcceptsJsonOrRedirectApp;
 use App\Http\Middleware\ForceJson;
 
 if (! function_exists('repositoryRoutes')) {
@@ -39,14 +38,12 @@ if (! function_exists('repositoryRoutes')) {
     }
 }
 
-Route::middleware(['web'])->group(function (): void {
+Route::middleware('web')->prefix('/api')->group(function (): void {
+    Route::post('/login', [AuthController::class, 'login']);
+
     Route::get('/auths', [AuthController::class, 'sources']);
     Route::get('/auths/{authenticationSourceId}/redirect', [AuthController::class, 'redirect']);
     Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
-});
-
-Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): void {
-    Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('/dashboard', DashboardController::class);
@@ -86,6 +83,12 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
         Route::get('/batches', [BatchController::class, 'index']);
         Route::delete('/batches', [BatchController::class, 'destroy']);
     });
+});
+
+// for backwards compatibility
+Route::middleware('web')->group(function (): void {
+    Route::get('/auths/{authenticationSourceId}/redirect', [AuthController::class, 'redirect']);
+    Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
 });
 
 Route::prefix('/r/{repository}')->group(function (): void {

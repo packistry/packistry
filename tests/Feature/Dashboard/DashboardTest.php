@@ -8,7 +8,7 @@ use App\Models\User;
 use function Pest\Laravel\getJson;
 
 it('shows dashboard', function (?User $user, int $status): void {
-    $response = getJson('/dashboard')
+    $response = getJson('/api/dashboard')
         ->assertStatus($status);
 
     if ($status !== 200) {
