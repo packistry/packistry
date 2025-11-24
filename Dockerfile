@@ -1,4 +1,4 @@
-FROM php:8.4-alpine AS base
+FROM php:8.5-alpine AS base
 
 LABEL org.opencontainers.image.source="https://github.com/packistry/packistry"
 LABEL org.opencontainers.image.description="Packistry is a Composer repository for PHP packages Packistry is a Composer repository for PHP packages"
