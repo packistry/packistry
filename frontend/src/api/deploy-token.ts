@@ -37,6 +37,7 @@ export const storeDeployTokenInput = z.object({
     abilities: z.string().array(),
     expiresAt: z.coerce.date().nullable(),
     repositories: z.string().array(),
+    packages: z.string().array().optional(),
 })
 
 export type StoreDeployTokenInput = z.infer<typeof storeDeployTokenInput>
