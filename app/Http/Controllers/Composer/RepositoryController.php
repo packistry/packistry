@@ -133,7 +133,7 @@ class RepositoryController extends RepositoryAwareController
         // Check package-level access (use 404 to avoid leaking package existence)
         $repository = $this->repository();
         $token = $this->token();
-        if (! $repository->public && ! $token?->hasAccessToPackage($package)) {
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
             abort(404);
         }
 
@@ -168,7 +168,7 @@ class RepositoryController extends RepositoryAwareController
         // Check package-level access (use 404 to avoid leaking package existence)
         $repository = $this->repository();
         $token = $this->token();
-        if (! $repository->public && ! $token?->hasAccessToPackage($package)) {
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
             abort(404);
         }
 
@@ -198,7 +198,7 @@ class RepositoryController extends RepositoryAwareController
 
         // Check package-level access (use 404 to avoid leaking package existence)
         $token = $this->token();
-        if (! $repository->public && ! $token?->hasAccessToPackage($package)) {
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
             abort(404);
         }
 
@@ -260,7 +260,7 @@ class RepositoryController extends RepositoryAwareController
 
         // Check package-level access (use 404 to avoid leaking package existence)
         $token = $this->token();
-        if (! $repository->public && ! $token?->hasAccessToPackage($package)) {
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
             abort(404);
         }
 
