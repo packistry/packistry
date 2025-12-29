@@ -175,4 +175,80 @@ describe('package-scoped access', function (): void {
                 ],
             ]);
     });
+
+    it('allows access to packages from repository-level AND package-level access', function (): void {
+        // Create two repositories
+        $repo1 = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/repo1-package1'])
+            )
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/repo1-package2'])
+            )
+        );
+
+        $repo2 = repository(path: 'other', public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/repo2-package'])
+            )
+        );
+
+        // Get specific package from repo2
+        $repo2Package = $repo2->packages->first();
+        assertNotNull($repo2Package);
+
+        // Token with access to ALL of repo1 + specific package from repo2
+        deployTokenWithMixedAccess($repo1, $repo2Package, TokenAbility::REPOSITORY_READ);
+
+        // Should access both packages from repo1
+        getJson($repo1->url('/p2/vendor/repo1-package1.json'))
+            ->assertStatus(200);
+
+        getJson($repo1->url('/p2/vendor/repo1-package2.json'))
+            ->assertStatus(200);
+
+        // Should access specific package from repo2
+        getJson($repo2->url('/p2/vendor/repo2-package.json'))
+            ->assertStatus(200);
+    });
+
+    it('denies access for token with empty package list and no repository access', function (): void {
+        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/package'])
+            )
+        );
+
+        // Token with no packages and no repositories
+        deployToken(TokenAbility::REPOSITORY_READ);
+
+        getJson($repository->url('/p2/vendor/package.json'))
+            ->assertStatus(401);
+    });
+
+    it('returns 404 for non-existent package even with repository access', function (): void {
+        $repository = rootRepository(public: false);
+
+        deployToken(TokenAbility::REPOSITORY_READ, withAccess: true);
+
+        getJson($repository->url('/p2/vendor/nonexistent.json'))
+            ->assertStatus(404);
+    });
+
+    it('denies access to private repository package without token', function (): void {
+        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/private'])
+            )
+        );
+
+        // No authentication - returns 401 to prevent enumeration
+        getJson($repository->url('/p2/vendor/private.json'))
+            ->assertStatus(401);
+    });
 });
