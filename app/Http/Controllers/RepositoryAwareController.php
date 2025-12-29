@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\Permission;
 use App\Enums\TokenAbility;
 use App\Models\Contracts\Tokenable;
+use App\Models\DeployToken;
 use App\Models\Repository;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -55,8 +56,26 @@ abstract class RepositoryAwareController
             return;
         }
 
-        if (! $token->hasAccessToRepository($repository)) {
-            abort(401);
+        // Check repository-level access first
+        if ($token->hasAccessToRepository($repository)) {
+            return;
         }
+
+        // For DeployTokens, also check if they have package-level access to any package in this repository
+        if ($token instanceof DeployToken && $this->hasPackageLevelAccess($token, $repository)) {
+            return;
+        }
+
+        abort(401);
+    }
+
+    /**
+     * Check if a DeployToken has access to any package in the repository.
+     */
+    private function hasPackageLevelAccess(DeployToken $token, Repository $repository): bool
+    {
+        return $token->packages()
+            ->where('repository_id', $repository->id)
+            ->exists();
     }
 }
