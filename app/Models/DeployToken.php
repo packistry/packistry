@@ -77,8 +77,13 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
 
     public function hasAccessToPackage(Package $package): bool
     {
-        // Check repository-level access first (more common case, using repository_id to avoid lazy loading)
-        if ($this->repositories()->where('repositories.id', $package->repository_id)->exists()) {
+        // Check repository-level access first (more common case)
+        // Load repository if not already loaded to avoid lazy loading violation
+        $repository = $package->relationLoaded('repository')
+            ? $package->repository
+            : Repository::find($package->repository_id);
+
+        if ($repository !== null && $this->hasAccessToRepository($repository)) {
             return true;
         }
 
