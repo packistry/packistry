@@ -122,8 +122,17 @@ class User extends Model implements AuthenticatableContract, Tokenable
             return true;
         }
 
-        // Otherwise, check repository-level access using repository_id to avoid lazy loading
-        return $this->repositories()->where('repositories.id', $package->repository_id)->exists();
+        // Otherwise, check repository-level access
+        // Load repository if not already loaded to avoid lazy loading violation
+        $repository = $package->relationLoaded('repository')
+            ? $package->repository
+            : Repository::find($package->repository_id);
+
+        if ($repository === null) {
+            return false;
+        }
+
+        return $this->hasAccessToRepository($repository);
     }
 
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool
