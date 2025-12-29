@@ -60,7 +60,8 @@ class RepositoryController extends RepositoryAwareController
                 ->where('type', "$type"));
 
         // Filter packages based on token's package-level access
-        $packages = $packagesQuery->get()->filter(function (Package $package) use ($repository, $token) {
+        // Use lazy() for memory efficiency with large package lists
+        $results = $packagesQuery->lazy()->filter(function (Package $package) use ($repository, $token) {
             // Public repositories are accessible without authentication
             if ($repository->public) {
                 return true;
@@ -68,15 +69,15 @@ class RepositoryController extends RepositoryAwareController
 
             // Token must have access to the specific package
             return $token?->hasAccessToPackage($package) ?? false;
-        });
+        })->map(fn (Package $package): array => [
+            'name' => $package->name,
+            'description' => $package->description,
+            'downloads' => $package->total_downloads,
+        ])->values()->all();
 
         return response()->json([
-            'total' => $packages->count(),
-            'results' => $packages->map(fn (Package $package): array => [
-                'name' => $package->name,
-                'description' => $package->description,
-                'downloads' => $package->total_downloads,
-            ])->values(),
+            'total' => count($results),
+            'results' => $results,
         ]);
     }
 
