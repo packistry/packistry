@@ -5,50 +5,12 @@ declare(strict_types=1);
 use App\Enums\TokenAbility;
 use App\Models\DeployToken;
 use App\Models\Package;
-use App\Models\Repository;
 use App\Models\Version;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
 use function Pest\Laravel\getJson;
 use function PHPUnit\Framework\assertNotNull;
-
-/**
- * Helper function to create a deploy token with package-level access
- *
- * @param  TokenAbility|array<TokenAbility>  $abilities
- */
-function deployTokenWithPackageAccess(Package $package, TokenAbility|array $abilities = []): DeployToken
-{
-    /** @var DeployToken $token */
-    $token = DeployToken::factory()->create();
-
-    actingAs($token, $abilities);
-
-    // Grant access to specific package
-    $token->packages()->sync([$package->id]);
-
-    return $token;
-}
-
-/**
- * Helper function to create a deploy token with mixed repository and package access
- *
- * @param  TokenAbility|array<TokenAbility>  $abilities
- */
-function deployTokenWithMixedAccess(Repository $repository, Package $package, TokenAbility|array $abilities = []): DeployToken
-{
-    /** @var DeployToken $token */
-    $token = DeployToken::factory()->create();
-
-    actingAs($token, $abilities);
-
-    // Grant access to repository AND specific package
-    $token->repositories()->sync([$repository->id]);
-    $token->packages()->sync([$package->id]);
-
-    return $token;
-}
 
 describe('Package-scoped access for /packages.json endpoint', function (): void {
     it('allows access to packages.json with package-scoped token in public repository', function (): void {
