@@ -78,3 +78,101 @@ it('requires ability', function (Repository $repository, ?Authenticatable $auth,
         personalTokenWithoutAccessStatus: 401,
         deployTokenWithoutAccessStatus: 401,
     ));
+
+describe('package-scoped access', function (): void {
+    it('allows access to authorized package with package-scoped token', function (): void {
+        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()
+                    ->state(new Sequence(
+                        fn (Sequence $sequence): array => ['name' => '0.1.'.$sequence->index],
+                    ))
+                    ->count(3)
+                )
+                ->state(['name' => 'vendor/allowed'])
+            )
+        );
+
+        $package = $repository->packages->first();
+        assertNotNull($package);
+
+        deployTokenWithPackageAccess($package, TokenAbility::REPOSITORY_READ);
+
+        getJson($repository->url('/p2/vendor/allowed.json'))
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'minified',
+                'packages' => [
+                    'vendor/allowed',
+                ],
+            ]);
+    });
+
+    it('denies access to non-authorized package with package-scoped token', function (): void {
+        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/allowed'])
+            )
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/denied'])
+            )
+        );
+
+        $allowedPackage = $repository->packages->where('name', 'vendor/allowed')->first();
+        assertNotNull($allowedPackage);
+
+        deployTokenWithPackageAccess($allowedPackage, TokenAbility::REPOSITORY_READ);
+
+        // Should be able to access allowed package
+        getJson($repository->url('/p2/vendor/allowed.json'))
+            ->assertStatus(200);
+
+        // Should NOT be able to access denied package (404 to avoid leaking existence)
+        getJson($repository->url('/p2/vendor/denied.json'))
+            ->assertStatus(404);
+    });
+
+    it('allows access to all packages with repository-level token (backward compatibility)', function (): void {
+        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/package1'])
+            )
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/package2'])
+            )
+        );
+
+        // Token with repository-level access (no package selection)
+        deployToken(TokenAbility::REPOSITORY_READ, withAccess: true);
+
+        // Should be able to access both packages
+        getJson($repository->url('/p2/vendor/package1.json'))
+            ->assertStatus(200);
+
+        getJson($repository->url('/p2/vendor/package2.json'))
+            ->assertStatus(200);
+    });
+
+    it('allows access in public repository without authentication', function (): void {
+        $repository = rootRepository(public: true, closure: fn (RepositoryFactory $factory) => $factory
+            ->has(Package::factory()
+                ->has(Version::factory()->count(1))
+                ->state(['name' => 'vendor/public'])
+            )
+        );
+
+        // No authentication
+        getJson($repository->url('/p2/vendor/public.json'))
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'minified',
+                'packages' => [
+                    'vendor/public',
+                ],
+            ]);
+    });
+});
