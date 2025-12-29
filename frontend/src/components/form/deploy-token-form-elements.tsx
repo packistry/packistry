@@ -4,6 +4,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { FormCheckboxGroup } from '@/components/form/elements/form-checkbox-group'
 import { FormDatePicker } from '@/components/form/elements/form-date-picker'
 import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/form-repository-search-checkbox-group'
+import { FormPackageSearchCheckboxGroup } from '@/components/form/elements/form-package-search-checkbox-group'
 import { StoreDeployTokenInput } from '@/api'
 
 export function DeployTokenFormElements({ form }: { form: UseFormReturn<StoreDeployTokenInput> }) {
@@ -34,6 +35,11 @@ export function DeployTokenFormElements({ form }: { form: UseFormReturn<StoreDep
             <FormRepositorySearchCheckboxGroup
                 label="Repositories"
                 description="Select the repositories it should have access to."
+                control={form.control}
+            />
+            <FormPackageSearchCheckboxGroup
+                label="Packages"
+                description="Optionally select specific packages for granular access control. If no packages are selected, the token will have access to all packages in the selected repositories."
                 control={form.control}
             />
         </>

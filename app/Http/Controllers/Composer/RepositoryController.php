@@ -48,8 +48,10 @@ class RepositoryController extends RepositoryAwareController
 
         $q = $request->input('q');
         $type = $request->input('type');
+        $repository = $this->repository();
+        $token = $this->token();
 
-        $packagesQuery = $this->repository()
+        $packagesQuery = $repository
             ->packages()
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
@@ -57,13 +59,25 @@ class RepositoryController extends RepositoryAwareController
             ->when($type, fn (BuilderContract $query) => $query
                 ->where('type', "$type"));
 
+        // Filter packages based on token's package-level access
+        // Use lazy() for memory efficiency with large package lists
+        $results = $packagesQuery->lazy()->filter(function (Package $package) use ($repository, $token) {
+            // Public repositories are accessible without authentication
+            if ($repository->public) {
+                return true;
+            }
+
+            // Token must have access to the specific package
+            return $token?->hasAccessToPackage($package) ?? false;
+        })->map(fn (Package $package): array => [
+            'name' => $package->name,
+            'description' => $package->description,
+            'downloads' => $package->total_downloads,
+        ])->values()->all();
+
         return response()->json([
-            'total' => $packagesQuery->count(),
-            'results' => $packagesQuery->chunkMap(fn (Package $package): array => [
-                'name' => $package->name,
-                'description' => $package->description,
-                'downloads' => $package->total_downloads,
-            ]),
+            'total' => count($results),
+            'results' => $results,
         ]);
     }
 
@@ -71,9 +85,27 @@ class RepositoryController extends RepositoryAwareController
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
-        $names = $this->repository()
+        $repository = $this->repository();
+        $token = $this->token();
+
+        // Filter package names based on token's package-level access
+        // Use lazy() for memory efficiency with large package lists
+        $names = $repository
             ->packages()
-            ->pluck('name');
+            ->orderBy('name')
+            ->lazy()
+            ->filter(function (Package $package) use ($repository, $token) {
+                // Public repositories are accessible without authentication
+                if ($repository->public) {
+                    return true;
+                }
+
+                // Token must have access to the specific package
+                return $token?->hasAccessToPackage($package) ?? false;
+            })
+            ->map(fn (Package $package): string => $package->name)
+            ->values()
+            ->all();
 
         return response()->json([
             'packageNames' => $names,
@@ -103,7 +135,14 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
-        $package->setRelation('repository', $this->repository());
+        // Check package-level access (use 404 to avoid leaking package existence)
+        $repository = $this->repository();
+        $token = $this->token();
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
+            abort(404);
+        }
+
+        $package->setRelation('repository', $repository);
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -131,7 +170,14 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
-        $package->setRelation('repository', $this->repository());
+        // Check package-level access (use 404 to avoid leaking package existence)
+        $repository = $this->repository();
+        $token = $this->token();
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
+            abort(404);
+        }
+
+        $package->setRelation('repository', $repository);
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -154,6 +200,12 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
         $package = $repository
             ->packageByNameOrFail("$vendor/$name");
+
+        // Check package-level access (use 404 to avoid leaking package existence)
+        $token = $this->token();
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
+            abort(404);
+        }
 
         $archiveName = Archive::name($package, $version);
         $content = Storage::get($archiveName);
@@ -196,18 +248,25 @@ class RepositoryController extends RepositoryAwareController
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
-        $package = $this->repository()
+        $repository = $this->repository();
+        $package = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->first();
 
         if (is_null($package)) {
             $package = new Package;
-            $package->repository_id = $this->repository()->id;
+            $package->repository_id = $repository->id;
             $package->type = PackageType::LIBRARY->value;
             $package->name = "$vendor/$name";
 
             $package->save();
+        }
+
+        // Check package-level access (use 404 to avoid leaking package existence)
+        $token = $this->token();
+        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
+            abort(404);
         }
 
         try {

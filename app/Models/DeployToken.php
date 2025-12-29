@@ -25,6 +25,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
+ * @property-read Collection<int, Package> $packages
+ * @property-read int|null $packages_count
  * @property-read Token|null $token
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
@@ -60,8 +62,32 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
         return $this->belongsToMany(Repository::class);
     }
 
+    /**
+     * @return BelongsToMany<Package, $this>
+     */
+    public function packages(): BelongsToMany
+    {
+        return $this->belongsToMany(Package::class);
+    }
+
     public function hasAccessToRepository(Repository $repository): bool
     {
         return $this->repositories()->where('repositories.id', $repository->id)->exists();
+    }
+
+    public function hasAccessToPackage(Package $package): bool
+    {
+        // Check repository-level access first (more common case)
+        // Load repository if not already loaded to avoid lazy loading violation
+        $repository = $package->relationLoaded('repository')
+            ? $package->repository
+            : Repository::find($package->repository_id);
+
+        if ($repository !== null && $this->hasAccessToRepository($repository)) {
+            return true;
+        }
+
+        // Check direct package-level access
+        return $this->packages()->where('packages.id', $package->id)->exists();
     }
 }

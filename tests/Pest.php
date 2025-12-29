@@ -17,6 +17,7 @@ use App\Enums\Permission;
 use App\Enums\SourceProvider;
 use App\Enums\TokenAbility;
 use App\Models\DeployToken;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Models\User;
@@ -100,6 +101,60 @@ function deployToken(TokenAbility|array $abilities = [], bool $withAccess = fals
     if ($withAccess) {
         $token->repositories()->sync([1]);
     }
+
+    return $token;
+}
+
+/**
+ * Create a deploy token with package-level access.
+ *
+ * @param  Package|array<Package>  $packages  Package(s) to grant access to
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ */
+function deployTokenWithPackageAccess(Package|array $packages, TokenAbility|array $abilities = []): DeployToken
+{
+    /** @var DeployToken $token */
+    $token = DeployToken::factory()->create();
+
+    actingAs($token, $abilities);
+
+    // Grant access to specific package(s)
+    $packageIds = is_array($packages)
+        ? array_map(fn (Package $p) => $p->id, $packages)
+        : [$packages->id];
+
+    $token->packages()->sync($packageIds);
+
+    return $token;
+}
+
+/**
+ * Create a deploy token with mixed repository and package access.
+ *
+ * @param  Repository|array<Repository>  $repositories  Repository(ies) to grant access to
+ * @param  Package|array<Package>  $packages  Package(s) to grant access to
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ */
+function deployTokenWithMixedAccess(Repository|array $repositories, Package|array $packages, TokenAbility|array $abilities = []): DeployToken
+{
+    /** @var DeployToken $token */
+    $token = DeployToken::factory()->create();
+
+    actingAs($token, $abilities);
+
+    // Grant access to repository(ies)
+    $repositoryIds = is_array($repositories)
+        ? array_map(fn (Repository $r) => $r->id, $repositories)
+        : [$repositories->id];
+
+    $token->repositories()->sync($repositoryIds);
+
+    // Grant access to specific package(s)
+    $packageIds = is_array($packages)
+        ? array_map(fn (Package $p) => $p->id, $packages)
+        : [$packages->id];
+
+    $token->packages()->sync($packageIds);
 
     return $token;
 }

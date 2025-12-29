@@ -115,6 +115,26 @@ class User extends Model implements AuthenticatableContract, Tokenable
         return $this->repositories()->where('repositories.id', $repository->id)->exists();
     }
 
+    public function hasAccessToPackage(Package $package): bool
+    {
+        // Users with UNSCOPED permission have access to all packages
+        if ($this->can(Permission::UNSCOPED)) {
+            return true;
+        }
+
+        // Otherwise, check repository-level access
+        // Load repository if not already loaded to avoid lazy loading violation
+        $repository = $package->relationLoaded('repository')
+            ? $package->repository
+            : Repository::find($package->repository_id);
+
+        if ($repository === null) {
+            return false;
+        }
+
+        return $this->hasAccessToRepository($repository);
+    }
+
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool
     {
         return self::query()
