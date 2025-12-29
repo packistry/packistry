@@ -85,4 +85,5 @@ it('downloads version from private repository', function (Repository $repository
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutPackagesStatus: 401,
     ));
