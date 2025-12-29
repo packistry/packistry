@@ -92,6 +92,7 @@ class RepositoryController extends RepositoryAwareController
         // Use lazy() for memory efficiency with large package lists
         $names = $repository
             ->packages()
+            ->orderBy('name')
             ->lazy()
             ->filter(function (Package $package) use ($repository, $token) {
                 // Public repositories are accessible without authentication
