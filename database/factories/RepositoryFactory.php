@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Package;
 use App\Models\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
 /**
  * @extends Factory<Repository>
@@ -38,5 +40,22 @@ class RepositoryFactory extends Factory
         return $this->state(fn (array $attributes): array => [
             'public' => true,
         ]);
+    }
+
+    public function withPackages(int $count = 10, ?string $prefix = null)
+    {
+        $prefix ??= fake()->slug(nbWords: 2);
+
+        return $this->has(
+            Package::factory()
+                ->state(new Sequence(function (Sequence $sequence) use ($prefix) {
+                    $number = $sequence->index + 1;
+
+                    return [
+                        'name' => "{$prefix}/package-{$number}",
+                    ];
+                }))
+                ->count($count),
+        );
     }
 }

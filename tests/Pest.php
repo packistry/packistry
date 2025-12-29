@@ -91,7 +91,7 @@ function personalToken(TokenAbility|array $abilities = [], bool $withAccess = fa
 /**
  * @param  TokenAbility|TokenAbility[]  $abilities
  */
-function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false): DeployToken
+function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false, ?array $withPackages = null): DeployToken
 {
     /** @var DeployToken $token */
     $token = Deploytoken::factory()->create();
@@ -100,6 +100,10 @@ function deployToken(TokenAbility|array $abilities = [], bool $withAccess = fals
 
     if ($withAccess) {
         $token->repositories()->sync([1]);
+    }
+
+    if ($withPackages) {
+        $token->packages()->sync($withPackages);
     }
 
     return $token;
@@ -276,6 +280,8 @@ function guestAndTokens(
     int $unscopedPersonalTokenWithoutAccessStatus = 200,
     int $deployTokenWithoutAccessStatus = 200,
     int $deployTokenWithAccessStatus = 200,
+    int $deployTokenWithPackagesStatus = 200,
+    ?array $deployTokenPackages = null,
 ): array {
     $values = is_array($abilities)
         ? array_map(fn (TokenAbility $ability) => $ability->value, $abilities)
@@ -283,32 +289,48 @@ function guestAndTokens(
 
     $imploded = implode(',', $values);
 
-    return [
+    $dataset = [
         "$guestStatus guest" => [
             fn (): null => null,
             $guestStatus,
+            null,
         ],
         "$personalTokenWithoutAccessStatus user without access ($imploded)" => [
             fn (): User => personalToken($abilities),
             $personalTokenWithoutAccessStatus,
+            null,
         ],
         "$personalTokenWithAccessStatus user with access ($imploded)" => [
             fn (): User => personalToken($abilities, withAccess: true),
             $personalTokenWithAccessStatus,
+            null,
         ],
         "$unscopedPersonalTokenWithoutAccessStatus unscoped user without access ($imploded)" => [
             fn (): User => personalToken($abilities, permissions: Permission::UNSCOPED),
             $unscopedPersonalTokenWithoutAccessStatus,
+            null,
         ],
         "$deployTokenWithoutAccessStatus deploy token without access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities),
             $deployTokenWithoutAccessStatus,
+            null,
         ],
         "$deployTokenWithAccessStatus deploy token with access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities, withAccess: true),
             $deployTokenWithAccessStatus,
+            null,
         ],
     ];
+
+    if (! is_null($deployTokenPackages)) {
+        $dataset["$deployTokenWithPackagesStatus deploy token with access to packages ($imploded)"] = [
+            fn (): DeployToken => deployToken($abilities, withPackages: $deployTokenPackages),
+            $deployTokenWithPackagesStatus,
+            $deployTokenPackages,
+        ];
+    }
+
+    return $dataset;
 }
 
 /**
