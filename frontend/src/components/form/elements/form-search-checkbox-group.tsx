@@ -80,7 +80,7 @@ export function FormSearchCheckboxGroup({
                                                                 checked={field.value?.includes(item.value)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked
-                                                                        ? field.onChange([...field.value, item.value])
+                                                                        ? field.onChange([...(field.value || []), item.value])
                                                                         : field.onChange(
                                                                               field.value?.filter(
                                                                                   (value: string) =>
