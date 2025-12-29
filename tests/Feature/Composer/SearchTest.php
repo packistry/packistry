@@ -8,9 +8,9 @@ use App\Models\Package;
 use App\Models\Repository;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Testing\TestResponse;
 
 use function Pest\Laravel\getJson;
-use function PHPUnit\Framework\assertNotNull;
 
 it('searches empty repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json'))
@@ -77,7 +77,6 @@ it('searches by type', function (Repository $repository, ?Authenticatable $auth,
     Repository::factory()
         ->public()
         ->root()
-
         ->create();
 
     getJson($repository->url('/search.json?type=composer-plugin'))
@@ -106,59 +105,23 @@ it('searches by type', function (Repository $repository, ?Authenticatable $auth,
     ))
     ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
 
-it('searches private from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
+it('searches private from private repository', function (Repository $repository, ?Authenticatable $auth, int $status, ?array $allowedPackages): void {
+    $expectedTotal = is_null($allowedPackages)
+        ? 5
+        : count($allowedPackages);
+
     getJson($repository->url('/search.json?type=composer-plugin'))
-        ->assertStatus($status);
+        ->assertStatus($status)
+        ->when($status === 200, fn (TestResponse $response) => $response->assertJsonPath('total', $expectedTotal));
 })
-    ->with(rootAndSubRepository())
+    ->with(rootAndSubRepository(
+        closure: fn (RepositoryFactory $factory) => $factory->withPackages(count: 5, type: 'composer-plugin'),
+    ))
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_READ,
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutPackagesStatus: 401,
+        deployTokenPackages: [1, 2],
     ));
-
-describe('package-scoped access', function (): void {
-    it('searches only authorized packages with package-scoped token', function (): void {
-        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->state([
-                'name' => 'vendor/allowed-foo',
-                'description' => 'Allowed package with foo',
-            ]))
-            ->has(Package::factory()->state([
-                'name' => 'vendor/denied-foo',
-                'description' => 'Denied package with foo',
-            ]))
-        );
-
-        $allowedPackage = $repository->packages->where('name', 'vendor/allowed-foo')->first();
-        assertNotNull($allowedPackage);
-
-        deployTokenWithPackageAccess($allowedPackage, TokenAbility::REPOSITORY_READ);
-
-        getJson($repository->url('/search.json?q=vendor'))
-            ->assertStatus(200)
-            ->assertJsonCount(1, 'results')
-            ->assertJsonPath('results.0.name', 'vendor/allowed-foo');
-    });
-
-    it('searches all packages with repository-level token', function (): void {
-        $repository = rootRepository(public: false, closure: fn (RepositoryFactory $factory) => $factory
-            ->has(Package::factory()->state([
-                'name' => 'vendor/package-foo',
-                'description' => 'First package',
-            ]))
-            ->has(Package::factory()->state([
-                'name' => 'vendor/another-foo',
-                'description' => 'Second package',
-            ]))
-        );
-
-        // Token with repository-level access
-        deployToken(TokenAbility::REPOSITORY_READ, withAccess: true);
-
-        getJson($repository->url('/search.json?q=vendor'))
-            ->assertStatus(200)
-            ->assertJsonCount(2, 'results');
-    });
-});

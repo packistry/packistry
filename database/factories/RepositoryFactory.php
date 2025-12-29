@@ -42,7 +42,7 @@ class RepositoryFactory extends Factory
         ]);
     }
 
-    public function withPackages(int $count = 10, ?string $prefix = null)
+    public function withPackages(int $count = 10, ?string $prefix = null, ?string $type = null)
     {
         $prefix ??= fake()->slug(nbWords: 2);
 
@@ -55,6 +55,7 @@ class RepositoryFactory extends Factory
                         'name' => "{$prefix}/package-{$number}",
                     ];
                 }))
+                ->when($type, fn (PackageFactory $factory) => $factory->state(['type' => $type]))
                 ->count($count),
         );
     }
