@@ -280,6 +280,7 @@ function guestAndTokens(
     int $unscopedPersonalTokenWithoutAccessStatus = 200,
     int $deployTokenWithoutAccessStatus = 200,
     int $deployTokenWithAccessStatus = 200,
+    int $deployTokenWithoutPackagesStatus = 200,
     int $deployTokenWithPackagesStatus = 200,
     ?array $deployTokenPackages = null,
 ): array {
@@ -319,6 +320,11 @@ function guestAndTokens(
             fn (): DeployToken => deployToken($abilities, withAccess: true),
             $deployTokenWithAccessStatus,
             null,
+        ],
+        "$deployTokenWithoutPackagesStatus deploy token without packages ($imploded)" => [
+            fn (): DeployToken => deployToken($abilities, withPackages: []),
+            $deployTokenWithoutPackagesStatus,
+            [],
         ],
     ];
 

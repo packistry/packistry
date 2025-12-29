@@ -41,5 +41,6 @@ it('provides urls from private repository', function (Repository $repository, ?A
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutPackagesStatus: 401,
         deployTokenPackages: [1, 2, 3],
     ));
