@@ -42,7 +42,7 @@ class RepositoryFactory extends Factory
         ]);
     }
 
-    public function withPackages(int $count = 10, ?string $prefix = null, ?string $type = null)
+    public function withPackages(int $count = 10, ?string $prefix = null, ?string $type = null): static
     {
         $prefix ??= fake()->slug(nbWords: 2);
 
