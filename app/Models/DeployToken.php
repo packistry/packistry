@@ -90,4 +90,31 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
         // Check direct package-level access
         return $this->packages()->where('packages.id', $package->id)->exists();
     }
+
+    /**
+     * @param  Collection<int, Package>|array<Package>  $packages
+     * @return Collection<int, Package>
+     */
+    public function filterAccessiblePackages(Collection|array $packages): Collection
+    {
+        $packages = $packages instanceof Collection ? $packages : Collection::make($packages);
+
+        if ($packages->isEmpty()) {
+            return $packages;
+        }
+
+        // Get IDs of repositories and packages this token has access to
+        $accessibleRepositoryIds = $this->repositories()->pluck('repositories.id')->all();
+        $accessiblePackageIds = $this->packages()->pluck('packages.id')->all();
+
+        return $packages->filter(function (Package $package) use ($accessibleRepositoryIds, $accessiblePackageIds): bool {
+            // Check if token has access to the package's repository
+            if (in_array($package->repository_id, $accessibleRepositoryIds, true)) {
+                return true;
+            }
+
+            // Check if token has direct access to the package
+            return in_array($package->id, $accessiblePackageIds, true);
+        })->values();
+    }
 }

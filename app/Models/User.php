@@ -135,6 +135,31 @@ class User extends Model implements AuthenticatableContract, Tokenable
         return $this->hasAccessToRepository($repository);
     }
 
+    /**
+     * @param  Collection<int, Package>|array<Package>  $packages
+     * @return Collection<int, Package>
+     */
+    public function filterAccessiblePackages(Collection|array $packages): Collection
+    {
+        $packages = $packages instanceof Collection ? $packages : Collection::make($packages);
+
+        if ($packages->isEmpty()) {
+            return $packages;
+        }
+
+        // Users with UNSCOPED permission have access to all packages
+        if ($this->can(Permission::UNSCOPED)) {
+            return $packages;
+        }
+
+        // Get IDs of repositories this user has access to
+        $accessibleRepositoryIds = $this->repositories()->pluck('repositories.id')->all();
+
+        return $packages->filter(
+            fn (Package $package): bool => in_array($package->repository_id, $accessibleRepositoryIds, true)
+        )->values();
+    }
+
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool
     {
         return self::query()
