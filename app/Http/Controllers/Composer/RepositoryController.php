@@ -59,17 +59,15 @@ class RepositoryController extends RepositoryAwareController
             ->when($type, fn (BuilderContract $query) => $query
                 ->where('type', "$type"));
 
-        // Filter packages based on token's package-level access
-        // Use lazy() for memory efficiency with large package lists
-        $results = $packagesQuery->lazy()->filter(function (Package $package) use ($repository, $token) {
-            // Public repositories are accessible without authentication
-            if ($repository->public) {
-                return true;
-            }
+        // For public repositories, return all packages without filtering
+        // For private repositories, use batch access checking for better performance
+        $packages = $packagesQuery->get();
 
-            // Token must have access to the specific package
-            return $token?->hasAccessToPackage($package) ?? false;
-        })->map(fn (Package $package): array => [
+        if (! $repository->public && $token !== null) {
+            $packages = $token->filterAccessiblePackages($packages);
+        }
+
+        $results = $packages->map(fn (Package $package): array => [
             'name' => $package->name,
             'description' => $package->description,
             'downloads' => $package->total_downloads,
@@ -88,21 +86,18 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
         $token = $this->token();
 
-        // Filter package names based on token's package-level access
-        // Use lazy() for memory efficiency with large package lists
-        $names = $repository
+        // For public repositories, return all packages without filtering
+        // For private repositories, use batch access checking for better performance
+        $packages = $repository
             ->packages()
             ->orderBy('name')
-            ->lazy()
-            ->filter(function (Package $package) use ($repository, $token) {
-                // Public repositories are accessible without authentication
-                if ($repository->public) {
-                    return true;
-                }
+            ->get();
 
-                // Token must have access to the specific package
-                return $token?->hasAccessToPackage($package) ?? false;
-            })
+        if (! $repository->public && $token !== null) {
+            $packages = $token->filterAccessiblePackages($packages);
+        }
+
+        $names = $packages
             ->map(fn (Package $package): string => $package->name)
             ->values()
             ->all();
