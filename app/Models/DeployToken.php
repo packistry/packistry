@@ -97,7 +97,7 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
      */
     public function filterAccessiblePackages(Collection|array $packages): Collection
     {
-        $packages = $packages instanceof Collection ? $packages : Collection::make($packages);
+        $packages = Collection::wrap($packages);
 
         if ($packages->isEmpty()) {
             return $packages;
