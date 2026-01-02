@@ -8,6 +8,7 @@ use App\Enums\Permission;
 use App\Enums\TokenAbility;
 use App\Models\Contracts\Tokenable;
 use App\Models\DeployToken;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -77,5 +78,28 @@ abstract class RepositoryAwareController
         return $token->packages()
             ->where('repository_id', $repository->id)
             ->exists();
+    }
+
+    /**
+     * Abort with 404 if the token does not have access to the package.
+     *
+     * For public repositories, access is always granted.
+     * For private repositories, the token must have access to the package.
+     *
+     * Uses 404 to avoid leaking package existence information.
+     */
+    protected function abortIfNoPackageAccess(Package $package): void
+    {
+        $repository = $this->repository();
+
+        if ($repository->public) {
+            return;
+        }
+
+        $token = $this->token();
+
+        if ($token === null || ! $token->hasAccessToPackage($package)) {
+            abort(404);
+        }
     }
 }

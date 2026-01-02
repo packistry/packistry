@@ -123,9 +123,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
+        $repository = $this->repository();
+
         /** @var Package $package */
-        $package = $this
-            ->repository()
+        $package = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->with([
@@ -135,12 +136,7 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
-        // Check package-level access (use 404 to avoid leaking package existence)
-        $repository = $this->repository();
-        $token = $this->token();
-        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
-            abort(404);
-        }
+        $this->abortIfNoPackageAccess($package);
 
         $package->setRelation('repository', $repository);
 
@@ -158,9 +154,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
+        $repository = $this->repository();
+
         /** @var Package $package */
-        $package = $this
-            ->repository()
+        $package = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->with([
@@ -170,12 +167,7 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
-        // Check package-level access (use 404 to avoid leaking package existence)
-        $repository = $this->repository();
-        $token = $this->token();
-        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
-            abort(404);
-        }
+        $this->abortIfNoPackageAccess($package);
 
         $package->setRelation('repository', $repository);
 
@@ -197,15 +189,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        $repository = $this->repository();
-        $package = $repository
+        $package = $this->repository()
             ->packageByNameOrFail("$vendor/$name");
 
-        // Check package-level access (use 404 to avoid leaking package existence)
-        $token = $this->token();
-        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
-            abort(404);
-        }
+        $this->abortIfNoPackageAccess($package);
 
         $archiveName = Archive::name($package, $version);
         $content = Storage::get($archiveName);
@@ -263,11 +250,7 @@ class RepositoryController extends RepositoryAwareController
             $package->save();
         }
 
-        // Check package-level access (use 404 to avoid leaking package existence)
-        $token = $this->token();
-        if (! $repository->public && ($token === null || ! $token->hasAccessToPackage($package))) {
-            abort(404);
-        }
+        $this->abortIfNoPackageAccess($package);
 
         try {
             $version = $this->createFromZip->create(
