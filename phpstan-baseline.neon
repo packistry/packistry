@@ -1,13 +1,13 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Out of 555 possible param types, only 550 \- 99\.0 %% actually have it\. Add more param types to get over 100 %%$#'
+			message: '#^Out of 564 possible param types, only 559 \- 99\.1 %% actually have it\. Add more param types to get over 100 %%$#'
 			identifier: typeCoverage.paramTypeCoverage
 			count: 1
 			path: app/Models/Token.php
 
 		-
-			message: '#^Out of 555 possible param types, only 550 \- 99\.0 %% actually have it\. Add more param types to get over 100 %%$#'
+			message: '#^Out of 564 possible param types, only 559 \- 99\.1 %% actually have it\. Add more param types to get over 100 %%$#'
 			identifier: typeCoverage.paramTypeCoverage
 			count: 4
 			path: app/OIDCProvider.php
