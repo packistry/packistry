@@ -6,6 +6,7 @@ namespace App\Events;
 
 use App\Models\Package;
 use App\Models\Token;
+use App\Models\Version;
 use Illuminate\Queue\SerializesModels;
 
 readonly class PackageDownloadEvent
@@ -17,7 +18,7 @@ readonly class PackageDownloadEvent
      */
     public function __construct(
         public Package $package,
-        public string $version,
+        public Version $version,
         public ?string $ip,
         public ?Token $token
     ) {

@@ -22,6 +22,7 @@ use Override;
  * @property int $package_id
  * @property string $name
  * @property array<array-key, mixed> $metadata
+ * @property string $archive_path
  * @property string $shasum
  * @property string $order
  * @property Carbon|null $created_at

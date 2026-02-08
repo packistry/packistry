@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Composer;
 
-use App\Archive;
 use App\CreateFromZip;
 use App\Enums\PackageType;
 use App\Enums\TokenAbility;
@@ -17,6 +16,7 @@ use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
 use App\Models\Package;
+use App\Normalizer;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -145,9 +145,9 @@ class RepositoryController extends RepositoryAwareController
 
         $vendor = $request->route('vendor');
         $name = $request->route('name');
-        $version = $request->route('version');
+        $versionName = $request->route('version');
 
-        if (! is_string($vendor) || ! is_string($name) || ! is_string($version)) {
+        if (! is_string($vendor) || ! is_string($name) || ! is_string($versionName)) {
             abort(404);
         }
 
@@ -155,12 +155,16 @@ class RepositoryController extends RepositoryAwareController
         $package = $repository
             ->packageByNameOrFail("$vendor/$name");
 
-        $archiveName = Archive::name($package, $version);
-        $content = Storage::get($archiveName);
+        $version = $package
+            ->versions()
+            ->where('name', Normalizer::version($versionName))
+            ->firstOrFail();
 
-        if (is_null($content)) {
+        if ($version->archive_path === null || ! Storage::exists($version->archive_path)) {
             abort(404);
         }
+
+        $content = Storage::get($version->archive_path);
 
         event(new PackageDownloadEvent(
             package: $package,
@@ -170,7 +174,7 @@ class RepositoryController extends RepositoryAwareController
         ));
 
         return response($content)
-            ->header('Content-Disposition', 'attachment; filename="'.$archiveName.'"')
+            ->header('Content-Disposition', 'attachment; filename="archive.zip"')
             ->header('Content-Type', 'application/zip');
     }
 

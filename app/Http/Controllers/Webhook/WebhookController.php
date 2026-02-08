@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Archive;
 use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
@@ -101,11 +100,9 @@ abstract class WebhookController extends RepositoryAwareController
             ->where('name', Normalizer::version($event->version()))
             ->firstOrFail();
 
-        $path = Archive::name($package, $version->name);
-
-        dispatch(function () use ($path): void {
-            Storage::disk()->delete($path);
-        });
+        if ($version->archive_path !== null) {
+            Storage::disk()->delete($version->archive_path);
+        }
 
         $version->delete();
 

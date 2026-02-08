@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Archive;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
@@ -33,8 +32,9 @@ class ArchivesClean extends Command
             $expectedPaths = $repository->packages
                 ->map(fn (Package $package) => $package->setRelation('repository', $repository))
                 ->flatMap(fn (Package $package) => $package->versions->map(
-                    fn (Version $version) => Archive::name($package, $version->name)
+                    fn (Version $version) => $version->archive_path
                 ))
+                ->filter(fn (?string $path) => $path !== null)
                 ->flip();
 
             $files = Storage::disk()->files($repository->path);
