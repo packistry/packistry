@@ -15,8 +15,8 @@ class Archive
     public static function name(Package $package, string $version): string
     {
         $name = str_replace('/', '-', $package->name);
+        $version = str_replace('/', '~', Normalizer::version($version));
 
-        $version = Normalizer::version($version);
         $archiveName = "$name-$version.zip";
 
         return $package->repository->archivePath($archiveName);
