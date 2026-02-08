@@ -2,16 +2,16 @@ import { z } from 'zod'
 import { decamelize, decamelizeKeys } from 'humps'
 
 export function paginatedQuery<
-    FilterType extends z.ZodTypeAny,
-    SortType extends z.ZodTypeAny,
-    IncludeType extends z.ZodTypeAny,
+    FilterType extends z.ZodTypeAny = z.ZodUndefined,
+    SortType extends z.ZodTypeAny = z.ZodUndefined,
+    IncludeType extends z.ZodTypeAny = z.ZodUndefined,
 >({ filters, sort, include }: { filters?: FilterType; sort?: SortType; include?: IncludeType }) {
     return z.object({
         page: z.number().optional(),
         size: z.number().optional(),
         include: include ? include.array().optional() : z.string().array().optional(),
-        sort: sort ? sort.optional() : z.undefined(),
-        filters: filters ? filters.optional() : z.undefined(),
+        sort: sort ? sort.optional() : z.undefined().optional(),
+        filters: filters ? filters.optional() : z.undefined().optional(),
     })
 }
 
@@ -52,7 +52,15 @@ export const anyPaginated = paginated(z.any())
 
 export type AnyPaginated = z.infer<typeof anyPaginated>
 
-export function toQueryString({ filters, sort, ...props }: Query) {
+type QueryParams = {
+    filters?: Record<string, string | number | string[] | undefined | boolean>
+    sort?: unknown
+    page?: number
+    size?: number
+    include?: unknown[] | string[]
+}
+
+export function toQueryString({ filters, sort, ...props }: QueryParams) {
     return new URLSearchParams({
         ...(decamelizeKeys(props) as Record<string, string>),
         ...(filters ? buildFilters(filters) : {}),
