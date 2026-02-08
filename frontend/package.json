@@ -13,6 +13,7 @@
     "check-types": "tsc --noemit --skipLibCheck"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@tanstack/eslint-plugin-query": "^5.91.4",
