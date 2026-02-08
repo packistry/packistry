@@ -16,14 +16,15 @@ use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
 use App\Models\Package;
+use App\Models\Version;
 use App\Normalizer;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class RepositoryController extends RepositoryAwareController
@@ -139,7 +140,7 @@ class RepositoryController extends RepositoryAwareController
     /**
      * @throws Throwable
      */
-    public function download(Request $request): Response
+    public function download(Request $request): StreamedResponse
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
@@ -155,6 +156,7 @@ class RepositoryController extends RepositoryAwareController
         $package = $repository
             ->packageByNameOrFail("$vendor/$name");
 
+        /** @var Version $version */
         $version = $package
             ->versions()
             ->where('name', Normalizer::version($versionName))
@@ -164,8 +166,6 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        $content = Storage::get($version->archive_path);
-
         event(new PackageDownloadEvent(
             package: $package,
             version: $version,
@@ -173,9 +173,7 @@ class RepositoryController extends RepositoryAwareController
             token: $this->token()?->currentAccessToken()
         ));
 
-        return response($content)
-            ->header('Content-Disposition', 'attachment; filename="archive.zip"')
-            ->header('Content-Type', 'application/zip');
+        return Storage::download($version->archive_path);
     }
 
     public function upload(Request $request): JsonResponse

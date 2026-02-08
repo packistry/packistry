@@ -23,9 +23,13 @@ it('downloads a version', function (Repository $repository, ?Authenticatable $au
         )
         ->create();
 
-    getJson($repository->url('/test/test/1.0.0'))
-        ->assertStatus($status)
-        ->assertContent((string) file_get_contents($path));
+    $response = getJson($repository->url('/test/test/1.0.0'))
+        ->assertHeader('Content-Type', 'application/zip')
+        ->assertStatus($status);
+
+    $content = $response->streamedContent();
+
+    expect($content)->toBe((string) file_get_contents($path));
 
     assertDatabaseHas(Download::class, [
         'package_id' => 1,
