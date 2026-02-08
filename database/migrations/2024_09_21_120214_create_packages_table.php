@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('packages', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('repository_id')->constrained()->onDelete('cascade');
-            $table->foreignId('source_id')->nullable()->constrained('sources')->onDelete('set null');
+            $table->foreignId('repository_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('source_id')->nullable()->constrained('sources')->nullOnDelete();
 
             $table->string('provider_id')->nullable()->index();
 

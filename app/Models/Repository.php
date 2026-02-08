@@ -82,23 +82,23 @@ class Repository extends Model
     }
 
     /**
-     * @return Builder<$this>
+     * @return Builder<static>
      */
     public static function userScoped(?User $user = null): Builder
     {
         /** @var User|null $user */
         $user ??= auth()->user();
 
-        return self::query()
+        return static::query()
             ->withGlobalScope('user', new UserScope($user, 'id'));
     }
 
     /**
-     * @return Builder<$this>
+     * @return Builder<static>
      */
     public static function queryByPath(?string $path): Builder
     {
-        return self::query()->when(
+        return static::query()->when(
             $path,
             fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('path', $path),
             fn (Builder $query) => $query->whereNull('path')
