@@ -32,6 +32,7 @@ function PackagesComponent() {
             to: '.',
             search: (prev) => ({
                 ...prev,
+                page: 1,
                 filters: { ...prev.filters, repositoryId: repo?.id },
             }),
         })

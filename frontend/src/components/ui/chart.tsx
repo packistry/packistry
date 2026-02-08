@@ -1,10 +1,14 @@
 import * as React from 'react'
 import * as RechartsPrimitive from 'recharts'
+import type { LegendPayload, TooltipContentProps, TooltipPayloadEntry } from 'recharts'
 
 import { cn } from '@/lib/utils'
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
+
+type ChartValue = number | string | ReadonlyArray<number | string>
+type ChartName = number | string
 
 export type ChartConfig = {
     [k in string]: {
@@ -94,8 +98,8 @@ const ChartTooltip = RechartsPrimitive.Tooltip
 
 const ChartTooltipContent = React.forwardRef<
     HTMLDivElement,
-    React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-        React.ComponentProps<'div'> & {
+    React.ComponentProps<'div'> &
+        Partial<TooltipContentProps<ChartValue, ChartName>> & {
             hideLabel?: boolean
             hideIndicator?: boolean
             indicator?: 'line' | 'dot' | 'dashed'
@@ -163,14 +167,15 @@ const ChartTooltipContent = React.forwardRef<
             >
                 {!nestLabel ? tooltipLabel : null}
                 <div className="grid gap-1.5">
-                    {payload.map((item, index) => {
+                    {payload.map((item: TooltipPayloadEntry<ChartValue, ChartName>, index: number) => {
                         const key = `${nameKey || item.name || item.dataKey || 'value'}`
                         const itemConfig = getPayloadConfigFromPayload(config, item, key)
                         const indicatorColor = color || item.payload.fill || item.color
+                        const itemKey = String(item.dataKey ?? item.name ?? index)
 
                         return (
                             <div
-                                key={item.dataKey}
+                                key={itemKey}
                                 className={cn(
                                     'flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground',
                                     indicator === 'dot' && 'items-center'
@@ -239,7 +244,7 @@ const ChartLegend = RechartsPrimitive.Legend
 const ChartLegendContent = React.forwardRef<
     HTMLDivElement,
     React.ComponentProps<'div'> &
-        Pick<RechartsPrimitive.LegendProps, 'payload' | 'verticalAlign'> & {
+        Pick<RechartsPrimitive.DefaultLegendContentProps, 'payload' | 'verticalAlign'> & {
             hideIcon?: boolean
             nameKey?: string
         }
@@ -259,7 +264,7 @@ const ChartLegendContent = React.forwardRef<
                 className
             )}
         >
-            {payload.map((item) => {
+            {payload.map((item: LegendPayload) => {
                 const key = `${nameKey || item.dataKey || 'value'}`
                 const itemConfig = getPayloadConfigFromPayload(config, item, key)
 
