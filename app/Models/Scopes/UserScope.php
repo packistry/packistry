@@ -33,7 +33,7 @@ readonly class UserScope implements Scope
         $builder->whereIn($this->column, function (\Illuminate\Database\Query\Builder $query): void {
             $query->select('repository_id')
                 ->from('repository_user')
-                ->where('user_id', $this->user?->id)
+                ->where('user_id', $this->user->id)
                 ->union(function (\Illuminate\Database\Query\Builder $query): void {
                     $query->select('id')
                         ->from('repositories')

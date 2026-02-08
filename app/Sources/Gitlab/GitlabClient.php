@@ -161,8 +161,8 @@ class GitlabClient extends Client
 
                 $data = $response->json();
 
-                if (is_null($data)) {
-                    throw new RuntimeException($response->getBody()->getContents());
+                if ($data === null) {
+                    throw new RuntimeException($response->body());
                 }
 
                 foreach ($data as $item) {

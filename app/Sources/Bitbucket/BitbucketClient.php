@@ -70,6 +70,10 @@ class BitbucketClient extends Client
         $allProjects = [];
 
         foreach ($responses as $response) {
+            if ($response instanceof \Throwable) {
+                throw $response;
+            }
+
             $response->throw();
 
             $data = $response->json();

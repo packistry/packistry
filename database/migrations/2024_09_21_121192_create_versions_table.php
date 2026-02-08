@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('versions', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('package_id')->constrained()->onDelete('cascade');
+            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->json('metadata');
             $table->char('shasum', 64);

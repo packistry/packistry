@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('deploy_token_repository', function (Blueprint $table): void {
             $table->id();
 
-            $table->foreignId('deploy_token_id')->constrained('deploy_tokens')->onDelete('cascade');
-            $table->foreignId('repository_id')->constrained('repositories')->onDelete('cascade');
+            $table->foreignId('deploy_token_id')->constrained('deploy_tokens')->cascadeOnDelete();
+            $table->foreignId('repository_id')->constrained('repositories')->cascadeOnDelete();
 
             $table->index(['deploy_token_id', 'repository_id']);
             $table->timestamps();

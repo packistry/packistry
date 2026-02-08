@@ -89,11 +89,11 @@ class AuthenticationSource extends Model
     }
 
     /**
-     * @return Builder<$this>
+     * @return Builder<static>
      */
     public static function active(): Builder
     {
-        return self::query()
+        return static::query()
             ->where('active', true);
     }
 

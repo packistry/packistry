@@ -58,7 +58,16 @@ readonly class Import
     private function downloadZip(Importable $importable, PendingRequest $http): array
     {
         $temp = tmpfile();
-        $path = stream_get_meta_data($temp)['uri'];
+        if ($temp === false) {
+            throw new FailedToOpenArchiveException('Failed to create temporary file.');
+        }
+
+        $meta = stream_get_meta_data($temp);
+        if (! isset($meta['uri'])) {
+            throw new FailedToOpenArchiveException('Temporary file path is unavailable.');
+        }
+
+        $path = $meta['uri'];
 
         $response = $http->get($importable->zipUrl());
 

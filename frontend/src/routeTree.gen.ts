@@ -84,6 +84,7 @@ const AuthPackagesPackageIdRoute = AuthPackagesPackageIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthIndexRoute
   '/login': typeof LoginRoute
   '/authentication-sources': typeof AuthAuthenticationSourcesRoute
   '/deploy-tokens': typeof AuthDeployTokensRoute
@@ -92,9 +93,8 @@ export interface FileRoutesByFullPath {
   '/repositories': typeof AuthRepositoriesRoute
   '/sources': typeof AuthSourcesRoute
   '/users': typeof AuthUsersRoute
-  '/': typeof AuthIndexRoute
   '/packages/$packageId': typeof AuthPackagesPackageIdRoute
-  '/packages': typeof AuthPackagesIndexRoute
+  '/packages/': typeof AuthPackagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -127,6 +127,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/login'
     | '/authentication-sources'
     | '/deploy-tokens'
@@ -135,9 +136,8 @@ export interface FileRouteTypes {
     | '/repositories'
     | '/sources'
     | '/users'
-    | '/'
     | '/packages/$packageId'
-    | '/packages'
+    | '/packages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -184,7 +184,7 @@ declare module '@tanstack/react-router' {
     '/_auth': {
       id: '/_auth'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -247,7 +247,7 @@ declare module '@tanstack/react-router' {
     '/_auth/packages/': {
       id: '/_auth/packages/'
       path: '/packages'
-      fullPath: '/packages'
+      fullPath: '/packages/'
       preLoaderRoute: typeof AuthPackagesIndexRouteImport
       parentRoute: typeof AuthRoute
     }

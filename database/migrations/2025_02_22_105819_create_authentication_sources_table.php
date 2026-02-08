@@ -28,14 +28,14 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('authentication_source_id')->nullable()->after('remember_token')->constrained()->onDelete('SET NULL');
+            $table->foreignId('authentication_source_id')->nullable()->after('remember_token')->constrained()->nullOnDelete();
         });
 
         Schema::create('authentication_source_repository', function (Blueprint $table): void {
             $table->id();
 
-            $table->foreignId('authentication_source_id')->constrained('authentication_sources', indexName: 'auth_source_auth_source_id_foreign')->onDelete('cascade');
-            $table->foreignId('repository_id')->constrained('repositories', indexName: 'auth_source_repository_id_foreign')->onDelete('cascade');
+            $table->foreignId('authentication_source_id')->constrained('authentication_sources', indexName: 'auth_source_auth_source_id_foreign')->cascadeOnDelete();
+            $table->foreignId('repository_id')->constrained('repositories', indexName: 'auth_source_repository_id_foreign')->cascadeOnDelete();
 
             $table->index(['authentication_source_id', 'repository_id'], 'source_repo_idx');
             $table->timestamps();

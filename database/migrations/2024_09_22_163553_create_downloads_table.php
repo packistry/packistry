@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('downloads', function (Blueprint $table): void {
             $table->id();
 
-            $table->foreignId('version_id')->constrained()->onDelete('cascade');
-            $table->foreignId('token_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('version_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('token_id')->nullable()->constrained()->nullOnDelete();
             $table->ipAddress('ip')->nullable();
 
             $table->timestamps();
