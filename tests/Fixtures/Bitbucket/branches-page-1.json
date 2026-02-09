@@ -1,0 +1,15 @@
+{
+    "pagelen": 100,
+    "page": 1,
+    "next": "https://api.bitbucket.org/2.0/repositories/packistry/packistry/refs/branches?pagelen=100&page=2",
+    "values": [
+        {
+            "name": "main",
+            "links": {
+                "html": {
+                    "href": "https://bitbucket.org/packistry/packistry/branch/main"
+                }
+            }
+        }
+    ]
+}
