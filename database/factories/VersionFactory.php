@@ -9,6 +9,7 @@ use App\Normalizer;
 use App\Traits\ComposerFromZip;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Throwable;
 
 /**
@@ -72,8 +73,7 @@ class VersionFactory extends Factory
         $version ??= Normalizer::version($decoded['version']);
         $order = Normalizer::versionOrder($decoded['version']);
 
-        [$vendor, $name] = explode('/', (string) $decoded['name']);
-        $archiveName = "$dir$vendor-$name-$version.zip";
+        $archiveName = $dir.Str::uuid7()->toString().'.zip';
 
         /** @var string $archiveContent */
         $archiveContent = file_get_contents($path);
@@ -82,6 +82,7 @@ class VersionFactory extends Factory
         return $this->state(fn (array $attributes): array => [
             'name' => $version,
             'order' => $order,
+            'archive_path' => $archiveName,
             'shasum' => hash_file('sha1', $path),
             'metadata' => collect($decoded)->only([
                 'description',

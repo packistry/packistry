@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Repository>
@@ -21,7 +22,7 @@ class RepositoryFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'path' => fake()->name(),
+            'path' => Str::slug(fake()->name()),
             'public' => false,
         ];
     }

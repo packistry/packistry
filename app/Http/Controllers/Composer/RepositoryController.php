@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Composer;
 
-use App\Archive;
 use App\CreateFromZip;
 use App\Enums\PackageType;
 use App\Enums\TokenAbility;
@@ -17,13 +16,15 @@ use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
 use App\Models\Package;
+use App\Models\Version;
+use App\Normalizer;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class RepositoryController extends RepositoryAwareController
@@ -139,15 +140,15 @@ class RepositoryController extends RepositoryAwareController
     /**
      * @throws Throwable
      */
-    public function download(Request $request): Response
+    public function download(Request $request): StreamedResponse
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
         $vendor = $request->route('vendor');
         $name = $request->route('name');
-        $version = $request->route('version');
+        $versionName = $request->route('version');
 
-        if (! is_string($vendor) || ! is_string($name) || ! is_string($version)) {
+        if (! is_string($vendor) || ! is_string($name) || ! is_string($versionName)) {
             abort(404);
         }
 
@@ -155,10 +156,13 @@ class RepositoryController extends RepositoryAwareController
         $package = $repository
             ->packageByNameOrFail("$vendor/$name");
 
-        $archiveName = Archive::name($package, $version);
-        $content = Storage::get($archiveName);
+        /** @var Version $version */
+        $version = $package
+            ->versions()
+            ->where('name', Normalizer::version($versionName))
+            ->firstOrFail();
 
-        if (is_null($content)) {
+        if ($version->archive_path === null || ! Storage::exists($version->archive_path)) {
             abort(404);
         }
 
@@ -169,9 +173,7 @@ class RepositoryController extends RepositoryAwareController
             token: $this->token()?->currentAccessToken()
         ));
 
-        return response($content)
-            ->header('Content-Disposition', 'attachment; filename="'.$archiveName.'"')
-            ->header('Content-Type', 'application/zip');
+        return Storage::download($version->archive_path);
     }
 
     public function upload(Request $request): JsonResponse

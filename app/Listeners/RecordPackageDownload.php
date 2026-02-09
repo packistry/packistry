@@ -7,7 +7,6 @@ namespace App\Listeners;
 use App\Events\PackageDownloadEvent;
 use App\Models\Download;
 use App\Models\Token;
-use App\Models\Version;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -19,13 +18,8 @@ class RecordPackageDownload implements ShouldQueue
      */
     public function handle(PackageDownloadEvent $event): void
     {
-        /** @var Version $version */
-        $version = $event->package
-            ->versions()
-            ->where('name', $event->version)
-            ->firstOrFail();
-
-        DB::transaction(function () use ($event, $version): void {
+        DB::transaction(function () use ($event): void {
+            $version = $event->version;
             $download = new Download;
             $download->ip = $event->ip;
 
