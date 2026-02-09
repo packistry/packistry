@@ -10,13 +10,11 @@ use App\Actions\Users\Inputs\UpdateUserInput;
 use App\Actions\Users\StoreUser;
 use App\Actions\Users\UpdateUser;
 use App\Enums\Permission;
-use App\Exceptions\EmailAlreadyTakenException;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\SearchFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\QueryBuilder;
 
 readonly class UserController extends Controller
@@ -47,13 +45,7 @@ readonly class UserController extends Controller
     {
         $this->authorize(Permission::USER_CREATE);
 
-        try {
-            $user = $this->storeUser->handle($input);
-        } catch (EmailAlreadyTakenException) {
-            throw ValidationException::withMessages([
-                'email' => ['Email has already been taken.'],
-            ]);
-        }
+        $user = $this->storeUser->handle($input);
 
         return response()->json(
             new UserResource($user),
@@ -65,16 +57,10 @@ readonly class UserController extends Controller
     {
         $this->authorize(Permission::USER_UPDATE);
 
-        try {
-            $user = $this->updateUser->handle(
-                user: User::query()->findOrFail($userId),
-                input: $input
-            );
-        } catch (EmailAlreadyTakenException) {
-            throw ValidationException::withMessages([
-                'email' => ['Email has already been taken.'],
-            ]);
-        }
+        $user = $this->updateUser->handle(
+            user: User::query()->findOrFail($userId),
+            input: $input
+        );
 
         return response()->json(
             new UserResource($user->load('repositories'))

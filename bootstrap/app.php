@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Exception $exception): void {
             if ($exception instanceof HasValidationMessage) {
-                throw $exception::asValidationMessage();
+                throw $exception->asValidationMessage();
             }
         });
     })->create();

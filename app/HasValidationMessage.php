@@ -12,5 +12,5 @@ use Illuminate\Validation\ValidationException;
  */
 interface HasValidationMessage
 {
-    public static function asValidationMessage(string $attribute = ''): ValidationException;
+    public function asValidationMessage(string $attribute = ''): ValidationException;
 }
