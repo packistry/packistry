@@ -22,7 +22,7 @@ it('searches empty repository', function (Repository $repository, ?Authenticatab
     ->with(rootAndSubRepository(
         public: true,
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('searches filled repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json'))
@@ -44,7 +44,7 @@ it('searches filled repository', function (Repository $repository, ?Authenticata
         closure: fn (RepositoryFactory $factory) => $factory
             ->has(Package::factory()->count(10))
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('searches by query', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json?q=test'))
@@ -70,7 +70,7 @@ it('searches by query', function (Repository $repository, ?Authenticatable $auth
                 'type' => PackageType::LIBRARY->value,
             ])->count(9))
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('searches by type', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     Repository::factory()
@@ -103,7 +103,7 @@ it('searches by type', function (Repository $repository, ?Authenticatable $auth,
                 'type' => PackageType::LIBRARY->value,
             ])->count(9))
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('searches private from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/search.json?type=composer-plugin'))

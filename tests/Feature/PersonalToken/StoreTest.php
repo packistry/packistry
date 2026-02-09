@@ -8,13 +8,10 @@ use App\Models\Repository;
 use App\Models\Token;
 use App\Models\User;
 
-use function Pest\Laravel\freezeSecond;
 use function Pest\Laravel\postJson;
 use function PHPUnit\Framework\assertNotNull;
 
 it('stores', function (?User $user, int $status): void {
-    freezeSecond();
-
     Repository::factory()->create();
     $response = postJson('/api/personal-tokens', [
         'name' => $name = fake()->name,

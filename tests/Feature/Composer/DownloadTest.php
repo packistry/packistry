@@ -45,7 +45,7 @@ it('downloads a version', function (Repository $repository, ?Authenticatable $au
     ->with(rootAndSubRepository(
         public: true
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('downloads version from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $path = __DIR__.'/../../Fixtures/project.zip';

@@ -37,11 +37,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
 use Spatie\LaravelData\Data;
 
+use function Pest\Laravel\freezeSecond;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\travelBack;
 use function PHPUnit\Framework\assertNotNull;
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->beforeEach(function () {
+        freezeSecond();
+    })
+    ->afterEach(function () {
+        travelBack();
+    })
     ->in('Feature');
 
 pest()->extend(Tests\TestCase::class)
@@ -90,12 +98,13 @@ function personalToken(TokenAbility|array $abilities = [], bool $withAccess = fa
 /**
  * @param  TokenAbility|TokenAbility[]  $abilities
  */
-function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false): DeployToken
+function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false, bool $expired = false): DeployToken
 {
     /** @var DeployToken $token */
-    $token = Deploytoken::factory()->create();
+    $token = Deploytoken::factory()
+        ->create();
 
-    actingAs($token, $abilities);
+    actingAs($token, $abilities, expiresAt: $expired ? now()->subSecond() : null);
 
     if ($withAccess) {
         $token->repositories()->sync([1]);
@@ -107,13 +116,13 @@ function deployToken(TokenAbility|array $abilities = [], bool $withAccess = fals
 /**
  * @param  TokenAbility|TokenAbility[]  $abilities
  */
-function actingAs(User|DeployToken $subject, TokenAbility|array $abilities = []): void
+function actingAs(User|DeployToken $subject, TokenAbility|array $abilities = [], ?DateTimeInterface $expiresAt = null): void
 {
     $abilities = is_array($abilities)
         ? array_map(fn (TokenAbility $ability) => $ability->value, $abilities)
         : [$abilities->value];
 
-    $new = $subject->createToken('token', $abilities);
+    $new = $subject->createToken('token', $abilities, $expiresAt);
 
     $subject->withAccessToken($new->accessToken);
 
@@ -221,6 +230,7 @@ function guestAndTokens(
     int $unscopedPersonalTokenWithoutAccessStatus = 200,
     int $deployTokenWithoutAccessStatus = 200,
     int $deployTokenWithAccessStatus = 200,
+    int $expiredDeployTokenWithAccessStatus = 401,
 ): array {
     $values = is_array($abilities)
         ? array_map(fn (TokenAbility $ability) => $ability->value, $abilities)
@@ -252,6 +262,10 @@ function guestAndTokens(
         "$deployTokenWithAccessStatus deploy token with access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities, withAccess: true),
             $deployTokenWithAccessStatus,
+        ],
+        "$expiredDeployTokenWithAccessStatus expired deploy token with access ($imploded)" => [
+            fn (): DeployToken => deployToken($abilities, withAccess: true, expired: true),
+            $expiredDeployTokenWithAccessStatus,
         ],
     ];
 }

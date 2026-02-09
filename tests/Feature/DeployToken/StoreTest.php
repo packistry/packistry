@@ -8,12 +8,9 @@ use App\Models\DeployToken;
 use App\Models\Repository;
 use App\Models\User;
 
-use function Pest\Laravel\freezeSecond;
 use function Pest\Laravel\postJson;
 
 it('stores', function (?User $user, int $status): void {
-    freezeSecond();
-
     Repository::factory()->create();
     $response = postJson('/api/deploy-tokens', [
         'name' => $name = fake()->name,

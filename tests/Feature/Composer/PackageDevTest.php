@@ -50,7 +50,7 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
                     ->devVersions(10)
             )
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('list package versions from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/p2/test/test~dev.json'))
