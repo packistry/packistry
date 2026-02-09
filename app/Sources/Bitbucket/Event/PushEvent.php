@@ -31,7 +31,7 @@ class PushEvent extends Input implements Deletable, Importable
         return $this->latestChange()->new === null;
     }
 
-    public function reference(): Reference
+    public function latestReference(): Reference
     {
         $reference = $this->isDelete()
             ? $this->latestChange()->old
@@ -46,12 +46,12 @@ class PushEvent extends Input implements Deletable, Importable
 
     public function isTag(): bool
     {
-        return $this->reference()->type === 'tag';
+        return $this->latestReference()->type === 'tag';
     }
 
     public function shortRef(): string
     {
-        return $this->reference()->name;
+        return $this->latestReference()->name;
     }
 
     public function zipUrl(): string
@@ -73,8 +73,18 @@ class PushEvent extends Input implements Deletable, Importable
         return $this->repository->links->html->href;
     }
 
+    public function sourceUrl(): string
+    {
+        return $this->repository->links->html->href;
+    }
+
     public function id(): string
     {
         return trim($this->repository->uuid, '{}');
+    }
+
+    public function reference(): string
+    {
+        return $this->shortRef();
     }
 }

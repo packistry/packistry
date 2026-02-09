@@ -59,6 +59,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
                 name: 'feature',
                 url: 'https://gitlab.com/name/name',
                 zipUrl: 'https://fake.com/archive.zip',
+                sourceUrl: 'https://gitlab.com/name/name',
             ),
         ]));
 
@@ -68,6 +69,7 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
                 name: '1.0.0',
                 url: 'https://gitlab.com/name/name',
                 zipUrl: 'https://fake.com/archive.zip',
+                sourceUrl: 'https://gitlab.com/name/name',
             ),
         ]));
 
@@ -123,6 +125,11 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
                 ],
             ],
             'require' => [],
+            'source' => [
+                'type' => 'git',
+                'url' => 'https://gitlab.com/name/name',
+                'reference' => 'feature',
+            ],
         ]);
 
     /** @var Version $version */
@@ -146,6 +153,11 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
                 ],
             ],
             'require' => [],
+            'source' => [
+                'type' => 'git',
+                'url' => 'https://gitlab.com/name/name',
+                'reference' => '1.0.0',
+            ],
         ]);
 })
     ->with(guestAndUsers(Permission::PACKAGE_CREATE, userWithPermission: 201))
