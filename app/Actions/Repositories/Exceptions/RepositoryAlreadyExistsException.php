@@ -4,4 +4,15 @@ declare(strict_types=1);
 
 namespace App\Actions\Repositories\Exceptions;
 
-class RepositoryAlreadyExistsException extends \RuntimeException {}
+use App\HasValidationMessage;
+use Illuminate\Validation\ValidationException;
+
+class RepositoryAlreadyExistsException extends \RuntimeException implements HasValidationMessage
+{
+    public function asValidationMessage(string $attribute = 'path'): ValidationException
+    {
+        return ValidationException::withMessages([
+            $attribute => 'Repository path has already been taken.',
+        ]);
+    }
+}

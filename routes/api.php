@@ -93,8 +93,12 @@ Route::middleware('web')->group(function (): void {
     Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
 });
 
-Route::prefix('/r/{repository}')->group(function (): void {
+Route::prefix('/r/{repository}')
+    ->middleware(ForceJson::class)
+    ->group(function (): void {
+        repositoryRoutes();
+    });
+
+Route::middleware(ForceJson::class)->group(function (): void {
     repositoryRoutes();
 });
-
-repositoryRoutes();

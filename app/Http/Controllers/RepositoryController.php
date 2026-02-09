@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\Repositories\DestroyRepository;
-use App\Actions\Repositories\Exceptions\RepositoryAlreadyExistsException;
 use App\Actions\Repositories\Inputs\StoreRepositoryInput;
 use App\Actions\Repositories\Inputs\UpdateRepositoryInput;
 use App\Actions\Repositories\StoreRepository;
@@ -16,7 +15,6 @@ use App\Models\Repository;
 use App\SearchFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -51,19 +49,13 @@ readonly class RepositoryController extends Controller
     }
 
     /**
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(StoreRepositoryInput $input): JsonResponse
     {
         $this->authorize(Permission::REPOSITORY_CREATE);
 
-        try {
-            $repository = $this->storeRepository->handle($input);
-        } catch (RepositoryAlreadyExistsException) {
-            throw ValidationException::withMessages([
-                'path' => 'Repository path has already been taken.',
-            ]);
-        }
+        $repository = $this->storeRepository->handle($input);
 
         return response()->json(
             new RepositoryResource($repository),
@@ -72,22 +64,16 @@ readonly class RepositoryController extends Controller
     }
 
     /**
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(UpdateRepositoryInput $input, string $repositoryId): JsonResponse
     {
         $this->authorize(Permission::REPOSITORY_UPDATE);
 
-        try {
-            $repository = $this->updateRepository->handle(
-                repository: Repository::userScoped()->findOrFail($repositoryId),
-                input: $input
-            );
-        } catch (RepositoryAlreadyExistsException) {
-            throw ValidationException::withMessages([
-                'path' => 'Repository path has already been taken.',
-            ]);
-        }
+        $repository = $this->updateRepository->handle(
+            repository: Repository::userScoped()->findOrFail($repositoryId),
+            input: $input
+        );
 
         return response()->json(
             new RepositoryResource($repository)

@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
+use App\HasValidationMessage;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
-class EmailAlreadyTakenException extends Exception
+class EmailAlreadyTakenException extends Exception implements HasValidationMessage
 {
-    //
+    public function asValidationMessage(string $attribute = 'email'): ValidationException
+    {
+        return ValidationException::withMessages([
+            $attribute => ['Email has already been taken.'],
+        ]);
+    }
 }
