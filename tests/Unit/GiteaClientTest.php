@@ -54,7 +54,8 @@ it('can fetch projects', function () {
         ->fullName->toBe('gitea/act_runner')
         ->name->toBe('act_runner')
         ->url->toBe('https://gitea.com/api/v1/repos/gitea/act_runner')
-        ->webUrl->toBe('https://gitea.com/gitea/act_runner');
+        ->webUrl->toBe('https://gitea.com/gitea/act_runner')
+        ->readOnly->toBeFalse();
 });
 
 it('can fetch project branches', function () {

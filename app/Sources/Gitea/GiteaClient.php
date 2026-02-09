@@ -40,6 +40,7 @@ class GiteaClient extends Client
             name: $item['name'],
             url: $item['url'],
             webUrl: $item['html_url'],
+            readOnly: $item['archived'],
         ), $data);
     }
 
@@ -104,6 +105,7 @@ class GiteaClient extends Client
             name: $item['name'],
             url: $item['url'],
             webUrl: $item['html_url'],
+            readOnly: $item['archived'],
         );
     }
 

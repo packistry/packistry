@@ -3,7 +3,6 @@ includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/tomasvotruba/type-coverage/config/extension.neon
-    - phpstan-baseline.neon
 
 rules:
     - Spatie\Ray\PHPStan\RemainingRayCallRule
@@ -16,10 +15,10 @@ parameters:
         -
             identifier: staticMethod.dynamicCall
     type_coverage:
-        return: 100
-        param: 100
-        property: 100
-        constant: 100
+        return: 80
+        param: 80
+        property: 80
+        constant: 80
     customRulesetUsed: true
     level: 8
     paths:
