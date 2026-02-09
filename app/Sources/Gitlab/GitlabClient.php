@@ -57,6 +57,7 @@ class GitlabClient extends Client
             name: $item['name'],
             url: $item['_links']['self'],
             webUrl: $item['web_url'],
+            readOnly: $item['archived'],
         ), $data);
     }
 
@@ -117,6 +118,7 @@ class GitlabClient extends Client
             name: $item['name'],
             url: $item['_links']['self'],
             webUrl: $item['web_url'],
+            readOnly: $item['archived'],
         );
     }
 

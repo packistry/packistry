@@ -85,7 +85,8 @@ it('fetches project', function () {
         ->fullName->toBe($this->project->fullName)
         ->name->toBe($this->project->name)
         ->url->toBe($this->project->url)
-        ->webUrl->toBe($this->project->webUrl);
+        ->webUrl->toBe($this->project->webUrl)
+        ->readOnly->toBeFalse();
 });
 
 it('fetches project tags', function () {

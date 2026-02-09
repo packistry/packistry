@@ -46,6 +46,7 @@ class GitHubClient extends Client
             name: $item['name'],
             url: $item['url'],
             webUrl: $item['html_url'],
+            readOnly: $item['archived'] || $item['disabled'],
         ), $data);
     }
 
@@ -109,6 +110,7 @@ class GitHubClient extends Client
             name: $item['name'],
             url: $item['url'],
             webUrl: $item['html_url'],
+            readOnly: ((bool) $item['archived']) || ((bool) $item['disabled']),
         );
     }
 
