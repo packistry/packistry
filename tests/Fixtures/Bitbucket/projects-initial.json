@@ -1,0 +1,18 @@
+{
+    "size": 1,
+    "values": [
+        {
+            "uuid": "{9f3c5c3b-9d20-4f2c-8f31-0f7ef9b1c4d0}",
+            "full_name": "packistry/packistry",
+            "name": "packistry",
+            "links": {
+                "self": {
+                    "href": "https://api.bitbucket.org/2.0/repositories/packistry/packistry"
+                },
+                "html": {
+                    "href": "https://bitbucket.org/packistry/packistry"
+                }
+            }
+        }
+    ]
+}
