@@ -56,8 +56,18 @@ class PushEvent extends Input implements Deletable, Importable
         return Normalizer::url($this->project->webUrl);
     }
 
+    public function sourceUrl(): string
+    {
+        return $this->project->webUrl;
+    }
+
     public function id(): string
     {
         return (string) $this->project->id;
+    }
+
+    public function reference(): string
+    {
+        return $this->checkoutSha ?? $this->shortRef();
     }
 }

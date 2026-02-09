@@ -47,8 +47,18 @@ class PushEvent extends Input implements Importable
         return $this->repository->htmlUrl;
     }
 
+    public function sourceUrl(): string
+    {
+        return $this->repository->htmlUrl;
+    }
+
     public function id(): string
     {
         return (string) $this->repository->id;
+    }
+
+    public function reference(): string
+    {
+        return $this->shortRef();
     }
 }

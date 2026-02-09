@@ -72,6 +72,8 @@ class GitlabClient extends Client
                 name: $branch['name'],
                 url: $project->url,
                 zipUrl: "$project->url/repository/archive.zip?sha={$branch['commit']['id']}",
+                sourceUrl: $project->webUrl,
+                reference: $branch['commit']['id'] ?? null,
             ));
     }
 
@@ -86,6 +88,8 @@ class GitlabClient extends Client
                 name: $tag['name'],
                 url: $project->url,
                 zipUrl: "$project->url/repository/archive.zip?sha={$tag['commit']['id']}",
+                sourceUrl: $project->webUrl,
+                reference: $tag['commit']['id'] ?? null,
             ));
     }
 
