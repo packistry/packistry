@@ -22,7 +22,7 @@ it('lists packages', function (Repository $repository, ?Authenticatable $auth, i
         closure: fn (RepositoryFactory $factory) => $factory
             ->has(Package::factory()->count(10))
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('list packages from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/list.json'))

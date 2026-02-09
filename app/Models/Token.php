@@ -60,4 +60,9 @@ class Token extends PersonalAccessToken
 
         return parent::findToken($token);
     }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at?->isPast() ?? false;
+    }
 }

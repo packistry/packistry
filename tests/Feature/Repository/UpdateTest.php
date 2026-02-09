@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Repository;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\patchJson;

@@ -58,7 +58,7 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
                 ])
             )
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('lists package versions when name includes dots', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     $package = $repository->packages->first();
@@ -105,7 +105,7 @@ it('lists package versions when name includes dots', function (Repository $repos
                 ])
             )
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('requires ability', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/p2/test/test.json'))

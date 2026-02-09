@@ -22,7 +22,7 @@ it('provides urls', function (Repository $repository, ?Authenticatable $auth, in
     ->with(rootAndSubRepository(
         public: true
     ))
-    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ));
+    ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
 it('provides urls from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/packages.json'))
