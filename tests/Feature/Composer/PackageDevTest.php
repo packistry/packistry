@@ -69,4 +69,5 @@ it('list package versions from private repository', function (Repository $reposi
         guestStatus: 401,
         personalTokenWithoutAccessStatus: 401,
         deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutPackagesStatus: 401,
     ));

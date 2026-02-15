@@ -44,8 +44,10 @@ class RepositoryController extends RepositoryAwareController
 
         $q = $request->input('q');
         $type = $request->input('type');
+        $repository = $this->repository();
+        $token = $this->token();
 
-        $packagesQuery = $this->repository()
+        $packagesQuery = $repository
             ->packages()
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
@@ -53,13 +55,23 @@ class RepositoryController extends RepositoryAwareController
             ->when($type, fn (BuilderContract $query) => $query
                 ->where('type', "$type"));
 
+        // For public repositories, return all packages without filtering
+        // For private repositories, use batch access checking for better performance
+        $packages = $packagesQuery->get();
+
+        if (! $repository->public && $token !== null) {
+            $packages = $token->filterAccessiblePackages($packages);
+        }
+
+        $results = $packages->map(fn (Package $package): array => [
+            'name' => $package->name,
+            'description' => $package->description,
+            'downloads' => $package->total_downloads,
+        ])->values()->all();
+
         return response()->json([
-            'total' => $packagesQuery->count(),
-            'results' => $packagesQuery->chunkMap(fn (Package $package): array => [
-                'name' => $package->name,
-                'description' => $package->description,
-                'downloads' => $package->total_downloads,
-            ]),
+            'total' => count($results),
+            'results' => $results,
         ]);
     }
 
@@ -67,9 +79,24 @@ class RepositoryController extends RepositoryAwareController
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
-        $names = $this->repository()
+        $repository = $this->repository();
+        $token = $this->token();
+
+        // For public repositories, return all packages without filtering
+        // For private repositories, use batch access checking for better performance
+        $packages = $repository
             ->packages()
-            ->pluck('name');
+            ->orderBy('name')
+            ->get();
+
+        if (! $repository->public && $token !== null) {
+            $packages = $token->filterAccessiblePackages($packages);
+        }
+
+        $names = $packages
+            ->map(fn (Package $package): string => $package->name)
+            ->values()
+            ->all();
 
         return response()->json([
             'packageNames' => $names,
@@ -87,9 +114,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
+        $repository = $this->repository();
+
         /** @var Package $package */
-        $package = $this
-            ->repository()
+        $package = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->with([
@@ -99,7 +127,9 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
-        $package->setRelation('repository', $this->repository());
+        $this->abortIfNoPackageAccess($package);
+
+        $package->setRelation('repository', $repository);
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -115,9 +145,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
+        $repository = $this->repository();
+
         /** @var Package $package */
-        $package = $this
-            ->repository()
+        $package = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->with([
@@ -127,7 +158,9 @@ class RepositoryController extends RepositoryAwareController
             ])
             ->firstOrFail();
 
-        $package->setRelation('repository', $this->repository());
+        $this->abortIfNoPackageAccess($package);
+
+        $package->setRelation('repository', $repository);
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -147,9 +180,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        $repository = $this->repository();
-        $package = $repository
+        $package = $this->repository()
             ->packageByNameOrFail("$vendor/$name");
+
+        $this->abortIfNoPackageAccess($package);
 
         /** @var Version $version */
         $version = $package
@@ -189,19 +223,22 @@ class RepositoryController extends RepositoryAwareController
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
-        $package = $this->repository()
+        $repository = $this->repository();
+        $package = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->first();
 
         if (is_null($package)) {
             $package = new Package;
-            $package->repository_id = $this->repository()->id;
+            $package->repository_id = $repository->id;
             $package->type = PackageType::LIBRARY->value;
             $package->name = "$vendor/$name";
 
             $package->save();
         }
+
+        $this->abortIfNoPackageAccess($package);
 
         $version = $this->createFromZip->create(
             package: $package,

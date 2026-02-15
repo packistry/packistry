@@ -30,6 +30,10 @@ class StoreDeployToken
                 $token->repositories()->sync($input->repositories);
             }
 
+            if (is_array($input->packages)) {
+                $token->packages()->sync($input->packages);
+            }
+
             $accessToken = $token->createToken(
                 name: $token->name,
                 abilities: $input->abilities,
