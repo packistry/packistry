@@ -73,14 +73,14 @@ class Package extends Model
     }
 
     /**
-     * @return Builder<$this>
+     * @return Builder<static>
      */
     public static function userScoped(?User $user = null): Builder
     {
         /** @var User|null $user */
         $user ??= auth()->user();
 
-        return self::query()
+        return static::query()
             ->withGlobalScope('user', new UserScope($user));
     }
 }

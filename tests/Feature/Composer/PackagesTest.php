@@ -27,6 +27,7 @@ it('provides urls', function (Repository $repository, ?Authenticatable $auth, in
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_READ,
         deployTokenPackages: [1, 2],
+        expiredDeployTokenWithAccessStatus: 200,
     ));
 
 it('provides urls from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {

@@ -84,7 +84,7 @@ const AuthPackagesPackageIdRoute = AuthPackagesPackageIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '': typeof AuthRouteWithChildren
+  '/': typeof AuthIndexRoute
   '/login': typeof LoginRoute
   '/authentication-sources': typeof AuthAuthenticationSourcesRoute
   '/deploy-tokens': typeof AuthDeployTokensRoute
@@ -93,9 +93,8 @@ export interface FileRoutesByFullPath {
   '/repositories': typeof AuthRepositoriesRoute
   '/sources': typeof AuthSourcesRoute
   '/users': typeof AuthUsersRoute
-  '/': typeof AuthIndexRoute
   '/packages/$packageId': typeof AuthPackagesPackageIdRoute
-  '/packages': typeof AuthPackagesIndexRoute
+  '/packages/': typeof AuthPackagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -128,7 +127,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | ''
+    | '/'
     | '/login'
     | '/authentication-sources'
     | '/deploy-tokens'
@@ -137,9 +136,8 @@ export interface FileRouteTypes {
     | '/repositories'
     | '/sources'
     | '/users'
-    | '/'
     | '/packages/$packageId'
-    | '/packages'
+    | '/packages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -176,13 +174,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -190,46 +181,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/authentication-sources': {
-      id: '/_auth/authentication-sources'
-      path: '/authentication-sources'
-      fullPath: '/authentication-sources'
-      preLoaderRoute: typeof AuthAuthenticationSourcesRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_auth/deploy-tokens': {
-      id: '/_auth/deploy-tokens'
-      path: '/deploy-tokens'
-      fullPath: '/deploy-tokens'
-      preLoaderRoute: typeof AuthDeployTokensRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/import-batches': {
-      id: '/_auth/import-batches'
-      path: '/import-batches'
-      fullPath: '/import-batches'
-      preLoaderRoute: typeof AuthImportBatchesRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/personal-tokens': {
-      id: '/_auth/personal-tokens'
-      path: '/personal-tokens'
-      fullPath: '/personal-tokens'
-      preLoaderRoute: typeof AuthPersonalTokensRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/repositories': {
-      id: '/_auth/repositories'
-      path: '/repositories'
-      fullPath: '/repositories'
-      preLoaderRoute: typeof AuthRepositoriesRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/sources': {
-      id: '/_auth/sources'
-      path: '/sources'
-      fullPath: '/sources'
-      preLoaderRoute: typeof AuthSourcesRouteImport
+    '/_auth/': {
+      id: '/_auth/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/users': {
@@ -239,11 +202,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthUsersRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/': {
-      id: '/_auth/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthIndexRouteImport
+    '/_auth/sources': {
+      id: '/_auth/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof AuthSourcesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/repositories': {
+      id: '/_auth/repositories'
+      path: '/repositories'
+      fullPath: '/repositories'
+      preLoaderRoute: typeof AuthRepositoriesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/personal-tokens': {
+      id: '/_auth/personal-tokens'
+      path: '/personal-tokens'
+      fullPath: '/personal-tokens'
+      preLoaderRoute: typeof AuthPersonalTokensRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/import-batches': {
+      id: '/_auth/import-batches'
+      path: '/import-batches'
+      fullPath: '/import-batches'
+      preLoaderRoute: typeof AuthImportBatchesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/deploy-tokens': {
+      id: '/_auth/deploy-tokens'
+      path: '/deploy-tokens'
+      fullPath: '/deploy-tokens'
+      preLoaderRoute: typeof AuthDeployTokensRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/authentication-sources': {
+      id: '/_auth/authentication-sources'
+      path: '/authentication-sources'
+      fullPath: '/authentication-sources'
+      preLoaderRoute: typeof AuthAuthenticationSourcesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/packages/': {
+      id: '/_auth/packages/'
+      path: '/packages'
+      fullPath: '/packages/'
+      preLoaderRoute: typeof AuthPackagesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/packages/$packageId': {
@@ -251,13 +256,6 @@ declare module '@tanstack/react-router' {
       path: '/packages/$packageId'
       fullPath: '/packages/$packageId'
       preLoaderRoute: typeof AuthPackagesPackageIdRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/packages/': {
-      id: '/_auth/packages/'
-      path: '/packages'
-      fullPath: '/packages'
-      preLoaderRoute: typeof AuthPackagesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
   }

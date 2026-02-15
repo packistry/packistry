@@ -17,6 +17,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\LazyCollection;
 use RuntimeException;
 
 class BitbucketClient extends Client
@@ -69,6 +70,10 @@ class BitbucketClient extends Client
         $allProjects = [];
 
         foreach ($responses as $response) {
+            if ($response instanceof \Throwable) {
+                throw $response;
+            }
+
             $response->throw();
 
             $data = $response->json();
@@ -93,75 +98,29 @@ class BitbucketClient extends Client
     /**
      * @throws ConnectionException|RequestException
      */
-    public function branches(Project $project): array
+    public function branches(Project $project): LazyCollection
     {
-        $perPage = 100;
-        $page = 1;
-        $allBranches = [];
-
-        do {
-            $response = $this->http()->get("$project->url/refs/branches", [
-                'pagelen' => $perPage,
-                'page' => $page,
-            ])->throw();
-
-            $data = $response->json();
-
-            if (! isset($data['values'])) {
-                throw new RuntimeException('Unexpected API response format.');
-            }
-
-            $branches = array_map(fn (array $item): Branch => new Branch(
+        return $this->lazy("$project->url/refs/branches")
+            ->map(fn (array $item): Branch => new Branch(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
                 zipUrl: "$project->webUrl/get/{$item['name']}.zip"
-            ), $data['values']);
-
-            $allBranches = array_merge($allBranches, $branches);
-            $page++;
-
-        } while (array_key_exists('next', $data) && is_string($data['next']));
-
-        return $allBranches;
+            ));
     }
 
     /**
      * @throws ConnectionException|RequestException
      */
-    public function tags(Project $project): array
+    public function tags(Project $project): LazyCollection
     {
-        $perPage = 100;
-        $page = 1;
-        $allTags = [];
-
-        do {
-            $response = $this->http()->get("$project->url/refs/tags", [
-                'pagelen' => $perPage,
-                'page' => $page,
-            ])->throw();
-
-            $data = $response->json();
-
-            if (! isset($data['values'])) {
-                throw new RuntimeException('Unexpected API response format.');
-            }
-
-            $tags = array_map(fn (array $item): Tag => new Tag(
+        return $this->lazy("$project->url/refs/tags")
+            ->map(fn (array $item): Tag => new Tag(
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
                 zipUrl: "$project->webUrl/get/{$item['name']}.zip"
-            ), $data['values']);
-
-            $allTags = array_merge($allTags, $tags);
-            $page++;
-
-        } while (array_key_exists('next', $data) && is_string($data['next']));
-
-        usort($allTags, fn (Tag $a, Tag $b): int => version_compare($b->version(), $a->version()));
-
-        return $allTags;
+            ));
     }
 
     /**
@@ -236,5 +195,39 @@ class BitbucketClient extends Client
         $workspace = $this->metadata['workspace'] ?? null;
 
         return $workspace !== null && $workspace !== '' ? $workspace : '';
+    }
+
+    /**
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
+     */
+    private function lazy(string $uri): LazyCollection
+    {
+        return LazyCollection::make(function () use ($uri) {
+            $perPage = 100;
+            $page = 1;
+
+            do {
+                $response = $this->http()->get($uri, [
+                    'pagelen' => $perPage,
+                    'page' => $page,
+                ])->throw();
+
+                $data = $response->json();
+
+                if (! isset($data['values'])) {
+                    throw new RuntimeException('Unexpected API response format.');
+                }
+
+                foreach ($data['values'] as $item) {
+                    yield $item;
+                }
+
+                $page++;
+            } while (array_key_exists('next', $data) && is_string($data['next']));
+        });
     }
 }

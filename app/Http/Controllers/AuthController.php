@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\AuthenticationSources\HandleAuthenticationSourceCallback;
 use App\Actions\Users\Inputs\UpdateMeInput;
 use App\Actions\Users\UpdateMe;
+use App\Exceptions\AuthenticationSourceException;
 use App\Http\Resources\PublicAuthenticationSourceResource;
 use App\Http\Resources\UserResource;
 use App\Models\AuthenticationSource;
@@ -15,6 +16,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -108,7 +110,11 @@ class AuthController
             Auth::login($user);
 
             return redirect('/');
-        } catch (Throwable $e) {
+        } catch (AuthenticationSourceException $e) {
+            $query = Arr::query(['error' => $e->getMessage()]);
+
+            return redirect("/login?$query");
+        } catch (Throwable) {
             return redirect('/login');
         }
     }

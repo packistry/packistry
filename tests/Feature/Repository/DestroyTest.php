@@ -13,7 +13,7 @@ use function Pest\Laravel\deleteJson;
 it('destroys', function (?User $user, int $status): void {
     $repository = Repository::factory()->create();
 
-    $response = deleteJson("/repositories/$repository->id")
+    $response = deleteJson("/api/repositories/$repository->id")
         ->assertStatus($status);
 
     if ($status !== 200) {

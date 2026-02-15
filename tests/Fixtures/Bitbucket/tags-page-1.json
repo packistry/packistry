@@ -1,0 +1,15 @@
+{
+    "pagelen": 100,
+    "page": 1,
+    "next": "https://api.bitbucket.org/2.0/repositories/packistry/packistry/refs/tags?pagelen=100&page=2",
+    "values": [
+        {
+            "name": "v1.0.0",
+            "links": {
+                "html": {
+                    "href": "https://bitbucket.org/packistry/packistry/src/v1.0.0"
+                }
+            }
+        }
+    ]
+}

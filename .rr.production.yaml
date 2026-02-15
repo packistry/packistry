@@ -1,15 +1,26 @@
 version: '3'
 
 http:
-  address: 0.0.0.0:80
+  address: 0.0.0.0:${RR_PORT:-80}
   pool:
-    num_workers: 0
-    max_jobs: 0
+    num_workers: ${RR_NUM_WORKERS:-0}
+    max_jobs: ${RR_MAX_JOBS:-0}
     supervisor:
+      max_worker_memory: ${RR_MAX_WORKER_MEMORY:-128}
       exec_ttl: 30s
   static:
     dir: public
-  middleware: [ "static" ]
+  middleware: [ static, proxy_ip_parser, gzip ]
+  trusted_subnets:
+    [
+      "10.0.0.0/8",
+      "127.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+      "::1/128",
+      "fc00::/7",
+      "fe80::/10"
+    ]
 
 server:
   command: "php ./vendor/bin/roadrunner-worker"

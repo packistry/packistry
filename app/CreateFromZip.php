@@ -13,6 +13,7 @@ use App\Models\Package;
 use App\Models\Version;
 use App\Traits\ComposerFromZip;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class CreateFromZip
@@ -48,7 +49,7 @@ class CreateFromZip
 
         $createdVersion = $package
             ->versions()
-            ->where('name', Normalizer::version($version))
+            ->where('name', $versionName = Normalizer::version($version))
             ->first() ?? new Version;
 
         $hash = hash_file('sha1', $path);
@@ -58,9 +59,10 @@ class CreateFromZip
         }
 
         $createdVersion->package_id = $package->id;
-        $createdVersion->name = Normalizer::version($version);
+        $createdVersion->name = $versionName;
         $createdVersion->order = Normalizer::versionOrder($version);
         $createdVersion->shasum = $hash;
+        $createdVersion->archive_path = $package->repository->archivePath(Str::uuid7()->toString().'.zip');
         $createdVersion->metadata = collect($decoded)->only([
             'description',
             'readme',
@@ -84,7 +86,7 @@ class CreateFromZip
         $contents = file_get_contents($path);
 
         Storage::disk()->put(
-            path: Archive::name($package, $version),
+            path: $createdVersion->archive_path,
             contents: $contents
         );
 

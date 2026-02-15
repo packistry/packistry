@@ -26,7 +26,7 @@ it('updates', function (?User $user, int $status): void {
         ],
     ];
 
-    $response = patchJson('/me', $attributes)
+    $response = patchJson('/api/me', $attributes)
         ->assertStatus($status);
 
     if ($status !== 200) {

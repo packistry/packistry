@@ -17,7 +17,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use RuntimeException;
+use Illuminate\Support\LazyCollection;
 
 class GitHubClient extends Client
 {
@@ -46,49 +46,36 @@ class GitHubClient extends Client
             name: $item['name'],
             url: $item['url'],
             webUrl: $item['html_url'],
+            readOnly: $item['archived'] || $item['disabled'],
         ), $data);
     }
 
     /**
      * @throws ConnectionException|RequestException
      */
-    public function branches(Project $project): array
+    public function branches(Project $project): LazyCollection
     {
-        $response = $this->http()->get("$project->url/branches")->throw();
-
-        $data = $response->json();
-
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
-
-        return array_map(fn (array $item): Branch => new Branch(
-            id: (string) $project->id,
-            name: $item['name'],
-            url: Normalizer::url($project->webUrl),
-            zipUrl: "{$project->url}/zipball/refs/heads/{$item['name']}",
-        ), $data);
+        return $this->lazy("$project->url/branches")
+            ->map(fn (array $item): Branch => new Branch(
+                id: (string) $project->id,
+                name: $item['name'],
+                url: Normalizer::url($project->webUrl),
+                zipUrl: "$project->url/zipball/refs/heads/{$item['name']}",
+            ));
     }
 
     /**
      * @throws ConnectionException|RequestException
      */
-    public function tags(Project $project): array
+    public function tags(Project $project): LazyCollection
     {
-        $response = $this->http()->get("$project->url/tags")->throw();
-
-        $data = $response->json();
-
-        if (is_null($data)) {
-            new RuntimeException($response->getBody()->getContents());
-        }
-
-        return array_map(fn (array $item): Tag => new Tag(
-            id: (string) $project->id,
-            name: $item['name'],
-            url: Normalizer::url($project->webUrl),
-            zipUrl: $item['zipball_url'],
-        ), $data);
+        return $this->lazy("$project->url/tags")
+            ->map(fn (array $item): Tag => new Tag(
+                id: (string) $project->id,
+                name: $item['name'],
+                url: Normalizer::url($project->webUrl),
+                zipUrl: $item['zipball_url'],
+            ));
     }
 
     /**
@@ -123,6 +110,7 @@ class GitHubClient extends Client
             name: $item['name'],
             url: $item['url'],
             webUrl: $item['html_url'],
+            readOnly: ((bool) $item['archived']) || ((bool) $item['disabled']),
         );
     }
 
@@ -131,8 +119,8 @@ class GitHubClient extends Client
      */
     public function validateToken(): void
     {
-        // Fine-grained personal access tokens, does not respond with scopes in header
-        // lets try and manual check
+        // Fine-grained personal access tokens do not respond with scopes in the header
+        // let's try and manual check
         if (str_starts_with($this->token, 'github_pat_')) {
             $this->validateTokenManually();
 
@@ -178,5 +166,41 @@ class GitHubClient extends Client
         }
 
         throw new InvalidTokenException(missingScopes: ['webhooks read and write']);
+    }
+
+    /**
+     * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @return LazyCollection<array-key, array<string, mixed>>
+     *
+     * @throws ConnectionException|RequestException
+     */
+    private function lazy(string $uri): LazyCollection
+    {
+        return LazyCollection::make(function () use ($uri) {
+            $nextUri = $uri;
+
+            while ($nextUri) {
+                $response = $this->http()->get($nextUri)
+                    ->throw();
+
+                $data = $response->json();
+
+                foreach ($data as $item) {
+                    yield $item;
+                }
+
+                $link = $response->header('link');
+
+                if (blank($link)) {
+                    break;
+                }
+
+                $matches = [];
+                preg_match('/<([^>]+?)>; rel="next"/', $link, $matches);
+
+                $nextUri = $matches[1] ?? null;
+            }
+        });
     }
 }

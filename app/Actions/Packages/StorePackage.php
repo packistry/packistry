@@ -51,7 +51,7 @@ class StorePackage
         $packages = [];
 
         foreach ($projects as $project) {
-            if ($input->webhook) {
+            if ($input->webhook && ! $project->readOnly) {
                 try {
                     $source->client()->createWebhook($repository, $project, $source);
                 } catch (RequestException $e) {

@@ -4,26 +4,22 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Composer;
 
-use App\Archive;
 use App\CreateFromZip;
 use App\Enums\PackageType;
 use App\Enums\TokenAbility;
 use App\Events\PackageDownloadEvent;
-use App\Exceptions\ComposerJsonNotFoundException;
-use App\Exceptions\FailedToOpenArchiveException;
-use App\Exceptions\NameNotFoundException;
-use App\Exceptions\VersionNotFoundException;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
 use App\Models\Package;
+use App\Models\Version;
+use App\Normalizer;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class RepositoryController extends RepositoryAwareController
@@ -172,15 +168,15 @@ class RepositoryController extends RepositoryAwareController
     /**
      * @throws Throwable
      */
-    public function download(Request $request): Response
+    public function download(Request $request): StreamedResponse
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
         $vendor = $request->route('vendor');
         $name = $request->route('name');
-        $version = $request->route('version');
+        $versionName = $request->route('version');
 
-        if (! is_string($vendor) || ! is_string($name) || ! is_string($version)) {
+        if (! is_string($vendor) || ! is_string($name) || ! is_string($versionName)) {
             abort(404);
         }
 
@@ -189,10 +185,13 @@ class RepositoryController extends RepositoryAwareController
 
         $this->abortIfNoPackageAccess($package);
 
-        $archiveName = Archive::name($package, $version);
-        $content = Storage::get($archiveName);
+        /** @var Version $version */
+        $version = $package
+            ->versions()
+            ->where('name', Normalizer::version($versionName))
+            ->firstOrFail();
 
-        if (is_null($content)) {
+        if ($version->archive_path === null || ! Storage::exists($version->archive_path)) {
             abort(404);
         }
 
@@ -203,9 +202,7 @@ class RepositoryController extends RepositoryAwareController
             token: $this->token()?->currentAccessToken()
         ));
 
-        return response($content)
-            ->header('Content-Disposition', 'attachment; filename="'.$archiveName.'"')
-            ->header('Content-Type', 'application/zip');
+        return Storage::download($version->archive_path);
     }
 
     public function upload(Request $request): JsonResponse
@@ -219,14 +216,10 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        try {
-            $request->validate([
-                'file' => ['required', 'file', 'mimes:zip'],
-                'version' => ['string'],
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
-        }
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:zip'],
+            'version' => ['string'],
+        ]);
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
@@ -247,29 +240,11 @@ class RepositoryController extends RepositoryAwareController
 
         $this->abortIfNoPackageAccess($package);
 
-        try {
-            $version = $this->createFromZip->create(
-                package: $package,
-                path: $file->getRealPath(),
-                version: $request->input('version')
-            );
-        } catch (ComposerJsonNotFoundException) {
-            return response()->json([
-                'file' => ['composer.json not found in archive'],
-            ], 422);
-        } catch (VersionNotFoundException) {
-            return response()->json([
-                'version' => ['no version provided'],
-            ], 422);
-        } catch (NameNotFoundException) {
-            return response()->json([
-                'name' => ['no name provided'],
-            ], 422);
-        } catch (FailedToOpenArchiveException) {
-            return response()->json([
-                'archive' => ['failed to open archive'],
-            ], 422);
-        }
+        $version = $this->createFromZip->create(
+            package: $package,
+            path: $file->getRealPath(),
+            version: $request->input('version')
+        );
 
         return response()->json(new VersionResource($version), 201);
     }

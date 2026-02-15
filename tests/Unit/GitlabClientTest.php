@@ -5,8 +5,11 @@ declare(strict_types=1);
 use App\Exceptions\InvalidTokenException;
 use App\Models\Repository;
 use App\Models\Source;
+use App\Sources\Branch;
 use App\Sources\Gitlab\GitlabClient;
 use App\Sources\Project;
+use App\Sources\Tag;
+use Illuminate\Support\LazyCollection;
 
 beforeEach(function () {
     $this->gitLab = app(GitlabClient::class)->withOptions(
@@ -58,7 +61,8 @@ it('fetches projects', function () {
         ->fullName->toBe($this->project->fullName)
         ->name->toBe($this->project->name)
         ->url->toBe($this->project->url)
-        ->webUrl->toBe($this->project->webUrl);
+        ->webUrl->toBe($this->project->webUrl)
+        ->readOnly->toBeFalse();
 });
 
 it('fetches project', function () {
@@ -81,11 +85,17 @@ it('fetches project tags', function () {
         'https://gitlab.com/api/v4/projects/278964/repository/tags?per_page=100&page=1' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/tags.json')),
     ]);
 
-    $tags = $this->gitLab->tags($this->project);
+    $collection = $this->gitLab->tags($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $tags = $collection->collect();
 
     expect($tags)
         ->toHaveCount(20)
         ->and($tags[0])
+        ->toBeInstanceOf(Tag::class)
         ->id->toBe('278964')
         ->name->toBe('v17.6.5-ee')
         ->url->toBe('https://gitlab.com/api/v4/projects/278964')
@@ -97,11 +107,17 @@ it('fetches project branches', function () {
         'https://gitlab.com/api/v4/projects/278964/repository/branches?per_page=100&page=1' => Http::response(File::get(__DIR__.'/../Fixtures/Gitlab/branches.json')),
     ]);
 
-    $branches = $this->gitLab->branches($this->project);
+    $collection = $this->gitLab->branches($this->project);
+
+    expect($collection)
+        ->toBeInstanceOf(LazyCollection::class);
+
+    $branches = $collection->collect();
 
     expect($branches)
         ->toHaveCount(15)
         ->and($branches[0])
+        ->toBeInstanceOf(Branch::class)
         ->id->toBe('278964')
         ->name->toBe('00alkorba')
         ->url->toBe('https://gitlab.com/api/v4/projects/278964')

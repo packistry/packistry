@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Actions\Packages;
 
-use App\Archive;
 use App\Models\Package;
 use App\Models\Version;
 use Illuminate\Support\Facades\Storage;
@@ -15,13 +14,13 @@ class DestroyPackage
     {
         $paths = $package->versions()
             ->get()
-            ->map(fn (Version $version): string => Archive::name($package, $version->name));
+            ->map(fn (Version $version) => $version->archive_path)
+            ->filter(fn (?string $path) => $path !== null)
+            ->toArray();
 
-        foreach ($paths as $path) {
-            dispatch(function () use ($path): void {
-                Storage::disk()->delete($path);
-            });
-        }
+        dispatch(function () use ($paths): void {
+            Storage::disk()->delete($paths);
+        });
 
         $package->delete();
 

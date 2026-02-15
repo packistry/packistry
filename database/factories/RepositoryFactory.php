@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Repository>
@@ -23,7 +24,7 @@ class RepositoryFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'path' => fake()->name(),
+            'path' => Str::slug(fake()->name()),
             'public' => false,
         ];
     }

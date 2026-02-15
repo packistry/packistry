@@ -1,0 +1,14 @@
+{
+    "pagelen": 100,
+    "page": 2,
+    "values": [
+        {
+            "name": "v0.9.0",
+            "links": {
+                "html": {
+                    "href": "https://bitbucket.org/packistry/packistry/src/v0.9.0"
+                }
+            }
+        }
+    ]
+}

@@ -13,16 +13,16 @@ class StoreRepository
 {
     public function handle(StoreRepositoryInput $input): Repository
     {
-        if (Repository::isPathInUse($input->path)) {
+        $path = is_null($input->path) ? null : Str::slug($input->path);
+
+        if (Repository::isPathInUse($path)) {
             throw new RepositoryAlreadyExistsException;
         }
 
         $repository = new Repository;
 
         $repository->name = $input->name;
-        $repository->path = is_null($input->path)
-            ? $input->path
-            : Str::slug($input->path);
+        $repository->path = $path;
 
         $repository->description = $input->description;
         $repository->public = $input->public;

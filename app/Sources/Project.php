@@ -17,6 +17,7 @@ class Project extends Data
         public string $name,
         public string $url,
         public string $webUrl,
+        public bool $readOnly = false,
     ) {
         //
     }

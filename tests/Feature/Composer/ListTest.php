@@ -25,7 +25,8 @@ it('lists packages', function (Repository $repository, ?Authenticatable $auth, i
     ))
     ->with(guestAndTokens(
         TokenAbility::REPOSITORY_READ,
-        deployTokenPackages: [1, 2, 3]
+        deployTokenPackages: [1, 2, 3],
+        expiredDeployTokenWithAccessStatus: 200,
     ));
 
 it('list packages from private repository', function (Repository $repository, ?Authenticatable $auth, int $status, ?array $allowedPackages): void {

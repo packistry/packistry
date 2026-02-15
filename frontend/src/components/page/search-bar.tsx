@@ -41,6 +41,7 @@ export function navigateOnSearch(navigate: UseNavigateResult<string>) {
             to: '.',
             search: (prev) => ({
                 ...prev,
+                page: 1,
                 filters: {
                     ...prev.filters,
                     search,

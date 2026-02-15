@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Webhook;
 
-use App\Archive;
-use App\Exceptions\ArchiveInvalidContentTypeException;
-use App\Exceptions\ComposerJsonNotFoundException;
-use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\VersionNotFoundException;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\VersionResource;
@@ -58,22 +54,6 @@ abstract class WebhookController extends RepositoryAwareController
                 $package,
                 importable: $event,
             );
-        } catch (ArchiveInvalidContentTypeException) {
-            return response()->json([
-                'archive' => ['Invalid content type'],
-            ], 422);
-        } catch (FailedToFetchArchiveException $e) {
-            return response()->json([
-                'archive' => ['failed to fetch archive', $e->getMessage()],
-            ], 422);
-        } catch (ComposerJsonNotFoundException) {
-            return response()->json([
-                'file' => ['composer.json not found in archive'],
-            ], 422);
-        } catch (VersionNotFoundException) {
-            return response()->json([
-                'version' => ['no version provided'],
-            ], 422);
         } catch (ConnectionException $e) {
             return response()->json([
                 'archive' => ['connection failed', $e->getMessage()],
@@ -101,11 +81,9 @@ abstract class WebhookController extends RepositoryAwareController
             ->where('name', Normalizer::version($event->version()))
             ->firstOrFail();
 
-        $path = Archive::name($package, $version->name);
-
-        dispatch(function () use ($path): void {
-            Storage::disk()->delete($path);
-        });
+        if ($version->archive_path !== null) {
+            Storage::disk()->delete($version->archive_path);
+        }
 
         $version->delete();
 

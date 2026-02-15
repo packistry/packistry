@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('downloads_new', function (Blueprint $table): void {
             $table->id();
 
-            $table->foreignId('package_id')->constrained()->onDelete('cascade');
-            $table->foreignId('version_id')->nullable()->constrained()->onDelete('set null');
-            $table->foreignId('token_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('version_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('token_id')->nullable()->constrained()->nullOnDelete();
             $table->string('version_name');
             $table->ipAddress('ip')->nullable();
 
@@ -53,8 +53,8 @@ return new class extends Migration
         Schema::create('downloads_new', function (Blueprint $table): void {
             $table->id();
 
-            $table->foreignId('version_id')->constrained()->onDelete('cascade');
-            $table->foreignId('token_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('version_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('token_id')->nullable()->constrained()->nullOnDelete();
             $table->ipAddress('ip')->nullable();
 
             $table->timestamps();

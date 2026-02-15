@@ -10,13 +10,15 @@ use App\Actions\Users\StoreUser;
 use App\Actions\Users\UpdateUser;
 use App\Enums\Role;
 use App\Exceptions\EmailAlreadyTakenException;
+use App\Exceptions\EmailMissingException;
+use App\Exceptions\InvalidDomainException;
+use App\Exceptions\RegistrationNotAllowedException;
 use App\Models\AuthenticationSource;
 use App\Models\User;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use RuntimeException;
 
 readonly class HandleAuthenticationSourceCallback
 {
@@ -39,7 +41,11 @@ readonly class HandleAuthenticationSourceCallback
         $email = $providedUser->getEmail();
 
         if ($email === null) {
-            throw new RuntimeException('Email not provided');
+            throw new EmailMissingException;
+        }
+
+        if (! $source->isDomainAllowed($email)) {
+            throw new InvalidDomainException;
         }
 
         $user = $source
@@ -55,6 +61,10 @@ readonly class HandleAuthenticationSourceCallback
         }
 
         if ($user === null) {
+            if (! $source->allow_registration) {
+                throw new RegistrationNotAllowedException;
+            }
+
             $user = $this->store->handle(
                 new StoreUserInput(
                     name: $providedUser->getName() ?? '',

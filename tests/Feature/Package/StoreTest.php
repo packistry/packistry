@@ -15,6 +15,7 @@ use App\Sources\Branch;
 use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
+use Illuminate\Support\LazyCollection;
 
 use function Pest\Laravel\postJson;
 
@@ -52,30 +53,30 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
             webUrl: 'https://gitlab.com/name/name',
         ));
 
-        $mock->shouldReceive('branches')->withAnyArgs()->andReturn([
+        $mock->shouldReceive('branches')->withAnyArgs()->andReturn(LazyCollection::wrap([
             new Branch(
                 id: '1',
                 name: 'feature',
                 url: 'https://gitlab.com/name/name',
                 zipUrl: 'https://fake.com/archive.zip',
             ),
-        ]);
+        ]));
 
-        $mock->shouldReceive('tags')->withAnyArgs()->andReturn([
+        $mock->shouldReceive('tags')->withAnyArgs()->andReturn(LazyCollection::wrap([
             new Tag(
                 id: '1',
                 name: '1.0.0',
                 url: 'https://gitlab.com/name/name',
                 zipUrl: 'https://fake.com/archive.zip',
             ),
-        ]);
+        ]));
 
         $mock->shouldReceive('createWebhook')->withAnyArgs()->once();
 
         return $mock;
     });
 
-    postJson('/packages', [
+    postJson('/api/packages', [
         'repository' => (string) $repository->id,
         'source' => (string) $source->id,
         'projects' => [

@@ -43,10 +43,7 @@ it('creates new version for existing package', function (Repository $repository,
     $version = Version::query()->first();
 
     $response->assertExactJson(resourceAsJson(new VersionResource($version)));
-
-    $fileName = $repository->archivePath('test-test-1.0.0.zip');
-
-    Storage::disk()->assertExists($fileName, $file->getContent());
+    Storage::disk()->assertExists($version->archive_path, $file->getContent());
 
     /**
      * @phpstan-ignore-next-line
@@ -116,10 +113,7 @@ it('creates new package and version when non existing', function (Repository $re
     $version = Version::query()->first();
 
     $response->assertExactJson(resourceAsJson(new VersionResource($version)));
-
-    $fileName = $repository->archivePath('test-test-1.0.0.zip');
-
-    Storage::disk()->assertExists($fileName, $file->getContent());
+    Storage::disk()->assertExists($version->archive_path, $file->getContent());
 
     /**
      * @phpstan-ignore-next-line

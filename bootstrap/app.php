@@ -14,9 +14,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         apiPrefix: '',
         then: function (): void {
-            Route::middleware('web')
-                ->get('{any?}', fn () => response()->file(public_path('index.html')))->where('any', '.*');
-        },
+            Route::fallback(function () {
+                static $cachedIndex = null;
+
+                if ($cachedIndex === null) {
+                    $cachedIndex = file_get_contents(public_path('index.html'));
+                }
+
+                return response($cachedIndex, 200)
+                    ->header('Content-Type', 'text/html');
+            });
+        }
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
@@ -24,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Exception $exception): void {
             if ($exception instanceof HasValidationMessage) {
-                throw $exception::asValidationMessage();
+                throw $exception->asValidationMessage();
             }
         });
     })->create();

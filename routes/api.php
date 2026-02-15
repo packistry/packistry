@@ -15,7 +15,6 @@ use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersionController;
 use App\Http\Controllers\Webhook;
-use App\Http\Middleware\AcceptsJsonOrRedirectApp;
 use App\Http\Middleware\ForceJson;
 
 if (! function_exists('repositoryRoutes')) {
@@ -31,22 +30,22 @@ if (! function_exists('repositoryRoutes')) {
         Route::get('/packages.json', [Composer\RepositoryController::class, 'packages']);
         Route::get('/search.json', [Composer\RepositoryController::class, 'search']);
         Route::get('/list.json', [Composer\RepositoryController::class, 'list']);
-        Route::get('/p2/{vendor}/{name}~dev.json', [Composer\RepositoryController::class, 'packageDev']);
-        Route::get('/p2/{vendor}/{name}.json', [Composer\RepositoryController::class, 'package']);
+        Route::get('/p2/{vendor}/{name}~dev.json', [Composer\RepositoryController::class, 'packageDev'])
+            ->where(['vendor' => '[^/]+', 'name' => '[^/]+']);
+        Route::get('/p2/{vendor}/{name}.json', [Composer\RepositoryController::class, 'package'])
+            ->where(['vendor' => '[^/]+', 'name' => '[^/]+']);
         Route::post('/{vendor}/{name}', [Composer\RepositoryController::class, 'upload']);
         Route::get('/{vendor}/{name}/{version}', [Composer\RepositoryController::class, 'download'])
             ->where('version', '.*');
     }
 }
 
-Route::middleware(['web'])->group(function (): void {
+Route::middleware('web')->prefix('/api')->group(function (): void {
+    Route::post('/login', [AuthController::class, 'login']);
+
     Route::get('/auths', [AuthController::class, 'sources']);
     Route::get('/auths/{authenticationSourceId}/redirect', [AuthController::class, 'redirect']);
     Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
-});
-
-Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): void {
-    Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('/dashboard', DashboardController::class);
@@ -88,8 +87,18 @@ Route::middleware(['web', AcceptsJsonOrRedirectApp::class])->group(function (): 
     });
 });
 
-Route::prefix('/r/{repository}')->group(function (): void {
-    repositoryRoutes();
+// for backwards compatibility
+Route::middleware('web')->group(function (): void {
+    Route::get('/auths/{authenticationSourceId}/redirect', [AuthController::class, 'redirect']);
+    Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
 });
 
-repositoryRoutes();
+Route::prefix('/r/{repository}')
+    ->middleware(ForceJson::class)
+    ->group(function (): void {
+        repositoryRoutes();
+    });
+
+Route::middleware(ForceJson::class)->group(function (): void {
+    repositoryRoutes();
+});

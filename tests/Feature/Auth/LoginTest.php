@@ -11,7 +11,7 @@ it('can authenticate with correct credentials', function () {
     $user = User::factory()
         ->create();
 
-    postJson('/login', ['email' => $user->email, 'password' => 'password'])
+    postJson('/api/login', ['email' => $user->email, 'password' => 'password'])
         ->assertOk();
 
     expect(auth()->check())->toBeTrue();
@@ -21,7 +21,7 @@ it('can not authenticate with incorrect credentials', function () {
     $user = User::factory()
         ->create();
 
-    postJson('/login', ['email' => $user->email, 'password' => 'incorrect'])
+    postJson('/api/login', ['email' => $user->email, 'password' => 'incorrect'])
         ->assertUnprocessable()
         ->assertExactJson(validation([
             'email' => ['The provided credentials are incorrect.'],
@@ -35,7 +35,7 @@ it('can not use local authentication with authentication source', function () {
         ->for(AuthenticationSource::factory())
         ->create();
 
-    postJson('/login', ['email' => $user->email, 'password' => 'password'])
+    postJson('/api/login', ['email' => $user->email, 'password' => 'password'])
         ->assertUnprocessable()
         ->assertExactJson(validation([
             'email' => ['The provided credentials are incorrect.'],

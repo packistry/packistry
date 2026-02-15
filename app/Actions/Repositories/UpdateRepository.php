@@ -13,14 +13,14 @@ class UpdateRepository
 {
     public function handle(Repository $repository, UpdateRepositoryInput $input): Repository
     {
-        if (Repository::isPathInUse($input->path, exclude: $repository->id)) {
+        $path = is_null($input->path) ? null : Str::slug($input->path);
+
+        if (Repository::isPathInUse($path, exclude: $repository->id)) {
             throw new RepositoryAlreadyExistsException;
         }
 
         $repository->name = $input->name;
-        $repository->path = is_null($input->path)
-            ? $input->path
-            : Str::slug($input->path);
+        $repository->path = $path;
 
         $repository->description = $input->description;
         $repository->public = $input->public;

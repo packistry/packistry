@@ -49,7 +49,7 @@ abstract class RepositoryAwareController
             return;
         }
 
-        if (is_null($token) || ! $token->tokenCan($ability->value)) {
+        if (is_null($token) || ! $token->tokenCan($ability->value) || $token->currentAccessToken()->isExpired()) {
             abort(401);
         }
 

@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 
 class InvalidDiscoveryUrlException extends Exception implements HasValidationMessage
 {
-    public static function asValidationMessage(string $attribute = 'discovery_url'): ValidationException
+    public function asValidationMessage(string $attribute = 'discovery_url'): ValidationException
     {
         return ValidationException::withMessages([
             $attribute => 'Discovery URL is not valid.',

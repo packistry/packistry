@@ -10,8 +10,6 @@ use App\Actions\Sources\Inputs\UpdateSourceInput;
 use App\Actions\Sources\StoreSource;
 use App\Actions\Sources\UpdateSource;
 use App\Enums\Permission;
-use App\Exceptions\FailedToParseUrlException;
-use App\Exceptions\InvalidTokenException;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use Illuminate\Http\Client\ConnectionException;
@@ -48,17 +46,7 @@ readonly class SourceController extends Controller
     {
         $this->authorize(Permission::SOURCE_CREATE);
 
-        try {
-            $source = $this->storeSource->handle($input);
-        } catch (FailedToParseUrlException) {
-            throw ValidationException::withMessages([
-                'url' => ['URL must be a valid URL'],
-            ]);
-        } catch (InvalidTokenException $e) {
-            throw ValidationException::withMessages([
-                'token' => ['Token does not appear to be valid, or missing scopes: '.implode(', ', $e->missingScopes)],
-            ]);
-        }
+        $source = $this->storeSource->handle($input);
 
         return response()->json(
             new SourceResource($source),
@@ -76,17 +64,7 @@ readonly class SourceController extends Controller
         /** @var Source $source */
         $source = Source::query()->findOrFail($sourceId);
 
-        try {
-            $source = $this->updateSource->handle($source, $input);
-        } catch (FailedToParseUrlException) {
-            throw ValidationException::withMessages([
-                'url' => ['URL must be a valid URL'],
-            ]);
-        } catch (InvalidTokenException $e) {
-            throw ValidationException::withMessages([
-                'token' => ['Token does not appear to be valid, or missing scopes: '.implode(', ', $e->missingScopes)],
-            ]);
-        }
+        $source = $this->updateSource->handle($source, $input);
 
         return response()->json(
             new SourceResource($source)

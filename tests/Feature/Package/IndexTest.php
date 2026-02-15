@@ -24,7 +24,7 @@ it('shows index', function (?User $user, int $status): void {
     $packages = $query
         ->paginate(10);
 
-    $response = getJson('/packages')
+    $response = getJson('/api/packages')
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -50,15 +50,15 @@ it('searches', function (?User $user, int $status): void {
         ->for(Repository::factory())
         ->create();
 
-    getJson("/packages?filter[search]=$name")
+    getJson("/api/packages?filter[search]=$name")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(PackageResource::collection([$package])));
 
-    getJson("/packages?filter[search]=$description")
+    getJson("/api/packages?filter[search]=$description")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(PackageResource::collection([$package])));
 
-    getJson('/packages?filter[search]=something%20else')
+    getJson('/api/packages?filter[search]=something%20else')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })
@@ -69,11 +69,11 @@ it('filters by repository id', function (?User $user, int $status): void {
         ->for(Repository::factory())
         ->create();
 
-    getJson('/packages?filter[repository_id]=1')
+    getJson('/api/packages?filter[repository_id]=1')
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(PackageResource::collection([$package])));
 
-    getJson('/packages?filter[repository_id]=2')
+    getJson('/api/packages?filter[repository_id]=2')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })

@@ -12,7 +12,7 @@ use function Pest\Laravel\deleteJson;
 it('destroys', function (?User $user, int $status): void {
     $user = User::factory()->create();
 
-    $response = deleteJson("/users/$user->id")
+    $response = deleteJson("/api/users/$user->id")
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -28,7 +28,7 @@ it('destroys', function (?User $user, int $status): void {
     ->with(guestAndUsers(Permission::USER_DELETE));
 
 it('can not delete self', function (User $user, int $status): void {
-    deleteJson("/users/$user->id")
+    deleteJson("/api/users/$user->id")
         ->assertStatus($status);
 })
     ->with(unscopedUser(Permission::USER_DELETE, 403));

@@ -18,7 +18,7 @@ it('indexes', function (?User $user, int $status): void {
         );
     })->create();
 
-    $response = getJson('/deploy-tokens')
+    $response = getJson('/api/deploy-tokens')
         ->assertStatus($status);
 
     if ($status !== 200) {
@@ -44,11 +44,11 @@ it('searches', function (?User $user, int $status): void {
 
     $token->load('token');
 
-    getJson("/deploy-tokens?filter[search]=$token->name")
+    getJson("/api/deploy-tokens?filter[search]=$token->name")
         ->assertStatus($status)
         ->assertJsonPath('data', resourceAsJson(DeployTokenResource::collection([$token])));
 
-    getJson('/deploy-tokens?filter[search]=something%20else')
+    getJson('/api/deploy-tokens?filter[search]=something%20else')
         ->assertStatus($status)
         ->assertJsonPath('data', []);
 })

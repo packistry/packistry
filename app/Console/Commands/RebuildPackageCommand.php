@@ -16,14 +16,16 @@ use function Laravel\Prompts\multisearch;
 
 class RebuildPackageCommand extends Command
 {
-    protected $signature = 'rebuild:package';
+    protected $signature = 'rebuild:package {--all : Rebuild all packages}';
 
     protected $description = 'Rebuild package tags and branches';
 
     public function handle(RebuildPackage $rebuildPackage): int
     {
+        $all = $this->option('all');
+
         $packages = $this->packages(
-            all: confirm('Rebuild all packages?', false)
+            all: $all || confirm('Rebuild all packages?', false)
         );
 
         foreach ($packages as $package) {
