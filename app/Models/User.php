@@ -141,12 +141,12 @@ class User extends Model implements AuthenticatableContract, Tokenable
      */
     public function filterAccessiblePackages(Collection|array $packages): Collection
     {
+        $packages = Collection::wrap($packages);
+
         // Users with UNSCOPED permission have access to all packages
         if ($this->can(Permission::UNSCOPED)) {
             return $packages;
         }
-
-        $packages = Collection::wrap($packages);
 
         if ($packages->isEmpty()) {
             return $packages;
