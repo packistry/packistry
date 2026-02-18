@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('package_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->json('metadata');
-            $table->char('shasum', 64);
+            $table->string('shasum', 64);
 
             $table->string('order')->index();
             $table->timestamps();
