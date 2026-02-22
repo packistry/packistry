@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Scopes;
 
 use App\Enums\Permission;
+use App\Models\Repository;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -30,15 +31,15 @@ readonly class UserScope implements Scope
             return;
         }
 
-        $builder->whereIn($this->column, function (\Illuminate\Database\Query\Builder $query): void {
-            $query->select('repository_id')
-                ->from('repository_user')
-                ->where('user_id', $this->user->id)
-                ->union(function (\Illuminate\Database\Query\Builder $query): void {
-                    $query->select('id')
-                        ->from('repositories')
-                        ->where('public', true);
-                });
+        if ($this->column === 'id') {
+            $builder->whereIn('id', $this->user->accessibleRepositoryIdsQuery()
+                ->union(Repository::query()->select('id')->where('public', true)->toBase()));
+            return;
+        }
+
+        $builder->where(function (Builder $query): void {
+            $query->whereIn($this->column, $this->user->accessibleRepositoryIdsQuery()->union(Repository::query()->select('id')->where('public', true)->toBase()))
+                ->orWhereIn('id', $this->user->accessiblePackageIdsQuery());
         });
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\Permission;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +14,8 @@ use function Pest\Laravel\patchJson;
 use function PHPUnit\Framework\assertNotNull;
 
 it('updates', function (?User $user, int $status): void {
-    Repository::factory()->create();
+    $repository = Repository::factory()->create();
+    Package::factory()->for($repository)->create();
 
     $user = User::factory()->create();
 
@@ -25,6 +27,7 @@ it('updates', function (?User $user, int $status): void {
         'role' => $role = Role::USER,
         'password' => $password = fake()->password,
         'repositories' => [],
+        'packages' => [1],
     ];
 
     $response = patchJson("/api/users/$user->id", $attributes)
@@ -36,7 +39,7 @@ it('updates', function (?User $user, int $status): void {
 
     $response->assertExactJson(
         resourceAsJson(new UserResource(
-            $user = $user->fresh()?->load('repositories')
+            $user = $user->fresh()?->load('repositories', 'packages')
         ))
     );
 
@@ -47,6 +50,7 @@ it('updates', function (?User $user, int $status): void {
         ->email->toBe($email)
         ->role->toBe($role)
         ->and($user->repositories->count())->toBe(0)
+        ->and($user->packages->pluck('id')->toArray())->toBe([1])
         ->and(Hash::check($password, $user->password));
 })
     ->with(guestAndUsers(Permission::USER_UPDATE));

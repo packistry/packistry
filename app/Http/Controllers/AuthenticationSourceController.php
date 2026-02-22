@@ -43,7 +43,7 @@ readonly class AuthenticationSourceController extends Controller
                 'name',
                 'active',
             ])
-            ->with(['repositories'])
+            ->with(['repositories', 'packages'])
             ->paginate((int) $request->query('size', '10'));
 
         return AuthenticationSourceResource::collection($tokens)

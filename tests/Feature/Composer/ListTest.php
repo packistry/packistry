@@ -8,7 +8,6 @@ use Database\Factories\RepositoryFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
-
 use function Pest\Laravel\getJson;
 
 it('lists packages', function (Repository $repository, ?Authenticatable $auth, int $status): void {

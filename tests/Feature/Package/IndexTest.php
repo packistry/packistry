@@ -78,3 +78,19 @@ it('filters by repository id', function (?User $user, int $status): void {
         ->assertJsonPath('data', []);
 })
     ->with(unscopedUser(Permission::PACKAGE_READ));
+
+it('shows package with package-level user access', function (): void {
+    $user = user(Permission::PACKAGE_READ);
+    $repository = Repository::factory()->create();
+    $package = Package::factory()->for($repository)->create();
+
+    $user->packages()->sync([$package->id]);
+
+    $expected = Package::userScoped($user)
+        ->paginate(10);
+
+    getJson('/api/packages')
+        ->assertOk()
+        ->assertJsonPath('data', json_decode(PackageResource::collection($expected)->toJson(), true))
+        ->assertJsonCount(1, 'data');
+});

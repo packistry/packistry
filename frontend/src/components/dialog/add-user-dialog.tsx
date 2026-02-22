@@ -23,6 +23,7 @@ export function AddUserDialog(props: DialogProps) {
             email: '',
             role: 'user',
             repositories: [],
+            packages: [],
             password: '',
         },
         onSuccess() {
@@ -30,6 +31,8 @@ export function AddUserDialog(props: DialogProps) {
             dialogProps.onOpenChange?.(false)
         },
     })
+
+    const role = form.watch('role')
 
     return (
         <Dialog {...dialogProps}>
@@ -41,7 +44,7 @@ export function AddUserDialog(props: DialogProps) {
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className={role === 'user' ? 'min-w-[1000px]' : undefined}>
                 <DialogHeader>
                     <DialogTitle>Add New User</DialogTitle>
                 </DialogHeader>

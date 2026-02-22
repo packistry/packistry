@@ -24,7 +24,6 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -43,6 +42,8 @@ use Illuminate\Support\Facades\DB;
  * @property-read int|null $notifications_count
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
+ * @property-read Collection<int, Package> $packages
+ * @property-read int|null $packages_count
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
  *
@@ -95,6 +96,14 @@ class User extends Model implements AuthenticatableContract, Tokenable
     }
 
     /**
+     * @return BelongsToMany<Package, $this>
+     */
+    public function packages(): BelongsToMany
+    {
+        return $this->belongsToMany(Package::class);
+    }
+
+    /**
      * @return BelongsTo<AuthenticationSource, $this>
      */
     public function authenticationSource(): BelongsTo
@@ -114,24 +123,36 @@ class User extends Model implements AuthenticatableContract, Tokenable
 
     public function hasAccessToRepository(int|Repository $repository): bool
     {
-        return $this->isUnscoped()
-            || $this->repositories()
-                ->where('repositories.id', is_int($repository) ? $repository : $repository->id)
-                ->exists();
+        if ($this->isUnscoped()) {
+            return true;
+        }
+
+        $repositoryId = is_int($repository) ? $repository : $repository->id;
+
+        if ($this->repositories()->where('repositories.id', $repositoryId)->exists()) {
+            return true;
+        }
+
+        return $this->packages()->where('packages.repository_id', $repositoryId)->exists();
     }
 
     public function accessibleRepositoryIdsQuery(): QueryBuilder
     {
-        return $this->repositories()
-            ->select('repositories.id')
-            ->toBase();
+        return $this->isUnscoped()
+            ? Repository::query()->select('repositories.id')->toBase()
+            : $this->repositories()
+                ->select('repositories.id')
+                ->toBase();
+
     }
 
     public function accessiblePackageIdsQuery(): QueryBuilder
     {
-        return DB::table('packages')
-            ->select('id')
-            ->whereRaw('1 = 0');
+        return $this->isUnscoped()
+            ? Package::query()->select('id')->toBase()
+            : $this->packages()
+                ->select('packages.id')
+                ->toBase();
     }
 
     public function isUnscoped(): bool
@@ -141,7 +162,12 @@ class User extends Model implements AuthenticatableContract, Tokenable
 
     public function hasAccessToPackage(Package $package): bool
     {
-        return $this->hasAccessToRepository($package->repository_id);
+        if ($this->isUnscoped()) {
+            return true;
+        }
+
+        return $this->hasAccessToRepository($package->repository_id)
+            || $this->packages()->where('packages.id', $package->id)->exists();
     }
 
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool

@@ -33,6 +33,10 @@ class StoreUser
             $user->repositories()->sync($input->repositories);
         }
 
+        if ($user->canNot(Permission::UNSCOPED) && is_array($input->packages)) {
+            $user->packages()->sync($input->packages);
+        }
+
         return $user;
     }
 }

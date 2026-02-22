@@ -29,7 +29,7 @@ readonly class UserController extends Controller
     {
         $this->authorize(Permission::USER_READ);
 
-        $users = QueryBuilder::for(User::query()->with('repositories'))
+        $users = QueryBuilder::for(User::query()->with(['repositories', 'packages']))
             ->allowedFilters([
                 SearchFilter::allowed(['name', 'email']),
             ])
@@ -63,7 +63,7 @@ readonly class UserController extends Controller
         );
 
         return response()->json(
-            new UserResource($user->load('repositories'))
+            new UserResource($user->load(['repositories', 'packages']))
         );
     }
 

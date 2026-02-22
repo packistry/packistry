@@ -49,6 +49,7 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
     const repositoriesQuery = useRepositories({
         size: 1000,
         sort: 'name',
+        filters: { public: false },
     })
 
     const selectedRepositoryIds = useMemo(
@@ -170,7 +171,7 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
             />
-            <ScrollArea className="h-120 rounded-md border">
+            <ScrollArea className="h-[30vh] rounded-md border">
                 <div className="p-3 space-y-1">
                     {repositoriesQuery.isLoading && (
                         <div className="space-y-3 py-2">

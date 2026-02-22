@@ -40,6 +40,7 @@ class UpdateAuthenticationSource
             $source->save();
 
             $source->repositories()->sync($input->defaultUserRepositories ?? []);
+            $source->packages()->sync($input->defaultUserPackages ?? []);
 
             return $source;
         });

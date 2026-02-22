@@ -42,6 +42,10 @@ class UpdateUser
             $user->repositories()->sync($input->repositories);
         }
 
+        if (is_array($input->packages)) {
+            $user->packages()->sync($input->packages);
+        }
+
         return $user;
     }
 }

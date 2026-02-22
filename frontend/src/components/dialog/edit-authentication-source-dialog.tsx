@@ -24,6 +24,7 @@ export function EditAuthenticationSourceDialog({ authenticationSource, trigger }
         defaultValues: {
             ...authenticationSource,
             defaultUserRepositories: authenticationSource.repositories?.map(({ id }) => id) || [],
+            defaultUserPackages: authenticationSource.packages?.map(({ id }) => id) || [],
         },
         onSuccess() {
             setIsDialogOpen(false)

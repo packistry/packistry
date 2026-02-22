@@ -72,6 +72,7 @@ readonly class HandleAuthenticationSourceCallback
                     role: Role::USER,
                     password: Str::random(),
                     repositories: $source->repositories->pluck('id')->toArray(),
+                    packages: $source->packages->pluck('id')->toArray(),
                 )
             );
 

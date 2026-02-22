@@ -1,13 +1,13 @@
 import { FormInput } from '@/components/form/elements/form-input'
 import * as React from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { FormRepositorySearchCheckboxGroup } from '@/components/form/elements/form-repository-search-checkbox-group'
 import { FormRadioGroup } from '@/components/form/elements/form-radio-group'
 import { FormSwitch } from '@/components/form/elements/form-switch'
 import { StoreAuthenticationSourceInput, UpdateAuthenticationSourceInput } from '@/api/authentication-source'
 import { FormAuthenticationProviderSelect } from '@/components/form/elements/form-authentication-provider-select'
 import { AuthenticationProvider, providerIcons } from '@/api/authentication-provider'
 import { FormAuthenticationProviderDomainList } from '@/components/form/elements/form-authentication-provider-domain-list'
+import { RepositoryPackageTree } from '@/components/form/elements/repository-package-tree'
 
 export function AuthenticationSourceFormElements({
     form,
@@ -102,9 +102,10 @@ export function AuthenticationSourceFormElements({
                     control={form.control}
                 />
                 {role === 'user' && (
-                    <FormRepositorySearchCheckboxGroup
-                        label="Repositories"
-                        name="defaultUserRepositories"
+                    <RepositoryPackageTree
+                        label="Repositories & Packages"
+                        repositoriesName="defaultUserRepositories"
+                        packagesName="defaultUserPackages"
                         description="Default repositories that users can access upon their first authentication with this source."
                         control={form.control}
                     />

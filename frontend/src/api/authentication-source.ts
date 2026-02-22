@@ -4,6 +4,7 @@ import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
 import { authenticationProvider } from '@/api/authentication-provider'
 import { repository } from '@/api/repository'
 import { role } from '@/api/role'
+import { packageSchema } from '@/api/package'
 
 const publicAuthenticationSource = z.object({
     id: z.coerce.string(),
@@ -19,6 +20,7 @@ export const authenticationSource = z.object({
     provider: authenticationProvider,
     defaultUserRole: role,
     repositories: repository.array().optional(),
+    packages: packageSchema.array().optional(),
     clientId: z.string(),
     clientSecret: z.string(),
     discoveryUrl: z.string().nullable(),
@@ -60,6 +62,7 @@ export const storeAuthenticationSourceInput = z.object({
     iconUrl: z.string().nullable(),
     provider: authenticationProvider,
     defaultUserRepositories: z.string().array(),
+    defaultUserPackages: z.string().array(),
     defaultUserRole: role,
     clientId: z.string(),
     clientSecret: z.string(),
@@ -81,6 +84,7 @@ export const updateAuthenticationSourceInput = z.object({
     iconUrl: z.string().nullable(),
     provider: authenticationProvider,
     defaultUserRepositories: z.string().array(),
+    defaultUserPackages: z.string().array(),
     defaultUserRole: role,
     clientId: z.string(),
     clientSecret: z.string(),

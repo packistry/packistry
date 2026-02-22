@@ -7,6 +7,7 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use App\Http\Resources\AuthenticationSourceResource;
 use App\Models\AuthenticationSource;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 use App\OIDCConfiguration;
@@ -17,6 +18,10 @@ use function Pest\Laravel\postJson;
 it('stores', function (?User $user, int $status): void {
     $repositories = Repository::factory()
         ->count(10)
+        ->create();
+    $packages = Package::factory()
+        ->for($repositories->first())
+        ->count(3)
         ->create();
 
     $discoveryUrl = 'https://company.okta.com/.well-known/openid-configuration';
@@ -39,6 +44,7 @@ it('stores', function (?User $user, int $status): void {
         'active' => fake()->boolean,
         'default_user_role' => fake()->randomElement(Role::cases()),
         'default_user_repositories' => $repositories->pluck('id'),
+        'default_user_packages' => $packages->pluck('id'),
         'allowed_domains' => ['example.com', 'example.Com', 'Test.com'],
     ])
         ->assertStatus($status);
@@ -63,6 +69,7 @@ it('stores', function (?User $user, int $status): void {
         ->client_secret->toBe($attributes['client_secret'])
         ->discovery_url->toBe($attributes['discovery_url'])
         ->allowed_domains->toBe(['example.com', 'test.com'])
-        ->and($source->repositories->pluck('id'))->toEqual($repositories->pluck('id'));
+        ->and($source->repositories->pluck('id'))->toEqual($repositories->pluck('id'))
+        ->and($source->packages->pluck('id'))->toEqual($packages->pluck('id'));
 })
     ->with(guestAndUsers(Permission::AUTHENTICATION_SOURCE_CREATE, userWithPermission: 201));

@@ -37,6 +37,8 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
+ * @property-read Collection<int, Package> $packages
+ * @property-read int|null $packages_count
  * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
  *
@@ -125,6 +127,14 @@ class AuthenticationSource extends Model
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
+    }
+
+    /**
+     * @return BelongsToMany<Package, $this>
+     */
+    public function packages(): BelongsToMany
+    {
+        return $this->belongsToMany(Package::class);
     }
 
     public function callbackUrl(): string

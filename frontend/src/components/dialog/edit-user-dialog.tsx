@@ -22,7 +22,8 @@ export function EditUserDialog({ user, trigger }: EditUserDialogProps) {
         mutation,
         defaultValues: {
             ...user,
-            repositories: user.repositories?.map(({ id }) => id) || '',
+            repositories: user.repositories?.map(({ id }) => id) || [],
+            packages: user.packages?.map(({ id }) => id) || [],
             password: '',
         },
         onSuccess() {
@@ -31,13 +32,15 @@ export function EditUserDialog({ user, trigger }: EditUserDialogProps) {
         },
     })
 
+    const role = form.watch('role')
+
     return (
         <Dialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
         >
             <DialogTrigger asChild>{trigger ? trigger : <Button>Edit</Button>}</DialogTrigger>
-            <DialogContent>
+            <DialogContent className={role === 'user' ? 'min-w-[1000px]' : undefined}>
                 <DialogHeader>
                     <DialogTitle>Edit User</DialogTitle>
                 </DialogHeader>
