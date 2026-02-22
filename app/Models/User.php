@@ -19,10 +19,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -110,54 +112,36 @@ class User extends Model implements AuthenticatableContract, Tokenable
         return ! $this->can($permission);
     }
 
-    public function hasAccessToRepository(Repository $repository): bool
+    public function hasAccessToRepository(int|Repository $repository): bool
     {
-        return $this->repositories()->where('repositories.id', $repository->id)->exists();
+        return $this->isUnscoped()
+            || $this->repositories()
+                ->where('repositories.id', is_int($repository) ? $repository : $repository->id)
+                ->exists();
+    }
+
+    public function accessibleRepositoryIdsQuery(): QueryBuilder
+    {
+        return $this->repositories()
+            ->select('repositories.id')
+            ->toBase();
+    }
+
+    public function accessiblePackageIdsQuery(): QueryBuilder
+    {
+        return DB::table('packages')
+            ->select('id')
+            ->whereRaw('1 = 0');
+    }
+
+    public function isUnscoped(): bool
+    {
+        return $this->can(Permission::UNSCOPED);
     }
 
     public function hasAccessToPackage(Package $package): bool
     {
-        // Users with UNSCOPED permission have access to all packages
-        if ($this->can(Permission::UNSCOPED)) {
-            return true;
-        }
-
-        // Otherwise, check repository-level access
-        // Load repository if not already loaded to avoid lazy loading violation
-        $repository = $package->relationLoaded('repository')
-            ? $package->repository
-            : Repository::find($package->repository_id);
-
-        if ($repository === null) {
-            return false;
-        }
-
-        return $this->hasAccessToRepository($repository);
-    }
-
-    /**
-     * @param  Collection<int, Package>|array<Package>  $packages
-     * @return Collection<int, Package>
-     */
-    public function filterAccessiblePackages(Collection|array $packages): Collection
-    {
-        $packages = Collection::wrap($packages);
-
-        // Users with UNSCOPED permission have access to all packages
-        if ($this->can(Permission::UNSCOPED)) {
-            return $packages;
-        }
-
-        if ($packages->isEmpty()) {
-            return $packages;
-        }
-
-        // Get IDs of repositories this user has access to
-        $accessibleRepositoryIds = $this->repositories()->pluck('repositories.id')->all();
-
-        return $packages->filter(
-            fn (Package $package): bool => in_array($package->repository_id, $accessibleRepositoryIds, true)
-        )->values();
+        return $this->hasAccessToRepository($package->repository_id);
     }
 
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Contracts\Tokenable;
+use App\Models\Scopes\PackageTokenAccessScope;
 use App\Models\Scopes\UserScope;
 use Database\Factories\PackageFactory;
 use Eloquent;
@@ -70,6 +72,18 @@ class Package extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(Version::class);
+    }
+
+    /**
+     * @param  Builder<Package>  $query
+     * @return Builder<Package>
+     */
+    public function scopeAccessibleToTokenInRepository(Builder $query, Tokenable $token, Repository $repository): Builder
+    {
+        return new PackageTokenAccessScope(
+            token: $token,
+            repository: $repository,
+        )->apply($query);
     }
 
     /**

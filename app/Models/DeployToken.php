@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
@@ -72,49 +73,32 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
 
     public function hasAccessToRepository(Repository $repository): bool
     {
-        return $this->repositories()->where('repositories.id', $repository->id)->exists();
+        return $this->repositories()->where('repositories.id', $repository->id)->exists()
+            || $this->packages()->where('packages.repository_id', $repository->id)->exists();
+    }
+
+    public function accessibleRepositoryIdsQuery(): QueryBuilder
+    {
+        return $this->repositories()
+            ->select('repositories.id')
+            ->toBase();
+    }
+
+    public function accessiblePackageIdsQuery(): QueryBuilder
+    {
+        return $this->packages()
+            ->select('packages.id')
+            ->toBase();
+    }
+
+    public function isUnscoped(): bool
+    {
+        return false;
     }
 
     public function hasAccessToPackage(Package $package): bool
     {
-        // Check repository-level access first (more common case)
-        // Load repository if not already loaded to avoid lazy loading violation
-        $repository = $package->relationLoaded('repository')
-            ? $package->repository
-            : Repository::find($package->repository_id);
-
-        if ($repository !== null && $this->hasAccessToRepository($repository)) {
-            return true;
-        }
-
-        // Check direct package-level access
-        return $this->packages()->where('packages.id', $package->id)->exists();
-    }
-
-    /**
-     * @param  Collection<int, Package>|array<Package>  $packages
-     * @return Collection<int, Package>
-     */
-    public function filterAccessiblePackages(Collection|array $packages): Collection
-    {
-        $packages = Collection::wrap($packages);
-
-        if ($packages->isEmpty()) {
-            return $packages;
-        }
-
-        // Get IDs of repositories and packages this token has access to
-        $accessibleRepositoryIds = $this->repositories()->pluck('repositories.id')->all();
-        $accessiblePackageIds = $this->packages()->pluck('packages.id')->all();
-
-        return $packages->filter(function (Package $package) use ($accessibleRepositoryIds, $accessiblePackageIds): bool {
-            // Check if token has access to the package's repository
-            if (in_array($package->repository_id, $accessibleRepositoryIds, true)) {
-                return true;
-            }
-
-            // Check if token has direct access to the package
-            return in_array($package->id, $accessiblePackageIds, true);
-        })->values();
+        return $this->accessibleRepositoryIdsQuery()->where('repositories.id', $package->repository_id)->exists()
+            || $this->accessiblePackageIdsQuery()->where('packages.id', $package->id)->exists();
     }
 }

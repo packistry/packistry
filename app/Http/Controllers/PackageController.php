@@ -39,6 +39,9 @@ readonly class PackageController extends Controller
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('repository_id'),
             ])
+            ->allowedIncludes([
+                'repository',
+            ])
             ->allowedSorts([
                 'total_downloads',
                 'name',

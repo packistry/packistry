@@ -332,7 +332,13 @@ function guestAndTokens(
             null,
         ],
         "$deployTokenWithoutPackagesStatus deploy token without packages ($imploded)" => [
-            fn (): DeployToken => deployToken($abilities, withPackages: []),
+            function () use ($abilities): DeployToken {
+                $packages = Repository::get()->map(function (Repository $repository) {
+                    return Package::factory()->for($repository)->create();
+                });
+
+                return deployToken($abilities, withPackages: $packages->pluck('id')->all());
+            },
             $deployTokenWithoutPackagesStatus,
             [],
         ],

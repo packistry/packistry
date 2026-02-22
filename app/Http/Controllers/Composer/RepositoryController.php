@@ -11,7 +11,9 @@ use App\Events\PackageDownloadEvent;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
+use App\Models\DeployToken;
 use App\Models\Package;
+use App\Models\Scopes\PackageTokenAccessScope;
 use App\Models\Version;
 use App\Normalizer;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
@@ -47,21 +49,17 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
         $token = $this->token();
 
-        $packagesQuery = $repository
-            ->packages()
+        $packagesQuery = Package::query()
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
                 ->where('name', 'like', "$q%"))
             ->when($type, fn (BuilderContract $query) => $query
                 ->where('type', "$type"));
 
-        // For public repositories, return all packages without filtering
-        // For private repositories, use batch access checking for better performance
-        $packages = $packagesQuery->get();
+        new PackageTokenAccessScope(token: $token, repository: $repository)
+            ->apply($packagesQuery);
 
-        if (! $repository->public && $token !== null) {
-            $packages = $token->filterAccessiblePackages($packages);
-        }
+        $packages = $packagesQuery->get();
 
         $results = $packages->map(fn (Package $package): array => [
             'name' => $package->name,
@@ -82,21 +80,14 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
         $token = $this->token();
 
-        // For public repositories, return all packages without filtering
-        // For private repositories, use batch access checking for better performance
-        $packages = $repository
-            ->packages()
+        $packagesQuery = Package::query();
+
+        new PackageTokenAccessScope(token: $token, repository: $repository)
+            ->apply($packagesQuery);
+
+        $names = $packagesQuery
             ->orderBy('name')
-            ->get();
-
-        if (! $repository->public && $token !== null) {
-            $packages = $token->filterAccessiblePackages($packages);
-        }
-
-        $names = $packages
-            ->map(fn (Package $package): string => $package->name)
-            ->values()
-            ->all();
+            ->pluck('name');
 
         return response()->json([
             'packageNames' => $names,
@@ -116,18 +107,20 @@ class RepositoryController extends RepositoryAwareController
 
         $repository = $this->repository();
 
-        /** @var Package $package */
-        $package = $repository
+        $packageQuery = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
                     ->where('name', 'not like', 'dev-%')
                     ->where('name', 'not like', '%-dev'),
-            ])
-            ->firstOrFail();
+            ]);
 
-        $this->abortIfNoPackageAccess($package);
+        new PackageTokenAccessScope(token: $this->token(), repository: $repository)
+            ->apply($packageQuery->getQuery());
+
+        /** @var Package $package */
+        $package = $packageQuery->firstOrFail();
 
         $package->setRelation('repository', $repository);
 
@@ -147,18 +140,20 @@ class RepositoryController extends RepositoryAwareController
 
         $repository = $this->repository();
 
-        /** @var Package $package */
-        $package = $repository
+        $packageQuery = $repository
             ->packages()
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
                     ->where('name', 'like', 'dev-%')
                     ->orWhere('name', 'like', '%-dev'),
-            ])
-            ->firstOrFail();
+            ]);
 
-        $this->abortIfNoPackageAccess($package);
+        new PackageTokenAccessScope(token: $this->token(), repository: $repository)
+            ->apply($packageQuery->getQuery());
+
+        /** @var Package $package */
+        $package = $packageQuery->firstOrFail();
 
         $package->setRelation('repository', $repository);
 
@@ -180,10 +175,18 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        $package = $this->repository()
-            ->packageByNameOrFail("$vendor/$name");
+        $repository = $this->repository();
+        $packageName = "$vendor/$name";
 
-        $this->abortIfNoPackageAccess($package);
+        $packageQuery = $repository
+            ->packages()
+            ->where('name', $packageName);
+
+        new PackageTokenAccessScope(token: $this->token(), repository: $repository)
+            ->apply($packageQuery->getQuery());
+
+        /** @var Package $package */
+        $package = $packageQuery->firstOrFail();
 
         /** @var Version $version */
         $version = $package
@@ -216,6 +219,24 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
+        $repository = $this->repository();
+        $token = $this->token();
+        $packageName = "$vendor/$name";
+
+        /** @var Package|null $package */
+        $package = $repository
+            ->packages()
+            ->where('name', $packageName)
+            ->first();
+
+        if ($token instanceof DeployToken
+            && ! $token->accessibleRepositoryIdsQuery()->where('repositories.id', $repository->id)->exists()
+        ) {
+            if ($package === null || ! $token->hasAccessToPackage($package)) {
+                abort(404);
+            }
+        }
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:zip'],
             'version' => ['string'],
@@ -223,22 +244,15 @@ class RepositoryController extends RepositoryAwareController
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
-        $repository = $this->repository();
-        $package = $repository
-            ->packages()
-            ->where('name', "$vendor/$name")
-            ->first();
 
         if (is_null($package)) {
             $package = new Package;
             $package->repository_id = $repository->id;
             $package->type = PackageType::LIBRARY->value;
-            $package->name = "$vendor/$name";
+            $package->name = $packageName;
 
             $package->save();
         }
-
-        $this->abortIfNoPackageAccess($package);
 
         $version = $this->createFromZip->create(
             package: $package,
