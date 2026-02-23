@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-readonly class UserScope implements Scope
+readonly class UserPackageScope implements Scope
 {
-    public function __construct(private ?User $user, private string $column = 'repository_id')
+    public function __construct(private ?User $user)
     {
         //
     }
@@ -31,15 +31,9 @@ readonly class UserScope implements Scope
             return;
         }
 
-        if ($this->column === 'id') {
-            $builder->whereIn('id', $this->user->accessibleRepositoryIdsQuery()
-                ->union(Repository::query()->select('id')->where('public', true)->toBase()));
-
-            return;
-        }
-
         $builder->where(function (Builder $query): void {
-            $query->whereIn($this->column, $this->user->accessibleRepositoryIdsQuery()->union(Repository::query()->select('id')->where('public', true)->toBase()))
+            $query->whereIn('repository_id', $this->user->accessibleRepositoryIdsQuery()
+                ->union(Repository::query()->public()->select('id')->toBase()))
                 ->orWhereIn('id', $this->user->accessiblePackageIdsQuery());
         });
     }

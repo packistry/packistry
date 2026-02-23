@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Builders;
 
 use App\Models\Package;
-use App\Models\Scopes\UserScope;
+use App\Models\Scopes\UserPackageScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -19,6 +19,6 @@ class PackageBuilder extends Builder
         /** @var User|null $user */
         $user ??= auth()->user();
 
-        return $this->withGlobalScope('user', new UserScope($user));
+        return $this->withGlobalScope('user', new UserPackageScope($user));
     }
 }

@@ -37,6 +37,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
 use Spatie\LaravelData\Data;
+
 use function Pest\Laravel\freezeSecond;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\travelBack;
