@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Builders;
 
+use App\Models\Contracts\Tokenable;
 use App\Models\Package;
+use App\Models\Scopes\TokenPackageScope;
 use App\Models\Scopes\UserPackageScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +16,14 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class PackageBuilder extends Builder
 {
+    public function tokenScoped(?Tokenable $token): static
+    {
+        new TokenPackageScope(token: $token)
+            ->apply($this);
+
+        return $this;
+    }
+
     public function userScoped(?User $user = null): static
     {
         /** @var User|null $user */

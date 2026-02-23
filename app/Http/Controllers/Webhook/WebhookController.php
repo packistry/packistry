@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Webhook;
 
 use App\Exceptions\VersionNotFoundException;
-use App\Http\Controllers\RepositoryAwareController;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\VersionResource;
+use App\Models\Repository;
 use App\Models\Source;
 use App\Normalizer;
 use App\Sources\Deletable;
@@ -16,8 +17,23 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-abstract class WebhookController extends RepositoryAwareController
+abstract readonly class WebhookController extends Controller
 {
+    protected function repository(): Repository
+    {
+        return once(function () {
+            $path = request()->route('repository');
+
+            if (is_object($path)) {
+                abort(401);
+            }
+
+            return Repository::query()
+                ->queryByPath($path)
+                ->firstOrFail();
+        });
+    }
+
     abstract public function authorizeWebhook(Request $request): void;
 
     protected function source(): Source

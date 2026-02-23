@@ -10,7 +10,7 @@ use App\Sources\Gitea\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class GiteaController extends WebhookController
+readonly class GiteaController extends WebhookController
 {
     use AuthorizeHubSignatureEvent;
 

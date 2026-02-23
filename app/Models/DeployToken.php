@@ -81,6 +81,7 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
     {
         return $this->repositories()
             ->select('repositories.id')
+            ->union(Repository::query()->public()->select('id'))
             ->toBase();
     }
 
@@ -88,6 +89,7 @@ class DeployToken extends Model implements AuthenticatableContract, Tokenable
     {
         return $this->packages()
             ->select('packages.id')
+            ->union(Package::query()->whereIn('repository_id', $this->accessibleRepositoryIdsQuery())->select('id'))
             ->toBase();
     }
 

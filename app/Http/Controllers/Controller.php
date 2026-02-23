@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\Permission;
 use App\Models\User;
 
-readonly class Controller
+abstract readonly class Controller
 {
     public function user(): User
     {

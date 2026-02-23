@@ -34,6 +34,7 @@ abstract class RepositoryAwareController
 
             return Repository::query()
                 ->queryByPath($path)
+                ->tokenScoped(token: $this->token())
                 ->firstOrFail();
         });
     }
@@ -48,10 +49,6 @@ abstract class RepositoryAwareController
         }
 
         if (is_null($token) || ! $token->tokenCan($ability->value) || $token->currentAccessToken()->isExpired()) {
-            abort(401);
-        }
-
-        if (! $token->hasAccessToRepository($repository)) {
             abort(401);
         }
     }

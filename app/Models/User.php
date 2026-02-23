@@ -140,8 +140,13 @@ class User extends Model implements AuthenticatableContract, Tokenable
     {
         return $this->isUnscoped()
             ? Repository::query()->select('repositories.id')->toBase()
-            : $this->repositories()
+            : Repository::query()
                 ->select('repositories.id')
+                ->where('public', true)
+                ->orWhere(function (Builder $query) {
+                    $query->whereIn('repositories.id', $this->repositories()->select('repositories.id'))
+                        ->orWhereIn('repositories.id', $this->packages()->select('repository_id'));
+                })
                 ->toBase();
     }
 
@@ -149,8 +154,14 @@ class User extends Model implements AuthenticatableContract, Tokenable
     {
         return $this->isUnscoped()
             ? Package::query()->select('id')->toBase()
-            : $this->packages()
+            : Package::query()
                 ->select('packages.id')
+                ->where(function (Builder $query) {
+                    $query
+                        ->whereIn('packages.id', $this->packages()->select('packages.id'))
+                        ->orWhereIn('packages.repository_id', $this->repositories()->select('repositories.id'));
+                })
+                ->orWhereIn('packages.repository_id', Repository::query()->public()->select('id'))
                 ->toBase();
     }
 

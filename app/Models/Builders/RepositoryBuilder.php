@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Builders;
 
+use App\Models\Contracts\Tokenable;
 use App\Models\Repository;
+use App\Models\Scopes\TokenRepositoryScope;
 use App\Models\Scopes\UserRepositoryScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +16,14 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class RepositoryBuilder extends Builder
 {
+    public function tokenScoped(?Tokenable $token): static
+    {
+        new TokenRepositoryScope(token: $token)
+            ->apply($this);
+
+        return $this;
+    }
+
     public function public(bool $public = true): static
     {
         return $this->where('public', $public);

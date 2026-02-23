@@ -8,7 +8,7 @@ use App\Sources\Gitlab\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class GitlabController extends WebhookController
+readonly class GitlabController extends WebhookController
 {
     public function __invoke(Request $request): JsonResponse
     {
