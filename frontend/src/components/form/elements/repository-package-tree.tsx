@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 
 import { fetchPackages } from '@/api'
@@ -67,18 +67,46 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
 
     const repositories = repositoriesQuery.data?.data || []
     const normalizedSearchTerm = searchTerm.trim().toLowerCase()
-    const filteredRepositories = repositories.filter((repository) => {
-        if (normalizedSearchTerm.length === 0) {
-            return true
-        }
+    const isSearchActive = normalizedSearchTerm.length > 0
 
-        if (repository.name.toLowerCase().includes(normalizedSearchTerm)) {
-            return true
-        }
-
-        const loadedPackages = packagesByRepositoryId[repository.id] || []
-        return loadedPackages.some((pkg) => pkg.name.toLowerCase().includes(normalizedSearchTerm))
+    const searchedPackagesQuery = useQuery({
+        queryKey: ['repository-packages-search', normalizedSearchTerm],
+        queryFn: () =>
+            fetchPackages({
+                size: 1000,
+                include: ['repository'],
+                filters: { search: normalizedSearchTerm },
+            }),
+        enabled: isSearchActive,
     })
+
+    const searchedPackagesByRepositoryId = useMemo(() => {
+        const grouped: Record<string, Package[]> = {}
+
+        for (const pkg of searchedPackagesQuery.data?.data || []) {
+            const repositoryId = String(pkg.repositoryId)
+            grouped[repositoryId] = grouped[repositoryId] || []
+            grouped[repositoryId].push(pkg)
+        }
+
+        return grouped
+    }, [searchedPackagesQuery.data?.data])
+
+    const filteredRepositories = useMemo(
+        () =>
+            repositories.filter((repository) => {
+                if (!isSearchActive) {
+                    return true
+                }
+
+                if (repository.name.toLowerCase().includes(normalizedSearchTerm)) {
+                    return true
+                }
+
+                return (searchedPackagesByRepositoryId[repository.id] || []).length > 0
+            }),
+        [isSearchActive, normalizedSearchTerm, repositories, searchedPackagesByRepositoryId]
+    )
 
     const loadRepositoryPackages = useCallback(
         async (repositoryId: string) => {
@@ -123,7 +151,7 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
             setExpandedRepositories((previous) => {
                 const nextExpanded = !previous[repositoryId]
 
-                if (nextExpanded) {
+                if (nextExpanded && !isSearchActive) {
                     void loadRepositoryPackages(repositoryId)
                 }
 
@@ -133,18 +161,44 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                 }
             })
         },
-        [loadRepositoryPackages]
+        [isSearchActive, loadRepositoryPackages]
     )
 
-    function toggleRepository(repositoryId: string, checked: boolean, repositoryPackageIds: string[]) {
+    const clearSelectedPackagesForRepository = useCallback(
+        async (repositoryId: string) => {
+            const cachedPackages = packagesByRepositoryId[repositoryId]
+
+            const repositoryPackages =
+                cachedPackages ||
+                (
+                    await queryClient.fetchQuery({
+                        queryKey: ['repository-packages', repositoryId],
+                        queryFn: () =>
+                            fetchPackages({
+                                size: 1000,
+                                include: ['repository'],
+                                filters: {
+                                    repositoryId,
+                                },
+                            }),
+                    })
+                ).data ||
+                []
+
+            const repositoryPackageIds = new Set(repositoryPackages.map((pkg) => pkg.id))
+            const previousPackages: string[] = (packagesField.field.value as string[] | undefined) || []
+
+            packagesField.field.onChange(previousPackages.filter((id) => !repositoryPackageIds.has(id)))
+        },
+        [packagesByRepositoryId, packagesField.field, queryClient]
+    )
+
+    function toggleRepository(repositoryId: string, checked: boolean) {
         const previousRepositories: string[] = (repositoriesField.field.value as string[] | undefined) || []
-        const previousPackages: string[] = (packagesField.field.value as string[] | undefined) || []
 
         if (checked) {
             repositoriesField.field.onChange(Array.from(new Set([...previousRepositories, repositoryId])))
-
-            const repositoryPackageIdsSet = new Set(repositoryPackageIds)
-            packagesField.field.onChange(previousPackages.filter((id) => !repositoryPackageIdsSet.has(id)))
+            void clearSelectedPackagesForRepository(repositoryId)
             return
         }
 
@@ -191,9 +245,17 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                                 expanded={expandedRepositories[repository.id]}
                                 selectedRepository={selectedRepositoryIds.has(repository.id)}
                                 selectedPackageIds={selectedPackageIds}
-                                searchTerm={normalizedSearchTerm}
-                                repositoryPackages={packagesByRepositoryId[repository.id] || []}
-                                loadingPackages={loadingPackagesByRepositoryId[repository.id]}
+                                repositoryPackages={
+                                    isSearchActive
+                                        ? searchedPackagesByRepositoryId[repository.id] || []
+                                        : packagesByRepositoryId[repository.id] || []
+                                }
+                                loadingPackages={
+                                    isSearchActive
+                                        ? searchedPackagesQuery.isFetching
+                                        : loadingPackagesByRepositoryId[repository.id]
+                                }
+                                searchActive={isSearchActive}
                                 onToggleExpanded={() => toggleExpandedRepository(repository.id)}
                                 onToggleRepository={toggleRepository}
                                 onTogglePackage={togglePackage}
@@ -214,11 +276,11 @@ type RepositoryRowProps = {
     expanded: boolean
     selectedRepository: boolean
     selectedPackageIds: Set<string>
-    searchTerm: string
     repositoryPackages: Package[]
     loadingPackages: boolean
+    searchActive: boolean
     onToggleExpanded: () => void
-    onToggleRepository: (repositoryId: string, checked: boolean, repositoryPackageIds: string[]) => void
+    onToggleRepository: (repositoryId: string, checked: boolean) => void
     onTogglePackage: (packageId: string, checked: boolean) => void
 }
 
@@ -227,14 +289,13 @@ function RepositoryRow({
     expanded,
     selectedRepository,
     selectedPackageIds,
-    searchTerm,
     repositoryPackages,
     loadingPackages,
+    searchActive,
     onToggleExpanded,
     onToggleRepository,
     onTogglePackage,
 }: RepositoryRowProps) {
-    const filteredPackages = repositoryPackages.filter((pkg) => pkg.name.toLowerCase().includes(searchTerm))
     const selectedChildrenCount = repositoryPackages.filter((pkg) => selectedPackageIds.has(pkg.id)).length
     const repositoryCheckedState: boolean | 'indeterminate' = selectedRepository
         ? true
@@ -254,13 +315,7 @@ function RepositoryRow({
                 </button>
                 <Checkbox
                     checked={repositoryCheckedState}
-                    onCheckedChange={(checked) =>
-                        onToggleRepository(
-                            repository.id,
-                            !!checked,
-                            repositoryPackages.map((pkg) => pkg.id)
-                        )
-                    }
+                    onCheckedChange={(checked) => onToggleRepository(repository.id, !!checked)}
                 />
                 <button
                     type="button"
@@ -283,13 +338,12 @@ function RepositoryRow({
                         </div>
                     )}
                     {!loadingPackages && repositoryPackages.length === 0 && (
-                        <p className="text-xs text-muted-foreground py-1">No packages in this repository.</p>
-                    )}
-                    {!loadingPackages && repositoryPackages.length > 0 && filteredPackages.length === 0 && (
-                        <p className="text-xs text-muted-foreground py-1">No matching packages.</p>
+                        <p className="text-xs text-muted-foreground py-1">
+                            {searchActive ? 'No matching packages.' : 'No packages in this repository.'}
+                        </p>
                     )}
                     {!loadingPackages &&
-                        filteredPackages.map((pkg) => {
+                        repositoryPackages.map((pkg) => {
                             const locked = selectedRepository
                             const checked = locked || selectedPackageIds.has(pkg.id)
 
