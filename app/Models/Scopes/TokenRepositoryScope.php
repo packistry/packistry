@@ -19,7 +19,7 @@ readonly class TokenRepositoryScope
     public function apply(RepositoryBuilder $query): RepositoryBuilder
     {
         $token = $this->token ?? Auth::guard('sanctum')->user();
-        
+
         if ($token === null) {
             return $query->public();
         }
