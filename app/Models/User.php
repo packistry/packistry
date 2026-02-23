@@ -143,21 +143,6 @@ class User extends Model implements AuthenticatableContract, Tokenable
         return ! $this->can($permission);
     }
 
-    public function hasAccessToRepository(int|Repository $repository): bool
-    {
-        if ($this->isUnscoped()) {
-            return true;
-        }
-
-        $repositoryId = is_int($repository) ? $repository : $repository->id;
-
-        if ($this->repositories()->where('repositories.id', $repositoryId)->exists()) {
-            return true;
-        }
-
-        return $this->packages()->where('packages.repository_id', $repositoryId)->exists();
-    }
-
     public function accessibleRepositoryIdsQuery(): QueryBuilder
     {
         return $this->isUnscoped()
@@ -186,16 +171,6 @@ class User extends Model implements AuthenticatableContract, Tokenable
     public function isUnscoped(): bool
     {
         return $this->can(Permission::UNSCOPED);
-    }
-
-    public function hasAccessToPackage(Package $package): bool
-    {
-        if ($this->isUnscoped()) {
-            return true;
-        }
-
-        return $this->hasAccessToRepository($package->repository_id)
-            || $this->packages()->where('packages.id', $package->id)->exists();
     }
 
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool

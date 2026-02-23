@@ -31,7 +31,6 @@ readonly class TokenPackageScope
             return $query;
         }
 
-
         return $query->whereIn('id', $this->token->accessiblePackageIdsQuery());
     }
 }

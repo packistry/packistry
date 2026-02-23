@@ -22,7 +22,7 @@ readonly class TokenRepositoryScope
     public function apply(Builder $query): RepositoryBuilder
     {
         if ($this->token === null) {
-            $query->public();
+            return $query->public();
         }
 
         if ($this->token->isUnscoped()) {
