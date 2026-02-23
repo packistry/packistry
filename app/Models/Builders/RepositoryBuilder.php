@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class RepositoryBuilder extends Builder
 {
-    public function tokenScoped(?Tokenable $token): RepositoryBuilder
+    public function tokenScoped(?Tokenable $token = null): RepositoryBuilder
     {
         return new TokenRepositoryScope($token)->apply($this);
     }
@@ -28,17 +28,11 @@ class RepositoryBuilder extends Builder
 
     public function userScoped(?User $user = null): RepositoryBuilder
     {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
         return new UserRepositoryScope($user)->apply($this);
     }
 
     public function withUserScopedPackageCount(?User $user = null): RepositoryBuilder
     {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
         return $this->withCount([
             'packages' => fn (PackageBuilder $packagesQuery) => $packagesQuery->userScoped($user),
         ]);

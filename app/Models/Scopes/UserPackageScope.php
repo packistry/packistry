@@ -17,14 +17,16 @@ readonly class UserPackageScope
 
     public function apply(PackageBuilder $builder): PackageBuilder
     {
-        if (! $this->user instanceof User) {
+        $user = $this->user ?? auth()->user();
+
+        if (! $user instanceof User) {
             abort(401);
         }
 
-        if ($this->user->can(Permission::UNSCOPED)) {
+        if ($user->can(Permission::UNSCOPED)) {
             return $builder;
         }
 
-        return $builder->whereIn('id', $this->user->accessiblePackageIdsQuery());
+        return $builder->whereIn('id', $user->accessiblePackageIdsQuery());
     }
 }

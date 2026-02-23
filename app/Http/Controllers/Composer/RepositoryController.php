@@ -47,10 +47,9 @@ class RepositoryController extends RepositoryAwareController
         $q = $request->input('q');
         $type = $request->input('type');
         $repository = $this->repository();
-        $token = $this->token();
 
         $packages = Package::query()
-            ->tokenScoped($token)
+            ->tokenScoped()
             ->where('repository_id', $repository->id)
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
@@ -76,10 +75,9 @@ class RepositoryController extends RepositoryAwareController
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
         $repository = $this->repository();
-        $token = $this->token();
 
         $names = Package::query()
-            ->tokenScoped($token)
+            ->tokenScoped()
             ->where('repository_id', $repository->id)
             ->orderBy('name')
             ->pluck('name');
@@ -104,7 +102,7 @@ class RepositoryController extends RepositoryAwareController
 
         $packageQuery = Package::query()
             ->where('repository_id', $repository->id)
-            ->tokenScoped($this->token())
+            ->tokenScoped()
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
@@ -134,7 +132,7 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
 
         $packageQuery = Package::query()
-            ->tokenScoped($this->token())
+            ->tokenScoped()
             ->where('repository_id', $repository->id)
             ->where('name', "$vendor/$name")
             ->with([
@@ -170,7 +168,7 @@ class RepositoryController extends RepositoryAwareController
         $packageName = "$vendor/$name";
 
         $packageQuery = Package::query()
-            ->tokenScoped($this->token())
+            ->tokenScoped()
             ->where('repository_id', $repository->id)
             ->where('name', $packageName);
 

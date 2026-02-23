@@ -7,6 +7,7 @@ namespace App\Models\Scopes;
 use App\Models\Builders\PackageBuilder;
 use App\Models\Contracts\Tokenable;
 use App\Models\Repository;
+use Illuminate\Support\Facades\Auth;
 
 readonly class TokenPackageScope
 {
@@ -18,14 +19,16 @@ readonly class TokenPackageScope
 
     public function apply(PackageBuilder $query): PackageBuilder
     {
-        if ($this->token === null) {
+        $token = $this->token ?? Auth::guard('sanctum')->user();
+
+        if ($token === null) {
             return $query->whereIn('repository_id', Repository::query()->public()->select('id'));
         }
 
-        if ($this->token->isUnscoped()) {
+        if ($token->isUnscoped()) {
             return $query;
         }
 
-        return $query->whereIn('id', $this->token->accessiblePackageIdsQuery());
+        return $query->whereIn('id', $token->accessiblePackageIdsQuery());
     }
 }

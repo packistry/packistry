@@ -6,6 +6,7 @@ namespace App\Models\Scopes;
 
 use App\Models\Builders\RepositoryBuilder;
 use App\Models\Contracts\Tokenable;
+use Illuminate\Support\Facades\Auth;
 
 readonly class TokenRepositoryScope
 {
@@ -17,14 +18,16 @@ readonly class TokenRepositoryScope
 
     public function apply(RepositoryBuilder $query): RepositoryBuilder
     {
-        if ($this->token === null) {
+        $token = $this->token ?? Auth::guard('sanctum')->user();
+        
+        if ($token === null) {
             return $query->public();
         }
 
-        if ($this->token->isUnscoped()) {
+        if ($token->isUnscoped()) {
             return $query;
         }
 
-        return $query->whereIn('id', $this->token->accessibleRepositoryIdsQuery());
+        return $query->whereIn('id', $token->accessibleRepositoryIdsQuery());
     }
 }
