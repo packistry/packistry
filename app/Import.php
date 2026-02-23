@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\ArchiveInvalidContentTypeException;
-use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
 use App\Exceptions\FailedToOpenArchiveException;
-use App\Exceptions\NameNotFoundException;
-use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
 use App\Models\Version;
 use App\Sources\Importable;
@@ -24,25 +21,28 @@ readonly class Import
         //
     }
 
-    /**
-     * @throws ArchiveInvalidContentTypeException
-     * @throws ConnectionException
-     * @throws ComposerJsonNotFoundException
-     * @throws VersionNotFoundException
-     * @throws FailedToFetchArchiveException
-     * @throws FailedToOpenArchiveException
-     * @throws NameNotFoundException
-     */
     public function import(Package $package, Importable $importable, PendingRequest $http): Version
     {
         [$temp, $path] = $this->downloadZip($importable, $http);
 
         try {
-            return $this->createFromZip->create(
+            $version = $this->createFromZip->create(
                 package: $package,
                 path: $path,
                 version: $importable->version(),
             );
+
+            $metadata = $version->metadata ?? [];
+            $metadata['source'] = [
+                'type' => 'git',
+                'url' => $importable->sourceUrl(),
+                'reference' => $importable->reference(),
+            ];
+
+            $version->metadata = $metadata;
+            $version->save();
+
+            return $version;
         } finally {
             fclose($temp);
         }
@@ -51,9 +51,7 @@ readonly class Import
     /**
      * @return array{resource, string}
      *
-     * @throws ArchiveInvalidContentTypeException
-     * @throws ConnectionException
-     * @throws FailedToFetchArchiveException
+     * @throws ConnectionException|FailedToFetchArchiveException|FailedToOpenArchiveException|ArchiveInvalidContentTypeException
      */
     private function downloadZip(Importable $importable, PendingRequest $http): array
     {

@@ -106,7 +106,9 @@ class BitbucketClient extends Client
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
-                zipUrl: "$project->webUrl/get/{$item['name']}.zip"
+                zipUrl: "$project->webUrl/get/{$item['name']}.zip",
+                sourceUrl: $project->webUrl,
+                reference: $item['target']['hash'] ?? null,
             ));
     }
 
@@ -120,7 +122,9 @@ class BitbucketClient extends Client
                 id: (string) $project->id,
                 name: $item['name'],
                 url: $item['links']['html']['href'],
-                zipUrl: "$project->webUrl/get/{$item['name']}.zip"
+                zipUrl: "$project->webUrl/get/{$item['name']}.zip",
+                sourceUrl: $project->webUrl,
+                reference: $item['target']['hash'] ?? null,
             ));
     }
 

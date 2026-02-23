@@ -10,7 +10,11 @@ interface Importable
 
     public function url(): string;
 
+    public function sourceUrl(): string;
+
     public function version(): string;
+
+    public function reference(): string;
 
     public function id(): string;
 }
