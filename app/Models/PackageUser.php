@@ -27,8 +27,6 @@ use Illuminate\Support\Carbon;
  */
 class PackageUser extends Pivot
 {
-    protected $table = 'package_user';
-
     /**
      * @return BelongsTo<Package, $this>
      */

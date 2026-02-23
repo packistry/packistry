@@ -16,16 +16,10 @@ return new class extends Migration
         Schema::create('authentication_source_package', function (Blueprint $table): void {
             $table->id();
 
-            $table->foreignId('authentication_source_id')->constrained(
-                'authentication_sources',
-                indexName: 'auth_source_package_auth_source_id_foreign'
-            )->cascadeOnDelete();
-            $table->foreignId('package_id')->constrained(
-                'packages',
-                indexName: 'auth_source_package_package_id_foreign'
-            )->cascadeOnDelete();
+            $table->foreignId('authentication_source_id')->constrained('authentication_sources')->cascadeOnDelete();
+            $table->foreignId('package_id')->constrained('packages')->cascadeOnDelete();
 
-            $table->index(['authentication_source_id', 'package_id'], 'source_package_idx');
+            $table->unique(['authentication_source_id', 'package_id'], 'authentication_source_package_unique');
             $table->timestamps();
         });
     }
