@@ -29,7 +29,7 @@ it('shows package', function (?User $user, int $status): void {
 
     $response->assertExactJson(
         resourceAsJson(new PackageResource($package->fresh()->load([
-            'repository' => fn (BelongsTo $query) => $query->withCount('packages'),
+            'repository' => fn (BelongsTo $query) => $query->withUserScopedPackageCount(),
             'source',
         ])))
     );

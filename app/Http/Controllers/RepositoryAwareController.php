@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\Permission;
 use App\Enums\TokenAbility;
 use App\Models\Contracts\Tokenable;
 use App\Models\Repository;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use RuntimeException;
 
 abstract class RepositoryAwareController
 {
@@ -18,7 +17,7 @@ abstract class RepositoryAwareController
         $token = Auth::guard('sanctum')->user();
 
         if ($token !== null && ! $token instanceof Tokenable) {
-            return throw new \RuntimeException('Authenticatable class must implement '.Tokenable::class);
+            return throw new RuntimeException('Authenticatable class must implement '.Tokenable::class);
         }
 
         return $token;
@@ -33,7 +32,9 @@ abstract class RepositoryAwareController
                 abort(401);
             }
 
-            return Repository::queryByPath($path)
+            return Repository::query()
+                ->queryByPath($path)
+                ->tokenScoped()
                 ->firstOrFail();
         });
     }
@@ -48,14 +49,6 @@ abstract class RepositoryAwareController
         }
 
         if (is_null($token) || ! $token->tokenCan($ability->value) || $token->currentAccessToken()->isExpired()) {
-            abort(401);
-        }
-
-        if ($token instanceof User && $token->can(Permission::UNSCOPED)) {
-            return;
-        }
-
-        if (! $token->hasAccessToRepository($repository)) {
             abort(401);
         }
     }

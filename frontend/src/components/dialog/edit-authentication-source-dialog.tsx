@@ -24,6 +24,7 @@ export function EditAuthenticationSourceDialog({ authenticationSource, trigger }
         defaultValues: {
             ...authenticationSource,
             defaultUserRepositories: authenticationSource.repositories?.map(({ id }) => id) || [],
+            defaultUserPackages: authenticationSource.packages?.map(({ id }) => id) || [],
         },
         onSuccess() {
             setIsDialogOpen(false)
@@ -45,7 +46,10 @@ export function EditAuthenticationSourceDialog({ authenticationSource, trigger }
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <AuthenticationSourceFormElements form={form} />
+                        <AuthenticationSourceFormElements
+                            form={form}
+                            authenticationSource={authenticationSource}
+                        />
                         <div className="flex justify-between">
                             <Button
                                 loading={isPending}

@@ -25,6 +25,7 @@ export function AddAuthenticationSourceDialog(props: AddAuthenticationSourceDial
             provider: 'oidc',
             defaultUserRole: 'user',
             defaultUserRepositories: [],
+            defaultUserPackages: [],
             iconUrl: '',
             clientId: '',
             clientSecret: '',

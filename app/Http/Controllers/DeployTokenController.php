@@ -32,7 +32,7 @@ readonly class DeployTokenController extends Controller
 
         $tokens = QueryBuilder::for(
             DeployToken::query()
-                ->with('token')
+                ->with(['token', 'repositories', 'packages'])
         )
             ->allowedFilters([
                 SearchFilter::allowed(['deploy_tokens.name']),
@@ -60,7 +60,7 @@ readonly class DeployTokenController extends Controller
 
         [$token, $accessToken] = $this->storeDeployToken->handle($input);
 
-        $token->load('token');
+        $token->load(['token', 'repositories', 'packages']);
 
         return response()->json([
             'token' => (new DeployTokenResource($token)),

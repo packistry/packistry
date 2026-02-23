@@ -17,6 +17,7 @@ use App\Enums\Permission;
 use App\Enums\SourceProvider;
 use App\Enums\TokenAbility;
 use App\Models\DeployToken;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Models\User;
@@ -98,7 +99,7 @@ function personalToken(TokenAbility|array $abilities = [], bool $withAccess = fa
 /**
  * @param  TokenAbility|TokenAbility[]  $abilities
  */
-function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false, bool $expired = false): DeployToken
+function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false, bool $expired = false, ?array $withPackages = null): DeployToken
 {
     /** @var DeployToken $token */
     $token = Deploytoken::factory()
@@ -109,6 +110,64 @@ function deployToken(TokenAbility|array $abilities = [], bool $withAccess = fals
     if ($withAccess) {
         $token->repositories()->sync([1]);
     }
+
+    if ($withPackages) {
+        $token->packages()->sync($withPackages);
+    }
+
+    return $token;
+}
+
+/**
+ * Create a deploy token with package-level access.
+ *
+ * @param  Package|array<Package>  $packages  Package(s) to grant access to
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ */
+function deployTokenWithPackageAccess(Package|array $packages, TokenAbility|array $abilities = []): DeployToken
+{
+    /** @var DeployToken $token */
+    $token = DeployToken::factory()->create();
+
+    actingAs($token, $abilities);
+
+    // Grant access to specific package(s)
+    $packageIds = is_array($packages)
+        ? array_map(fn (Package $p) => $p->id, $packages)
+        : [$packages->id];
+
+    $token->packages()->sync($packageIds);
+
+    return $token;
+}
+
+/**
+ * Create a deploy token with mixed repository and package access.
+ *
+ * @param  Repository|array<Repository>  $repositories  Repository(ies) to grant access to
+ * @param  Package|array<Package>  $packages  Package(s) to grant access to
+ * @param  TokenAbility|TokenAbility[]  $abilities
+ */
+function deployTokenWithMixedAccess(Repository|array $repositories, Package|array $packages, TokenAbility|array $abilities = []): DeployToken
+{
+    /** @var DeployToken $token */
+    $token = DeployToken::factory()->create();
+
+    actingAs($token, $abilities);
+
+    // Grant access to repository(ies)
+    $repositoryIds = is_array($repositories)
+        ? array_map(fn (Repository $r) => $r->id, $repositories)
+        : [$repositories->id];
+
+    $token->repositories()->sync($repositoryIds);
+
+    // Grant access to specific package(s)
+    $packageIds = is_array($packages)
+        ? array_map(fn (Package $p) => $p->id, $packages)
+        : [$packages->id];
+
+    $token->packages()->sync($packageIds);
 
     return $token;
 }
@@ -230,6 +289,9 @@ function guestAndTokens(
     int $unscopedPersonalTokenWithoutAccessStatus = 200,
     int $deployTokenWithoutAccessStatus = 200,
     int $deployTokenWithAccessStatus = 200,
+    int $deployTokenWithoutPackagesStatus = 200,
+    int $deployTokenWithPackagesStatus = 200,
+    ?array $deployTokenPackages = null,
     int $expiredDeployTokenWithAccessStatus = 401,
 ): array {
     $values = is_array($abilities)
@@ -238,36 +300,60 @@ function guestAndTokens(
 
     $imploded = implode(',', $values);
 
-    return [
+    $dataset = [
         "$guestStatus guest" => [
             fn (): null => null,
             $guestStatus,
+            null,
         ],
         "$personalTokenWithoutAccessStatus user without access ($imploded)" => [
             fn (): User => personalToken($abilities),
             $personalTokenWithoutAccessStatus,
+            null,
         ],
         "$personalTokenWithAccessStatus user with access ($imploded)" => [
             fn (): User => personalToken($abilities, withAccess: true),
             $personalTokenWithAccessStatus,
+            null,
         ],
         "$unscopedPersonalTokenWithoutAccessStatus unscoped user without access ($imploded)" => [
             fn (): User => personalToken($abilities, permissions: Permission::UNSCOPED),
             $unscopedPersonalTokenWithoutAccessStatus,
+            null,
         ],
         "$deployTokenWithoutAccessStatus deploy token without access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities),
             $deployTokenWithoutAccessStatus,
+            null,
         ],
         "$deployTokenWithAccessStatus deploy token with access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities, withAccess: true),
             $deployTokenWithAccessStatus,
+            null,
+        ],
+        "$deployTokenWithoutPackagesStatus deploy token without packages ($imploded)" => [
+            function () use ($abilities): DeployToken {
+                return deployToken($abilities, withPackages: []);
+            },
+            $deployTokenWithoutPackagesStatus,
+            [],
         ],
         "$expiredDeployTokenWithAccessStatus expired deploy token with access ($imploded)" => [
             fn (): DeployToken => deployToken($abilities, withAccess: true, expired: true),
             $expiredDeployTokenWithAccessStatus,
+            null,
         ],
     ];
+
+    if (! is_null($deployTokenPackages)) {
+        $dataset["$deployTokenWithPackagesStatus deploy token with access to packages ($imploded)"] = [
+            fn (): DeployToken => deployToken($abilities, withPackages: $deployTokenPackages),
+            $deployTokenWithPackagesStatus,
+            $deployTokenPackages,
+        ];
+    }
+
+    return $dataset;
 }
 
 /**

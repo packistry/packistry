@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Scopes\OrderScope;
+use App\Models\Scopes\VersionOrderScope;
 use Composer\Semver\VersionParser;
 use Database\Factories\VersionFactory;
 use Eloquent;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,12 +23,12 @@ use Override;
  * @property int $package_id
  * @property string $name
  * @property array<array-key, mixed> $metadata
- * @property string|null $archive_path
  * @property string $shasum
  * @property string $order
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $total_downloads
+ * @property string|null $archive_path
  * @property-read Collection<int, Download> $downloads
  * @property-read int|null $downloads_count
  * @property-read Package $package
@@ -39,6 +40,7 @@ use Override;
  *
  * @mixin Eloquent
  */
+#[ScopedBy(VersionOrderScope::class)]
 class Version extends Model
 {
     /** @use HasFactory<VersionFactory> */
@@ -75,7 +77,6 @@ class Version extends Model
     #[Override]
     protected static function booted(): void
     {
-        static::addGlobalScope(new OrderScope('order'));
         static::created(function (Version $version): void {
             if (! $version->isStable()) {
                 return;

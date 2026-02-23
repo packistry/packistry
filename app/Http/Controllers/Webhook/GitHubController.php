@@ -11,7 +11,7 @@ use App\Sources\GitHub\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class GitHubController extends WebhookController
+readonly class GitHubController extends WebhookController
 {
     use AuthorizeHubSignatureEvent;
 

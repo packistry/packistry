@@ -19,10 +19,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use RuntimeException;
 
 /**
  * @property int $id
@@ -39,8 +42,14 @@ use Illuminate\Support\Carbon;
  * @property-read AuthenticationSource|null $authenticationSource
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read Collection<int, PackageUser> $packageUsers
+ * @property-read int|null $package_users_count
+ * @property-read Collection<int, Package> $packages
+ * @property-read int|null $packages_count
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
+ * @property-read Collection<int, RepositoryUser> $repositoryUsers
+ * @property-read int|null $repository_users_count
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
  *
@@ -93,6 +102,30 @@ class User extends Model implements AuthenticatableContract, Tokenable
     }
 
     /**
+     * @return BelongsToMany<Package, $this>
+     */
+    public function packages(): BelongsToMany
+    {
+        return $this->belongsToMany(Package::class);
+    }
+
+    /**
+     * @return HasMany<PackageUser, $this>
+     */
+    public function packageUsers(): HasMany
+    {
+        return $this->hasMany(PackageUser::class);
+    }
+
+    /**
+     * @return HasMany<RepositoryUser, $this>
+     */
+    public function repositoryUsers(): HasMany
+    {
+        return $this->hasMany(RepositoryUser::class);
+    }
+
+    /**
      * @return BelongsTo<AuthenticationSource, $this>
      */
     public function authenticationSource(): BelongsTo
@@ -110,9 +143,34 @@ class User extends Model implements AuthenticatableContract, Tokenable
         return ! $this->can($permission);
     }
 
-    public function hasAccessToRepository(Repository $repository): bool
+    public function accessibleRepositoryIdsQuery(): QueryBuilder
     {
-        return $this->repositories()->where('repositories.id', $repository->id)->exists();
+        return $this->isUnscoped()
+            ? throw new RuntimeException('Should be skipped when unscoped')
+            : Repository::query()
+                ->select('repositories.id')
+                ->public()
+                ->union($this->repositoryUsers()->select('repository_id')->toBase())
+                ->union($this->packages()->select('repository_id')->distinct()->toBase())
+                ->toBase();
+    }
+
+    public function accessiblePackageIdsQuery(): QueryBuilder
+    {
+        return $this->isUnscoped()
+            ? throw new RuntimeException('Should be skipped when unscoped')
+            : Package::query()
+                ->whereIn('packages.repository_id', Repository::query()->public()->select('id')
+                    ->union($this->repositoryUsers()->select('repository_id')->toBase())
+                )
+                ->select('packages.id')
+                ->union($this->packageUsers()->select('package_id')->toBase())
+                ->toBase();
+    }
+
+    public function isUnscoped(): bool
+    {
+        return $this->can(Permission::UNSCOPED);
     }
 
     public static function isEmailInUse(?string $email, ?int $exclude = null): bool

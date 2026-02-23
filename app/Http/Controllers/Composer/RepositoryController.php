@@ -11,6 +11,7 @@ use App\Events\PackageDownloadEvent;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
+use App\Models\Contracts\Tokenable;
 use App\Models\Package;
 use App\Models\Version;
 use App\Normalizer;
@@ -18,6 +19,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -44,22 +46,27 @@ class RepositoryController extends RepositoryAwareController
 
         $q = $request->input('q');
         $type = $request->input('type');
+        $repository = $this->repository();
 
-        $packagesQuery = $this->repository()
-            ->packages()
+        $packages = Package::query()
+            ->tokenScoped()
+            ->where('repository_id', $repository->id)
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
                 ->where('name', 'like', "$q%"))
             ->when($type, fn (BuilderContract $query) => $query
-                ->where('type', "$type"));
+                ->where('type', "$type"))
+            ->get();
+
+        $results = $packages->map(fn (Package $package): array => [
+            'name' => $package->name,
+            'description' => $package->description,
+            'downloads' => $package->total_downloads,
+        ])->values()->all();
 
         return response()->json([
-            'total' => $packagesQuery->count(),
-            'results' => $packagesQuery->chunkMap(fn (Package $package): array => [
-                'name' => $package->name,
-                'description' => $package->description,
-                'downloads' => $package->total_downloads,
-            ]),
+            'total' => count($results),
+            'results' => $results,
         ]);
     }
 
@@ -67,8 +74,12 @@ class RepositoryController extends RepositoryAwareController
     {
         $this->authorize(TokenAbility::REPOSITORY_READ);
 
-        $names = $this->repository()
-            ->packages()
+        $repository = $this->repository();
+
+        $names = Package::query()
+            ->tokenScoped()
+            ->where('repository_id', $repository->id)
+            ->orderBy('name')
             ->pluck('name');
 
         return response()->json([
@@ -87,19 +98,22 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        /** @var Package $package */
-        $package = $this
-            ->repository()
-            ->packages()
+        $repository = $this->repository();
+
+        $packageQuery = Package::query()
+            ->where('repository_id', $repository->id)
+            ->tokenScoped()
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
                     ->where('name', 'not like', 'dev-%')
                     ->where('name', 'not like', '%-dev'),
-            ])
-            ->firstOrFail();
+            ]);
 
-        $package->setRelation('repository', $this->repository());
+        /** @var Package $package */
+        $package = $packageQuery->firstOrFail();
+
+        $package->setRelation('repository', $repository);
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -115,19 +129,22 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
-        /** @var Package $package */
-        $package = $this
-            ->repository()
-            ->packages()
+        $repository = $this->repository();
+
+        $packageQuery = Package::query()
+            ->tokenScoped()
+            ->where('repository_id', $repository->id)
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
                     ->where('name', 'like', 'dev-%')
                     ->orWhere('name', 'like', '%-dev'),
-            ])
-            ->firstOrFail();
+            ]);
 
-        $package->setRelation('repository', $this->repository());
+        /** @var Package $package */
+        $package = $packageQuery->firstOrFail();
+
+        $package->setRelation('repository', $repository);
 
         return response()->json(new ComposerPackageResource($package));
     }
@@ -148,8 +165,15 @@ class RepositoryController extends RepositoryAwareController
         }
 
         $repository = $this->repository();
-        $package = $repository
-            ->packageByNameOrFail("$vendor/$name");
+        $packageName = "$vendor/$name";
+
+        $packageQuery = Package::query()
+            ->tokenScoped()
+            ->where('repository_id', $repository->id)
+            ->where('name', $packageName);
+
+        /** @var Package $package */
+        $package = $packageQuery->firstOrFail();
 
         /** @var Version $version */
         $version = $package
@@ -182,6 +206,26 @@ class RepositoryController extends RepositoryAwareController
             abort(404);
         }
 
+        $repository = $this->repository();
+        $packageName = "$vendor/$name";
+        /** @var Tokenable $token */
+        $token = $this->token();
+
+        /** @var Package|null $package */
+        $package = $repository
+            ->packages()
+            ->where('name', $packageName)
+            ->first();
+
+        if (
+            ! $token->isUnscoped()
+            && ! $this->tokenHasRepositoryAccess($token, $repository->id)
+        ) {
+            if (is_null($package) || ! $this->tokenHasPackageAccess($token, $package->id)) {
+                abort(404);
+            }
+        }
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:zip'],
             'version' => ['string'],
@@ -189,16 +233,12 @@ class RepositoryController extends RepositoryAwareController
 
         /** @var UploadedFile $file */
         $file = $request->file('file');
-        $package = $this->repository()
-            ->packages()
-            ->where('name', "$vendor/$name")
-            ->first();
 
         if (is_null($package)) {
             $package = new Package;
-            $package->repository_id = $this->repository()->id;
+            $package->repository_id = $repository->id;
             $package->type = PackageType::LIBRARY->value;
-            $package->name = "$vendor/$name";
+            $package->name = $packageName;
 
             $package->save();
         }
@@ -210,5 +250,21 @@ class RepositoryController extends RepositoryAwareController
         );
 
         return response()->json(new VersionResource($version), 201);
+    }
+
+    private function tokenHasRepositoryAccess(Tokenable $token, int $repositoryId): bool
+    {
+        return DB::query()
+            ->fromSub($token->accessibleRepositoryIdsQuery(), 'accessible_repositories')
+            ->where('id', $repositoryId)
+            ->exists();
+    }
+
+    private function tokenHasPackageAccess(Tokenable $token, int $packageId): bool
+    {
+        return DB::query()
+            ->fromSub($token->accessiblePackageIdsQuery(), 'accessible_packages')
+            ->where('id', $packageId)
+            ->exists();
     }
 }

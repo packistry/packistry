@@ -13,6 +13,7 @@ class UpdateAuthenticationSourceInput extends Input
 {
     /**
      * @param  string[]  $defaultUserRepositories
+     * @param  string[]  $defaultUserPackages
      * @param  string[]  $allowedDomains
      */
     public function __construct(
@@ -26,9 +27,23 @@ class UpdateAuthenticationSourceInput extends Input
         public bool $active = true,
         public Role $defaultUserRole = Role::USER,
         public ?array $defaultUserRepositories = [],
+        public ?array $defaultUserPackages = [],
         public ?array $allowedDomains = [],
         public bool $allowRegistration = false
     ) {
         //
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function rules(): array
+    {
+        return [
+            'default_user_repositories' => ['array'],
+            'default_user_repositories.*' => ['integer', 'exists:repositories,id'],
+            'default_user_packages' => ['array'],
+            'default_user_packages.*' => ['integer', 'exists:packages,id'],
+        ];
     }
 }

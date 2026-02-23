@@ -8,6 +8,7 @@ import {
     HomeIcon,
     KeyIcon,
     PackageIcon,
+    UserKeyIcon,
     UsersIcon,
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
@@ -19,6 +20,7 @@ import {
     DEPLOY_TOKEN_READ,
     PACKAGE_READ,
     Permission,
+    PERSONAL_TOKEN_READ,
     REPOSITORY_READ,
     SOURCE_READ,
     USER_READ,
@@ -39,6 +41,7 @@ const navItems: NavItem[] = [
     { name: 'Sources', href: '/sources', icon: CodeIcon, permission: SOURCE_READ },
     { name: 'Users', href: '/users', icon: UsersIcon, permission: USER_READ },
     { name: 'Deploy Tokens', href: '/deploy-tokens', icon: KeyIcon, permission: DEPLOY_TOKEN_READ },
+    { name: 'Personal Tokens', href: '/personal-tokens', icon: UserKeyIcon, permission: PERSONAL_TOKEN_READ },
     {
         name: 'Authentication Sources',
         href: '/authentication-sources',

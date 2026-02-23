@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Scopes\UserScope;
+use App\Models\Builders\PackageBuilder;
 use Database\Factories\PackageFactory;
 use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
@@ -33,9 +33,9 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $versions_count
  *
  * @method static PackageFactory factory($count = null, $state = [])
- * @method static Builder<static>|Package newModelQuery()
- * @method static Builder<static>|Package newQuery()
- * @method static Builder<static>|Package query()
+ * @method static PackageBuilder newModelQuery()
+ * @method static PackageBuilder newQuery()
+ * @method static PackageBuilder query()
  *
  * @mixin Eloquent
  */
@@ -73,14 +73,10 @@ class Package extends Model
     }
 
     /**
-     * @return Builder<static>
+     * @param  QueryBuilder  $query
      */
-    public static function userScoped(?User $user = null): Builder
+    public function newEloquentBuilder($query): PackageBuilder
     {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
-        return static::query()
-            ->withGlobalScope('user', new UserScope($user));
+        return new PackageBuilder($query);
     }
 }

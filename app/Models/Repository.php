@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Scopes\UserScope;
+use App\Models\Builders\RepositoryBuilder;
 use Database\Factories\RepositoryFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
@@ -27,9 +28,9 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $packages_count
  *
  * @method static RepositoryFactory factory($count = null, $state = [])
- * @method static Builder<static>|Repository newModelQuery()
- * @method static Builder<static>|Repository newQuery()
- * @method static Builder<static>|Repository query()
+ * @method static RepositoryBuilder newModelQuery()
+ * @method static RepositoryBuilder newQuery()
+ * @method static RepositoryBuilder query()
  *
  * @mixin Eloquent
  */
@@ -82,32 +83,16 @@ class Repository extends Model
     }
 
     /**
-     * @return Builder<static>
+     * @param  QueryBuilder  $query
      */
-    public static function userScoped(?User $user = null): Builder
+    public function newEloquentBuilder($query): RepositoryBuilder
     {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
-        return static::query()
-            ->withGlobalScope('user', new UserScope($user, 'id'));
-    }
-
-    /**
-     * @return Builder<static>
-     */
-    public static function queryByPath(?string $path): Builder
-    {
-        return static::query()->when(
-            $path,
-            fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('path', $path),
-            fn (Builder $query) => $query->whereNull('path')
-        );
+        return new RepositoryBuilder($query);
     }
 
     public static function isPathInUse(?string $path, ?int $exclude = null): bool
     {
-        return self::queryByPath($path)
+        return self::query()->queryByPath($path)
             ->when($exclude, fn (Builder $query) => $query->whereNot('id', $exclude))
             ->exists();
     }

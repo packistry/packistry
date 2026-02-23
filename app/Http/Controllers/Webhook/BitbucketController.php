@@ -9,7 +9,7 @@ use App\Sources\Bitbucket\Event\PushEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class BitbucketController extends WebhookController
+readonly class BitbucketController extends WebhookController
 {
     use AuthorizeHubSignatureEvent;
 

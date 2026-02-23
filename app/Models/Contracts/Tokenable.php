@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models\Contracts;
 
-use App\Models\Repository;
 use App\Models\Token;
+use Illuminate\Database\Query\Builder;
 
 interface Tokenable
 {
     public function currentAccessToken(): Token;
 
-    public function hasAccessToRepository(Repository $repository): bool;
+    public function accessibleRepositoryIdsQuery(): Builder;
+
+    public function accessiblePackageIdsQuery(): Builder;
+
+    public function isUnscoped(): bool;
 
     /**
      * @phpstan-ignore-next-line

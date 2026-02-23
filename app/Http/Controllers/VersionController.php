@@ -18,7 +18,7 @@ readonly class VersionController extends Controller
     {
         $this->authorize(Permission::PACKAGE_READ);
 
-        $package = Package::userScoped()->findOrFail($packageId);
+        $package = Package::query()->userScoped()->findOrFail($packageId);
 
         $packages = QueryBuilder::for(
             $package->versions()

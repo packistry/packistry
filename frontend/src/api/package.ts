@@ -8,6 +8,7 @@ import { source } from '@/api/source'
 export const packageSchema = z.object({
     id: z.coerce.string(),
     name: z.string(),
+    repositoryId: z.number(),
     repository: repository.optional(),
     source: source.optional().nullable(),
     description: z.string().nullable(),
@@ -26,6 +27,7 @@ export const packageQuery = paginatedQuery({
         search: z.string().optional(),
     }),
     sort: z.enum(['totalDownloads', '-totalDownloads', 'name', '-name']),
+    include: z.enum(['repository']),
 })
 
 export type PackageQuery = z.infer<typeof packageQuery>

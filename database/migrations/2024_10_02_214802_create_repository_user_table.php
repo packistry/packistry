@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('repository_id')->constrained('repositories')->cascadeOnDelete();
 
-            $table->index(['user_id', 'repository_id']);
+            $table->unique(['user_id', 'repository_id'], 'repository_user_user_repository_unique');
             $table->timestamps();
         });
     }

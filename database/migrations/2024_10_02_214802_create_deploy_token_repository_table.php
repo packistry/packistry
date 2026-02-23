@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('deploy_token_id')->constrained('deploy_tokens')->cascadeOnDelete();
             $table->foreignId('repository_id')->constrained('repositories')->cascadeOnDelete();
 
-            $table->index(['deploy_token_id', 'repository_id']);
+            $table->unique(['deploy_token_id', 'repository_id'], 'deploy_token_repository_unique');
             $table->timestamps();
         });
     }

@@ -71,7 +71,7 @@ export function AddDeployTokenDialog(props: AddDeployTokenDialog) {
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="min-w-[1000px]">
                 <DialogHeader>
                     <DialogTitle>Generate New Deploy Token</DialogTitle>
                 </DialogHeader>

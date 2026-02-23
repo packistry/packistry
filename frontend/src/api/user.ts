@@ -5,6 +5,7 @@ import { permission } from '@/permission'
 import { repository } from '@/api/repository'
 import { authenticationSource } from '@/api/authentication-source'
 import { role } from '@/api/role'
+import { packageSchema } from '@/api/package'
 
 export const user = z.object({
     id: z.coerce.string(),
@@ -13,6 +14,7 @@ export const user = z.object({
     role,
     authenticationSource: authenticationSource.optional().nullable(),
     repositories: repository.array().optional(),
+    packages: packageSchema.array().optional(),
     permissions: permission.array(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
@@ -44,6 +46,7 @@ export const storeUserInput = z.object({
     role,
     password: z.string(),
     repositories: z.string().array(),
+    packages: z.string().array(),
 })
 
 export type StoreUserInput = z.infer<typeof storeUserInput>
@@ -59,6 +62,7 @@ export const updateUserInput = z.object({
     role,
     password: z.string(),
     repositories: z.string().array(),
+    packages: z.string().array(),
 })
 
 export function updateUser({ id, ...input }: z.infer<typeof updateUserInput>) {

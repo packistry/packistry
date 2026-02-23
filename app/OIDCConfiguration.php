@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Throwable;
 
 #[MapInputName(SnakeCaseMapper::class)]
 class OIDCConfiguration extends Data
@@ -43,7 +44,7 @@ class OIDCConfiguration extends Data
     {
         try {
             self::fromDiscoveryUrl($url);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             throw new InvalidDiscoveryUrlException;
         }
     }

@@ -37,7 +37,7 @@ return new class extends Migration
             $table->foreignId('authentication_source_id')->constrained('authentication_sources', indexName: 'auth_source_auth_source_id_foreign')->cascadeOnDelete();
             $table->foreignId('repository_id')->constrained('repositories', indexName: 'auth_source_repository_id_foreign')->cascadeOnDelete();
 
-            $table->index(['authentication_source_id', 'repository_id'], 'source_repo_idx');
+            $table->unique(['authentication_source_id', 'repository_id'], 'authentication_source_repository_unique');
             $table->timestamps();
         });
     }

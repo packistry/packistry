@@ -31,10 +31,12 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property string|null $icon_url
  * @property Role $default_user_role
  * @property bool $active
- * @property bool $allow_registration
- * @property array<string>|null $allowed_domains
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property array<array-key, mixed>|null $allowed_domains
+ * @property bool $allow_registration
+ * @property-read Collection<int, Package> $packages
+ * @property-read int|null $packages_count
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
  * @property-read Collection<int, User> $users
@@ -125,6 +127,14 @@ class AuthenticationSource extends Model
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
+    }
+
+    /**
+     * @return BelongsToMany<Package, $this>
+     */
+    public function packages(): BelongsToMany
+    {
+        return $this->belongsToMany(Package::class);
     }
 
     public function callbackUrl(): string

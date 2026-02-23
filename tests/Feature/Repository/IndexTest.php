@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\Permission;
 use App\Http\Resources\RepositoryResource;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 
@@ -25,10 +26,6 @@ it('shows index', function (?User $user, int $status): void {
         ]);
     }
 
-    $repositories = $query
-        ->withCount('packages')
-        ->paginate(10);
-
     $response = getJson('/api/repositories')
         ->assertStatus($status);
 
@@ -37,6 +34,10 @@ it('shows index', function (?User $user, int $status): void {
     }
 
     assertNotNull($user);
+
+    $repositories = $query
+        ->withUserScopedPackageCount($user)
+        ->paginate(10);
 
     $response->assertJsonPath('data', json_decode(RepositoryResource::collection($repositories)->toJson(), true));
     $response->assertJsonCount($user->can(Permission::UNSCOPED) ? 10 : 5, 'data');
@@ -69,6 +70,23 @@ it('searches', function (?User $user, int $status): void {
         ->assertJsonPath('data', []);
 })
     ->with(unscopedUser(Permission::REPOSITORY_READ));
+
+it('shows repository with package-level user access', function (): void {
+    $user = user(Permission::REPOSITORY_READ);
+    $repository = Repository::factory()->create();
+    $package = Package::factory()->for($repository)->create();
+
+    $user->packages()->sync([$package->id]);
+
+    $expected = Repository::userScoped($user)
+        ->withUserScopedPackageCount($user)
+        ->paginate(10);
+
+    getJson('/api/repositories')
+        ->assertOk()
+        ->assertJsonPath('data', json_decode(RepositoryResource::collection($expected)->toJson(), true))
+        ->assertJsonCount(1, 'data');
+});
 
 it('filters by public', function (?User $user, int $status): void {
     $repository = Repository::factory()

@@ -5,13 +5,15 @@ declare(strict_types=1);
 use App\Enums\Permission;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 
 use function Pest\Laravel\postJson;
 
-it('stores', function (?User $user, int $status, Role $role, array $repositories): void {
-    Repository::factory()->create();
+it('stores', function (?User $user, int $status, Role $role, array $repositories, array $packages): void {
+    $repository = Repository::factory()->create();
+    Package::factory()->for($repository)->create();
 
     $response = postJson('/api/users', [
         'name' => $name = fake()->name,
@@ -19,6 +21,7 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
         'role' => $role,
         'password' => $password = fake()->password,
         'repositories' => $repositories,
+        'packages' => $packages,
     ])
         ->assertStatus($status);
 
@@ -39,6 +42,7 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
         ->email->toBe($email)
         ->role->toBe($role)
         ->and($user->repositories()->pluck('repositories.id')->toArray())->toBe($repositories)
+        ->and($user->packages()->pluck('packages.id')->toArray())->toBe($packages)
         ->and(Hash::check($password, $user->password));
 })
     ->with(guestAndUsers(Permission::USER_CREATE, userWithPermission: 201))
@@ -46,10 +50,12 @@ it('stores', function (?User $user, int $status, Role $role, array $repositories
         'admin' => [
             'role' => Role::ADMIN,
             'repositories' => [],
+            'packages' => [],
         ],
         'user' => [
             'role' => Role::USER,
             'repositories' => [1],
+            'packages' => [1],
         ],
     ]);
 
@@ -62,6 +68,7 @@ it('has unique email', function (?User $user, int $status): void {
         'role' => Role::USER,
         'password' => fake()->password,
         'repositories' => [],
+        'packages' => [],
     ])
         ->assertStatus($status)
         ->assertExactJson(validation([
@@ -77,6 +84,7 @@ it('requires valid email', function (?User $user, int $status): void {
         'role' => Role::USER,
         'password' => fake()->password,
         'repositories' => [],
+        'packages' => [],
     ])
         ->assertStatus($status)
         ->assertExactJson(validation([

@@ -19,6 +19,8 @@ export type FormSearchCheckboxGroupProps = {
 type Option = {
     value: string
     label: string
+    checked?: boolean
+    disabled?: boolean
 }
 
 export function FormSearchCheckboxGroup({
@@ -69,6 +71,11 @@ export function FormSearchCheckboxGroup({
                                         control={control}
                                         name={name}
                                         render={({ field }) => {
+                                            const checked =
+                                                typeof item.checked === 'boolean'
+                                                    ? item.checked
+                                                    : field.value?.includes(item.value)
+
                                             return (
                                                 <>
                                                     <FormItem
@@ -77,10 +84,18 @@ export function FormSearchCheckboxGroup({
                                                     >
                                                         <FormControl>
                                                             <Checkbox
-                                                                checked={field.value?.includes(item.value)}
+                                                                checked={checked}
+                                                                disabled={item.disabled}
                                                                 onCheckedChange={(checked) => {
+                                                                    if (item.disabled) {
+                                                                        return
+                                                                    }
+
                                                                     return checked
-                                                                        ? field.onChange([...field.value, item.value])
+                                                                        ? field.onChange([
+                                                                              ...(field.value || []),
+                                                                              item.value,
+                                                                          ])
                                                                         : field.onChange(
                                                                               field.value?.filter(
                                                                                   (value: string) =>

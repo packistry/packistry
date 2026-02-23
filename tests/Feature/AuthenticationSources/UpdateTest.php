@@ -7,6 +7,7 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use App\Http\Resources\AuthenticationSourceResource;
 use App\Models\AuthenticationSource;
+use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
 use App\OIDCConfiguration;
@@ -18,6 +19,10 @@ it('updates', function (?User $user, int $status): void {
     $source = AuthenticationSource::factory()->create();
     $repositories = Repository::factory()
         ->count(10)
+        ->create();
+    $packages = Package::factory()
+        ->for($repositories->first())
+        ->count(3)
         ->create();
 
     $discoveryUrl = 'https://company.okta.com/.well-known/openid-configuration';
@@ -40,6 +45,7 @@ it('updates', function (?User $user, int $status): void {
         'active' => fake()->boolean,
         'default_user_role' => fake()->randomElement(Role::cases()),
         'default_user_repositories' => $repositories->pluck('id'),
+        'default_user_packages' => $packages->pluck('id'),
     ])
         ->assertStatus($status);
 
@@ -62,6 +68,7 @@ it('updates', function (?User $user, int $status): void {
         ->client_id->toBe($attributes['client_id'])
         ->client_secret->toBe($attributes['client_secret'])
         ->discovery_url->toBe($attributes['discovery_url'])
-        ->and($source->repositories->pluck('id'))->toEqual($repositories->pluck('id'));
+        ->and($source->repositories->pluck('id'))->toEqual($repositories->pluck('id'))
+        ->and($source->packages->pluck('id'))->toEqual($packages->pluck('id'));
 })
     ->with(guestAndUsers(Permission::AUTHENTICATION_SOURCE_UPDATE));

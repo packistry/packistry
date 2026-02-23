@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\Repository;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Testing\TestResponse;
 
 use function Pest\Laravel\getJson;
 
@@ -76,7 +77,6 @@ it('searches by type', function (Repository $repository, ?Authenticatable $auth,
     Repository::factory()
         ->public()
         ->root()
-
         ->create();
 
     getJson($repository->url('/search.json?type=composer-plugin'))
@@ -105,14 +105,23 @@ it('searches by type', function (Repository $repository, ?Authenticatable $auth,
     ))
     ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
-it('searches private from private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
+it('searches private from private repository', function (Repository $repository, ?Authenticatable $auth, int $status, ?array $allowedPackages): void {
+    $expectedTotal = is_null($allowedPackages)
+        ? 5
+        : count($allowedPackages);
+
     getJson($repository->url('/search.json?type=composer-plugin'))
-        ->assertStatus($status);
+        ->assertStatus($status)
+        ->when($status === 200, fn (TestResponse $response) => $response->assertJsonPath('total', $expectedTotal));
 })
-    ->with(rootAndSubRepository())
+    ->with(rootAndSubRepository(
+        closure: fn (RepositoryFactory $factory) => $factory->withPackages(count: 5, type: 'composer-plugin'),
+    ))
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_READ,
-        guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
-        deployTokenWithoutAccessStatus: 401,
+        guestStatus: 404,
+        personalTokenWithoutAccessStatus: 404,
+        deployTokenWithoutAccessStatus: 404,
+        deployTokenWithoutPackagesStatus: 404,
+        deployTokenPackages: [1, 2],
     ));
