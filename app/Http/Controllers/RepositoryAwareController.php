@@ -8,6 +8,7 @@ use App\Enums\TokenAbility;
 use App\Models\Contracts\Tokenable;
 use App\Models\Repository;
 use Illuminate\Support\Facades\Auth;
+use RuntimeException;
 
 abstract class RepositoryAwareController
 {
@@ -16,7 +17,7 @@ abstract class RepositoryAwareController
         $token = Auth::guard('sanctum')->user();
 
         if ($token !== null && ! $token instanceof Tokenable) {
-            return throw new \RuntimeException('Authenticatable class must implement '.Tokenable::class);
+            return throw new RuntimeException('Authenticatable class must implement '.Tokenable::class);
         }
 
         return $token;

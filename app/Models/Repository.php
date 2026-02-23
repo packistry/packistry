@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Scopes\UserScope;
 use Database\Factories\RepositoryFactory;
 use Eloquent;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|Repository newModelQuery()
  * @method static Builder<static>|Repository newQuery()
  * @method static Builder<static>|Repository query()
+ * @method static Builder<static>|Repository withUserScopedPackageCount(?User $user = null)
  *
  * @mixin Eloquent
  */
@@ -79,6 +81,21 @@ class Repository extends Model
     public function packageByNameOrFail(string $name): Package
     {
         return $this->packageByName($name) ?? throw new ModelNotFoundException;
+    }
+
+    /**
+     * @param  Builder<static>  $query
+     * @return Builder<static>
+     */
+    #[Scope]
+    public function withUserScopedPackageCount(Builder $query, ?User $user = null): Builder
+    {
+        /** @var User|null $user */
+        $user ??= auth()->user();
+
+        return $query->withCount([
+            'packages' => fn (Builder $packagesQuery) => $packagesQuery->withGlobalScope('user', new UserScope($user)),
+        ]);
     }
 
     /**

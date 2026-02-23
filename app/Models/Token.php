@@ -32,7 +32,7 @@ use RuntimeException;
  * @method static Builder<static>|Token newQuery()
  * @method static Builder<static>|Token onlyTrashed()
  * @method static Builder<static>|Token query()
- * @method static Builder<static>|Token withTrashed()
+ * @method static Builder<static>|Token withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|Token withoutTrashed()
  *
  * @mixin Eloquent

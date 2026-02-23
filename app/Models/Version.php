@@ -22,12 +22,12 @@ use Override;
  * @property int $package_id
  * @property string $name
  * @property array<array-key, mixed> $metadata
- * @property string|null $archive_path
  * @property string $shasum
  * @property string $order
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $total_downloads
+ * @property string|null $archive_path
  * @property-read Collection<int, Download> $downloads
  * @property-read int|null $downloads_count
  * @property-read Package $package

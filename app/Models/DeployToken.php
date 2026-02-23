@@ -24,10 +24,10 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, Repository> $repositories
- * @property-read int|null $repositories_count
  * @property-read Collection<int, Package> $packages
  * @property-read int|null $packages_count
+ * @property-read Collection<int, Repository> $repositories
+ * @property-read int|null $repositories_count
  * @property-read Token|null $token
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count

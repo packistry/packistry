@@ -40,10 +40,10 @@ use Illuminate\Support\Carbon;
  * @property-read AuthenticationSource|null $authenticationSource
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Collection<int, Repository> $repositories
- * @property-read int|null $repositories_count
  * @property-read Collection<int, Package> $packages
  * @property-read int|null $packages_count
+ * @property-read Collection<int, Repository> $repositories
+ * @property-read int|null $repositories_count
  * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
  *

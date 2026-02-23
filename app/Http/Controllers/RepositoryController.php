@@ -15,6 +15,7 @@ use App\Models\Repository;
 use App\SearchFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -32,7 +33,7 @@ readonly class RepositoryController extends Controller
     {
         $this->authorize(Permission::REPOSITORY_READ);
 
-        $repositories = QueryBuilder::for(Repository::userScoped()->withCount('packages'))
+        $repositories = QueryBuilder::for(Repository::userScoped()->withUserScopedPackageCount())
             ->allowedFilters([
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('public'),
@@ -49,7 +50,7 @@ readonly class RepositoryController extends Controller
     }
 
     /**
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(StoreRepositoryInput $input): JsonResponse
     {
@@ -64,7 +65,7 @@ readonly class RepositoryController extends Controller
     }
 
     /**
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function update(UpdateRepositoryInput $input, string $repositoryId): JsonResponse
     {

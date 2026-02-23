@@ -26,10 +26,6 @@ it('shows index', function (?User $user, int $status): void {
         ]);
     }
 
-    $repositories = $query
-        ->withCount('packages')
-        ->paginate(10);
-
     $response = getJson('/api/repositories')
         ->assertStatus($status);
 
@@ -38,6 +34,10 @@ it('shows index', function (?User $user, int $status): void {
     }
 
     assertNotNull($user);
+
+    $repositories = $query
+        ->withUserScopedPackageCount($user)
+        ->paginate(10);
 
     $response->assertJsonPath('data', json_decode(RepositoryResource::collection($repositories)->toJson(), true));
     $response->assertJsonCount($user->can(Permission::UNSCOPED) ? 10 : 5, 'data');
@@ -79,7 +79,7 @@ it('shows repository with package-level user access', function (): void {
     $user->packages()->sync([$package->id]);
 
     $expected = Repository::userScoped($user)
-        ->withCount('packages')
+        ->withUserScopedPackageCount($user)
         ->paginate(10);
 
     getJson('/api/repositories')

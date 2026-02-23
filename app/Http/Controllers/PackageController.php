@@ -75,8 +75,8 @@ readonly class PackageController extends Controller
             ->findOrFail($packageId);
 
         $package->load([
-            'repository' => fn (BelongsTo $query) => $query->withCount('packages'),
-            'source' => fn (BelongsTo $query) => $query,
+            'repository' => fn (BelongsTo $query) => $query->withUserScopedPackageCount(),
+            'source',
         ]);
 
         return response()->json(

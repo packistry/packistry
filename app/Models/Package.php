@@ -34,6 +34,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Version> $versions
  * @property-read int|null $versions_count
  *
+ * @method static Builder<static>|Package accessibleToTokenInRepository(Tokenable $token, Repository $repository)
  * @method static PackageFactory factory($count = null, $state = [])
  * @method static Builder<static>|Package newModelQuery()
  * @method static Builder<static>|Package newQuery()

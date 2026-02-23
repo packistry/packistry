@@ -19,6 +19,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\LazyCollection;
 use RuntimeException;
+use Throwable;
 
 class BitbucketClient extends Client
 {
@@ -70,7 +71,7 @@ class BitbucketClient extends Client
         $allProjects = [];
 
         foreach ($responses as $response) {
-            if ($response instanceof \Throwable) {
+            if ($response instanceof Throwable) {
                 throw $response;
             }
 

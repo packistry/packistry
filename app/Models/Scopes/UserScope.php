@@ -34,6 +34,7 @@ readonly class UserScope implements Scope
         if ($this->column === 'id') {
             $builder->whereIn('id', $this->user->accessibleRepositoryIdsQuery()
                 ->union(Repository::query()->select('id')->where('public', true)->toBase()));
+
             return;
         }
 
