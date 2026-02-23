@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('package_id')->constrained('packages')->cascadeOnDelete();
 
-            $table->index(['user_id', 'package_id']);
+            $table->unique(['user_id', 'package_id'], 'package_user_user_package_unique');
             $table->timestamps();
         });
     }

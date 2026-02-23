@@ -24,6 +24,7 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -142,11 +143,9 @@ class User extends Model implements AuthenticatableContract, Tokenable
             ? Repository::query()->select('repositories.id')->toBase()
             : Repository::query()
                 ->select('repositories.id')
-                ->where('public', true)
-                ->orWhere(function (Builder $query) {
-                    $query->whereIn('repositories.id', $this->repositories()->select('repositories.id'))
-                        ->orWhereIn('repositories.id', $this->packages()->select('repository_id'));
-                })
+                ->public()
+                ->union(DB::table('repository_user')->select('repository_id')->where('user_id', $this->id))
+                ->union($this->packages()->select('repository_id')->distinct()->toBase())
                 ->toBase();
     }
 
@@ -155,13 +154,11 @@ class User extends Model implements AuthenticatableContract, Tokenable
         return $this->isUnscoped()
             ? Package::query()->select('id')->toBase()
             : Package::query()
+                ->whereIn('packages.repository_id', Repository::query()->public()->select('id')
+                    ->union(DB::table('repository_user')->select('repository_id')->where('user_id', $this->id))
+                )
                 ->select('packages.id')
-                ->where(function (Builder $query) {
-                    $query
-                        ->whereIn('packages.id', $this->packages()->select('packages.id'))
-                        ->orWhereIn('packages.repository_id', $this->repositories()->select('repositories.id'));
-                })
-                ->orWhereIn('packages.repository_id', Repository::query()->public()->select('id'))
+                ->union(DB::table('package_user')->select('package_id')->where('user_id', $this->id))
                 ->toBase();
     }
 
