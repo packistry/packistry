@@ -33,7 +33,7 @@ readonly class RepositoryController extends Controller
     {
         $this->authorize(Permission::REPOSITORY_READ);
 
-        $repositories = QueryBuilder::for(Repository::userScoped()->withUserScopedPackageCount())
+        $repositories = QueryBuilder::for(Repository::query()->userScoped()->withUserScopedPackageCount())
             ->allowedFilters([
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('public'),

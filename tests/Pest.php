@@ -37,7 +37,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
 use Spatie\LaravelData\Data;
-
 use function Pest\Laravel\freezeSecond;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\travelBack;
@@ -333,11 +332,7 @@ function guestAndTokens(
         ],
         "$deployTokenWithoutPackagesStatus deploy token without packages ($imploded)" => [
             function () use ($abilities): DeployToken {
-                $packages = Repository::get()->map(function (Repository $repository) {
-                    return Package::factory()->for($repository)->create();
-                });
-
-                return deployToken($abilities, withPackages: $packages->pluck('id')->all());
+                return deployToken($abilities, withPackages: []);
             },
             $deployTokenWithoutPackagesStatus,
             [],

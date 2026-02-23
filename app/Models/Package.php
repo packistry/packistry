@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Contracts\Tokenable;
-use App\Models\Scopes\PackageTokenAccessScope;
-use App\Models\Scopes\UserScope;
+use App\Models\Builders\PackageBuilder;
 use Database\Factories\PackageFactory;
 use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
@@ -34,11 +32,11 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Version> $versions
  * @property-read int|null $versions_count
  *
- * @method static Builder<static>|Package accessibleToTokenInRepository(Tokenable $token, Repository $repository)
  * @method static PackageFactory factory($count = null, $state = [])
- * @method static Builder<static>|Package newModelQuery()
- * @method static Builder<static>|Package newQuery()
- * @method static Builder<static>|Package query()
+ * @method static PackageBuilder newModelQuery()
+ * @method static PackageBuilder newQuery()
+ * @method static PackageBuilder query()
+ * @method static PackageBuilder userScoped(?User $user = null)
  *
  * @mixin Eloquent
  */
@@ -76,26 +74,10 @@ class Package extends Model
     }
 
     /**
-     * @param  Builder<Package>  $query
-     * @return Builder<Package>
+     * @param  QueryBuilder  $query
      */
-    public function scopeAccessibleToTokenInRepository(Builder $query, Tokenable $token, Repository $repository): Builder
+    public function newEloquentBuilder($query): PackageBuilder
     {
-        return new PackageTokenAccessScope(
-            token: $token,
-            repository: $repository,
-        )->apply($query);
-    }
-
-    /**
-     * @return Builder<static>
-     */
-    public static function userScoped(?User $user = null): Builder
-    {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
-        return static::query()
-            ->withGlobalScope('user', new UserScope($user));
+        return new PackageBuilder($query);
     }
 }

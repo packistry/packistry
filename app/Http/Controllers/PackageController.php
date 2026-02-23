@@ -10,6 +10,7 @@ use App\Actions\Packages\RebuildPackage;
 use App\Actions\Packages\StorePackage;
 use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
+use App\Models\Builders\RepositoryBuilder;
 use App\Models\Download;
 use App\Models\Package;
 use App\SearchFilter;
@@ -34,7 +35,7 @@ readonly class PackageController extends Controller
     {
         $this->authorize(Permission::PACKAGE_READ);
 
-        $packages = QueryBuilder::for(Package::userScoped())
+        $packages = QueryBuilder::for(Package::query()->userScoped())
             ->allowedFilters([
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('repository_id'),
@@ -71,11 +72,17 @@ readonly class PackageController extends Controller
     {
         $this->authorize(Permission::PACKAGE_READ);
 
-        $package = Package::userScoped()
+        $package = Package::query()
+            ->userScoped()
             ->findOrFail($packageId);
 
         $package->load([
-            'repository' => fn (BelongsTo $query) => $query->withUserScopedPackageCount(),
+            'repository' => function (BelongsTo $query): void {
+                $repositoryQuery = $query->getQuery();
+                if ($repositoryQuery instanceof RepositoryBuilder) {
+                    $repositoryQuery->withUserScopedPackageCount();
+                }
+            },
             'source',
         ]);
 

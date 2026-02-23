@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Scopes\UserScope;
+use App\Models\Builders\RepositoryBuilder;
 use Database\Factories\RepositoryFactory;
 use Eloquent;
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
@@ -28,10 +28,11 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $packages_count
  *
  * @method static RepositoryFactory factory($count = null, $state = [])
- * @method static Builder<static>|Repository newModelQuery()
- * @method static Builder<static>|Repository newQuery()
- * @method static Builder<static>|Repository query()
- * @method static Builder<static>|Repository withUserScopedPackageCount(?User $user = null)
+ * @method static RepositoryBuilder newModelQuery()
+ * @method static RepositoryBuilder newQuery()
+ * @method static RepositoryBuilder query()
+ * @method static RepositoryBuilder userScoped(?User $user = null)
+ * @method static RepositoryBuilder withUserScopedPackageCount(?User $user = null)
  *
  * @mixin Eloquent
  */
@@ -84,36 +85,14 @@ class Repository extends Model
     }
 
     /**
-     * @param  Builder<static>  $query
-     * @return Builder<static>
+     * @param  QueryBuilder  $query
      */
-    #[Scope]
-    public function withUserScopedPackageCount(Builder $query, ?User $user = null): Builder
+    public function newEloquentBuilder($query): RepositoryBuilder
     {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
-        return $query->withCount([
-            'packages' => fn (Builder $packagesQuery) => $packagesQuery->withGlobalScope('user', new UserScope($user)),
-        ]);
+        return new RepositoryBuilder($query);
     }
 
-    /**
-     * @return Builder<static>
-     */
-    public static function userScoped(?User $user = null): Builder
-    {
-        /** @var User|null $user */
-        $user ??= auth()->user();
-
-        return static::query()
-            ->withGlobalScope('user', new UserScope($user, 'id'));
-    }
-
-    /**
-     * @return Builder<static>
-     */
-    public static function queryByPath(?string $path): Builder
+    public static function queryByPath(?string $path): RepositoryBuilder
     {
         return static::query()->when(
             $path,
