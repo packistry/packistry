@@ -7,9 +7,12 @@ import * as React from 'react'
 import { Source } from '@/api'
 import { providerColors, providerIcons } from '@/api/source-provider'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/auth'
+import { SOURCE_UPDATE } from '@/permission'
 
 export function SourceCard({ source, className }: { source: Source; className?: string }) {
     const ProviderIcon = providerIcons[source.provider] || GitlabIcon
+    const { can } = useAuth()
 
     return (
         <Card
@@ -42,18 +45,20 @@ export function SourceCard({ source, className }: { source: Source; className?: 
                         <span className="text-sm text-muted-foreground">Token: ••••••••</span>
                     </div>
                     <div className="flex space-x-2">
-                        <EditSourceDialog
-                            source={source}
-                            trigger={
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-full"
-                                >
-                                    Manage
-                                </Button>
-                            }
-                        />
+                        {can(SOURCE_UPDATE) && (
+                            <EditSourceDialog
+                                source={source}
+                                trigger={
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full"
+                                    >
+                                        Manage
+                                    </Button>
+                                }
+                            />
+                        )}
                         <a
                             href={source.url}
                             className="w-full"

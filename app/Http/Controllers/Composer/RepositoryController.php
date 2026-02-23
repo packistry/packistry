@@ -48,7 +48,8 @@ class RepositoryController extends RepositoryAwareController
         $token = $this->token();
 
         $packages = Package::query()
-            ->tokenScoped(token: $token, repository: $repository)
+            ->tokenScoped($token)
+            ->where('repository_id', $repository->id)
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
                 ->where('name', 'like', "$q%"))
@@ -76,7 +77,8 @@ class RepositoryController extends RepositoryAwareController
         $token = $this->token();
 
         $names = Package::query()
-            ->tokenScoped(token: $token, repository: $repository)
+            ->tokenScoped($token)
+            ->where('repository_id', $repository->id)
             ->orderBy('name')
             ->pluck('name');
 
@@ -99,7 +101,8 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
 
         $packageQuery = Package::query()
-            ->tokenScoped(token: $this->token(), repository: $repository)
+            ->where('repository_id', $repository->id)
+            ->tokenScoped($this->token())
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
@@ -129,7 +132,8 @@ class RepositoryController extends RepositoryAwareController
         $repository = $this->repository();
 
         $packageQuery = Package::query()
-            ->tokenScoped(token: $this->token(), repository: $repository)
+            ->tokenScoped($this->token())
+            ->where('repository_id', $repository->id)
             ->where('name', "$vendor/$name")
             ->with([
                 'versions' => fn (BuilderContract $query) => $query
@@ -164,7 +168,8 @@ class RepositoryController extends RepositoryAwareController
         $packageName = "$vendor/$name";
 
         $packageQuery = Package::query()
-            ->tokenScoped(token: $this->token(), repository: $repository)
+            ->tokenScoped($this->token())
+            ->where('repository_id', $repository->id)
             ->where('name', $packageName);
 
         /** @var Package $package */

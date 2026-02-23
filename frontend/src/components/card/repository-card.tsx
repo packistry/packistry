@@ -1,24 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LockIcon, UnlockIcon } from 'lucide-react'
 import { EditRepositoryDialog } from '@/components/dialog/edit-repository-dialog'
 import { Button } from '@/components/ui/button'
 import * as React from 'react'
 import { Repository } from '@/api'
 import { RepositoryBadge } from '@/components/badge/repository-badge'
 import { CopyCommandTooltip } from '@/components/ui/tooltip'
+import { useAuth } from '@/auth'
+import { REPOSITORY_UPDATE } from '@/permission'
 
 export function RepositoryCard({ repository, className }: { repository: Repository; className?: string }) {
+    const { can } = useAuth()
+
     const command = `composer config repositories.packistry composer ${repository.url}`
     return (
         <Card className={className}>
             <CardHeader className="">
                 <div className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="font-semibold text-lg">{repository.name}</CardTitle>
-                    {!repository.public ? (
-                        <LockIcon className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                        <UnlockIcon className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    <CopyCommandTooltip command={command} />
                 </div>
                 <p className="text-xs text-muted-foreground">{repository.description || '-'}</p>
             </CardHeader>
@@ -31,22 +30,22 @@ export function RepositoryCard({ repository, className }: { repository: Reposito
                     </span>
                     <RepositoryBadge repository={repository} />
                 </div>
-                <div className="flex items-center mt-4 gap-2">
-                    <EditRepositoryDialog
-                        repository={repository}
-                        trigger={
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                size="sm"
-                            >
-                                Manage
-                            </Button>
-                        }
-                    />
-
-                    <CopyCommandTooltip command={command} />
-                </div>
+                {can(REPOSITORY_UPDATE) && (
+                    <div className="flex items-center mt-4 gap-2">
+                        <EditRepositoryDialog
+                            repository={repository}
+                            trigger={
+                                <Button
+                                    variant="outline"
+                                    className="w-full"
+                                    size="sm"
+                                >
+                                    Manage
+                                </Button>
+                            }
+                        />
+                    </div>
+                )}
             </CardContent>
         </Card>
     )
