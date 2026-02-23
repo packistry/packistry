@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Builders;
 
 use App\Models\Repository;
-use App\Models\Scopes\UserPackageScope;
 use App\Models\Scopes\UserRepositoryScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +33,16 @@ class RepositoryBuilder extends Builder
         $user ??= auth()->user();
 
         return $this->withCount([
-            'packages' => fn (Builder $packagesQuery) => $packagesQuery->withGlobalScope('user', new UserPackageScope($user)),
+            'packages' => fn (PackageBuilder $packagesQuery) => $packagesQuery->userScoped($user),
         ]);
+    }
+
+    public function queryByPath(?string $path): RepositoryBuilder
+    {
+        return $this->when(
+            $path,
+            fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('path', $path),
+            fn (Builder $query) => $query->whereNull('path')
+        );
     }
 }

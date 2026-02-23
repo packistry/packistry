@@ -32,7 +32,8 @@ abstract class RepositoryAwareController
                 abort(401);
             }
 
-            return Repository::queryByPath($path)
+            return Repository::query()
+                ->queryByPath($path)
                 ->firstOrFail();
         });
     }

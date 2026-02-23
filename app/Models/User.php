@@ -143,7 +143,6 @@ class User extends Model implements AuthenticatableContract, Tokenable
             : $this->repositories()
                 ->select('repositories.id')
                 ->toBase();
-
     }
 
     public function accessiblePackageIdsQuery(): QueryBuilder

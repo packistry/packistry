@@ -92,18 +92,9 @@ class Repository extends Model
         return new RepositoryBuilder($query);
     }
 
-    public static function queryByPath(?string $path): RepositoryBuilder
-    {
-        return static::query()->when(
-            $path,
-            fn (\Illuminate\Contracts\Database\Eloquent\Builder $query) => $query->where('path', $path),
-            fn (Builder $query) => $query->whereNull('path')
-        );
-    }
-
     public static function isPathInUse(?string $path, ?int $exclude = null): bool
     {
-        return self::queryByPath($path)
+        return self::query()->queryByPath($path)
             ->when($exclude, fn (Builder $query) => $query->whereNot('id', $exclude))
             ->exists();
     }
