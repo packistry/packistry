@@ -6,7 +6,6 @@ namespace App\Models\Scopes;
 
 use App\Models\Builders\RepositoryBuilder;
 use App\Models\Contracts\Tokenable;
-use Illuminate\Database\Eloquent\Builder;
 
 readonly class TokenRepositoryScope
 {
@@ -16,10 +15,7 @@ readonly class TokenRepositoryScope
         //
     }
 
-    /**
-     * @param  RepositoryBuilder  $query
-     */
-    public function apply(Builder $query): RepositoryBuilder
+    public function apply(RepositoryBuilder $query): RepositoryBuilder
     {
         if ($this->token === null) {
             return $query->public();

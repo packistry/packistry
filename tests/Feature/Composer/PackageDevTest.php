@@ -66,8 +66,8 @@ it('list package versions from private repository', function (Repository $reposi
     ))
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_READ,
-        guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
-        deployTokenWithoutAccessStatus: 401,
-        deployTokenWithoutPackagesStatus: 401,
+        guestStatus: 404,
+        personalTokenWithoutAccessStatus: 404,
+        deployTokenWithoutAccessStatus: 404,
+        deployTokenWithoutPackagesStatus: 404,
     ));

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Scopes;
 
+use App\Models\Builders\PackageBuilder;
 use App\Models\Contracts\Tokenable;
-use App\Models\Package;
 use App\Models\Repository;
-use Illuminate\Database\Eloquent\Builder;
 
 readonly class TokenPackageScope
 {
@@ -17,11 +16,7 @@ readonly class TokenPackageScope
         //
     }
 
-    /**
-     * @param  Builder<Package>  $query
-     * @return Builder<Package>
-     */
-    public function apply(Builder $query): Builder
+    public function apply(PackageBuilder $query): PackageBuilder
     {
         if ($this->token === null) {
             return $query->whereIn('repository_id', Repository::query()->public()->select('id'));

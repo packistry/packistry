@@ -11,6 +11,7 @@ use App\Events\PackageDownloadEvent;
 use App\Http\Controllers\RepositoryAwareController;
 use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
+use App\Models\Contracts\Tokenable;
 use App\Models\Package;
 use App\Models\Version;
 use App\Normalizer;
@@ -18,6 +19,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -208,12 +210,23 @@ class RepositoryController extends RepositoryAwareController
 
         $repository = $this->repository();
         $packageName = "$vendor/$name";
+        /** @var Tokenable $token */
+        $token = $this->token();
 
         /** @var Package|null $package */
         $package = $repository
             ->packages()
             ->where('name', $packageName)
             ->first();
+
+        if (
+            ! $token->isUnscoped()
+            && ! $this->tokenHasRepositoryAccess($token, $repository->id)
+        ) {
+            if (is_null($package) || ! $this->tokenHasPackageAccess($token, $package->id)) {
+                abort(404);
+            }
+        }
 
         $request->validate([
             'file' => ['required', 'file', 'mimes:zip'],
@@ -239,5 +252,21 @@ class RepositoryController extends RepositoryAwareController
         );
 
         return response()->json(new VersionResource($version), 201);
+    }
+
+    private function tokenHasRepositoryAccess(Tokenable $token, int $repositoryId): bool
+    {
+        return DB::query()
+            ->fromSub($token->accessibleRepositoryIdsQuery(), 'accessible_repositories')
+            ->where('id', $repositoryId)
+            ->exists();
+    }
+
+    private function tokenHasPackageAccess(Tokenable $token, int $packageId): bool
+    {
+        return DB::query()
+            ->fromSub($token->accessiblePackageIdsQuery(), 'accessible_packages')
+            ->where('id', $packageId)
+            ->exists();
     }
 }

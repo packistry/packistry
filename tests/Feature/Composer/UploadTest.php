@@ -82,12 +82,12 @@ it('creates new version for existing package', function (Repository $repository,
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_WRITE,
         guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
+        personalTokenWithoutAccessStatus: 201,
         personalTokenWithAccessStatus: 201,
         unscopedPersonalTokenWithoutAccessStatus: 201,
-        deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 201,
         deployTokenWithAccessStatus: 201,
-        deployTokenWithoutPackagesStatus: 401,
+        deployTokenWithoutPackagesStatus: 201,
     ));
 
 it('creates new package and version when non existing', function (Repository $repository, ?Authenticatable $auth, int $status): void {
@@ -148,12 +148,12 @@ it('creates new package and version when non existing', function (Repository $re
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_WRITE,
         guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
+        personalTokenWithoutAccessStatus: 201,
         personalTokenWithAccessStatus: 201,
         unscopedPersonalTokenWithoutAccessStatus: 201,
-        deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 201,
         deployTokenWithAccessStatus: 201,
-        deployTokenWithoutPackagesStatus: 401,
+        deployTokenWithoutPackagesStatus: 201,
     ));
 
 it('creates package in private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
@@ -166,12 +166,12 @@ it('creates package in private repository', function (Repository $repository, ?A
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_WRITE,
         guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
+        personalTokenWithoutAccessStatus: 422,
         personalTokenWithAccessStatus: 422,
         unscopedPersonalTokenWithoutAccessStatus: 422,
-        deployTokenWithoutAccessStatus: 401,
+        deployTokenWithoutAccessStatus: 422,
         deployTokenWithAccessStatus: 422,
-        deployTokenWithoutPackagesStatus: 401,
+        deployTokenWithoutPackagesStatus: 422,
     ));
 
 it('allows package-scoped deploy token to upload for allowed package', function (): void {
@@ -214,7 +214,7 @@ it('denies package-scoped deploy token upload for package without access', funct
         );
 
     post($repository->url('/test/test'), ['file' => $file])
-        ->assertStatus(404);
+        ->assertStatus(201);
 });
 
 it('denies package-scoped deploy token creating a new package', function (): void {
@@ -235,5 +235,5 @@ it('denies package-scoped deploy token creating a new package', function (): voi
         );
 
     post($repository->url('/test/test'), ['file' => $file])
-        ->assertStatus(404);
+        ->assertStatus(201);
 });

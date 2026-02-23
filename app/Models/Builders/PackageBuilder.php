@@ -16,19 +16,16 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class PackageBuilder extends Builder
 {
-    public function tokenScoped(?Tokenable $token): static
+    public function tokenScoped(?Tokenable $token): PackageBuilder
     {
-        new TokenPackageScope(token: $token)
-            ->apply($this);
-
-        return $this;
+        return new TokenPackageScope($token)->apply($this);
     }
 
-    public function userScoped(?User $user = null): static
+    public function userScoped(?User $user = null): PackageBuilder
     {
         /** @var User|null $user */
         $user ??= auth()->user();
 
-        return $this->withGlobalScope('user', new UserPackageScope($user));
+        return new UserPackageScope($user)->apply($this);
     }
 }

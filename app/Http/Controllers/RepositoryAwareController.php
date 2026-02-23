@@ -34,7 +34,7 @@ abstract class RepositoryAwareController
 
             return Repository::query()
                 ->queryByPath($path)
-                ->tokenScoped(token: $this->token())
+                ->tokenScoped($this->token())
                 ->firstOrFail();
         });
     }

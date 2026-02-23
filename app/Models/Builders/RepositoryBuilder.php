@@ -16,28 +16,25 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class RepositoryBuilder extends Builder
 {
-    public function tokenScoped(?Tokenable $token): static
+    public function tokenScoped(?Tokenable $token): RepositoryBuilder
     {
-        new TokenRepositoryScope(token: $token)
-            ->apply($this);
-
-        return $this;
+        return new TokenRepositoryScope($token)->apply($this);
     }
 
-    public function public(bool $public = true): static
+    public function public(bool $public = true): RepositoryBuilder
     {
         return $this->where('public', $public);
     }
 
-    public function userScoped(?User $user = null): static
+    public function userScoped(?User $user = null): RepositoryBuilder
     {
         /** @var User|null $user */
         $user ??= auth()->user();
 
-        return $this->withGlobalScope('user', new UserRepositoryScope($user));
+        return new UserRepositoryScope($user)->apply($this);
     }
 
-    public function withUserScopedPackageCount(?User $user = null): static
+    public function withUserScopedPackageCount(?User $user = null): RepositoryBuilder
     {
         /** @var User|null $user */
         $user ??= auth()->user();

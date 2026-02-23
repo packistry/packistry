@@ -39,9 +39,9 @@ it('provides urls from private repository', function (Repository $repository, ?A
     ))
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_READ,
-        guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
-        deployTokenWithoutAccessStatus: 401,
-        deployTokenWithoutPackagesStatus: 401,
+        guestStatus: 404,
+        personalTokenWithoutAccessStatus: 404,
+        deployTokenWithoutAccessStatus: 404,
+        deployTokenWithoutPackagesStatus: 404,
         deployTokenPackages: [1, 2, 3],
     ));

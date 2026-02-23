@@ -66,7 +66,7 @@ it('downloads version from private repository', function (Repository $repository
     getJson($repository->url('/test/test/1.0.0'))
         ->assertStatus($status);
 
-    if ($status !== 401) {
+    if ($status === 200) {
         assertDatabaseHas(Download::class, [
             'package_id' => 1,
             'version_id' => 1,
@@ -86,8 +86,8 @@ it('downloads version from private repository', function (Repository $repository
     ->with(rootAndSubRepository())
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_READ,
-        guestStatus: 401,
-        personalTokenWithoutAccessStatus: 401,
-        deployTokenWithoutAccessStatus: 401,
-        deployTokenWithoutPackagesStatus: 401,
+        guestStatus: 404,
+        personalTokenWithoutAccessStatus: 404,
+        deployTokenWithoutAccessStatus: 404,
+        deployTokenWithoutPackagesStatus: 404,
     ));

@@ -5,31 +5,26 @@ declare(strict_types=1);
 namespace App\Models\Scopes;
 
 use App\Enums\Permission;
+use App\Models\Builders\PackageBuilder;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Scope;
 
-readonly class UserPackageScope implements Scope
+readonly class UserPackageScope
 {
     public function __construct(private ?User $user)
     {
         //
     }
 
-    /**
-     * @param  Builder<Model>  $builder
-     */
-    public function apply(Builder $builder, Model $model): void
+    public function apply(PackageBuilder $builder): PackageBuilder
     {
         if (! $this->user instanceof User) {
             abort(401);
         }
 
         if ($this->user->can(Permission::UNSCOPED)) {
-            return;
+            return $builder;
         }
 
-        $builder->whereIn('id', $this->user->accessiblePackageIdsQuery());
+        return $builder->whereIn('id', $this->user->accessiblePackageIdsQuery());
     }
 }
