@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
@@ -18,12 +19,14 @@ use Illuminate\Support\Carbon;
  * @property-read DeployToken $deployToken
  * @property-read Package $package
  *
+ * @method static Builder<static>|DeployTokenPackage newModelQuery()
+ * @method static Builder<static>|DeployTokenPackage newQuery()
+ * @method static Builder<static>|DeployTokenPackage query()
+ *
  * @mixin Eloquent
  */
 class DeployTokenPackage extends Pivot
 {
-    protected $table = 'deploy_token_package';
-
     public $incrementing = true;
 
     /**

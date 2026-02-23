@@ -42,10 +42,10 @@ use RuntimeException;
  * @property-read AuthenticationSource|null $authenticationSource
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Collection<int, Package> $packages
- * @property-read int|null $packages_count
  * @property-read Collection<int, PackageUser> $packageUsers
  * @property-read int|null $package_users_count
+ * @property-read Collection<int, Package> $packages
+ * @property-read int|null $packages_count
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
  * @property-read Collection<int, RepositoryUser> $repositoryUsers

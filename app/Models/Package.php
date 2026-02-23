@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Builders\PackageBuilder;
-use App\Models\Contracts\Tokenable;
 use Database\Factories\PackageFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
@@ -37,8 +36,6 @@ use Illuminate\Support\Carbon;
  * @method static PackageBuilder newModelQuery()
  * @method static PackageBuilder newQuery()
  * @method static PackageBuilder query()
- * @method static PackageBuilder tokenScoped(?Tokenable $token, Repository $repository)
- * @method static PackageBuilder userScoped(?User $user = null)
  *
  * @mixin Eloquent
  */

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Builders\RepositoryBuilder;
-use App\Models\Contracts\Tokenable;
 use Database\Factories\RepositoryFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,9 +31,6 @@ use Illuminate\Support\Carbon;
  * @method static RepositoryBuilder newModelQuery()
  * @method static RepositoryBuilder newQuery()
  * @method static RepositoryBuilder query()
- * @method static RepositoryBuilder tokenScoped(?Tokenable $token, bool $includePublic = true)
- * @method static RepositoryBuilder userScoped(?User $user = null)
- * @method static RepositoryBuilder withUserScopedPackageCount(?User $user = null)
  *
  * @mixin Eloquent
  */
