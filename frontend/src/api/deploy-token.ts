@@ -5,6 +5,21 @@ import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
 export const deployToken = z.object({
     id: z.coerce.string(),
     name: z.string(),
+    repositories: z
+        .object({
+            id: z.coerce.string(),
+            name: z.string(),
+        })
+        .array()
+        .default([]),
+    packages: z
+        .object({
+            id: z.coerce.string(),
+            name: z.string(),
+            repositoryId: z.coerce.string(),
+        })
+        .array()
+        .default([]),
     abilities: z.string().array().nullable(),
     lastUsedAt: z.coerce.date().nullable(),
     expiresAt: z.coerce.date().nullable(),

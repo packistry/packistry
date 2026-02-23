@@ -21,6 +21,8 @@ type RepositoryPackageTreeProps<TFieldValues extends FieldValues> = {
     packagesName?: FieldPath<TFieldValues>
     label?: string
     description?: ReactNode
+    readOnly?: boolean
+    packageRepositoryMap?: Record<string, string>
 }
 
 export function RepositoryPackageTree<TFieldValues extends FieldValues>({
@@ -29,6 +31,8 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
     packagesName = 'packages' as FieldPath<TFieldValues>,
     label = 'Repositories & Packages',
     description,
+    readOnly = false,
+    packageRepositoryMap = {},
 }: RepositoryPackageTreeProps<TFieldValues>) {
     const [searchTerm, setSearchTerm] = useState('')
     const [expandedRepositories, setExpandedRepositories] = useState<Record<string, boolean>>({})
@@ -64,6 +68,16 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
             new Set<string>(((packagesField.field.value as string[] | undefined) || []).map((value) => String(value))),
         [packagesField.field.value]
     )
+    const selectedPackageRepositoryIdSet = useMemo(
+        () =>
+            new Set<string>(
+                Array.from(selectedPackageIds)
+                    .map((packageId) => packageRepositoryMap[packageId])
+                    .filter((repositoryId): repositoryId is string => Boolean(repositoryId))
+                    .map((repositoryId) => String(repositoryId))
+            ),
+        [packageRepositoryMap, selectedPackageIds]
+    )
 
     const repositories = repositoriesQuery.data?.data || []
     const normalizedSearchTerm = searchTerm.trim().toLowerCase()
@@ -74,7 +88,6 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
         queryFn: () =>
             fetchPackages({
                 size: 1000,
-                include: ['repository'],
                 filters: { search: normalizedSearchTerm },
             }),
         enabled: isSearchActive,
@@ -125,7 +138,6 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                     queryFn: () =>
                         fetchPackages({
                             size: 1000,
-                            include: ['repository'],
                             filters: {
                                 repositoryId,
                             },
@@ -176,7 +188,6 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                         queryFn: () =>
                             fetchPackages({
                                 size: 1000,
-                                include: ['repository'],
                                 filters: {
                                     repositoryId,
                                 },
@@ -194,6 +205,10 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
     )
 
     function toggleRepository(repositoryId: string, checked: boolean) {
+        if (readOnly) {
+            return
+        }
+
         const previousRepositories: string[] = (repositoriesField.field.value as string[] | undefined) || []
 
         if (checked) {
@@ -206,6 +221,10 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
     }
 
     function togglePackage(packageId: string, checked: boolean) {
+        if (readOnly) {
+            return
+        }
+
         const previousValues: string[] = (packagesField.field.value as string[] | undefined) || []
 
         if (checked) {
@@ -219,13 +238,15 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
     return (
         <div className="space-y-2">
             <p className="text-base font-medium">{label}</p>
-            <Input
-                type="search"
-                placeholder="Search repositories..."
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-            />
-            <ScrollArea className="h-[30vh] rounded-md border">
+            {!readOnly && (
+                <Input
+                    type="search"
+                    placeholder="Search repositories..."
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                />
+            )}
+            <ScrollArea className="max-h-[60vh] min-h-50 overflow-auto rounded-md border">
                 <div className="p-3 space-y-1">
                     {repositoriesQuery.isLoading && (
                         <div className="space-y-3 py-2">
@@ -256,6 +277,8 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                                         : loadingPackagesByRepositoryId[repository.id]
                                 }
                                 searchActive={isSearchActive}
+                                readOnly={readOnly}
+                                hasSelectedPackages={selectedPackageRepositoryIdSet.has(repository.id)}
                                 onToggleExpanded={() => toggleExpandedRepository(repository.id)}
                                 onToggleRepository={toggleRepository}
                                 onTogglePackage={togglePackage}
@@ -279,6 +302,8 @@ type RepositoryRowProps = {
     repositoryPackages: Package[]
     loadingPackages: boolean
     searchActive: boolean
+    readOnly: boolean
+    hasSelectedPackages: boolean
     onToggleExpanded: () => void
     onToggleRepository: (repositoryId: string, checked: boolean) => void
     onTogglePackage: (packageId: string, checked: boolean) => void
@@ -292,6 +317,8 @@ function RepositoryRow({
     repositoryPackages,
     loadingPackages,
     searchActive,
+    readOnly,
+    hasSelectedPackages,
     onToggleExpanded,
     onToggleRepository,
     onTogglePackage,
@@ -299,7 +326,7 @@ function RepositoryRow({
     const selectedChildrenCount = repositoryPackages.filter((pkg) => selectedPackageIds.has(pkg.id)).length
     const repositoryCheckedState: boolean | 'indeterminate' = selectedRepository
         ? true
-        : selectedChildrenCount > 0
+        : selectedChildrenCount > 0 || hasSelectedPackages
           ? 'indeterminate'
           : false
 
@@ -315,6 +342,7 @@ function RepositoryRow({
                 </button>
                 <Checkbox
                     checked={repositoryCheckedState}
+                    disabled={readOnly}
                     onCheckedChange={(checked) => onToggleRepository(repository.id, !!checked)}
                 />
                 <button
@@ -354,7 +382,7 @@ function RepositoryRow({
                                 >
                                     <Checkbox
                                         checked={checked}
-                                        disabled={locked}
+                                        disabled={locked || readOnly}
                                         onCheckedChange={(value) => onTogglePackage(pkg.id, !!value)}
                                     />
                                     <span className="text-sm">{pkg.name}</span>

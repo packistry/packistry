@@ -50,6 +50,12 @@ export function UserFormElements({ form, user }: { form: UseFormReturn<StoreUser
                     <RepositoryPackageTree
                         label="Private Repositories & Packages"
                         description="Give user access to private repositories or selected packages."
+                        packageRepositoryMap={
+                            user?.packages?.reduce<Record<string, string>>((accumulator, pkg) => {
+                                accumulator[String(pkg.id)] = String(pkg.repositoryId)
+                                return accumulator
+                            }, {}) || {}
+                        }
                         control={form.control}
                     />
                 </div>

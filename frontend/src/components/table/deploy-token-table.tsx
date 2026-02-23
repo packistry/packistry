@@ -10,6 +10,7 @@ import { DeleteDeployTokenButton } from '@/components/button/delete-deploy-token
 import { KeyIcon } from 'lucide-react'
 import { DEPLOY_TOKEN_DELETE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
+import { ViewDeployTokenDialog } from '@/components/dialog/view-deploy-token-dialog'
 
 export function DeployTokenTable(
     props: Omit<PaginatedTableProps<UseQueryResult<PaginatedDeployToken>>, 'empty' | 'columns'>
@@ -74,6 +75,22 @@ export function DeployTokenTable(
                         className: 'w-[200px]',
                     },
                     render: (token) => (token.expiresAt ? format(token.expiresAt, 'PPP') : 'Never'),
+                },
+                {
+                    key: 'access',
+                    label: 'Access',
+                    head: {
+                        className: 'w-[120px] text-right',
+                    },
+                    cell: {
+                        className: 'text-right',
+                    },
+                    render: (token) => (
+                        <ViewDeployTokenDialog
+                            token={token}
+                            trigger={<Button variant="ghost">View</Button>}
+                        />
+                    ),
                 },
                 {
                     ...actionColumn,
