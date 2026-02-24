@@ -91,7 +91,7 @@ it('handles OIDC callback and creates user', function () {
     expect($user)
         ->name->toBe('John Doe')
         ->email->toBe('johndoe@example.com')
-        ->role->toBe(Role::USER)
+        ->role->toBe($this->source->default_user_role)
         ->authentication_source_id->toBe(1)
         ->external_id->toBe('123456')
         ->and($user->repositories->pluck('id')->toArray())->toEqual($repositories->pluck('id')->toArray())
@@ -119,6 +119,80 @@ it('handles OIDC callback and deny user creation', function () {
         ->assertRedirect("/login?error=$msg");
 
     expect(Auth::check())->toBeFalse();
+});
+
+it('when email matching is enabled it logs in existing user by email', function () {
+    config()->set('auth.allow_authentication_source_email_match', true);
+
+    session()->put('state', $state = Str::random(40));
+
+    Http::fake([
+        $this->config->userinfoEndpoint => Http::response([
+            'sub' => 'different-external-id',
+            'name' => 'Provider Name',
+            'email' => 'johndoe@example.com',
+        ]),
+        $this->config->tokenEndpoint => Http::response([
+            'access_token' => Str::random(),
+        ]),
+    ]);
+
+    $user = User::factory()->create([
+        'name' => 'Local Name',
+        'email' => 'johndoe@example.com',
+    ]);
+
+    get("{$this->source->callbackUrl()}?state=$state")
+        ->assertRedirect('/');
+
+    expect(Auth::check())->toBeTrue()
+        ->and(auth()->id())->toBe($user->id);
+
+    $user->refresh();
+
+    expect($user)
+        ->name->toBe('Provider Name')
+        ->authentication_source_id->toBeNull()
+        ->external_id->toBeNull();
+});
+
+it('when email matching is enabled it prefers source external id before email fallback', function () {
+    config()->set('auth.allow_authentication_source_email_match', true);
+
+    session()->put('state', $state = Str::random(40));
+
+    Http::fake([
+        $this->config->userinfoEndpoint => Http::response([
+            'sub' => '123456',
+            'name' => 'John Doe',
+            'email' => 'new-email@example.com',
+        ]),
+        $this->config->tokenEndpoint => Http::response([
+            'access_token' => Str::random(),
+        ]),
+    ]);
+
+    $existingUser = User::factory()
+        ->for($this->source)
+        ->create([
+            'name' => 'Old Name',
+            'email' => 'old-email@example.com',
+            'external_id' => '123456',
+        ]);
+
+    get("{$this->source->callbackUrl()}?state=$state")
+        ->assertRedirect('/');
+
+    expect(User::query()->count())->toBe(1)
+        ->and(auth()->id())->toBe($existingUser->id);
+
+    $existingUser->refresh();
+
+    expect($existingUser)
+        ->name->toBe('John Doe')
+        ->email->toBe('new-email@example.com')
+        ->external_id->toBe('123456')
+        ->and(Auth::check())->toBeTrue();
 });
 
 it('allows registration from any domain with empty list', function () {
