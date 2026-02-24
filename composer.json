@@ -19,7 +19,7 @@
         "spatie/laravel-data": "^4.13",
         "spatie/laravel-query-builder": "^6.3",
         "spiral/roadrunner-cli": "^2.7.0",
-        "spiral/roadrunner-http": "^3.5.1"
+        "spiral/roadrunner-http": "^4.0.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5.4",
