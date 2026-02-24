@@ -28,7 +28,6 @@ class AuthenticationSourceResource extends JsonResource
             'icon_url' => $this->icon_url,
             'provider' => $this->provider,
             'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
             'discovery_url' => $this->discovery_url,
             'default_user_role' => $this->default_user_role,
             'repositories' => RepositoryResource::collection($this->whenLoaded('repositories')),

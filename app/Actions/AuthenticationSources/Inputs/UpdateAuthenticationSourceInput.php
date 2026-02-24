@@ -22,7 +22,7 @@ class UpdateAuthenticationSourceInput extends Input
         public ?string $iconUrl,
         public AuthenticationProvider $provider,
         public string $clientId,
-        public string $clientSecret,
+        public ?string $clientSecret,
         public ?string $discoveryUrl = '',
         public bool $active = true,
         public Role $defaultUserRole = Role::USER,
