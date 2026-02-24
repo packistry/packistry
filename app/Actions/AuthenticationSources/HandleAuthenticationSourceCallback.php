@@ -8,7 +8,6 @@ use App\Actions\Users\Inputs\StoreUserInput;
 use App\Actions\Users\Inputs\UpdateUserInput;
 use App\Actions\Users\StoreUser;
 use App\Actions\Users\UpdateUser;
-use App\Enums\Role;
 use App\Exceptions\EmailAlreadyTakenException;
 use App\Exceptions\EmailMissingException;
 use App\Exceptions\InvalidDomainException;
@@ -53,6 +52,12 @@ readonly class HandleAuthenticationSourceCallback
             ->where('external_id', $providedUser->getId())
             ->first();
 
+        if ($user === null && config()->boolean('auth.allow_authentication_source_email_match')) {
+            $user = User::query()
+                ->where('email', $email)
+                ->first();
+        }
+
         if ($user !== null) {
             $this->update->handle($user, new UpdateUserInput(
                 name: $providedUser->getName() ?? '',
@@ -69,7 +74,7 @@ readonly class HandleAuthenticationSourceCallback
                 new StoreUserInput(
                     name: $providedUser->getName() ?? '',
                     email: $email,
-                    role: Role::USER,
+                    role: $source->default_user_role,
                     password: Str::random(),
                     repositories: $source->repositories->pluck('id')->toArray(),
                     packages: $source->packages->pluck('id')->toArray(),

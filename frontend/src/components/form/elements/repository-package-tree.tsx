@@ -246,7 +246,7 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
                     onChange={(event) => setSearchTerm(event.target.value)}
                 />
             )}
-            <ScrollArea className="max-h-[60vh] min-h-50 overflow-auto rounded-md border">
+            <ScrollArea className="max-h-[40vh] min-h-50 overflow-auto rounded-md border">
                 <div className="p-3 space-y-1">
                     {repositoriesQuery.isLoading && (
                         <div className="space-y-3 py-2">

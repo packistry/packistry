@@ -114,4 +114,5 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'allow_authentication_source_email_match' => env('ALLOW_AUTHENTICATION_SOURCE_EMAIL_MATCH', false),
 ];
