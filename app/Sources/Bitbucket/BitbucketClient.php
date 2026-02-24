@@ -175,11 +175,11 @@ class BitbucketClient extends Client
         try {
             $projects = $this->projects();
         } catch (Exception) {
-            throw new InvalidTokenException(missingScopes: ['read:repository', 'write:repository', 'admin:repository']);
+            throw new InvalidTokenException(missingScopes: ['read:repository:bitbucket']);
         }
 
         if ($projects === []) {
-            throw new InvalidTokenException(missingScopes: ['read:repository', 'write:repository', 'admin:repository']);
+            throw new InvalidTokenException(missingScopes: ['read:repository:bitbucket']);
         }
 
         $project = $projects[0];
@@ -190,7 +190,7 @@ class BitbucketClient extends Client
 
         if ($response->status() === 403) {
             throw new InvalidTokenException(
-                missingScopes: ['write:webhook']
+                missingScopes: ['read:webhook:bitbucket', 'write:webhook:bitbucket']
             );
         }
     }
