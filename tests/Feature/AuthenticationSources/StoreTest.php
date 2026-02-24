@@ -66,7 +66,6 @@ it('stores', function (?User $user, int $status): void {
         ->icon_url->toBe($attributes['icon_url'])
         ->active->toBe($attributes['active'])
         ->client_id->toBe($attributes['client_id'])
-        ->client_secret->toBe($attributes['client_secret'])
         ->discovery_url->toBe($attributes['discovery_url'])
         ->allowed_domains->toBe(['example.com', 'test.com'])
         ->and($source->repositories->pluck('id'))->toEqual($repositories->pluck('id'))

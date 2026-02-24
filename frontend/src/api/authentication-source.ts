@@ -22,7 +22,6 @@ export const authenticationSource = z.object({
     repositories: repository.array().optional(),
     packages: packageSchema.array().optional(),
     clientId: z.string(),
-    clientSecret: z.string(),
     discoveryUrl: z.string().nullable(),
     callbackUrl: z.string(),
     active: z.boolean(),

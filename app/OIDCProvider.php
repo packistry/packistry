@@ -31,7 +31,7 @@ class OIDCProvider extends AbstractProvider implements ProviderInterface
         $provider = new self(
             request: $request,
             clientId: $source->client_id,
-            clientSecret: $source->client_secret,
+            clientSecret: decrypt($source->client_secret),
             redirectUrl: $source->callbackUrl(),
         );
 

@@ -30,7 +30,7 @@ class StoreAuthenticationSource
             $source->provider = $input->provider;
             $source->icon_url = $input->iconUrl;
             $source->client_id = $input->clientId;
-            $source->client_secret = $input->clientSecret;
+            $source->client_secret = encrypt($input->clientSecret);
             $source->discovery_url = $input->discoveryUrl;
 
             $source->active = $input->active;

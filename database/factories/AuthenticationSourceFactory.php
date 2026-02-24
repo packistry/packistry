@@ -29,7 +29,7 @@ class AuthenticationSourceFactory extends Factory
             'provider' => fake()->randomElement(AuthenticationProvider::cases()),
             'default_user_role' => Role::USER,
             'client_id' => Str::random(),
-            'client_secret' => Str::random(),
+            'client_secret' => encrypt(Str::random()),
             'discovery_url' => "$baseUrl/.well-known/openid-configuration",
             'allow_registration' => false,
             'allowed_domains' => [],
