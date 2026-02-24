@@ -121,12 +121,12 @@ function TokenCreationAlert({ url, provider }: { url: string; provider: SourcePr
                     rel="noreferrer"
                     target="_blank"
                     className="underline"
-                    href={'https://bitbucket.org/account/settings/app-passwords/'}
+                    href={'https://id.atlassian.com/manage-profile/security/api-tokens'}
                 >
-                    https://bitbucket.org/account/settings/app-passwords/
+                    https://id.atlassian.com/manage-profile/security/api-tokens
                 </a>{' '}
-                and create an app password with repository read/admin and webhook read and write permissions. Base64
-                encode username:app-password to create a token
+                and create an API token with read:repository:bitbucket, read:webhook:bitbucket and
+                write:webhook:bitbucket. Base64 encode email:api-token to create a token.
             </>
         ),
     }
