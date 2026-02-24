@@ -128,7 +128,7 @@ it('when email matching is enabled it logs in existing user by email', function 
 
     Http::fake([
         $this->config->userinfoEndpoint => Http::response([
-            'sub' => 'different-external-id',
+            'sub' => $externalId = 'different-external-id',
             'name' => 'Provider Name',
             'email' => 'johndoe@example.com',
         ]),
@@ -152,8 +152,8 @@ it('when email matching is enabled it logs in existing user by email', function 
 
     expect($user)
         ->name->toBe('Provider Name')
-        ->authentication_source_id->toBeNull()
-        ->external_id->toBeNull();
+        ->authentication_source_id->toBe($this->source->id)
+        ->external_id->toBe($externalId);
 });
 
 it('when email matching is enabled it prefers source external id before email fallback', function () {

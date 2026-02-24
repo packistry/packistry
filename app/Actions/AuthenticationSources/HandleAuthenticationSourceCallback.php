@@ -80,11 +80,11 @@ readonly class HandleAuthenticationSourceCallback
                     packages: $source->packages->pluck('id')->toArray(),
                 )
             );
-
-            $user->external_id = $providedUser->getId();
-            $user->authentication_source_id = $source->id;
-            $user->save();
         }
+
+        $user->external_id = $providedUser->getId();
+        $user->authentication_source_id = $source->id;
+        $user->save();
 
         return $user;
     }
