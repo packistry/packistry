@@ -47,7 +47,7 @@ class BitbucketClient extends Client
         $workspace = $this->workspace();
 
         $initialResponse = $this->http()->get("/2.0/repositories/$workspace", [
-            'q' => $search !== null ? "name~\"$search\"" : null,
+            'q' => $search !== null ? "full_name~\"$search\"" : null,
             'pagelen' => 1,
         ])->throw();
 
@@ -63,7 +63,7 @@ class BitbucketClient extends Client
             ->pool(fn (Pool $pool): array => array_map(
                 fn (float $page) => $this->requestOptions($pool)
                     ->get("/2.0/repositories/$workspace", [
-                        'q' => $search !== null ? "name~\"$search\"" : null,
+                        'q' => $search !== null ? "full_name~\"$search\"" : null,
                         'pagelen' => $perPage,
                         'page' => $page,
                     ]), range(1, $totalPages)));

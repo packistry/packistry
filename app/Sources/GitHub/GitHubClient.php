@@ -34,8 +34,18 @@ class GitHubClient extends Client
      */
     public function projects(?string $search = null): array
     {
+        $query = $search;
+
+        if ($search !== null && str_contains($search, '/')) {
+            [$org, $name] = explode('/', $search, 2);
+            $query = trim($name) !== ''
+                ? "{$name} org:{$org}"
+                : "org:{$org}";
+        }
+
         $response = $this->http()->get('/search/repositories', [
-            'q' => $search,
+            'q' => $query,
+            'per_page' => 100,
         ])->throw();
 
         $data = $response->json()['items'];

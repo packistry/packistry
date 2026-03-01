@@ -44,10 +44,8 @@ class GitlabClient extends Client
         $response = $this->http()->get('/api/v4/projects', [
             'per_page' => 100,
             'search' => $search,
-            'search_namespaces' => ! str_starts_with('https://gitlab.com', $this->url), // throws 500 on gitlab.com?
+            'search_namespaces' => true,
         ])->throw();
-
-        $response->throw();
 
         $data = $response->json();
 
