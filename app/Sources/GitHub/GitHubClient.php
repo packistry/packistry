@@ -46,7 +46,13 @@ class GitHubClient extends Client
         $response = $this->http()->get('/search/repositories', [
             'q' => $query,
             'per_page' => 100,
-        ])->throw();
+        ]);
+
+        if ($response->status() === 422) {
+            return [];
+        }
+
+        $response->throw();
 
         $data = $response->json()['items'];
 
