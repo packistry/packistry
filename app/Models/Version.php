@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Scopes\VersionOrderScope;
+use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
 use Database\Factories\VersionFactory;
 use Eloquent;
@@ -79,6 +80,12 @@ class Version extends Model
     {
         static::created(function (Version $version): void {
             if (! $version->isStable()) {
+                return;
+            }
+
+            $currentLatest = $version->package->latest_version;
+
+            if ($currentLatest !== null && Comparator::greaterThanOrEqualTo($currentLatest, $version->name)) {
                 return;
             }
 
