@@ -24,9 +24,7 @@ trait ComposerFromZip
         }
 
         try {
-            $directory = $this->directoryFromArchive($zip);
-
-            $index = $zip->locateName($directory.'composer.json');
+            $index = $this->composerJsonIndexFromArchive($zip);
 
             if ($index === false) {
                 return throw new ComposerJsonNotFoundException('composer.json not found in archive');
@@ -50,19 +48,42 @@ trait ComposerFromZip
         }
     }
 
-    /**
-     * @throws FailedToOpenArchiveException
-     */
-    private function directoryFromArchive(ZipArchive $zip): string
+    private function composerJsonIndexFromArchive(ZipArchive $zip): int|false
     {
-        $directory = $zip->getNameIndex(0);
+        $rootIndex = $zip->locateName('composer.json');
 
-        if ($directory === false) {
-            throw new FailedToOpenArchiveException('failed to determine directory name');
+        if ($rootIndex !== false) {
+            return $rootIndex;
         }
 
-        return str_ends_with($directory, '/')
-            ? $directory
-            : '';
+        $topLevelDirectory = null;
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $entry = $zip->getNameIndex($i);
+
+            if ($entry === false) {
+                continue;
+            }
+
+            $entry = ltrim($entry, '/');
+
+            if ($entry === '' || str_starts_with($entry, '__MACOSX/')) {
+                continue;
+            }
+
+            $topLevel = explode('/', $entry)[0];
+
+            if ($topLevelDirectory === null) {
+                $topLevelDirectory = $topLevel;
+            } elseif ($topLevelDirectory !== $topLevel) {
+                return false;
+            }
+        }
+
+        if ($topLevelDirectory === null) {
+            return false;
+        }
+
+        return $zip->locateName($topLevelDirectory.'/composer.json');
     }
 }

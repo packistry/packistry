@@ -2,12 +2,16 @@ import { z } from 'zod'
 import { del, get, patch, post } from '@/api/axios'
 import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
 
+export const repositorySyncMode = z.enum(['source', 'manual'])
+export type RepositorySyncMode = z.infer<typeof repositorySyncMode>
+
 export const repository = z.object({
     id: z.coerce.string(),
     name: z.string(),
     path: z.string().nullable(),
     description: z.string().nullable(),
     public: z.boolean(),
+    syncMode: repositorySyncMode,
     url: z.string(),
     packagesCount: z.number().optional(),
     createdAt: z.coerce.date(),
@@ -37,6 +41,7 @@ export const storeRepositoryInput = z.object({
     path: z.string(),
     description: z.string(),
     public: z.boolean(),
+    syncMode: repositorySyncMode,
 })
 
 export type StoreRepositoryInput = z.infer<typeof storeRepositoryInput>
@@ -51,6 +56,7 @@ export const updateRepositoryInput = z.object({
     path: z.string(),
     description: z.string(),
     public: z.boolean(),
+    syncMode: repositorySyncMode,
 })
 
 export type UpdateRepositoryInput = z.infer<typeof updateRepositoryInput>

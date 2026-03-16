@@ -26,6 +26,7 @@ export function EditRepositoryDialog({ repository, trigger }: EditRepositoryDial
             // @todo meh
             path: repository.path ? repository.path : '',
             description: repository.description ? repository.description : '',
+            syncMode: repository.syncMode,
         },
         onSuccess() {
             setIsDialogOpen(false)
