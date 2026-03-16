@@ -23,6 +23,7 @@ export function AddRepositoryDialog(props: DialogProps) {
             path: '',
             description: '',
             public: false,
+            syncMode: 'source',
         },
         onSuccess() {
             form.reset()
