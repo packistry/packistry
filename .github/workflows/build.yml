@@ -89,7 +89,7 @@ jobs:
 
       - name: Extract Final Metadata
         id: meta-final
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
