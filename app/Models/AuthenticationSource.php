@@ -85,7 +85,7 @@ class AuthenticationSource extends Model
         return new $class(
             request: $request,
             clientId: $this->client_id,
-            clientSecret: $this->client_secret,
+            clientSecret: decrypt($this->client_secret),
             redirectUrl: $this->callbackUrl()
         );
     }
