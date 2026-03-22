@@ -68,6 +68,8 @@ Route::middleware('web')->prefix('/api')->group(function (): void {
         Route::apiResource('/packages', PackageController::class)
             ->only(['index', 'store', 'destroy', 'show']);
 
+        Route::post('/repositories/{repositoryId}/uploads', [PackageController::class, 'upload']);
+
         Route::post('/packages/{packageId}/rebuild', [PackageController::class, 'rebuild']);
 
         Route::apiResource('/packages/{packageId}/versions', VersionController::class)

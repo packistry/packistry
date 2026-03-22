@@ -1,4 +1,5 @@
 import { FormInput } from '@/components/form/elements/form-input'
+import { FormSelect } from '@/components/form/elements/form-select'
 import { FormSwitch } from '@/components/form/elements/form-switch'
 import * as React from 'react'
 import { UseFormReturn } from 'react-hook-form'
@@ -34,6 +35,16 @@ export function RepositoryFormElements({
                 description="If the repository is public, any one can download its packages without needing authentication."
                 name="public"
                 control={form.control}
+            />
+            <FormSelect
+                name="syncMode"
+                label="Synchronization"
+                description="Choose how packages are maintained in this repository."
+                control={form.control}
+                options={[
+                    { value: 'source', label: 'Source Sync' },
+                    { value: 'manual', label: 'Manual ZIP (No Sync)' },
+                ]}
             />
         </>
     )

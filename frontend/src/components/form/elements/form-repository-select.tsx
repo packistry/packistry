@@ -36,7 +36,7 @@ export function FormRepositorySelect(props: Omit<Optional<FormSelectProps, 'name
             }}
             options={(query.data?.data || []).map((repository) => ({
                 value: repository.id,
-                label: repository.name,
+                label: repository.syncMode === 'manual' ? `${repository.name} (Manual ZIP)` : repository.name,
             }))}
         />
     )
