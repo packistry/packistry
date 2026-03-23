@@ -14,7 +14,7 @@
         "laravel/prompts": "^0.3.4",
         "laravel/sanctum": "^4.0.8",
         "laravel/socialite": "^5.18",
-        "laravel/tinker": "^2.10.1",
+        "laravel/tinker": "^3.0.0",
         "league/flysystem-aws-s3-v3": "^3.29",
         "spatie/laravel-data": "^4.13",
         "spatie/laravel-query-builder": "^6.3",
