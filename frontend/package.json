@@ -15,7 +15,7 @@
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@tanstack/eslint-plugin-query": "^5.91.4",
     "@tanstack/router-plugin": "^1.163.2",
     "@types/humps": "^2.0.6",
