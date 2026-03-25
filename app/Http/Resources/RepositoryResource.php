@@ -28,6 +28,7 @@ class RepositoryResource extends JsonResource
             'path' => $this->path,
             'description' => $this->description,
             'public' => $this->public,
+            'sync_mode' => $this->sync_mode,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'url' => $this->url(),
