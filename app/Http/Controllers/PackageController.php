@@ -6,17 +6,22 @@ namespace App\Http\Controllers;
 
 use App\Actions\Packages\DestroyPackage;
 use App\Actions\Packages\Inputs\StorePackageInput;
+use App\Actions\Packages\Inputs\UploadPackageZipInput;
 use App\Actions\Packages\RebuildPackage;
 use App\Actions\Packages\StorePackage;
+use App\Actions\Packages\UploadPackageZip;
 use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
+use App\Http\Resources\VersionResource;
 use App\Models\Builders\RepositoryBuilder;
 use App\Models\Download;
 use App\Models\Package;
+use App\Models\Repository;
 use App\SearchFilter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
@@ -27,6 +32,7 @@ readonly class PackageController extends Controller
         private StorePackage $storePackage,
         private DestroyPackage $destroyPackage,
         private RebuildPackage $rebuildPackage,
+        private UploadPackageZip $uploadPackageZip,
     ) {
         //
     }
@@ -130,6 +136,36 @@ readonly class PackageController extends Controller
 
         return response()->json(
             new PackageResource($package)
+        );
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function upload(Request $request, string $repositoryId): JsonResponse
+    {
+        $this->authorize(Permission::PACKAGE_CREATE);
+
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:zip'],
+            'version' => ['nullable', 'string'],
+        ]);
+
+        /** @var Repository $repository */
+        $repository = Repository::query()->findOrFail($repositoryId);
+
+        /** @var UploadedFile $file */
+        $file = $request->file('file');
+
+        $version = $this->uploadPackageZip->handle(new UploadPackageZipInput(
+            repository: (string) $repository->id,
+            filePath: (string) $file->getRealPath(),
+            version: $request->string('version')->toString() ?: null,
+        ));
+
+        return response()->json(
+            new VersionResource($version),
+            201,
         );
     }
 }

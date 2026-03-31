@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\RepositorySyncMode;
 use App\Models\Builders\RepositoryBuilder;
 use Database\Factories\RepositoryFactory;
 use Eloquent;
@@ -22,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $path
  * @property string|null $description
  * @property bool $public
+ * @property RepositorySyncMode $sync_mode
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Package> $packages
@@ -41,6 +43,7 @@ class Repository extends Model
 
     protected $casts = [
         'public' => 'bool',
+        'sync_mode' => RepositorySyncMode::class,
     ];
 
     /**

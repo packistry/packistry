@@ -8,7 +8,7 @@ import { useRebuildPackage } from '@/api/hooks'
 import { ConfirmDialog } from '@/components/dialog/confirm-dialog'
 
 export type PackageActionsDropdownMenuProps = {
-    pkg?: Pick<Package, 'id' | 'name'>
+    pkg?: Pick<Package, 'id' | 'name' | 'source'>
 }
 
 export function PackageActionsDropdownMenu({ pkg }: PackageActionsDropdownMenuProps) {
@@ -50,7 +50,7 @@ export function PackageActionsDropdownMenu({ pkg }: PackageActionsDropdownMenuPr
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem
-                        disabled={!pkg}
+                        disabled={!pkg || pkg.source === null}
                         onClick={() => setShowConfirm(true)}
                     >
                         <RefreshCw className="mr-2 h-4 w-4" />
