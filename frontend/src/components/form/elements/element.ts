@@ -1,4 +1,3 @@
-import { Control } from 'react-hook-form'
 import { ReactNode } from 'react'
 
 export type FormElement = {
@@ -8,5 +7,5 @@ export type FormElement = {
     placeholder?: string
     disabled?: boolean
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    control: Control<any>
+    control: any
 }
