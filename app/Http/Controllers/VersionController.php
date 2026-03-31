@@ -23,14 +23,14 @@ readonly class VersionController extends Controller
         $packages = QueryBuilder::for(
             $package->versions()
         )
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['name']),
-            ])
-            ->allowedSorts([
+            )
+            ->allowedSorts(
                 'total_downloads',
                 'name',
                 'created_at',
-            ])
+            )
             ->paginate((int) $request->query('size', '10'));
 
         return VersionResource::collection($packages)

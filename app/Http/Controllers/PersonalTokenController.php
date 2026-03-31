@@ -35,9 +35,9 @@ readonly class PersonalTokenController extends Controller
         $tokens = QueryBuilder::for(
             $user->tokens()
         )
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['name']),
-            ])
+            )
             ->paginate((int) $request->query('size', '10'));
 
         return PersonalTokenResource::collection($tokens)

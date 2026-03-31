@@ -34,15 +34,15 @@ readonly class RepositoryController extends Controller
         $this->authorize(Permission::REPOSITORY_READ);
 
         $repositories = QueryBuilder::for(Repository::query()->userScoped()->withUserScopedPackageCount())
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('public'),
-            ])
-            ->allowedSorts([
+            )
+            ->allowedSorts(
                 'name',
                 'path',
                 'packages_count',
-            ])
+            )
             ->paginate((int) $request->query('size', '10'));
 
         return RepositoryResource::collection($repositories)

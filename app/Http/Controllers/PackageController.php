@@ -36,17 +36,17 @@ readonly class PackageController extends Controller
         $this->authorize(Permission::PACKAGE_READ);
 
         $packages = QueryBuilder::for(Package::query()->userScoped())
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('repository_id'),
-            ])
-            ->allowedIncludes([
+            )
+            ->allowedIncludes(
                 'repository',
-            ])
-            ->allowedSorts([
+            )
+            ->allowedSorts(
                 'total_downloads',
                 'name',
-            ])
+            )
             ->paginate((int) $request->query('size', '10'));
 
         return PackageResource::collection($packages)

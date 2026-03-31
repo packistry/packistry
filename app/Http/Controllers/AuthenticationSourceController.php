@@ -36,13 +36,13 @@ readonly class AuthenticationSourceController extends Controller
         $tokens = QueryBuilder::for(
             AuthenticationSource::query()
         )
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['name']),
-            ])
-            ->allowedSorts([
+            )
+            ->allowedSorts(
                 'name',
                 'active',
-            ])
+            )
             ->with(['repositories', 'packages'])
             ->paginate((int) $request->query('size', '10'));
 

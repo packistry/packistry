@@ -17,7 +17,7 @@
         "laravel/tinker": "^3.0.0",
         "league/flysystem-aws-s3-v3": "^3.29",
         "spatie/laravel-data": "^4.13",
-        "spatie/laravel-query-builder": "^6.3",
+        "spatie/laravel-query-builder": "^7.1",
         "spiral/roadrunner-cli": "^2.7.0",
         "spiral/roadrunner-http": "^4.0.0"
     },

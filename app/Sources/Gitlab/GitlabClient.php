@@ -23,13 +23,10 @@ class GitlabClient extends Client
 {
     public function http(): PendingRequest
     {
-        /** @var PendingRequest $request */
-        $request = $this->requestOptions(Http::createPendingRequest());
-
-        return $request;
+        return $this->requestOptions(Http::createPendingRequest());
     }
 
-    private function requestOptions(PendingRequest|Pool $request): PendingRequest|Pool
+    private function requestOptions(PendingRequest|Pool $request): PendingRequest
     {
         return $request->baseUrl($this->url)
             ->withHeader('Private-Token', $this->token);

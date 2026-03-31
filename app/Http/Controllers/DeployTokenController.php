@@ -34,14 +34,14 @@ readonly class DeployTokenController extends Controller
             DeployToken::query()
                 ->with(['token', 'repositories', 'packages'])
         )
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['deploy_tokens.name']),
-            ])
-            ->allowedSorts([
+            )
+            ->allowedSorts(
                 'name',
                 AllowedSort::field('expires_at', 'tokens.expires_at'),
                 AllowedSort::field('last_used_at', 'tokens.last_used_at'),
-            ])
+            )
             ->select('deploy_tokens.*')
             ->leftJoin('tokens', 'tokens.tokenable_id', '=', 'deploy_tokens.id')
             ->where('tokens.tokenable_type', DeployToken::class)
