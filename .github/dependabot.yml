@@ -4,18 +4,62 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      composer-production:
+        dependency-type: "production"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+      composer-development:
+        dependency-type: "development"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "daily"
+    groups:
+      npm-production:
+        dependency-type: "production"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+      npm-development:
+        dependency-type: "development"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      docker-non-breaking:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      github-actions-non-breaking:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
