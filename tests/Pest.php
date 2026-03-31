@@ -33,18 +33,20 @@ use App\Sources\Gitea\Repository as GiteaRepository;
 use App\Sources\Gitlab\Project;
 use App\Sources\Importable;
 use Database\Factories\RepositoryFactory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
 use Spatie\LaravelData\Data;
+use Tests\TestCase;
 
 use function Pest\Laravel\freezeSecond;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\travelBack;
 use function PHPUnit\Framework\assertNotNull;
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
     ->beforeEach(function () {
         freezeSecond();
     })
@@ -53,7 +55,7 @@ pest()->extend(Tests\TestCase::class)
     })
     ->in('Feature');
 
-pest()->extend(Tests\TestCase::class)
+pest()->extend(TestCase::class)
     ->in('Unit');
 
 /**
@@ -102,7 +104,7 @@ function personalToken(TokenAbility|array $abilities = [], bool $withAccess = fa
 function deployToken(TokenAbility|array $abilities = [], bool $withAccess = false, bool $expired = false, ?array $withPackages = null): DeployToken
 {
     /** @var DeployToken $token */
-    $token = Deploytoken::factory()
+    $token = DeployToken::factory()
         ->create();
 
     actingAs($token, $abilities, expiresAt: $expired ? now()->subSecond() : null);
@@ -376,8 +378,8 @@ function giteaEventHeaders(Importable|Deletable $event, string $secret = 'secret
 function githubEventHeaders(Importable|Deletable $event, string $secret = 'secret'): array
 {
     $eventType = match ($event::class) {
-        \App\Sources\GitHub\Event\PushEvent::class => 'push',
-        \App\Sources\GitHub\Event\DeleteEvent::class => 'delete',
+        App\Sources\GitHub\Event\PushEvent::class => 'push',
+        App\Sources\GitHub\Event\DeleteEvent::class => 'delete',
         default => throw new RuntimeException('unknown event')
     };
 
@@ -390,7 +392,7 @@ function githubEventHeaders(Importable|Deletable $event, string $secret = 'secre
 function bitbucketEventHeaders(Importable|Deletable $event, string $secret = 'secret'): array
 {
     $eventType = match ($event::class) {
-        \App\Sources\Bitbucket\Event\PushEvent::class => 'repo:push',
+        App\Sources\Bitbucket\Event\PushEvent::class => 'repo:push',
         default => throw new RuntimeException('unknown event')
     };
 
@@ -404,9 +406,9 @@ function eventHeaders(Importable|Deletable $event, string $secret = 'secret'): a
 {
     return match ($event::class) {
         PushEvent::class, DeleteEvent::class => giteaEventHeaders($event, $secret),
-        \App\Sources\GitHub\Event\DeleteEvent::class, \App\Sources\GitHub\Event\PushEvent::class => githubEventHeaders($event, $secret),
-        \App\Sources\Gitlab\Event\PushEvent::class => gitlabEventHeader($secret),
-        \App\Sources\Bitbucket\Event\PushEvent::class => bitbucketEventHeaders($event, $secret),
+        App\Sources\GitHub\Event\DeleteEvent::class, App\Sources\GitHub\Event\PushEvent::class => githubEventHeaders($event, $secret),
+        App\Sources\Gitlab\Event\PushEvent::class => gitlabEventHeader($secret),
+        App\Sources\Bitbucket\Event\PushEvent::class => bitbucketEventHeaders($event, $secret),
     };
 }
 
@@ -451,9 +453,9 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
         ],
         'github' => [
             'provider' => SourceProvider::GITHUB,
-            'event' => new \App\Sources\GitHub\Event\PushEvent(
+            'event' => new App\Sources\GitHub\Event\PushEvent(
                 ref: "refs/$refType/$ref",
-                repository: new \App\Sources\GitHub\Repository(
+                repository: new App\Sources\GitHub\Repository(
                     id: 1,
                     name: 'test',
                     fullName: 'vendor/test',
@@ -465,7 +467,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
         ],
         'gitlab' => [
             'provider' => SourceProvider::GITLAB,
-            'event' => new \App\Sources\Gitlab\Event\PushEvent(
+            'event' => new App\Sources\Gitlab\Event\PushEvent(
                 ref: "refs/$refType/$ref",
                 after: 'after',
                 before: 'before',
@@ -481,7 +483,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
         ],
         'bitbucket' => [
             'provider' => SourceProvider::BITBUCKET,
-            'event' => new \App\Sources\Bitbucket\Event\PushEvent(
+            'event' => new App\Sources\Bitbucket\Event\PushEvent(
                 push: new Push(
                     changes: [
                         new Change(
@@ -493,7 +495,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                         ),
                     ]
                 ),
-                repository: new \App\Sources\Bitbucket\Repository(
+                repository: new App\Sources\Bitbucket\Repository(
                     name: 'test',
                     fullName: 'vendor/test',
                     uuid: '{1}',
@@ -525,7 +527,7 @@ function fakeZipArchiveDownload(Importable $event, string $archivePath): void
 /**
  * @return TestResponse<JsonResponse>
  */
-function webhook(Repository $repository, ?Source $source, (Importable&Data)|(Deletable&data) $event, ?string $archivePath = null): TestResponse
+function webhook(Repository $repository, ?Source $source, (Importable&Data)|(Deletable&Data) $event, ?string $archivePath = null): TestResponse
 {
     assertNotNull($source);
 
@@ -559,11 +561,11 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
         ],
         'github' => [
             'provider' => SourceProvider::GITHUB,
-            'event' => new \App\Sources\GitHub\Event\DeleteEvent(
+            'event' => new App\Sources\GitHub\Event\DeleteEvent(
                 ref: $ref,
                 refType: $refType === 'heads' ? 'branch' : 'tag',
                 pusherType: 'user',
-                repository: new \App\Sources\GitHub\Repository(
+                repository: new App\Sources\GitHub\Repository(
                     id: 1,
                     name: 'test',
                     fullName: 'vendor/test',
@@ -574,7 +576,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
         ],
         'gitlab' => [
             'provider' => SourceProvider::GITLAB,
-            'event' => new \App\Sources\Gitlab\Event\PushEvent(
+            'event' => new App\Sources\Gitlab\Event\PushEvent(
                 ref: "refs/$refType/$ref",
                 after: '0000000000000000000000000000000000000000',
                 before: 'before',
@@ -589,7 +591,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
         ],
         'bitbucket' => [
             'provider' => SourceProvider::BITBUCKET,
-            'event' => new \App\Sources\Bitbucket\Event\PushEvent(
+            'event' => new App\Sources\Bitbucket\Event\PushEvent(
                 push: new Push(
                     changes: [
                         new Change(
@@ -601,7 +603,7 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                         ),
                     ]
                 ),
-                repository: new \App\Sources\Bitbucket\Repository(
+                repository: new App\Sources\Bitbucket\Repository(
                     name: 'test',
                     fullName: 'vendor/test',
                     uuid: '{1}',

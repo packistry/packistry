@@ -30,10 +30,10 @@ readonly class UserController extends Controller
         $this->authorize(Permission::USER_READ);
 
         $users = QueryBuilder::for(User::query()->with(['repositories', 'packages']))
-            ->allowedFilters([
+            ->allowedFilters(
                 SearchFilter::allowed(['name', 'email']),
-            ])
-            ->allowedSorts(['name', 'email', 'role'])
+            )
+            ->allowedSorts('name', 'email', 'role')
             ->with('authenticationSource')
             ->paginate((int) $request->query('size', '10'));
 

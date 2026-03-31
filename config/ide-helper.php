@@ -185,7 +185,7 @@ return [
     */
 
     'extra' => [
-        'Eloquent' => [\Illuminate\Database\Eloquent\Builder::class, Builder::class],
+        'Eloquent' => [Illuminate\Database\Eloquent\Builder::class, Builder::class],
         'Session' => [Store::class],
     ],
 
