@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Sources\Gitea;
 
 use App\Exceptions\InvalidTokenException;
+use App\Models\Repository;
 use App\Models\Source;
 use App\Normalizer;
 use App\Sources\Branch;
@@ -79,7 +80,7 @@ class GiteaClient extends Client
     /**
      * @throws ConnectionException|RequestException
      */
-    public function createWebhook(\App\Models\Repository $repository, Project $project, Source $source): void
+    public function createWebhook(Repository $repository, Project $project, Source $source): void
     {
         $this->http()->post("$project->url/hooks", [
             'type' => 'gitea',
