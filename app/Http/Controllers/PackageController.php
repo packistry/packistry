@@ -160,7 +160,7 @@ readonly class PackageController extends Controller
         $version = $this->uploadPackageZip->handle(new UploadPackageZipInput(
             repository: (string) $repository->id,
             filePath: (string) $file->getRealPath(),
-            version: $request->string('version')->toString() ?: null,
+            version: $request->string('version')->toString() !== '' ? $request->string('version')->toString() : null,
         ));
 
         return response()->json(

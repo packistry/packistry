@@ -50,6 +50,7 @@ COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.3.2 /usr/bin/rr /usr/local
 
 COPY ./docker/supervisord.conf /etc/supervisord.tpl
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY ./docker/php/conf.d/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 COPY ./docker/packistry /usr/bin
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
