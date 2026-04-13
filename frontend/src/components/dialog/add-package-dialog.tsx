@@ -83,7 +83,7 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
             if (isValidationError(error)) {
                 addValidationToForm(form, error)
 
-                const errors = error.response?.data?.errors
+                const errors = error.response?.data?.errors as Record<string, string | string[]> | undefined
                 const message = errors?.repository?.[0] ?? errors?.repository ?? errors?.file?.[0] ?? errors?.file
 
                 if (message) {
