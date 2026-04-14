@@ -1,0 +1,12 @@
+site_name: Packistry
+site_description: Self-hosted Composer repository for PHP package distribution.
+docs_dir: docs
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Running with Docker: getting-started/running-with-docker.md
+  - Features: features.md
+  - Operations:
+      - Security: operations/security.md
+theme:
+  name: material
