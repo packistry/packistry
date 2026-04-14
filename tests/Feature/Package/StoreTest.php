@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Enums\PackageType;
 use App\Enums\Permission;
-use App\Enums\RepositorySyncMode;
 use App\Enums\SourceProvider;
 use App\Import;
 use App\Models\Package;
@@ -163,24 +162,3 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
 })
     ->with(guestAndUsers(Permission::PACKAGE_CREATE, userWithPermission: 201))
     ->with(SourceProvider::cases());
-
-it('rejects source sync import for manual repository', function (): void {
-    $repository = Repository::factory()->state([
-        'sync_mode' => RepositorySyncMode::MANUAL,
-    ])->create();
-
-    $source = Source::factory()->create();
-
-    user([Permission::UNSCOPED, Permission::PACKAGE_CREATE]);
-
-    postJson('/api/packages', [
-        'repository' => (string) $repository->id,
-        'source' => (string) $source->id,
-        'projects' => ['1'],
-        'webhook' => false,
-    ])
-        ->assertStatus(422)
-        ->assertExactJson(validation([
-            'repository' => ['Source import is disabled for this repository. Use manual ZIP upload instead.'],
-        ]));
-});

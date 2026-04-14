@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Enums\Permission;
-use App\Enums\RepositorySyncMode;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Repository;
 use App\Models\User;
@@ -20,7 +19,6 @@ it('updates', function (?User $user, int $status): void {
         'path' => $path = fake()->sentence,
         'description' => fake()->text,
         'public' => fake()->boolean(),
-        'sync_mode' => fake()->randomElement(RepositorySyncMode::cases())->value,
     ];
 
     $response = patchJson("/api/repositories/$repository->id", $attributes)

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Enums\Permission;
-use App\Enums\RepositorySyncMode;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\User;
@@ -81,7 +80,6 @@ it('uploads zip for repository and creates package', function (?User $user, int 
     Storage::fake();
 
     $repository = Repository::factory()->state([
-        'sync_mode' => RepositorySyncMode::MANUAL,
         'name' => 'test/test',
     ])->create();
 
@@ -134,35 +132,10 @@ it('validates upload payload', function (): void {
         ->assertJsonValidationErrors(['file']);
 });
 
-it('allows upload for source sync repository', function (): void {
-    user([Permission::UNSCOPED, Permission::PACKAGE_CREATE]);
-
-    Storage::fake();
-
-    $repository = Repository::factory()->create();
-
-    $file = UploadedFile::fake()->createWithContent(
-        name: 'project.zip',
-        content: (string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')
-    );
-
-    post(
-        "/api/repositories/$repository->id/uploads",
-        [
-            'file' => $file,
-        ],
-        [
-            'Accept' => 'application/json',
-        ],
-    )
-        ->assertStatus(201);
-});
-
 it('uploads zip when composer.json is in root but not first entry', function () use ($composerJson, $zipContent): void {
     user([Permission::UNSCOPED, Permission::PACKAGE_CREATE]);
 
     $repository = Repository::factory()->state([
-        'sync_mode' => RepositorySyncMode::MANUAL,
         'name' => 'test/test',
     ])->create();
 
@@ -185,7 +158,6 @@ it('uploads nested zip when composer.json is in top-level directory', function (
     user([Permission::UNSCOPED, Permission::PACKAGE_CREATE]);
 
     $repository = Repository::factory()->state([
-        'sync_mode' => RepositorySyncMode::MANUAL,
         'name' => 'test/test',
     ])->create();
 
@@ -208,9 +180,7 @@ it('uploads nested zip when composer.json is in top-level directory', function (
 it('rejects zip when composer.json is only nested deeper than top-level directory', function () use ($composerJson, $zipContent): void {
     user([Permission::UNSCOPED, Permission::PACKAGE_CREATE]);
 
-    $repository = Repository::factory()->state([
-        'sync_mode' => RepositorySyncMode::MANUAL,
-    ])->create();
+    $repository = Repository::factory()->create();
 
     $file = UploadedFile::fake()->createWithContent(
         name: 'project.zip',
@@ -235,9 +205,7 @@ it('rejects zip when composer.json is only nested deeper than top-level director
 it('rejects zip when archive has multiple top-level directories without root composer.json', function () use ($composerJson, $zipContent): void {
     user([Permission::UNSCOPED, Permission::PACKAGE_CREATE]);
 
-    $repository = Repository::factory()->state([
-        'sync_mode' => RepositorySyncMode::MANUAL,
-    ])->create();
+    $repository = Repository::factory()->create();
 
     $file = UploadedFile::fake()->createWithContent(
         name: 'project.zip',

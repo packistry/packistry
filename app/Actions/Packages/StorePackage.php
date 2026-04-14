@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Packages;
 
-use App\Actions\Packages\Exceptions\RepositoryDoesNotSupportSourceSync;
 use App\Actions\Packages\Inputs\StorePackageInput;
 use App\Enums\PackageType;
-use App\Enums\RepositorySyncMode;
 use App\Exceptions\ArchiveInvalidContentTypeException;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToFetchArchiveException;
@@ -42,10 +40,6 @@ class StorePackage
     {
         /** @var Repository $repository */
         $repository = Repository::query()->findOrFail($input->repository);
-
-        if ($repository->sync_mode === RepositorySyncMode::MANUAL) {
-            throw new RepositoryDoesNotSupportSourceSync;
-        }
 
         /** @var Source $source */
         $source = Source::query()->findOrFail($input->source);
