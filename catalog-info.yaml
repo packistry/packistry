@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: packistry
+  title: Packistry
+  description: Self-hosted Composer repository for PHP package distribution.
+  annotations:
+    github.com/project-slug: revenexx/packistry
+    backstage.io/techdocs-ref: url:https://github.com/revenexx/packistry/tree/main/
+  links:
+    - url: https://packistry.github.io/
+      title: Documentation
+      icon: docs
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/REPLACE_WITH_ACTUAL_OWNER
+  system: revenue-cloud
