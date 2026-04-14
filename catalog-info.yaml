@@ -14,5 +14,5 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: group:default/REPLACE_WITH_ACTUAL_OWNER
+  owner: group:default/platform-team
   system: revenue-cloud
