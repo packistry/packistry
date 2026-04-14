@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\RepositorySyncMode;
 use App\Models\Package;
 use App\Models\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,7 +26,6 @@ class RepositoryFactory extends Factory
             'name' => fake()->name(),
             'path' => Str::slug(fake()->name()),
             'public' => false,
-            'sync_mode' => RepositorySyncMode::SOURCE,
         ];
     }
 

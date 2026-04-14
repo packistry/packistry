@@ -26,7 +26,6 @@ class StoreRepository
 
         $repository->description = $input->description;
         $repository->public = $input->public;
-        $repository->sync_mode = $input->syncMode;
 
         $repository->save();
 

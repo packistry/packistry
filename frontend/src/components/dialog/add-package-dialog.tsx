@@ -7,7 +7,7 @@ import { FormSourceSelect } from '@/components/form/elements/form-source-select'
 import { FormSourceProjectCheckboxGroup } from '@/components/form/elements/form-source-project-checkbox-group'
 import { FormSwitch } from '@/components/form/elements/form-switch'
 import { Form } from '@/components/ui/form'
-import { useRepositories, useStorePackage } from '@/api/hooks'
+import { useStorePackage } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { toast } from 'sonner'
 import { useInnerDialog } from '@/components/dialog/use-search-dialog'
@@ -17,6 +17,10 @@ import { DialogProps } from '@radix-ui/react-dialog'
 import { isValidationError } from '@/api'
 import { addValidationToForm } from '@/hooks/useForm'
 import { api } from '@/api/axios'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Label } from '@/components/ui/label'
+
+type PackageMode = 'source' | 'upload'
 
 export type AddPackageDialogProps = DialogProps
 export function AddPackageDialog(props: AddPackageDialogProps) {
@@ -36,20 +40,16 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
             toast('Package import has been started')
 
             form.reset()
+            setMode('source')
             dialogProps.onOpenChange?.(false)
         },
     })
 
     const source = form.watch('source')
     const repositoryId = form.watch('repository')
-    const repositories = useRepositories({
-        size: 1000,
-    })
 
-    const repository = repositories.data?.data.find((item) => item.id === repositoryId)
-    const isManualRepository = repository?.syncMode === 'manual'
+    const [mode, setMode] = React.useState<PackageMode>('source')
     const uploadInputRef = React.useRef<HTMLInputElement>(null)
-
     const [isUploadPending, setIsUploadPending] = React.useState(false)
     const [uploadError, setUploadError] = React.useState<string | null>(null)
 
@@ -78,6 +78,7 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
 
             toast('ZIP uploaded successfully')
             form.reset()
+            setMode('source')
             dialogProps.onOpenChange?.(false)
         } catch (error) {
             if (isValidationError(error)) {
@@ -122,66 +123,97 @@ export function AddPackageDialog(props: AddPackageDialogProps) {
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={isManualRepository ? (event) => event.preventDefault() : onSubmit}
+                        onSubmit={mode === 'upload' ? (event) => event.preventDefault() : onSubmit}
                         className="space-y-4"
                     >
+                        <div className="space-y-2">
+                            <Label>Method</Label>
+                            <RadioGroup
+                                value={mode}
+                                onValueChange={(value) => setMode(value as PackageMode)}
+                                className="flex gap-4"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="source"
+                                        id="mode-source"
+                                    />
+                                    <Label
+                                        htmlFor="mode-source"
+                                        className="cursor-pointer"
+                                    >
+                                        From Source
+                                    </Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="upload"
+                                        id="mode-upload"
+                                    />
+                                    <Label
+                                        htmlFor="mode-upload"
+                                        className="cursor-pointer"
+                                    >
+                                        Upload ZIP
+                                    </Label>
+                                </div>
+                            </RadioGroup>
+                        </div>
                         <FormRepositorySelect
                             description="Select the repository where this package will be added."
                             control={form.control}
                         />
-                        {!isManualRepository && (
-                            <FormSourceSelect
-                                description="Choose the source from which to add a package."
-                                control={form.control}
-                            />
-                        )}
-                        {isManualRepository && (
+                        {mode === 'source' && (
                             <>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">ZIP Archive</label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Upload a ZIP archive containing composer.json. The package name is read automatically.
-                                    </p>
-                                    <input
-                                        ref={uploadInputRef}
-                                        type="file"
-                                        accept=".zip,application/zip"
-                                        className="hidden"
-                                        onChange={onUpload}
-                                    />
-                                    <Button
-                                        type="button"
-                                        loading={isUploadPending}
-                                        onClick={onSelectUpload}
-                                    >
-                                        Select ZIP and Upload
-                                    </Button>
-                                    {uploadError && <p className="text-sm font-medium text-destructive">{uploadError}</p>}
-                                </div>
-                            </>
-                        )}
-                        {!isManualRepository && source && (
-                            <>
-                                <FormSourceProjectCheckboxGroup
-                                    source={source}
-                                    description="Select one or more projects to add as packages."
+                                <FormSourceSelect
+                                    description="Choose the source from which to add a package."
                                     control={form.control}
                                 />
-                                <FormSwitch
-                                    label="Webhook"
-                                    description="Automatically synchronize new pushes for tags and branches with webhooks."
-                                    name="webhook"
-                                    control={form.control}
-                                />
+                                {source && (
+                                    <>
+                                        <FormSourceProjectCheckboxGroup
+                                            source={source}
+                                            description="Select one or more projects to add as packages."
+                                            control={form.control}
+                                        />
+                                        <FormSwitch
+                                            label="Webhook"
+                                            description="Automatically synchronize new pushes for tags and branches with webhooks."
+                                            name="webhook"
+                                            control={form.control}
+                                        />
+                                    </>
+                                )}
+                                <Button
+                                    type="submit"
+                                    loading={isPending}
+                                >
+                                    Add package
+                                </Button>
                             </>
                         )}
-                        {!isManualRepository && (
-                            <Button
-                                type="submit"
-                                loading={isPending}
-                            >
-                                Add package
-                            </Button>
+                        {mode === 'upload' && (
+                            <div className="space-y-2">
+                                <Label>ZIP Archive</Label>
+                                <p className="text-sm text-muted-foreground">
+                                    Upload a ZIP archive containing composer.json. The package name is read automatically.
+                                </p>
+                                <input
+                                    ref={uploadInputRef}
+                                    type="file"
+                                    accept=".zip,application/zip"
+                                    className="hidden"
+                                    onChange={onUpload}
+                                />
+                                <Button
+                                    type="button"
+                                    loading={isUploadPending}
+                                    onClick={onSelectUpload}
+                                >
+                                    Select ZIP and Upload
+                                </Button>
+                                {uploadError && <p className="text-sm font-medium text-destructive">{uploadError}</p>}
+                            </div>
                         )}
                     </form>
                 </Form>
