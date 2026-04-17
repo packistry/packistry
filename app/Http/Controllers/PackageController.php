@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\Packages\DestroyPackage;
 use App\Actions\Packages\Inputs\StorePackageInput;
 use App\Actions\Packages\Inputs\UploadPackageZipInput;
+use App\Actions\Packages\ImportMissingPackage;
 use App\Actions\Packages\RebuildPackage;
 use App\Actions\Packages\StorePackage;
 use App\Actions\Packages\UploadPackageZip;
@@ -32,6 +33,7 @@ readonly class PackageController extends Controller
         private StorePackage $storePackage,
         private DestroyPackage $destroyPackage,
         private RebuildPackage $rebuildPackage,
+        private ImportMissingPackage $importMissingPackage,
         private UploadPackageZip $uploadPackageZip,
     ) {
         //
@@ -133,6 +135,23 @@ readonly class PackageController extends Controller
             ->findOrFail($packageId);
 
         $this->rebuildPackage->handle($package);
+
+        return response()->json(
+            new PackageResource($package)
+        );
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function importMissing(string $packageId): JsonResponse
+    {
+        $this->authorize(Permission::PACKAGE_UPDATE);
+
+        $package = Package::userScoped()
+            ->findOrFail($packageId);
+
+        $this->importMissingPackage->handle($package);
 
         return response()->json(
             new PackageResource($package)

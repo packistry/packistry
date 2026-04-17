@@ -17,11 +17,12 @@ class PackageImportBatch
     public static function make(
         Source $source,
         Package $package,
-        Project $project
+        Project $project,
+        bool $skipExisting = false
     ): PendingBatch {
         return Bus::batch([
-            new ImportBranches($source, $package, $project),
-            new ImportTags($source, $package, $project),
+            new ImportBranches($source, $package, $project, $skipExisting),
+            new ImportTags($source, $package, $project, $skipExisting),
         ])
             ->name(self::class)
             ->withOption('package', $package)

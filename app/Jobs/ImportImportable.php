@@ -12,6 +12,7 @@ use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
 use App\Models\Source;
+use App\Normalizer;
 use App\Sources\Importable;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,7 +27,8 @@ class ImportImportable implements ShouldQueue
     public function __construct(
         private readonly Source $source,
         private readonly Package $package,
-        private readonly Importable $importable
+        private readonly Importable $importable,
+        private readonly bool $skipExisting = false
     ) {
         //
     }
@@ -42,6 +44,15 @@ class ImportImportable implements ShouldQueue
      */
     public function handle(): void
     {
+        if ($this->skipExisting) {
+            $versionName = Normalizer::version($this->importable->version());
+            $exists = $this->package->versions()->where('name', $versionName)->exists();
+
+            if ($exists) {
+                return;
+            }
+        }
+
         $this->source->client()->import(
             package: $this->package,
             importable: $this->importable,

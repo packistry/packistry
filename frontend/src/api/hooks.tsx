@@ -22,6 +22,7 @@ import {
     PackageQuery,
     PersonalTokenQuery,
     rebuildPackage,
+    importMissingPackage,
     RepositoryQuery,
     storeDeployToken,
     storePackage,
@@ -170,6 +171,20 @@ export function useRebuildPackage() {
 
     return useMutation({
         mutationFn: rebuildPackage,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useImportMissingPackage() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: importMissingPackage,
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: packagesKey,

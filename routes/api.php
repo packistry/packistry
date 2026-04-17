@@ -71,6 +71,7 @@ Route::middleware('web')->prefix('/api')->group(function (): void {
         Route::post('/repositories/{repositoryId}/uploads', [PackageController::class, 'upload']);
 
         Route::post('/packages/{packageId}/rebuild', [PackageController::class, 'rebuild']);
+        Route::post('/packages/{packageId}/import-missing', [PackageController::class, 'importMissing']);
 
         Route::apiResource('/packages/{packageId}/versions', VersionController::class)
             ->only(['index']);

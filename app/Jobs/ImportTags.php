@@ -20,7 +20,8 @@ class ImportTags implements ShouldQueue
     public function __construct(
         private readonly Source $source,
         private readonly Package $package,
-        private readonly Project $project
+        private readonly Project $project,
+        private readonly bool $skipExisting = false
     ) {
         //
     }
@@ -35,6 +36,7 @@ class ImportTags implements ShouldQueue
                     $this->source,
                     $this->package,
                     $tag,
+                    $this->skipExisting,
                 ));
             });
     }

@@ -68,3 +68,7 @@ export function deletePackage(packageId: string) {
 export function rebuildPackage(packageId: string) {
     return post(packageSchema, `/packages/${packageId}/rebuild`, {})
 }
+
+export function importMissingPackage(packageId: string) {
+    return post(packageSchema, `/packages/${packageId}/import-missing`, {})
+}
