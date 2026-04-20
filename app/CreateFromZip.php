@@ -36,7 +36,12 @@ class CreateFromZip
         $version ??= $decoded['version'] ?? throw new VersionNotFoundException('no version provided');
         $name = $decoded['name'] ?? throw new NameNotFoundException('no name provided');
 
-        $package->name = $name;
+        $currentOrder = Normalizer::versionOrder($version);
+        $latestOrder = $package->versions()->max('order');
+
+        if ($latestOrder === null || $currentOrder >= $latestOrder) {
+            $package->name = $name;
+        }
 
         $package->description = $decoded['description'] ?? null;
         $package->type = array_key_exists('type', $decoded) && $decoded['type'] !== '' && $decoded['type'] !== null
@@ -60,7 +65,7 @@ class CreateFromZip
 
         $createdVersion->package_id = $package->id;
         $createdVersion->name = $versionName;
-        $createdVersion->order = Normalizer::versionOrder($version);
+        $createdVersion->order = $currentOrder;
         $createdVersion->shasum = $hash;
         $createdVersion->archive_path = $package->repository->archivePath(Str::uuid7()->toString().'.zip');
         $createdVersion->metadata = collect($decoded)->only([
