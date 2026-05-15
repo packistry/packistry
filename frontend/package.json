@@ -36,6 +36,7 @@
     "vite": "^8.0.13"
   },
   "dependencies": {
+    "@daypicker/react": "^10.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -61,7 +62,6 @@
     "humps": "^2.0.1",
     "lucide-react": "^0.577.0",
     "react": "^19.2.6",
-    "react-day-picker": "^10.0.1",
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.75.0",
     "recharts": "^3.8.1",
