@@ -6,6 +6,7 @@ namespace App\Http\Resources;
 
 use App\Models\Package;
 use App\Models\Version;
+use Composer\MetadataMinifier\MetadataMinifier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Override;
@@ -21,23 +22,25 @@ class ComposerPackageResource extends JsonResource
     #[Override]
     public function toArray(Request $request): array
     {
+        $versions = $this->versions
+            ->map(fn (Version $version) => [
+                ...$version->metadata,
+                'name' => $this->name,
+                'version' => $version->name,
+                'type' => $this->type,
+                'time' => $version->created_at,
+                'dist' => [
+                    'type' => 'zip',
+                    'url' => $this->repository->url("/$this->name/$version->name"),
+                    'shasum' => $version->shasum,
+                ],
+            ])
+            ->all();
+
         return [
             'minified' => 'composer/2.0',
             'packages' => [
-                $this->name => $this
-                    ->versions
-                    ->map(fn (Version $version) => [
-                        ...$version->metadata,
-                        'name' => $this->name,
-                        'version' => $version->name,
-                        'type' => $this->type,
-                        'time' => $version->created_at,
-                        'dist' => [
-                            'type' => 'zip',
-                            'url' => $this->repository->url("/$this->name/$version->name"),
-                            'shasum' => $version->shasum,
-                        ],
-                    ]),
+                $this->name => MetadataMinifier::minify($versions),
             ],
         ];
     }

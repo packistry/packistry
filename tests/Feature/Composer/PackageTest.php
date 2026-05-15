@@ -6,6 +6,7 @@ use App\Enums\TokenAbility;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
+use Composer\MetadataMinifier\MetadataMinifier;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -23,7 +24,7 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
         ->assertExactJson([
             'minified' => 'composer/2.0',
             'packages' => [
-                $package->name => $package->versions()
+                $package->name => MetadataMinifier::minify($package->versions()
                     ->where('name', 'not like', 'dev-%')
                     ->where('name', 'not like', '%-dev')
                     ->get()
@@ -38,7 +39,7 @@ it('lists package versions', function (Repository $repository, ?Authenticatable 
                             'url' => $package->repository->url("/$package->name/$version->name"),
                             'shasum' => $version->shasum,
                         ],
-                    ])->toArray(),
+                    ])->toArray()),
             ],
         ]);
 })
@@ -74,7 +75,7 @@ it('lists package versions when name includes dots', function (Repository $repos
         ->assertExactJson([
             'minified' => 'composer/2.0',
             'packages' => [
-                $package->name => $package->versions()
+                $package->name => MetadataMinifier::minify($package->versions()
                     ->where('name', 'not like', 'dev-%')
                     ->where('name', 'not like', '%-dev')
                     ->get()
@@ -89,7 +90,7 @@ it('lists package versions when name includes dots', function (Repository $repos
                             'url' => $package->repository->url("/$package->name/$version->name"),
                             'shasum' => $version->shasum,
                         ],
-                    ])->toArray(),
+                    ])->toArray()),
             ],
         ]);
 })

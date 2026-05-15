@@ -8,6 +8,7 @@
         "php": "^8.4",
         "ext-pdo": "*",
         "ext-zip": "*",
+        "composer/metadata-minifier": "^1.0",
         "composer/semver": "^3.4",
         "laravel/framework": "^13.2",
         "laravel/octane": "^2.6.1",
