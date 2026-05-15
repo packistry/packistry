@@ -15,7 +15,7 @@ class DestroyPackage
         $paths = $package->versions()
             ->get()
             ->map(fn (Version $version) => $version->archive_path)
-            ->filter(fn (?string $path) => $path !== null)
+            ->filter(fn (?string $path): bool => $path !== null)
             ->toArray();
 
         dispatch(function () use ($paths): void {

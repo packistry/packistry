@@ -23,7 +23,7 @@ class StoreAuthenticationSource
             OIDCConfiguration::validateDiscoveryUrl($input->discoveryUrl ?? throw new InvalidDiscoveryUrlException);
         }
 
-        return DB::transaction(function () use ($input) {
+        return DB::transaction(function () use ($input): AuthenticationSource {
             $source = new AuthenticationSource;
 
             $source->name = $input->name;

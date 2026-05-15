@@ -17,8 +17,8 @@ class NormalizeVersionOrder implements ShouldQueue
     public function handle(): void
     {
         Version::query()
-            ->chunk(100, function (Collection $versions) {
-                dispatch(function () use ($versions) {
+            ->chunk(100, function (Collection $versions): void {
+                dispatch(function () use ($versions): void {
                     /** @var Version $version */
                     foreach ($versions as $version) {
                         $version->order = Normalizer::versionOrder($version->name);
