@@ -74,15 +74,36 @@ class CreateFromZip
             'keywords',
             'homepage',
             'license',
+
             'authors',
+            'support',
+            'funding',
+
             'bin',
+
             'autoload',
             'autoload-dev',
-            'extra',
+
             'require',
             'require-dev',
-            'suggest',
+            'conflict',
             'provide',
+            'replace',
+            'suggest',
+
+            'minimum-stability',
+            'prefer-stable',
+
+            'scripts',
+            'extra',
+            'config',
+            'repositories',
+
+            'archive',
+            'abandoned',
+
+            '_comment',
+            'non-feature-branches',
         ])->toArray();
 
         $createdVersion->save();
