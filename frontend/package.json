@@ -20,7 +20,7 @@
     "@tanstack/router-plugin": "^1.167.35",
     "@types/humps": "^2.0.6",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^25.8.0",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.59.3",
