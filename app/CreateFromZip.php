@@ -68,7 +68,7 @@ class CreateFromZip
         $createdVersion->order = $currentOrder;
         $createdVersion->shasum = $hash;
         $createdVersion->archive_path = $package->repository->archivePath(Str::uuid7()->toString().'.zip');
-        $createdVersion->metadata = collect($decoded)->only([
+        $createdVersion->metadata = MetadataSanitizer::sanitize(collect($decoded)->only([
             'description',
             'readme',
             'keywords',
@@ -104,7 +104,7 @@ class CreateFromZip
 
             '_comment',
             'non-feature-branches',
-        ])->toArray();
+        ])->toArray());
 
         $createdVersion->save();
 
