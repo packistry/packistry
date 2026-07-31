@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\CreateFromZip;
 use App\Models\Package;
 use App\Models\Repository;
+use App\Models\Version;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -80,5 +81,62 @@ it('updates the package name when a newer version is imported after an older one
     } finally {
         @unlink($oldZip);
         @unlink($newZip);
+    }
+});
+
+it('does not store constraints composer cannot parse', function (): void {
+    Storage::fake();
+
+    $repository = Repository::factory()->create();
+    /** @var Package $package */
+    $package = Package::factory()->for($repository)->create();
+
+    $zip = makeComposerZip('vendor/package', '1.0.9', [
+        'require' => [
+            'php' => '^8.4',
+            'laravel/framework' => '^^12 || ^13',
+        ],
+    ]);
+
+    try {
+        $version = app(CreateFromZip::class)->create($package, $zip, '1.0.9');
+
+        expect($version->metadata)
+            ->toHaveKey('require', ['php' => '^8.4']);
+    } finally {
+        @unlink($zip);
+    }
+});
+
+it('replaces unparsable constraints on an existing version when reimported', function (): void {
+    Storage::fake();
+
+    $repository = Repository::factory()->create();
+    /** @var Package $package */
+    $package = Package::factory()->for($repository)->create();
+
+    Version::factory()->for($package)->create([
+        'name' => '1.0.9',
+        'metadata' => [
+            'require' => [
+                'laravel/framework' => '^^12 || ^13',
+            ],
+        ],
+    ]);
+
+    $zip = makeComposerZip('vendor/package', '1.0.9', [
+        'require' => [
+            'laravel/framework' => '^^12 || ^13',
+        ],
+    ]);
+
+    try {
+        app(CreateFromZip::class)->create($package, $zip, '1.0.9');
+
+        expect($package->versions()->where('name', '1.0.9')->count())->toBe(1)
+            ->and($package->versions()->sole()->metadata)
+            ->toHaveKey('require', []);
+    } finally {
+        @unlink($zip);
     }
 });
