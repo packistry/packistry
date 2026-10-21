@@ -22,7 +22,7 @@ class RebuildPackageCommand extends Command
 
     public function handle(RebuildPackage $rebuildPackage): int
     {
-        $all = $this->option('all');
+        $all = $this->option('all') === true;
 
         $packages = $this->packages(
             all: $all || confirm('Rebuild all packages?', false)

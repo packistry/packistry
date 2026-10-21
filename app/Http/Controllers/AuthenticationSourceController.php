@@ -33,9 +33,7 @@ readonly class AuthenticationSourceController extends Controller
     {
         $this->authorize(Permission::AUTHENTICATION_SOURCE_READ);
 
-        $tokens = QueryBuilder::for(
-            AuthenticationSource::query()
-        )
+        $tokens = QueryBuilder::for(AuthenticationSource::class)
             ->allowedFilters(
                 SearchFilter::allowed(['name']),
             )

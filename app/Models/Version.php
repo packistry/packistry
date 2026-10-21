@@ -9,7 +9,6 @@ use Composer\Semver\VersionParser;
 use Database\Factories\VersionFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,9 +33,6 @@ use Override;
  * @property-read Package $package
  *
  * @method static VersionFactory factory($count = null, $state = [])
- * @method static Builder<static>|Version newModelQuery()
- * @method static Builder<static>|Version newQuery()
- * @method static Builder<static>|Version query()
  *
  * @mixin Eloquent
  */

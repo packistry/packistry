@@ -40,7 +40,7 @@ class ComposerPackageResource extends JsonResource
         return [
             'minified' => 'composer/2.0',
             'packages' => [
-                $this->name => MetadataMinifier::minify($versions),
+                $this->name => MetadataMinifier::minify(array_values($versions)),
             ],
         ];
     }

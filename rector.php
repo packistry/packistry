@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
-use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\Config\RectorConfig;
@@ -42,13 +42,12 @@ return RectorConfig::configure()
         typeDeclarations: true,
         instanceOf: true,
         earlyReturn: true,
-        strictBooleans: true,
     )
     ->withRules([
         // code style
         NewlineAfterStatementRector::class,
         NewlineBeforeNewAssignSetRector::class,
-        SymplifyQuoteEscapeRector::class,
+        SimplifyQuoteEscapeRector::class,
         TernaryConditionVariableAssignmentRector::class,
         UseClassKeywordForClassNameResolutionRector::class,
 

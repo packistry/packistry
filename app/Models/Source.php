@@ -8,7 +8,6 @@ use App\Enums\SourceProvider;
 use App\Sources\Client;
 use Database\Factories\SourceFactory;
 use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,9 +28,6 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $packages_count
  *
  * @method static SourceFactory factory($count = null, $state = [])
- * @method static Builder<static>|Source newModelQuery()
- * @method static Builder<static>|Source newQuery()
- * @method static Builder<static>|Source query()
  *
  * @mixin Eloquent
  */
