@@ -43,9 +43,6 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property-read int|null $users_count
  *
  * @method static AuthenticationSourceFactory factory($count = null, $state = [])
- * @method static Builder<static>|AuthenticationSource newModelQuery()
- * @method static Builder<static>|AuthenticationSource newQuery()
- * @method static Builder<static>|AuthenticationSource query()
  *
  * @mixin Eloquent
  */

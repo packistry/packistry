@@ -9,6 +9,7 @@ use App\Enums\TokenAbility;
 use App\Models\Repository;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -19,10 +20,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $email = $this->command->ask('Admin email?');
-        $name = $this->command->ask('Admin name?');
-        $password = $this->command->ask('Admin password?');
-        $public = $this->command->confirm('Create public root repository?');
+        $command = $this->command;
+
+        if ($command === null) {
+            throw new RuntimeException('The database seeder must be run from the console.');
+        }
+
+        $email = $command->ask('Admin email?');
+        $name = $command->ask('Admin name?');
+        $password = $command->ask('Admin password?');
+        $public = $command->confirm('Create public root repository?');
 
         /** @var User $user */
         $user = User::factory()
@@ -41,17 +48,17 @@ class DatabaseSeeder extends Seeder
             ])
             ->create();
 
-        $this->command->info('Admin created!');
-        $this->command->info($email);
+        $command->info('Admin created!');
+        $command->info($email);
 
         $abilities = array_map(fn (TokenAbility $ability) => $ability->value, TokenAbility::cases());
         $scopes = implode(', ', $abilities);
 
-        if ($this->command->confirm("Create token with scopes [$scopes]?")) {
+        if ($command->confirm("Create token with scopes [$scopes]?")) {
             $token = $user->createToken('default', $abilities);
 
-            $this->command->info('Token created!');
-            $this->command->info($token->plainTextToken);
+            $command->info('Token created!');
+            $command->info($token->plainTextToken);
         }
 
     }

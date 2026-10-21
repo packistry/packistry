@@ -54,9 +54,6 @@ use RuntimeException;
  * @property-read int|null $tokens_count
  *
  * @method static UserFactory factory($count = null, $state = [])
- * @method static Builder<static>|User newModelQuery()
- * @method static Builder<static>|User newQuery()
- * @method static Builder<static>|User query()
  *
  * @mixin Eloquent
  */

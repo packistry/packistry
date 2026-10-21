@@ -10,7 +10,6 @@ use Database\Factories\DeployTokenFactory;
 use Eloquent;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,9 +37,6 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $tokens_count
  *
  * @method static DeployTokenFactory factory($count = null, $state = [])
- * @method static Builder<static>|DeployToken newModelQuery()
- * @method static Builder<static>|DeployToken newQuery()
- * @method static Builder<static>|DeployToken query()
  *
  * @mixin Eloquent
  */

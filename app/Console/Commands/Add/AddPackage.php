@@ -93,10 +93,7 @@ class AddPackage extends Command
             required: true,
         );
 
-        /** @var Source $source */
-        $source = $sources[$sourceId];
-
-        return $source;
+        return $sources->firstOrFail(fn (Source $source): bool => $source->id === $sourceId);
     }
 
     /**

@@ -10,7 +10,6 @@ use App\Actions\Packages\RebuildPackage;
 use App\Actions\Packages\StorePackage;
 use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
-use App\Models\Builders\RepositoryBuilder;
 use App\Models\Download;
 use App\Models\Package;
 use App\SearchFilter;
@@ -78,10 +77,7 @@ readonly class PackageController extends Controller
 
         $package->load([
             'repository' => function (BelongsTo $query): void {
-                $repositoryQuery = $query->getQuery();
-                if ($repositoryQuery instanceof RepositoryBuilder) {
-                    $repositoryQuery->withUserScopedPackageCount();
-                }
+                $query->getQuery()->withUserScopedPackageCount();
             },
             'source',
         ]);

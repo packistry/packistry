@@ -79,6 +79,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Write model query methods
+    |--------------------------------------------------------------------------
+    |
+    | Disabled so static analysis uses the native Builder<static> return
+    | types of query(), newQuery() and newModelQuery().
+    |
+    */
+
+    'write_query_methods' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Write model external Eloquent builder methods
     |--------------------------------------------------------------------------
     |

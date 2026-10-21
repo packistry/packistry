@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
@@ -18,10 +17,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read DeployToken $deployToken
  * @property-read Repository $repository
- *
- * @method static Builder<static>|DeployTokenRepository newModelQuery()
- * @method static Builder<static>|DeployTokenRepository newQuery()
- * @method static Builder<static>|DeployTokenRepository query()
  *
  * @mixin Eloquent
  */
