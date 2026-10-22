@@ -1,4 +1,6 @@
-FROM php:8.5-alpine AS base
+# Pinned to the patch release: 8.5.12 fixes CVE-2026-109618 and
+# CVE-2026-109619. Dependabot (docker ecosystem) proposes later bumps.
+FROM php:8.5.12-alpine AS base
 
 LABEL org.opencontainers.image.source="https://github.com/packistry/packistry"
 LABEL org.opencontainers.image.description="Packistry is a Composer repository for PHP packages Packistry is a Composer repository for PHP packages"
