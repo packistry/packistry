@@ -31,6 +31,7 @@ it('shows package', function (?User $user, int $status): void {
         resourceAsJson(new PackageResource($package->fresh()->load([
             'repository' => fn (BelongsTo $query) => $query->withUserScopedPackageCount(),
             'source',
+            'upstream',
         ])))
     );
 })

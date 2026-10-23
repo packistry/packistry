@@ -68,9 +68,13 @@ class StorePackage
                 ->packages()
                 ->where('source_id', $source->id)
                 ->where('provider_id', $project->id)
-                ->first() ?? $repository->packages()->make();
+                ->first()
+                ?? $repository->packages()->mirrored()->where('name', $project->fullName)->first()
+                ?? $repository->packages()->make();
 
-            if (! $package->exists) {
+            if (! $package->exists || $package->isMirrored()) {
+                $package->convertToLocal();
+
                 $package->provider_id = (string) $project->id;
                 $package->source_id = $source->id;
 

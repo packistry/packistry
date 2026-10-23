@@ -5,12 +5,29 @@ import { versionSchema } from '@/api/version'
 import { repository } from '@/api/repository'
 import { source } from '@/api/source'
 
+export const packageOrigins = ['local', 'mirrored', 'all'] as const
+
+export const packageOrigin = z.enum(packageOrigins)
+
+export type PackageOrigin = z.infer<typeof packageOrigin>
+
+export const mirrorStatus = z.enum(['ok', 'gone'])
+
 export const packageSchema = z.object({
     id: z.coerce.string(),
     name: z.string(),
     repositoryId: z.number(),
     repository: repository.optional(),
     source: source.optional().nullable(),
+    upstreamId: z.number().nullable().optional(),
+    mirrorStatus: mirrorStatus.nullable().optional(),
+    upstream: z
+        .object({
+            id: z.coerce.string(),
+            name: z.string(),
+        })
+        .nullable()
+        .optional(),
     description: z.string().nullable(),
     totalDownloads: z.number(),
     latestVersion: z.string().nullable(),
@@ -24,10 +41,12 @@ export type Package = z.infer<typeof packageSchema>
 export const packageQuery = paginatedQuery({
     filters: z.object({
         repositoryId: z.string().optional(),
+        upstreamId: z.string().optional(),
+        origin: packageOrigin.optional(),
         search: z.string().optional(),
     }),
     sort: z.enum(['totalDownloads', '-totalDownloads', 'name', '-name']),
-    include: z.enum(['repository']),
+    include: z.enum(['repository', 'upstream']),
 })
 
 export type PackageQuery = z.infer<typeof packageQuery>
@@ -63,6 +82,10 @@ export function storePackage(input: z.infer<typeof storePackageInput>) {
 
 export function deletePackage(packageId: string) {
     return del(packageSchema, `/packages/${packageId}`)
+}
+
+export function refreshPackage(packageId: string) {
+    return post(packageSchema, `/packages/${packageId}/refresh`, {})
 }
 
 export function rebuildPackage(packageId: string) {

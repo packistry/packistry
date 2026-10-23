@@ -37,6 +37,7 @@ it('shows index', function (?User $user, int $status): void {
 
     $repositories = $query
         ->withUserScopedPackageCount($user)
+        ->with('upstreams')
         ->paginate(10);
 
     $response->assertJsonPath('data', json_decode(RepositoryResource::collection($repositories)->toJson(), true));
@@ -55,7 +56,7 @@ it('searches', function (?User $user, int $status): void {
         ])
         ->create();
 
-    $repository->loadCount('packages');
+    $repository->loadCount('packages')->load('upstreams');
 
     getJson("/api/repositories?filter[search]=$name")
         ->assertStatus($status)
@@ -80,6 +81,7 @@ it('shows repository with package-level user access', function (): void {
 
     $expected = Repository::userScoped($user)
         ->withUserScopedPackageCount($user)
+        ->with('upstreams')
         ->paginate(10);
 
     getJson('/api/repositories')
@@ -95,7 +97,7 @@ it('filters by public', function (?User $user, int $status): void {
         ])
         ->create();
 
-    $repository->loadCount('packages');
+    $repository->loadCount('packages')->load('upstreams');
 
     getJson('/api/repositories?filter[public]=true')
         ->assertStatus($status)

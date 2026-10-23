@@ -7,6 +7,7 @@ use App\Enums\Role;
 use App\Models\AuthenticationSource;
 use App\Models\Package;
 use App\Models\Repository;
+use App\Models\Upstream;
 use App\Models\User;
 use App\OIDCConfiguration;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +82,8 @@ it('handles OIDC callback and creates user', function () {
         ->sync($repositories = Repository::factory()->count(10)->create());
     $this->source->packages()
         ->sync($packages = Package::factory()->for($repositories->first())->count(3)->create());
+    $this->source->upstreams()
+        ->sync($upstreams = Upstream::factory()->count(2)->create());
 
     get("{$this->source->callbackUrl()}?state=$state")
         ->assertRedirect('/');
@@ -96,6 +99,7 @@ it('handles OIDC callback and creates user', function () {
         ->external_id->toBe('123456')
         ->and($user->repositories->pluck('id')->toArray())->toEqual($repositories->pluck('id')->toArray())
         ->and($user->packages->pluck('id')->toArray())->toEqual($packages->pluck('id')->toArray())
+        ->and($user->upstreams->pluck('id')->toArray())->toEqual($upstreams->pluck('id')->toArray())
         ->and(Auth::check())->toBeTrue();
 });
 

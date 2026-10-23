@@ -34,7 +34,8 @@ class RepositoryBuilder extends Builder
     public function withUserScopedPackageCount(?User $user = null): RepositoryBuilder
     {
         return $this->withCount([
-            'packages' => fn (PackageBuilder $packagesQuery) => $packagesQuery->userScoped($user),
+            // mirrored packages are not counted, they are hidden from package listings by default
+            'packages' => fn (PackageBuilder $packagesQuery) => $packagesQuery->userScoped($user)->local(),
         ]);
     }
 

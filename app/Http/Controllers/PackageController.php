@@ -7,12 +7,14 @@ namespace App\Http\Controllers;
 use App\Actions\Packages\DestroyPackage;
 use App\Actions\Packages\Inputs\StorePackageInput;
 use App\Actions\Packages\RebuildPackage;
+use App\Actions\Packages\RefreshMirroredPackage;
 use App\Actions\Packages\StorePackage;
 use App\Enums\Permission;
 use App\Http\Resources\PackageResource;
 use App\Models\Download;
 use App\Models\Package;
 use App\SearchFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,6 +28,7 @@ readonly class PackageController extends Controller
         private StorePackage $storePackage,
         private DestroyPackage $destroyPackage,
         private RebuildPackage $rebuildPackage,
+        private RefreshMirroredPackage $refreshMirroredPackage,
     ) {
         //
     }
@@ -38,9 +41,16 @@ readonly class PackageController extends Controller
             ->allowedFilters(
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('repository_id'),
+                AllowedFilter::exact('upstream_id'),
+                AllowedFilter::callback('origin', fn (Builder $query, mixed $value) => match ($value) {
+                    'mirrored' => $query->whereNotNull('mirror_status'),
+                    'all' => $query,
+                    default => $query->whereNull('mirror_status'),
+                })->default('local'),
             )
             ->allowedIncludes(
                 'repository',
+                'upstream',
             )
             ->allowedSorts(
                 'total_downloads',
@@ -80,6 +90,7 @@ readonly class PackageController extends Controller
                 $query->getQuery()->withUserScopedPackageCount();
             },
             'source',
+            'upstream',
         ]);
 
         return response()->json(
@@ -126,6 +137,22 @@ readonly class PackageController extends Controller
 
         return response()->json(
             new PackageResource($package)
+        );
+    }
+
+    /**
+     * Fetch the metadata of a mirrored package from its upstream now.
+     */
+    public function refresh(string $packageId): JsonResponse
+    {
+        $this->authorize(Permission::PACKAGE_UPDATE);
+
+        $package = $this->refreshMirroredPackage->handle(
+            Package::userScoped()->findOrFail($packageId)
+        );
+
+        return response()->json(
+            new PackageResource($package->load('upstream'))
         );
     }
 }

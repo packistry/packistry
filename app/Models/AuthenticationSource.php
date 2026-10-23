@@ -37,6 +37,8 @@ use Laravel\Socialite\Two\ProviderInterface;
  * @property bool $allow_registration
  * @property-read Collection<int, Package> $packages
  * @property-read int|null $packages_count
+ * @property-read Collection<int, Upstream> $upstreams
+ * @property-read int|null $upstreams_count
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
  * @property-read Collection<int, User> $users
@@ -132,6 +134,14 @@ class AuthenticationSource extends Model
     public function packages(): BelongsToMany
     {
         return $this->belongsToMany(Package::class);
+    }
+
+    /**
+     * @return BelongsToMany<Upstream, $this>
+     */
+    public function upstreams(): BelongsToMany
+    {
+        return $this->belongsToMany(Upstream::class)->withTimestamps();
     }
 
     public function callbackUrl(): string

@@ -7,7 +7,8 @@ import { EditRepositoryDialog } from '@/components/dialog/edit-repository-dialog
 import { RepositoryBadge } from '@/components/badge/repository-badge'
 import { Link } from '@tanstack/react-router'
 import { DatabaseIcon } from 'lucide-react'
-import { REPOSITORY_CREATE, REPOSITORY_UPDATE } from '@/permission'
+import { REPOSITORY_CREATE, REPOSITORY_UPDATE, UPSTREAM_READ } from '@/permission'
+import { RepositoryUpstreamsDialog } from '@/components/dialog/repository-upstreams-dialog'
 import { actionColumn } from '@/components/table/columns'
 import { useAuth } from '@/auth'
 
@@ -75,6 +76,19 @@ export function RepositoryTable(
                     },
                 },
                 {
+                    key: 'upstreams',
+                    label: 'Upstreams',
+                    render: (repository) => {
+                        const upstreams = (repository.upstreams || []).filter(({ enabled }) => enabled !== false)
+
+                        if (upstreams.length === 0) {
+                            return <span className="text-muted-foreground">-</span>
+                        }
+
+                        return upstreams.map(({ name }) => name).join(' → ')
+                    },
+                },
+                {
                     key: 'public',
                     label: 'Visibility',
                     head: {
@@ -85,11 +99,22 @@ export function RepositoryTable(
                 {
                     ...actionColumn,
                     permission: REPOSITORY_UPDATE,
+                    head: {
+                        className: 'text-right w-[200px]',
+                    },
                     render: (repository) => (
-                        <EditRepositoryDialog
-                            repository={repository}
-                            trigger={<Button variant="ghost">Manage</Button>}
-                        />
+                        <div className="flex justify-end">
+                            {can(UPSTREAM_READ) && (
+                                <RepositoryUpstreamsDialog
+                                    repository={repository}
+                                    trigger={<Button variant="ghost">Upstreams</Button>}
+                                />
+                            )}
+                            <EditRepositoryDialog
+                                repository={repository}
+                                trigger={<Button variant="ghost">Manage</Button>}
+                            />
+                        </div>
                     ),
                 },
             ]}

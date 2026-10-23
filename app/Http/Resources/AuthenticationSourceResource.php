@@ -32,6 +32,13 @@ class AuthenticationSourceResource extends JsonResource
             'default_user_role' => $this->default_user_role,
             'repositories' => RepositoryResource::collection($this->whenLoaded('repositories')),
             'packages' => PackageResource::collection($this->whenLoaded('packages')),
+            'upstreams' => $this->whenLoaded('upstreams', fn (): array => $this->upstreams
+                ->map(fn ($upstream): array => [
+                    'id' => $upstream->id,
+                    'name' => $upstream->name,
+                ])
+                ->values()
+                ->all()),
             'callback_url' => $this->callbackUrl(),
             'active' => $this->active,
             'allow_registration' => $this->allow_registration,

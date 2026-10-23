@@ -20,6 +20,7 @@ use App\Models\DeployToken;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
+use App\Models\Upstream;
 use App\Models\User;
 use App\Sources\Bitbucket\Change;
 use App\Sources\Bitbucket\Link;
@@ -32,6 +33,7 @@ use App\Sources\Gitea\Event\PushEvent;
 use App\Sources\Gitea\Repository as GiteaRepository;
 use App\Sources\Gitlab\Project;
 use App\Sources\Importable;
+use Composer\MetadataMinifier\MetadataMinifier;
 use Database\Factories\RepositoryFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
@@ -334,9 +336,7 @@ function guestAndTokens(
             null,
         ],
         "$deployTokenWithoutPackagesStatus deploy token without packages ($imploded)" => [
-            function () use ($abilities): DeployToken {
-                return deployToken($abilities, withPackages: []);
-            },
+            fn (): DeployToken => deployToken($abilities, withPackages: []),
             $deployTokenWithoutPackagesStatus,
             [],
         ],
@@ -487,7 +487,6 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                 push: new Push(
                     changes: [
                         new Change(
-                            old: null,
                             new: new Reference(
                                 name: $ref,
                                 type: $refType === 'heads' ? 'commit' : 'tag',
@@ -599,7 +598,6 @@ function providerDeleteEvents(string $refType = 'tags', string $ref = '1.0.0'): 
                                 name: $ref,
                                 type: $refType === 'heads' ? 'commit' : 'tag',
                             ),
-                            new: null,
                         ),
                     ]
                 ),
@@ -650,4 +648,54 @@ function validation(array $errors): array
         'message' => "{$errors[array_key_first($errors)][0]} ".trans_choice('(and :count more errors)', $count),
         'errors' => $errors,
     ];
+}
+
+/**
+ * @param  array<int, array<string, mixed>>  $versions
+ * @return array<string, mixed>
+ */
+function upstreamMetadata(string $name, array $versions, bool $minified = true): array
+{
+    $versions = array_map(fn (array $version): array => ['name' => $name, ...$version], $versions);
+
+    return $minified
+        ? ['minified' => 'composer/2.0', 'packages' => [$name => MetadataMinifier::minify($versions)]]
+        : ['packages' => [$name => $versions]];
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function upstreamVersion(string $version, string $reference, ?string $url = null, string $shasum = ''): array
+{
+    return [
+        'version' => $version,
+        'type' => 'library',
+        'description' => 'An upstream package',
+        'time' => '2026-01-01T00:00:00+00:00',
+        'dist' => [
+            'type' => 'zip',
+            'url' => $url ?? "https://api.github.com/repos/acme/package/zipball/$reference",
+            'reference' => $reference,
+            'shasum' => $shasum,
+        ],
+    ];
+}
+
+/**
+ * @param  Upstream|Upstream[]  $upstreams  in priority order
+ */
+function mirroredRepository(Upstream|array $upstreams, bool $public = false, ?string $path = 'sub'): Repository
+{
+    $repository = Repository::factory()
+        ->state(['path' => $path, 'public' => $public])
+        ->create();
+
+    $upstreams = is_array($upstreams) ? $upstreams : [$upstreams];
+
+    foreach (array_values($upstreams) as $priority => $upstream) {
+        $repository->upstreams()->attach($upstream->id, ['priority' => $priority, 'enabled' => true]);
+    }
+
+    return $repository;
 }

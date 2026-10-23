@@ -24,6 +24,7 @@ export function EditUserDialog({ user, trigger }: EditUserDialogProps) {
             ...user,
             repositories: user.repositories?.map(({ id }) => id) || [],
             packages: user.packages?.map(({ id }) => id) || [],
+            upstreams: user.upstreams?.map(({ id }) => id) || [],
             password: '',
         },
         onSuccess() {
