@@ -53,6 +53,10 @@ class Token extends PersonalAccessToken
     #[Override]
     public static function findToken($token): ?PersonalAccessToken
     {
+        if (! str_contains($token, '-')) {
+            return null;
+        }
+
         [, $token] = explode('-', $token, 2);
 
         return parent::findToken($token);
