@@ -43,7 +43,7 @@ export function DownloadsChart({ data }: { data?: DownloadsPerDate[] }) {
                             className="w-[150px]"
                             nameKey="downloads"
                             labelFormatter={(value) => {
-                                return new Date(value).toLocaleDateString(undefined, {
+                                return new Date(String(value)).toLocaleDateString(undefined, {
                                     month: 'short',
                                     day: 'numeric',
                                     year: 'numeric',

@@ -9,61 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthIndexRouteImport } from './routes/_auth.index'
-import { Route as AuthUsersRouteImport } from './routes/_auth.users'
-import { Route as AuthSourcesRouteImport } from './routes/_auth.sources'
-import { Route as AuthRepositoriesRouteImport } from './routes/_auth.repositories'
-import { Route as AuthPersonalTokensRouteImport } from './routes/_auth.personal-tokens'
-import { Route as AuthImportBatchesRouteImport } from './routes/_auth.import-batches'
-import { Route as AuthDeployTokensRouteImport } from './routes/_auth.deploy-tokens'
 import { Route as AuthAuthenticationSourcesRouteImport } from './routes/_auth.authentication-sources'
+import { Route as AuthDeployTokensRouteImport } from './routes/_auth.deploy-tokens'
+import { Route as AuthImportBatchesRouteImport } from './routes/_auth.import-batches'
+import { Route as AuthPersonalTokensRouteImport } from './routes/_auth.personal-tokens'
+import { Route as AuthRepositoriesRouteImport } from './routes/_auth.repositories'
+import { Route as AuthSourcesRouteImport } from './routes/_auth.sources'
+import { Route as AuthUsersRouteImport } from './routes/_auth.users'
 import { Route as AuthPackagesIndexRouteImport } from './routes/_auth.packages.index'
 import { Route as AuthPackagesPackageIdRouteImport } from './routes/_auth.packages.$packageId'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthUsersRoute = AuthUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthSourcesRoute = AuthSourcesRouteImport.update({
-  id: '/sources',
-  path: '/sources',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthRepositoriesRoute = AuthRepositoriesRouteImport.update({
-  id: '/repositories',
-  path: '/repositories',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthPersonalTokensRoute = AuthPersonalTokensRouteImport.update({
-  id: '/personal-tokens',
-  path: '/personal-tokens',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthImportBatchesRoute = AuthImportBatchesRouteImport.update({
-  id: '/import-batches',
-  path: '/import-batches',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthDeployTokensRoute = AuthDeployTokensRouteImport.update({
-  id: '/deploy-tokens',
-  path: '/deploy-tokens',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthAuthenticationSourcesRoute =
@@ -72,6 +42,36 @@ const AuthAuthenticationSourcesRoute =
     path: '/authentication-sources',
     getParentRoute: () => AuthRoute,
   } as any)
+const AuthDeployTokensRoute = AuthDeployTokensRouteImport.update({
+  id: '/deploy-tokens',
+  path: '/deploy-tokens',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthImportBatchesRoute = AuthImportBatchesRouteImport.update({
+  id: '/import-batches',
+  path: '/import-batches',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthPersonalTokensRoute = AuthPersonalTokensRouteImport.update({
+  id: '/personal-tokens',
+  path: '/personal-tokens',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthRepositoriesRoute = AuthRepositoriesRouteImport.update({
+  id: '/repositories',
+  path: '/repositories',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSourcesRoute = AuthSourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthUsersRoute = AuthUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthPackagesIndexRoute = AuthPackagesIndexRouteImport.update({
   id: '/packages/',
   path: '/packages/',
@@ -174,18 +174,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/': {
@@ -195,39 +195,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/users': {
-      id: '/_auth/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthUsersRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/sources': {
-      id: '/_auth/sources'
-      path: '/sources'
-      fullPath: '/sources'
-      preLoaderRoute: typeof AuthSourcesRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/repositories': {
-      id: '/_auth/repositories'
-      path: '/repositories'
-      fullPath: '/repositories'
-      preLoaderRoute: typeof AuthRepositoriesRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/personal-tokens': {
-      id: '/_auth/personal-tokens'
-      path: '/personal-tokens'
-      fullPath: '/personal-tokens'
-      preLoaderRoute: typeof AuthPersonalTokensRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/import-batches': {
-      id: '/_auth/import-batches'
-      path: '/import-batches'
-      fullPath: '/import-batches'
-      preLoaderRoute: typeof AuthImportBatchesRouteImport
+    '/_auth/authentication-sources': {
+      id: '/_auth/authentication-sources'
+      path: '/authentication-sources'
+      fullPath: '/authentication-sources'
+      preLoaderRoute: typeof AuthAuthenticationSourcesRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/deploy-tokens': {
@@ -237,11 +209,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDeployTokensRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/authentication-sources': {
-      id: '/_auth/authentication-sources'
-      path: '/authentication-sources'
-      fullPath: '/authentication-sources'
-      preLoaderRoute: typeof AuthAuthenticationSourcesRouteImport
+    '/_auth/import-batches': {
+      id: '/_auth/import-batches'
+      path: '/import-batches'
+      fullPath: '/import-batches'
+      preLoaderRoute: typeof AuthImportBatchesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/personal-tokens': {
+      id: '/_auth/personal-tokens'
+      path: '/personal-tokens'
+      fullPath: '/personal-tokens'
+      preLoaderRoute: typeof AuthPersonalTokensRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/repositories': {
+      id: '/_auth/repositories'
+      path: '/repositories'
+      fullPath: '/repositories'
+      preLoaderRoute: typeof AuthRepositoriesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/sources': {
+      id: '/_auth/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof AuthSourcesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/users': {
+      id: '/_auth/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthUsersRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/packages/': {
