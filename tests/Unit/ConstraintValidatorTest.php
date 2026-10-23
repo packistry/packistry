@@ -20,13 +20,13 @@ it('finds invalid constraints', function (array $metadata, array $expected): voi
             ['require' => []],
             [],
         ],
-        'finds link key that is not an array' => [
+        'ignores link key that is not an array, like composer' => [
             ['require' => 'laravel/framework', 'license' => 'MIT'],
-            ['require'],
+            [],
         ],
-        'finds non string constraint' => [
-            ['require' => ['php' => ['^8.4'], 'laravel/framework' => '^12']],
-            ['require.php'],
+        'ignores non string constraint, like composer' => [
+            ['require' => ['php' => ['^8.4'], 'laravel/framework' => '^^12']],
+            ['require.laravel/framework'],
         ],
         'accepts self.version' => [
             ['replace' => ['vendor/split-package' => 'self.version']],

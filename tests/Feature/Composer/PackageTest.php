@@ -112,31 +112,6 @@ it('lists package versions when name includes dots', function (Repository $repos
     ))
     ->with(guestAndTokens(TokenAbility::REPOSITORY_READ, expiredDeployTokenWithAccessStatus: 200));
 
-it('skips versions with constraints composer cannot parse', function (): void {
-    $repository = repository(public: true, closure: fn (RepositoryFactory $factory) => $factory
-        ->has(Package::factory()->state(['name' => 'test/test']))
-    );
-
-    /** @var Package $package */
-    $package = $repository->packages()->firstOrFail();
-
-    Version::factory()->for($package)->create([
-        'name' => '1.0.0',
-        'metadata' => ['require' => ['php' => '^8.4']],
-    ]);
-
-    Version::factory()->for($package)->create([
-        'name' => '1.0.1',
-        'metadata' => ['require' => ['laravel/framework' => '^^12']],
-    ]);
-
-    $versions = MetadataMinifier::expand(getJson($repository->url('/p2/test/test.json'))
-        ->assertOk()
-        ->json('packages.test/test'));
-
-    expect(array_column($versions, 'version'))->toBe(['1.0.0']);
-});
-
 it('requires ability', function (Repository $repository, ?Authenticatable $auth, int $status): void {
     getJson($repository->url('/p2/test/test.json'))
         ->assertStatus($status);

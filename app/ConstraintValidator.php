@@ -46,18 +46,13 @@ class ConstraintValidator
         $invalid = [];
 
         foreach (self::LINK_KEYS as $key) {
-            if (! array_key_exists($key, $metadata)) {
-                continue;
-            }
-
-            if (! is_array($metadata[$key])) {
-                $invalid[] = $key;
-
+            // Composer ignores link keys that are not an array, see ArrayLoader::load()
+            if (! isset($metadata[$key]) || ! is_array($metadata[$key])) {
                 continue;
             }
 
             foreach ($metadata[$key] as $target => $constraint) {
-                if (! $this->isParsable($constraint)) {
+                if (! $this->isValid($constraint)) {
                     $invalid[] = "$key.$target";
                 }
             }
@@ -66,10 +61,11 @@ class ConstraintValidator
         return $invalid;
     }
 
-    private function isParsable(mixed $constraint): bool
+    private function isValid(mixed $constraint): bool
     {
+        // Composer ignores constraints that are not a string, see ArrayLoader::parseLinks()
         if (! is_string($constraint)) {
-            return false;
+            return true;
         }
 
         // Composer resolves self.version before parsing, see ArrayLoader::createLink()
