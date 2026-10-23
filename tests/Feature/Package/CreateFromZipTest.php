@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use App\CreateFromZip;
+use App\Exceptions\InvalidConstraintException;
 use App\Models\Package;
 use App\Models\Repository;
+use App\Models\Version;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -80,5 +82,63 @@ it('updates the package name when a newer version is imported after an older one
     } finally {
         @unlink($oldZip);
         @unlink($newZip);
+    }
+});
+
+it('rejects a version with constraints composer cannot parse', function (): void {
+    Storage::fake();
+
+    $repository = Repository::factory()->create();
+    /** @var Package $package */
+    $package = Package::factory()->for($repository)->create(['name' => 'vendor/initial']);
+
+    $zip = makeComposerZip('vendor/package', '1.0.9', [
+        'require' => [
+            'php' => '^8.4',
+            'laravel/framework' => '^^12 || ^13',
+        ],
+    ]);
+
+    try {
+        expect(fn (): Version => app(CreateFromZip::class)->create($package, $zip, '1.0.9'))
+            ->toThrow(InvalidConstraintException::class, 'invalid version constraint in require.laravel/framework');
+
+        expect($package->versions()->count())->toBe(0)
+            ->and($package->refresh()->name)->toBe('vendor/initial');
+    } finally {
+        @unlink($zip);
+    }
+});
+
+it('keeps the existing version when a reimport has constraints composer cannot parse', function (): void {
+    Storage::fake();
+
+    $repository = Repository::factory()->create();
+    /** @var Package $package */
+    $package = Package::factory()->for($repository)->create();
+
+    $version = Version::factory()->for($package)->create([
+        'name' => '1.0.9',
+        'metadata' => [
+            'require' => [
+                'laravel/framework' => '^12',
+            ],
+        ],
+    ]);
+
+    $zip = makeComposerZip('vendor/package', '1.0.9', [
+        'require' => [
+            'laravel/framework' => '^^12 || ^13',
+        ],
+    ]);
+
+    try {
+        expect(fn (): Version => app(CreateFromZip::class)->create($package, $zip, '1.0.9'))
+            ->toThrow(InvalidConstraintException::class);
+
+        expect($version->refresh()->metadata)
+            ->toBe(['require' => ['laravel/framework' => '^12']]);
+    } finally {
+        @unlink($zip);
     }
 });
