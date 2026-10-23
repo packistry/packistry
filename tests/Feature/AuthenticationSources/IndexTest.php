@@ -12,7 +12,7 @@ use function Pest\Laravel\getJson;
 it('indexes', function (?User $user, int $status): void {
     $sources = AuthenticationSource::factory()->count(10)->create();
 
-    $sources->load('repositories', 'packages');
+    $sources->load('repositories', 'packages', 'upstreams');
 
     $response = getJson('/api/authentication-sources')
         ->assertStatus($status);

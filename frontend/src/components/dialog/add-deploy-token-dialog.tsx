@@ -27,6 +27,7 @@ export function AddDeployTokenDialog(props: AddDeployTokenDialog) {
             abilities: ['repository:read'],
             expiresAt: '',
             repositories: [],
+            upstreams: [],
         },
         onSuccess({ plainText }) {
             toast('Deploy Token has been created', {

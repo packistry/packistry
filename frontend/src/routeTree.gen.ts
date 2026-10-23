@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth.index'
 import { Route as AuthUsersRouteImport } from './routes/_auth.users'
+import { Route as AuthUpstreamsRouteImport } from './routes/_auth.upstreams'
 import { Route as AuthSourcesRouteImport } from './routes/_auth.sources'
 import { Route as AuthRepositoriesRouteImport } from './routes/_auth.repositories'
 import { Route as AuthPersonalTokensRouteImport } from './routes/_auth.personal-tokens'
@@ -39,6 +40,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
 const AuthUsersRoute = AuthUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthUpstreamsRoute = AuthUpstreamsRouteImport.update({
+  id: '/upstreams',
+  path: '/upstreams',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthSourcesRoute = AuthSourcesRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/personal-tokens': typeof AuthPersonalTokensRoute
   '/repositories': typeof AuthRepositoriesRoute
   '/sources': typeof AuthSourcesRoute
+  '/upstreams': typeof AuthUpstreamsRoute
   '/users': typeof AuthUsersRoute
   '/packages/$packageId': typeof AuthPackagesPackageIdRoute
   '/packages/': typeof AuthPackagesIndexRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/personal-tokens': typeof AuthPersonalTokensRoute
   '/repositories': typeof AuthRepositoriesRoute
   '/sources': typeof AuthSourcesRoute
+  '/upstreams': typeof AuthUpstreamsRoute
   '/users': typeof AuthUsersRoute
   '/': typeof AuthIndexRoute
   '/packages/$packageId': typeof AuthPackagesPackageIdRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/_auth/personal-tokens': typeof AuthPersonalTokensRoute
   '/_auth/repositories': typeof AuthRepositoriesRoute
   '/_auth/sources': typeof AuthSourcesRoute
+  '/_auth/upstreams': typeof AuthUpstreamsRoute
   '/_auth/users': typeof AuthUsersRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/packages/$packageId': typeof AuthPackagesPackageIdRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/personal-tokens'
     | '/repositories'
     | '/sources'
+    | '/upstreams'
     | '/users'
     | '/packages/$packageId'
     | '/packages/'
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/personal-tokens'
     | '/repositories'
     | '/sources'
+    | '/upstreams'
     | '/users'
     | '/'
     | '/packages/$packageId'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/_auth/personal-tokens'
     | '/_auth/repositories'
     | '/_auth/sources'
+    | '/_auth/upstreams'
     | '/_auth/users'
     | '/_auth/'
     | '/_auth/packages/$packageId'
@@ -200,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthUsersRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/upstreams': {
+      id: '/_auth/upstreams'
+      path: '/upstreams'
+      fullPath: '/upstreams'
+      preLoaderRoute: typeof AuthUpstreamsRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/sources': {
@@ -268,6 +287,7 @@ interface AuthRouteChildren {
   AuthPersonalTokensRoute: typeof AuthPersonalTokensRoute
   AuthRepositoriesRoute: typeof AuthRepositoriesRoute
   AuthSourcesRoute: typeof AuthSourcesRoute
+  AuthUpstreamsRoute: typeof AuthUpstreamsRoute
   AuthUsersRoute: typeof AuthUsersRoute
   AuthIndexRoute: typeof AuthIndexRoute
   AuthPackagesPackageIdRoute: typeof AuthPackagesPackageIdRoute
@@ -281,6 +301,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthPersonalTokensRoute: AuthPersonalTokensRoute,
   AuthRepositoriesRoute: AuthRepositoriesRoute,
   AuthSourcesRoute: AuthSourcesRoute,
+  AuthUpstreamsRoute: AuthUpstreamsRoute,
   AuthUsersRoute: AuthUsersRoute,
   AuthIndexRoute: AuthIndexRoute,
   AuthPackagesPackageIdRoute: AuthPackagesPackageIdRoute,

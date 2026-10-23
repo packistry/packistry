@@ -65,6 +65,21 @@ export function ViewDeployTokenDialog({ token, trigger, ...dialogProps }: ViewDe
                                 ))}
                             </div>
                         </div>
+                        {token.upstreams.length > 0 && (
+                            <div className="space-y-1">
+                                <p className="text-sm text-muted-foreground">Upstreams</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {token.upstreams.map((upstream) => (
+                                        <Badge
+                                            key={upstream.id}
+                                            variant="secondary"
+                                        >
+                                            {upstream.name}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <div className="space-y-4 grow">
                         <RepositoryPackageTree

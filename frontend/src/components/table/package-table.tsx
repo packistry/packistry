@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/auth'
 import { PACKAGE_CREATE, PACKAGE_DELETE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
+import { MirroredBadge } from '@/components/badge/mirrored-badge'
 
 export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<PaginatedPackage>>, 'empty' | 'columns'>) {
     const { can } = useAuth()
@@ -46,15 +47,18 @@ export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     },
                     render: (record) => {
                         return (
-                            <Link
-                                to="/packages/$packageId"
-                                className="underline"
-                                params={{
-                                    packageId: record.id,
-                                }}
-                            >
-                                {record.name}
-                            </Link>
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    to="/packages/$packageId"
+                                    className="underline"
+                                    params={{
+                                        packageId: record.id,
+                                    }}
+                                >
+                                    {record.name}
+                                </Link>
+                                <MirroredBadge pkg={record} />
+                            </div>
                         )
                     },
                 },

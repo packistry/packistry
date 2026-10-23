@@ -7,6 +7,7 @@ namespace App\Listeners;
 use App\Events\PackageDownloadEvent;
 use App\Models\Download;
 use App\Models\Token;
+use App\Models\Version;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -28,14 +29,18 @@ class RecordPackageDownload implements ShouldQueue
             }
 
             $download->package()->associate($event->package);
-            $download->version_name = $version->name;
+            $download->version_name = $version->name ?? (string) $event->versionName;
 
-            $version
-                ->downloads()
-                ->save($download);
+            if (! $version instanceof Version) {
+                $download->save();
+            } else {
+                $version
+                    ->downloads()
+                    ->save($download);
 
-            $version->total_downloads += 1;
-            $version->save();
+                $version->total_downloads += 1;
+                $version->save();
+            }
 
             $event->package->total_downloads += 1;
             $event->package->save();

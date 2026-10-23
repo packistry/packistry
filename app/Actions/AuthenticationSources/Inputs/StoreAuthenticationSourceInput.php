@@ -14,6 +14,7 @@ class StoreAuthenticationSourceInput extends Input
     /**
      * @param  string[]  $defaultUserRepositories
      * @param  string[]  $defaultUserPackages
+     * @param  int[]|null  $defaultUserUpstreams
      * @param  string[]  $allowedDomains
      */
     public function __construct(
@@ -28,6 +29,7 @@ class StoreAuthenticationSourceInput extends Input
         public Role $defaultUserRole = Role::USER,
         public ?array $defaultUserRepositories = [],
         public ?array $defaultUserPackages = [],
+        public ?array $defaultUserUpstreams = [],
         public ?array $allowedDomains = [],
         public bool $allowRegistration = false
     ) {
@@ -44,6 +46,8 @@ class StoreAuthenticationSourceInput extends Input
             'default_user_repositories.*' => ['integer', 'exists:repositories,id'],
             'default_user_packages' => ['array'],
             'default_user_packages.*' => ['integer', 'exists:packages,id'],
+            'default_user_upstreams' => ['array'],
+            'default_user_upstreams.*' => ['integer', 'exists:upstreams,id'],
         ];
     }
 }

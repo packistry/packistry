@@ -78,6 +78,7 @@ readonly class HandleAuthenticationSourceCallback
                     password: Str::random(),
                     repositories: $source->repositories->pluck('id')->toArray(),
                     packages: $source->packages->pluck('id')->toArray(),
+                    upstreams: $source->upstreams->pluck('id')->toArray(),
                 )
             );
         }

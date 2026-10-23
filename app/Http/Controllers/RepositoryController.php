@@ -9,6 +9,8 @@ use App\Actions\Repositories\Inputs\StoreRepositoryInput;
 use App\Actions\Repositories\Inputs\UpdateRepositoryInput;
 use App\Actions\Repositories\StoreRepository;
 use App\Actions\Repositories\UpdateRepository;
+use App\Actions\Upstreams\Inputs\SyncRepositoryUpstreamsInput;
+use App\Actions\Upstreams\SyncRepositoryUpstreams;
 use App\Enums\Permission;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Repository;
@@ -18,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Throwable;
 
 readonly class RepositoryController extends Controller
 {
@@ -25,6 +28,7 @@ readonly class RepositoryController extends Controller
         private StoreRepository $storeRepository,
         private UpdateRepository $updateRepository,
         private DestroyRepository $destroyRepository,
+        private SyncRepositoryUpstreams $syncRepositoryUpstreams,
     ) {
         //
     }
@@ -33,7 +37,7 @@ readonly class RepositoryController extends Controller
     {
         $this->authorize(Permission::REPOSITORY_READ);
 
-        $repositories = QueryBuilder::for(Repository::query()->userScoped()->withUserScopedPackageCount())
+        $repositories = QueryBuilder::for(Repository::query()->userScoped()->withUserScopedPackageCount()->with('upstreams'))
             ->allowedFilters(
                 SearchFilter::allowed(['name', 'description']),
                 AllowedFilter::exact('public'),
@@ -72,6 +76,25 @@ readonly class RepositoryController extends Controller
         $this->authorize(Permission::REPOSITORY_UPDATE);
 
         $repository = $this->updateRepository->handle(
+            repository: Repository::userScoped()->findOrFail($repositoryId),
+            input: $input
+        );
+
+        return response()->json(
+            new RepositoryResource($repository->load('upstreams'))
+        );
+    }
+
+    /**
+     * Set the upstreams of the repository, in priority order.
+     *
+     * @throws Throwable
+     */
+    public function upstreams(SyncRepositoryUpstreamsInput $input, string $repositoryId): JsonResponse
+    {
+        $this->authorize(Permission::REPOSITORY_UPDATE);
+
+        $repository = $this->syncRepositoryUpstreams->handle(
             repository: Repository::userScoped()->findOrFail($repositoryId),
             input: $input
         );

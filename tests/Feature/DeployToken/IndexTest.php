@@ -28,7 +28,7 @@ it('indexes', function (?User $user, int $status): void {
     $response->assertJsonPath(
         'data',
         resourceAsJson(
-            DeployTokenResource::collection(DeployToken::query()->with(['token', 'repositories', 'packages'])->get())
+            DeployTokenResource::collection(DeployToken::query()->with(['token', 'repositories', 'packages', 'upstreams'])->get())
         )
     );
 })->with(guestAndUsers(Permission::DEPLOY_TOKEN_READ));
@@ -42,7 +42,7 @@ it('searches', function (?User $user, int $status): void {
         );
     })->create();
 
-    $token->load(['token', 'repositories', 'packages']);
+    $token->load(['token', 'repositories', 'packages', 'upstreams']);
 
     getJson("/api/deploy-tokens?filter[search]=$token->name")
         ->assertStatus($status)
