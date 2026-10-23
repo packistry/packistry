@@ -174,6 +174,47 @@ it('creates package in private repository', function (Repository $repository, ?A
         deployTokenWithoutPackagesStatus: 422,
     ));
 
+it('rejects version with constraints composer cannot parse', function (): void {
+    Storage::fake();
+
+    $repository = repository(public: true, closure: fn (RepositoryFactory $factory) => $factory->has(
+        Package::factory()->state(['name' => 'test/test'])
+    ));
+
+    /** @var Package $package */
+    $package = $repository->packages()->firstOrFail();
+    deployTokenWithPackageAccess($package, TokenAbility::REPOSITORY_WRITE);
+
+    $path = tempnam(sys_get_temp_dir(), 'packistry_test_');
+
+    $zip = new ZipArchive;
+    $zip->open($path, ZipArchive::OVERWRITE);
+    $zip->addFromString('composer.json', (string) json_encode([
+        'name' => 'test/test',
+        'version' => '1.0.0',
+        'require' => [
+            'laravel/framework' => '^^12',
+        ],
+    ]));
+    $zip->close();
+
+    $file = UploadedFile::fake()
+        ->createWithContent(
+            name: 'project.zip',
+            content: (string) file_get_contents($path)
+        );
+
+    @unlink($path);
+
+    post($repository->url('/test/test'), ['file' => $file])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors([
+            'file' => 'invalid version constraint in require.laravel/framework',
+        ]);
+
+    expect(Version::query()->count())->toBe(0);
+});
+
 it('allows package-scoped deploy token to upload for allowed package', function (): void {
     Storage::fake();
 

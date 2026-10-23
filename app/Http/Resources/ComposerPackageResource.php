@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\ConstraintValidator;
 use App\Models\Package;
 use App\Models\Version;
 use Composer\MetadataMinifier\MetadataMinifier;
@@ -22,7 +23,11 @@ class ComposerPackageResource extends JsonResource
     #[Override]
     public function toArray(Request $request): array
     {
+        $constraintValidator = new ConstraintValidator;
+
+        // Composer rejects the whole package when one version holds an unparsable constraint, so skip that version
         $versions = $this->versions
+            ->filter(fn (Version $version): bool => $constraintValidator->invalidConstraints($version->metadata) === [])
             ->map(fn (Version $version) => [
                 ...$version->metadata,
                 'name' => $this->name,
