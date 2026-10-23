@@ -88,7 +88,7 @@ export function RepositoryPackageTree<TFieldValues extends FieldValues>({
         queryFn: () =>
             fetchPackages({
                 size: 1000,
-                filters: { search: normalizedSearchTerm },
+                filters: { search: normalizedSearchTerm, origin: 'all' },
             }),
         enabled: isSearchActive,
     })

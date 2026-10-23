@@ -107,6 +107,17 @@ export async function patch<T, D>(schema: z.ZodType<T>, path: string, data?: D) 
         })
 }
 
+export async function put<T, D>(schema: z.ZodType<T>, path: string, data?: D) {
+    return await api
+        .put<z.ZodType<T>, AxiosResponse<z.ZodType<T>>, D>(path, data || ({} as D))
+        .then((response) => schema.parse(response.data))
+        .catch((err) => {
+            console.error(err)
+
+            throw err
+        })
+}
+
 export async function del<T>(schema: z.ZodType<T>, path: string) {
     return await api
         .delete<z.ZodType<T>>(path)

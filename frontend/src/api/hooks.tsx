@@ -22,6 +22,7 @@ import {
     PackageQuery,
     PersonalTokenQuery,
     rebuildPackage,
+    refreshPackage,
     RepositoryQuery,
     storeDeployToken,
     storePackage,
@@ -46,6 +47,15 @@ import {
     updateAuthenticationSource,
 } from '@/api/authentication-source'
 import { fetchBatches, pruneBatches } from '@/api/batch'
+import {
+    deleteUpstream,
+    fetchUpstreams,
+    storeUpstream,
+    syncRepositoryUpstreams,
+    testUpstream,
+    updateUpstream,
+    UpstreamQuery,
+} from '@/api/upstream'
 
 const repositoriesKey = ['repositories']
 const packagesKey = ['packages']
@@ -55,6 +65,7 @@ const deployTokenKey = ['deploy-tokens']
 const authenticationSourceKey = ['authentication-sources']
 const batchesKey = ['batches']
 const personalTokenKey = ['personal-tokens']
+const upstreamsKey = ['upstreams']
 
 export function useRepositories(query: RepositoryQuery) {
     return useQuery({
@@ -170,6 +181,20 @@ export function useRebuildPackage() {
 
     return useMutation({
         mutationFn: rebuildPackage,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useRefreshPackage() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: refreshPackage,
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: packagesKey,
@@ -473,6 +498,109 @@ export function usePruneBatches() {
         onSuccess() {
             queryClient.invalidateQueries({
                 queryKey: [...batchesKey],
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useUpstreams(query: UpstreamQuery, { enabled = true }: { enabled?: boolean } = {}) {
+    return useQuery({
+        queryFn: () => fetchUpstreams(query),
+        queryKey: [...upstreamsKey, query],
+        enabled,
+    })
+}
+
+export function useStoreUpstream() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: storeUpstream,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: upstreamsKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useUpdateUpstream() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateUpstream,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: upstreamsKey,
+                exact: false,
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: repositoriesKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useDeleteUpstream() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: deleteUpstream,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: upstreamsKey,
+                exact: false,
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: repositoriesKey,
+                exact: false,
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useTestUpstream() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: testUpstream,
+        onSettled() {
+            queryClient.invalidateQueries({
+                queryKey: upstreamsKey,
+                exact: false,
+            })
+        },
+    })
+}
+
+export function useSyncRepositoryUpstreams() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: syncRepositoryUpstreams,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: repositoriesKey,
+                exact: false,
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: upstreamsKey,
+                exact: false,
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: packagesKey,
                 exact: false,
             })
         },

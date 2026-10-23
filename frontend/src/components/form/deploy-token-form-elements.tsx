@@ -5,6 +5,7 @@ import { FormCheckboxGroup } from '@/components/form/elements/form-checkbox-grou
 import { FormDatePicker } from '@/components/form/elements/form-date-picker'
 import { StoreDeployTokenInput } from '@/api'
 import { RepositoryPackageTree } from '@/components/form/elements/repository-package-tree'
+import { FormUpstreamCheckboxGroup } from '@/components/form/elements/form-upstream-checkbox-group'
 
 export function DeployTokenFormElements({ form }: { form: UseFormReturn<StoreDeployTokenInput> }) {
     return (
@@ -39,6 +40,7 @@ export function DeployTokenFormElements({ form }: { form: UseFormReturn<StoreDep
                     description="Select repositories for full access, or expand a repository and select only specific packages."
                     control={form.control}
                 />
+                <FormUpstreamCheckboxGroup control={form.control} />
             </div>
         </div>
     )

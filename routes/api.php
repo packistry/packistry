@@ -12,6 +12,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\SourceController;
+use App\Http\Controllers\UpstreamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersionController;
 use App\Http\Controllers\Webhook;
@@ -34,6 +35,8 @@ if (! function_exists('repositoryRoutes')) {
             ->where(['vendor' => '[^/]+', 'name' => '[^/]+']);
         Route::get('/p2/{vendor}/{name}.json', [Composer\RepositoryController::class, 'package'])
             ->where(['vendor' => '[^/]+', 'name' => '[^/]+']);
+        Route::get('/_mirror/{vendor}/{name}/{reference}', [Composer\MirrorController::class, 'download'])
+            ->where(['vendor' => '[^/]+', 'name' => '[^/]+', 'reference' => '[^/]+']);
         Route::post('/{vendor}/{name}', [Composer\RepositoryController::class, 'upload']);
         Route::get('/{vendor}/{name}/{version}', [Composer\RepositoryController::class, 'download'])
             ->where('version', '.*');
@@ -65,10 +68,17 @@ Route::middleware('web')->prefix('/api')->group(function (): void {
         Route::apiResource('/repositories', RepositoryController::class)
             ->only(['index', 'store', 'destroy', 'update']);
 
+        Route::put('/repositories/{repositoryId}/upstreams', [RepositoryController::class, 'upstreams']);
+
+        Route::post('/upstreams/{upstreamId}/test', [UpstreamController::class, 'test']);
+        Route::apiResource('/upstreams', UpstreamController::class)
+            ->only(['index', 'show', 'store', 'update', 'destroy']);
+
         Route::apiResource('/packages', PackageController::class)
             ->only(['index', 'store', 'destroy', 'show']);
 
         Route::post('/packages/{packageId}/rebuild', [PackageController::class, 'rebuild']);
+        Route::post('/packages/{packageId}/refresh', [PackageController::class, 'refresh']);
 
         Route::apiResource('/packages/{packageId}/versions', VersionController::class)
             ->only(['index']);

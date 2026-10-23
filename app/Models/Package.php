@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\MirrorStatus;
 use App\Models\Builders\PackageBuilder;
 use Database\Factories\PackageFactory;
 use Eloquent;
@@ -14,11 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property int $id
  * @property int $repository_id
  * @property int|null $source_id
+ * @property int|null $upstream_id
+ * @property MirrorStatus|null $mirror_status
  * @property string|null $provider_id
  * @property string $name
  * @property string|null $latest_version
@@ -29,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Repository $repository
  * @property-read Source|null $source
+ * @property-read Upstream|null $upstream
  * @property-read Collection<int, Version> $versions
  * @property-read int|null $versions_count
  *
@@ -48,6 +53,10 @@ class Package extends Model
         'total_downloads' => 0,
     ];
 
+    protected $casts = [
+        'mirror_status' => MirrorStatus::class,
+    ];
+
     /**
      * @return BelongsTo<Repository, $this>
      */
@@ -62,6 +71,34 @@ class Package extends Model
     public function source(): BelongsTo
     {
         return $this->belongsTo(Source::class);
+    }
+
+    /**
+     * @return BelongsTo<Upstream, $this>
+     */
+    public function upstream(): BelongsTo
+    {
+        return $this->belongsTo(Upstream::class);
+    }
+
+    public function isMirrored(): bool
+    {
+        return $this->mirror_status !== null;
+    }
+
+    /**
+     * Turn a mirrored package into a local one, keeping its id, grants and download history.
+     */
+    public function convertToLocal(): void
+    {
+        if (! $this->isMirrored()) {
+            return;
+        }
+
+        Log::warning("Package $this->name [$this->id] was mirrored from upstream [$this->upstream_id] and is now local");
+
+        $this->upstream_id = null;
+        $this->mirror_status = null;
     }
 
     /**

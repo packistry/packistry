@@ -30,7 +30,7 @@ it('updates', function (?User $user, int $status): void {
 
     $response->assertExactJson(
         resourceAsJson(new RepositoryResource(
-            $repository->fresh()
+            $repository->fresh()?->load('upstreams')
         ))
     );
 

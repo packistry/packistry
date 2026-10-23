@@ -23,6 +23,8 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Human Access Control**: Create user accounts to assign and manage access to your private repositories, ensuring only authorized individuals can interact with sensitive content.
     - **Machine Access Control**: Generate deploy tokens to allow machines (e.g., build systems or CI/CD pipelines) to access private repositories, ensuring smooth, secure automation.
 
+- **Upstream Mirroring**: Serve packages from Packagist, GitLab groups, Private Packagist or any other Composer 2 repository through Packistry. Packistry caches their metadata and dists, so installs keep working while an upstream is down, and clients only need one repository and one Packistry token.
+
 - **Authentication Sources**: Packistry supports **Single Sign-On (SSO)** through OAuth 2.0 and OpenID Connect.
     - **OpenID Connect**: Authenticate using an OIDC provider, such as Okta or Microsoft Azure AD (Entra ID).
     - **GitHub**: Authenticate using your GitHub account.
@@ -56,6 +58,51 @@ docker exec -it $(docker ps | grep ":80->" | awk '{print $1}') packistry add:use
 Now, open http://localhost in your browser and log in with the newly created user. Note: Webhooks will not be delivered to localhost.
 
 - Explore the docs at **[https://packistry.github.io/ »](https://packistry.github.io/)** for more options to run Packistry.
+
+### Upstream mirroring
+
+Upstreams are Composer repositories that Packistry mirrors, for example Packagist or the package registry of a GitLab group. Add them under **Upstreams** and attach them to a repository (**Repositories → Upstreams**) in priority order. When a package is requested that the repository does not have, Packistry asks the upstreams from top to bottom: the first upstream that has the package serves it, versions are never merged and your own packages always win.
+
+Packistry caches the metadata (revalidated every 5 minutes) and downloads every dist once. When an upstream is down, cached metadata and dists keep being served.
+
+- **Credentials** are configured per upstream and per host, and only sent to that host. A GitLab group typically needs an HTTP Basic credential for its host (a deploy token with `read_package_registry`), Packagist works without credentials but benefits from a GitHub token (bearer, host `api.github.com`) as GitHub limits anonymous dist downloads to 60 per hour.
+- **Filters** (`only` / `exclude`, e.g. `acme/*`) limit which packages an upstream is asked for. Use them for private upstreams, so lookups stay fast and the names of private packages are never sent to other upstreams like Packagist.
+- **Access**: tokens with access to a repository can download all of its mirrored packages. Deploy tokens, users and authentication sources can also be given access to specific upstreams. Upstreams that authenticate against their own host cannot be used by public repositories.
+
+Clients only configure Packistry. Keeping packagist.org enabled is optional, it is then only used for packages Packistry does not know:
+
+```json
+{
+    "repositories": [
+        { "type": "composer", "url": "https://packistry.example/r/company" },
+        { "packagist.org": false }
+    ]
+}
+```
+
+```bash
+composer config --global bearer.packistry.example YOUR_PACKISTRY_TOKEN
+```
+
+Existing lock files still point to the original dist urls, run `composer update --lock` once to download everything through Packistry.
+
+Maintenance commands:
+
+```bash
+# cache everything a project needs, e.g. before relying on it during an outage
+php artisan mirror:warm composer.lock --repository=company
+
+# fetch new versions before the metadata cache expires
+php artisan mirror:refresh acme/package
+
+# remove dists and metadata that have not been used for 90 days (schedule this)
+php artisan mirror:prune --unused-for=90
+
+# remove download records older than a year, totals are kept
+php artisan downloads:prune --older-than=365
+```
+
+Settings (environment variables, in seconds): `MIRROR_METADATA_TTL` (300), `MIRROR_NOT_FOUND_TTL` (600), `MIRROR_DOWN_TTL` (60), `MIRROR_ROOT_TTL` (86400), `MIRROR_CONNECT_TIMEOUT` (5), `MIRROR_TIMEOUT` (15), `MIRROR_DOWNLOAD_TIMEOUT` (300) and `MIRROR_DOWNLOAD_STATS` (`full`, `counts` or `off`).
 
 ## Dependencies
 

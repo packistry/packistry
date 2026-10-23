@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CodeIcon, DatabaseIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
+import { CloudDownloadIcon, CodeIcon, DatabaseIcon, KeyIcon, PackageIcon, UsersIcon } from 'lucide-react'
 import { useDashboard } from '@/api/hooks'
 import { Heading } from '@/components/page/heading'
 import { DownloadsCard } from '@/components/card/downloads-card'
@@ -38,6 +38,18 @@ function HomeComponent() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{query.data?.packages}</div>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {typeof query.data?.mirroredPackages !== 'undefined' && query.data.mirroredPackages > 0 && (
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Mirrored Packages</CardTitle>
+                            <CloudDownloadIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{query.data.mirroredPackages}</div>
                         </CardContent>
                     </Card>
                 )}

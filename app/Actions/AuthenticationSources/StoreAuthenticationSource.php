@@ -43,6 +43,7 @@ class StoreAuthenticationSource
 
             $source->repositories()->sync($input->defaultUserRepositories ?? []);
             $source->packages()->sync($input->defaultUserPackages ?? []);
+            $source->upstreams()->sync($input->defaultUserUpstreams ?? []);
 
             return $source;
         });

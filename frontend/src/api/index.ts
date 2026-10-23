@@ -12,6 +12,7 @@ export * from './source'
 export * from './user'
 export * from './deploy-token'
 export * from './personal-token'
+export * from './upstream'
 
 export const version = z.object({
     id: z.coerce.string(),
@@ -20,6 +21,7 @@ export const version = z.object({
 
 export const dashboard = z.object({
     packages: z.number().optional(),
+    mirroredPackages: z.number().optional(),
     repositories: z.number().optional(),
     users: z.number().optional(),
     tokens: z.number().optional(),

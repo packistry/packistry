@@ -10,6 +10,15 @@ export const repository = z.object({
     public: z.boolean(),
     url: z.string(),
     packagesCount: z.number().optional(),
+    upstreams: z
+        .object({
+            id: z.coerce.string(),
+            name: z.string(),
+            priority: z.number().nullable(),
+            enabled: z.boolean().nullable(),
+        })
+        .array()
+        .optional(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })

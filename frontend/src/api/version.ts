@@ -6,8 +6,8 @@ export const versionSchema = z.object({
     id: z.coerce.string(),
     name: z.string(),
     totalDownloads: z.number().optional(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    createdAt: z.coerce.date().nullable(),
+    updatedAt: z.coerce.date().nullable(),
 })
 
 export type Version = z.infer<typeof versionSchema>

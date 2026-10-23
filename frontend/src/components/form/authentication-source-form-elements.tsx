@@ -12,6 +12,7 @@ import { FormAuthenticationProviderSelect } from '@/components/form/elements/for
 import { AuthenticationProvider, providerIcons } from '@/api/authentication-provider'
 import { FormAuthenticationProviderDomainList } from '@/components/form/elements/form-authentication-provider-domain-list'
 import { RepositoryPackageTree } from '@/components/form/elements/repository-package-tree'
+import { FormUpstreamCheckboxGroup } from '@/components/form/elements/form-upstream-checkbox-group'
 
 export function AuthenticationSourceFormElements({
     form,
@@ -119,6 +120,13 @@ export function AuthenticationSourceFormElements({
                                 return accumulator
                             }, {}) || {}
                         }
+                        control={form.control}
+                    />
+                )}
+                {role === 'user' && (
+                    <FormUpstreamCheckboxGroup
+                        name="defaultUserUpstreams"
+                        description="Default upstreams that users can access upon their first authentication with this source."
                         control={form.control}
                     />
                 )}
