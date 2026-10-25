@@ -59,54 +59,6 @@ Now, open http://localhost in your browser and log in with the newly created use
 
 - Explore the docs at **[https://packistry.github.io/ »](https://packistry.github.io/)** for more options to run Packistry.
 
-### Upstream mirroring
-
-Upstreams are Composer repositories that Packistry mirrors, for example Packagist or the package registry of a GitLab group. Add them under **Upstreams** and attach them to a repository (**Repositories → Upstreams**) in priority order. When a package is requested that the repository does not have, Packistry asks the upstreams from top to bottom: the first upstream that has the package serves it, versions are never merged and your own packages always win.
-
-Packistry caches the metadata (revalidated every 5 minutes) and downloads every dist once. When an upstream is down, cached metadata and dists keep being served.
-
-- **Types**: an upstream is either **Packagist** (no URL needed, with an optional GitHub token, recommended because GitHub limits anonymous dist downloads to 60 per hour) or a **Composer repository** (any Composer 2 repository, such as a GitLab group registry, Private Packagist, Satis or another Packistry).
-- **Credentials** of Composer repositories are configured per host and only sent to that host. A GitLab group typically needs an HTTP Basic credential for its host (a deploy token with `read_package_registry`).
-- **Filters** (`only` / `exclude`, e.g. `acme/*`) limit which packages an upstream is asked for. Use them for private upstreams, so lookups stay fast and the names of private packages are never sent to other upstreams like Packagist.
-- **Access**: upstreams are part of a repository, so access to a repository includes all of its mirrored packages. Mirrored packages can also be granted individually, like any other package. To give someone access to only some upstreams, create a repository with just those upstreams. Upstreams that authenticate against their own host cannot be used by public repositories.
-
-Clients only configure Packistry. Keeping packagist.org enabled is optional, it is then only used for packages Packistry does not know:
-
-```json
-{
-    "repositories": [
-        { "type": "composer", "url": "https://packistry.example/r/company" },
-        { "packagist.org": false }
-    ]
-}
-```
-
-```bash
-composer config --global bearer.packistry.example YOUR_PACKISTRY_TOKEN
-```
-
-Existing lock files still point to the original dist urls, run `composer update --lock` once to download everything through Packistry.
-
-Maintenance commands:
-
-```bash
-# cache everything a project needs, e.g. before relying on it during an outage
-php artisan mirror:warm composer.lock --repository=company
-
-# fetch new versions before the metadata cache expires
-php artisan mirror:refresh acme/package
-
-# remove dists and metadata that have not been used for 90 days (schedule this)
-php artisan mirror:prune --unused-for=90
-
-# remove download records older than a year, totals are kept
-php artisan downloads:prune --older-than=365
-```
-
-Packistry never connects to private or reserved addresses (loopback, private networks, cloud metadata endpoints) on behalf of an upstream, including its metadata urls, dist urls and redirects, and only mirrors zip dists. Allow internal registries, such as a self-hosted GitLab, with `MIRROR_ALLOWED_HOSTS=gitlab.internal,satis.internal`.
-
-Settings (environment variables, in seconds): `MIRROR_METADATA_TTL` (300), `MIRROR_NOT_FOUND_TTL` (600), `MIRROR_DOWN_TTL` (60), `MIRROR_ROOT_TTL` (86400), `MIRROR_CONNECT_TIMEOUT` (5), `MIRROR_TIMEOUT` (15), `MIRROR_DOWNLOAD_TIMEOUT` (300), `MIRROR_DOWNLOAD_STATS` (`full`, `counts` or `off`) and `MIRROR_ALLOWED_HOSTS` (comma separated, empty by default).
-
 ## Dependencies
 
 Packistry is built on a solid foundation of well-maintained dependencies from both the PHP and JavaScript ecosystems, ensuring a high level of performance, security, and developer productivity. Here are some of the key dependencies that power Packistry:
