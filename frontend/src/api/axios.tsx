@@ -13,7 +13,8 @@ import { UseQueryResult } from '@tanstack/react-query'
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
-export const baseURL = import.meta.env.DEV ? 'http://localhost/api' : '/api'
+// same origin in production, proxied to the backend by the Vite dev server in development
+export const baseURL = '/api'
 
 export const axiosDefaults: CreateAxiosDefaults = {
     baseURL,
