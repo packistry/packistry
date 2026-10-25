@@ -18,10 +18,11 @@ export function PersonalTokenFormElements({ form }: { form: UseFormReturn<StoreP
                 options={[
                     { value: 'repository:read', label: 'Read' },
                     { value: 'repository:write', label: 'Write' },
+                    { value: 'api', label: 'API' },
                 ]}
                 name="abilities"
                 label="Access Rights"
-                description="Give write access, if you want to upload package zips to a repository"
+                description="Give write access, if you want to upload package zips to a repository. API access lets the token use the Packistry API with your permissions."
                 control={form.control}
             />
             <FormDatePicker

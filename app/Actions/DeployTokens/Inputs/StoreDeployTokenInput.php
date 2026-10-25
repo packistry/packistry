@@ -32,7 +32,7 @@ class StoreDeployTokenInput extends Input
     public static function rules(): array
     {
         return [
-            'abilities.*' => [new Enum(TokenAbility::class)],
+            'abilities.*' => [new Enum(TokenAbility::class)->except(TokenAbility::API)],
             'packages' => ['nullable', 'array'],
             'packages.*' => ['integer', 'exists:packages,id'],
         ];
