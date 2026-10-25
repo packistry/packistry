@@ -63,6 +63,37 @@ it('warms the cache from a composer.lock', function (): void {
     unlink((string) $lock);
 });
 
+it('warms dists without a reference from a lock file created through packistry', function (): void {
+    $upstream = Upstream::factory()->url('https://packistry-b.test/r/private')->create();
+    $repository = mirroredRepository($upstream);
+
+    // packistry itself publishes dists without a reference, so they are keyed by their url
+    $version = upstreamVersion('1.0.0', 'unused', 'https://packistry-b.test/r/private/acme/private-lib/1.0.0');
+    unset($version['dist']['reference']);
+
+    Http::fake([
+        'packistry-b.test/r/private/packages.json' => Http::response(['metadata-url' => '/r/private/p2/%package%.json']),
+        'packistry-b.test/r/private/p2/acme/private-lib.json' => Http::response(upstreamMetadata('acme/private-lib', [$version])),
+        'packistry-b.test/r/private/p2/acme/private-lib~dev.json' => Http::response(null, 404),
+        'packistry-b.test/r/private/acme/private-lib/1.0.0' => Http::response((string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')),
+    ]);
+
+    $key = sha1('https://packistry-b.test/r/private/acme/private-lib/1.0.0');
+
+    $lock = tempnam(sys_get_temp_dir(), 'lock');
+    file_put_contents((string) $lock, (string) json_encode([
+        'packages' => [
+            ['name' => 'acme/private-lib', 'version' => '1.0.0', 'dist' => ['type' => 'zip', 'url' => $repository->url("/_mirror/acme/private-lib/$key")]],
+        ],
+    ]));
+
+    artisan('mirror:warm', ['lock' => $lock, '--repository' => $repository->path])->assertSuccessful();
+
+    expect(MirrorDist::query()->sole()->reference)->toBe($key);
+
+    unlink((string) $lock);
+});
+
 it('fails warming packages that are not available upstream', function (): void {
     $upstream = Upstream::factory()->packagist()->create();
     $repository = mirroredRepository($upstream);

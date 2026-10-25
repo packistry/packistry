@@ -110,7 +110,7 @@ class MirrorWarm extends Command
         $upstream = Upstream::query()->with('credentials')->findOrFail($package->upstream_id);
 
         try {
-            $stored = $dists->get($upstream, $name, DistCache::key($dist));
+            $stored = $dists->get($upstream, $name, $this->distKey($name, $dist));
         } catch (UpstreamUnavailableException $e) {
             return ["<error>dist download failed: {$e->getMessage()}</error>", false];
         }
@@ -120,5 +120,22 @@ class MirrorWarm extends Command
         }
 
         return ["<info>cached</info> from $upstream->name", true];
+    }
+
+    /**
+     * Lock files created through Packistry point to its own dist urls, which already end in the dist key.
+     *
+     * @param  array<array-key, mixed>  $dist
+     */
+    private function distKey(string $name, array $dist): string
+    {
+        /** @var string $url */
+        $url = $dist['url'];
+
+        if (preg_match('{/_mirror/'.preg_quote($name, '{').'/([^/?#]+)$}', $url, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return DistCache::key($dist);
     }
 }

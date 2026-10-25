@@ -27,7 +27,7 @@ export const Route = createFileRoute('/_auth/packages/')({
 function PackagesComponent() {
     const { open, ...search } = Route.useSearch()
     const { can } = useAuth()
-    const query = usePackages({ ...search, include: ['upstream'] })
+    const query = usePackages({ ...search, include: ['repository', 'upstream'] })
     const origin = search.filters?.origin || 'local'
     const dialogProps = useSearchDialog({ open })
     const navigate = useNavigate()

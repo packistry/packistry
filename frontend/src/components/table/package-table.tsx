@@ -1,7 +1,7 @@
 import { PaginatedTable, PaginatedTableProps } from '@/components/paginated-table'
 import * as React from 'react'
 import { UseQueryResult } from '@tanstack/react-query'
-import { PaginatedPackage } from '@/api'
+import { Package, PaginatedPackage } from '@/api'
 import { DeletePackageButton } from '@/components/button/delete-package-button'
 import { PackageIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/auth'
 import { PACKAGE_CREATE, PACKAGE_DELETE } from '@/permission'
 import { actionColumn } from '@/components/table/columns'
-import { MirroredBadge } from '@/components/badge/mirrored-badge'
+import { Badge } from '@/components/ui/badge'
 
 export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<PaginatedPackage>>, 'empty' | 'columns'>) {
     const { can } = useAuth()
@@ -39,38 +39,48 @@ export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     key: 'name',
                     label: 'Name',
                     sorter: true,
-                    head: {
-                        className: 'w-[300px]',
-                    },
                     cell: {
-                        className: 'font-medium',
+                        className: 'font-medium whitespace-nowrap',
                     },
                     render: (record) => {
                         return (
-                            <div className="flex items-center gap-2">
-                                <Link
-                                    to="/packages/$packageId"
-                                    className="underline"
-                                    params={{
-                                        packageId: record.id,
-                                    }}
-                                >
-                                    {record.name}
-                                </Link>
-                                <MirroredBadge pkg={record} />
-                            </div>
+                            <Link
+                                to="/packages/$packageId"
+                                className="underline"
+                                params={{
+                                    packageId: record.id,
+                                }}
+                            >
+                                {record.name}
+                            </Link>
                         )
                     },
+                },
+                {
+                    key: 'repository',
+                    label: 'Repository',
+                    cell: {
+                        className: 'whitespace-nowrap',
+                    },
+                    render: (record) => record.repository?.name,
                 },
                 {
                     key: 'description',
                     label: 'Description',
                 },
                 {
+                    key: 'upstream',
+                    label: 'Upstream',
+                    cell: {
+                        className: 'whitespace-nowrap',
+                    },
+                    render: (record) => <UpstreamCell pkg={record} />,
+                },
+                {
                     key: 'latestVersion',
                     label: 'Latest Version',
                     head: {
-                        className: 'w-[400px]',
+                        className: 'w-[150px]',
                     },
                 },
                 {
@@ -95,4 +105,16 @@ export function PackageTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
             ]}
         />
     )
+}
+
+function UpstreamCell({ pkg }: { pkg: Pick<Package, 'mirrorStatus' | 'upstream'> }) {
+    if (!pkg.mirrorStatus) {
+        return <span className="text-muted-foreground">—</span>
+    }
+
+    if (pkg.mirrorStatus === 'gone') {
+        return <Badge variant="outline">No longer available</Badge>
+    }
+
+    return pkg.upstream?.name ?? <span className="text-muted-foreground">Removed upstream</span>
 }
