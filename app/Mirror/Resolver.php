@@ -16,6 +16,12 @@ use Illuminate\Database\UniqueConstraintViolationException;
  */
 readonly class Resolver
 {
+    /**
+     * Composer's own package name rule. The name ends up in upstream urls and storage paths,
+     * so anything else (dot segments, encoded query strings) is never asked from an upstream.
+     */
+    private const string PACKAGE_NAME = '{^[a-z0-9]([_.-]?[a-z0-9]+)*/[a-z0-9](([_.]|-{1,2})?[a-z0-9]+)*$}D';
+
     public function __construct(private MetadataCache $metadata)
     {
         //
@@ -23,6 +29,10 @@ readonly class Resolver
 
     public function resolve(Repository $repository, string $name, bool $dev = false, ?Package $existing = null): ?Package
     {
+        if (preg_match(self::PACKAGE_NAME, $name) !== 1) {
+            return null;
+        }
+
         foreach ($repository->enabledUpstreams() as $upstream) {
             if (! $upstream->allows($name)) {
                 continue;

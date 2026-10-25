@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Enums\TokenAbility;
 use App\Enums\UpstreamCredentialType;
 use App\Mirror\HostResolver;
+use App\Mirror\Resolver;
 use App\Models\MirrorDist;
 use App\Models\Package;
 use App\Models\Upstream;
@@ -225,6 +226,32 @@ it('sends credentials to plain http upstreams on their own origin', function ():
     getJson($repository->url('/p2/acme/package.json'))->assertOk();
 
     Http::assertSent(fn (Request $request): bool => $request->header('Authorization') === ['Bearer satis-token']);
+});
+
+it('never asks upstreams for names that are not valid package names', function (string $path): void {
+    $upstream = Upstream::factory()->url('https://repo.test')->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    getJson($repository->url($path))->assertNotFound();
+
+    Http::assertNothingSent();
+    expect(Package::query()->count())->toBe(0);
+})->with([
+    'dot segments' => '/p2/../...json',
+    'dot segment vendor' => '/p2/../package.json',
+    'encoded query string' => '/p2/acme/package%3Fadmin=1.json',
+    'encoded fragment' => '/p2/acme/package%23x.json',
+    'uppercase' => '/p2/Acme/Package.json',
+    'trailing newline' => '/p2/acme/package%0A.json',
+]);
+
+it('does not resolve invalid package names from other entry points', function (): void {
+    $upstream = Upstream::factory()->url('https://repo.test')->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    expect(app(Resolver::class)->resolve($repository, '../..'))->toBeNull();
+
+    Http::assertNothingSent();
 });
 
 it('only accepts http and https upstream urls', function (string $url): void {
