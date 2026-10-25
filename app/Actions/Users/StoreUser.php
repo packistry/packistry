@@ -37,10 +37,6 @@ class StoreUser
             $user->packages()->sync($input->packages);
         }
 
-        if ($user->canNot(Permission::UNSCOPED) && is_array($input->upstreams)) {
-            $user->upstreams()->sync($input->upstreams);
-        }
-
         return $user;
     }
 }

@@ -20,13 +20,6 @@ export const deployToken = z.object({
         })
         .array()
         .default([]),
-    upstreams: z
-        .object({
-            id: z.coerce.string(),
-            name: z.string(),
-        })
-        .array()
-        .default([]),
     abilities: z.string().array().nullable(),
     lastUsedAt: z.coerce.date().nullable(),
     expiresAt: z.coerce.date().nullable(),
@@ -60,7 +53,6 @@ export const storeDeployTokenInput = z.object({
     expiresAt: z.coerce.date().nullable(),
     repositories: z.string().array(),
     packages: z.string().array().optional(),
-    upstreams: z.string().array().optional(),
 })
 
 export type StoreDeployTokenInput = z.infer<typeof storeDeployTokenInput>

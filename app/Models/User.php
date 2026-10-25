@@ -25,7 +25,6 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
@@ -47,8 +46,6 @@ use RuntimeException;
  * @property-read int|null $package_users_count
  * @property-read Collection<int, Package> $packages
  * @property-read int|null $packages_count
- * @property-read Collection<int, Upstream> $upstreams
- * @property-read int|null $upstreams_count
  * @property-read Collection<int, Repository> $repositories
  * @property-read int|null $repositories_count
  * @property-read Collection<int, RepositoryUser> $repositoryUsers
@@ -110,14 +107,6 @@ class User extends Model implements AuthenticatableContract, Tokenable
     }
 
     /**
-     * @return BelongsToMany<Upstream, $this>
-     */
-    public function upstreams(): BelongsToMany
-    {
-        return $this->belongsToMany(Upstream::class)->withTimestamps();
-    }
-
-    /**
      * @return HasMany<PackageUser, $this>
      */
     public function packageUsers(): HasMany
@@ -160,10 +149,6 @@ class User extends Model implements AuthenticatableContract, Tokenable
                 ->public()
                 ->union($this->repositoryUsers()->select('repository_id')->toBase())
                 ->union($this->packages()->select('repository_id')->distinct()->toBase())
-                ->union(RepositoryUpstream::query()
-                    ->whereIn('upstream_id', $this->upstreamIdsQuery())
-                    ->select('repository_id')
-                    ->toBase())
                 ->toBase();
     }
 
@@ -177,18 +162,7 @@ class User extends Model implements AuthenticatableContract, Tokenable
                 )
                 ->select('packages.id')
                 ->union($this->packageUsers()->select('package_id')->toBase())
-                ->union(Package::query()
-                    ->whereIn('upstream_id', $this->upstreamIdsQuery())
-                    ->select('packages.id')
-                    ->toBase())
                 ->toBase();
-    }
-
-    private function upstreamIdsQuery(): QueryBuilder
-    {
-        return DB::table('upstream_user')
-            ->where('user_id', $this->id)
-            ->select('upstream_id');
     }
 
     public function isUnscoped(): bool

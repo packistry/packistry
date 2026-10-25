@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 use App\Enums\MirrorStatus;
 use App\Enums\TokenAbility;
-use App\Models\DeployToken;
 use App\Models\Package;
-use App\Models\Repository;
 use App\Models\Upstream;
-use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,45 +31,11 @@ beforeEach(function (): void {
     ]);
 });
 
-function grantUpstreams(DeployToken|User $subject, Upstream ...$upstreams): void
-{
-    $subject->upstreams()->sync(array_map(fn (Upstream $upstream): int => $upstream->id, $upstreams));
-}
-
 it('gives repository access to all mirrored packages', function (): void {
     deployToken(TokenAbility::REPOSITORY_READ, withAccess: true);
 
     getJson($this->repository->url('/p2/acme/private.json'))->assertOk();
     getJson($this->repository->url('/p2/vendor/public.json'))->assertOk();
-});
-
-it('gives upstream access only to packages of that upstream', function (): void {
-    $token = deployToken(TokenAbility::REPOSITORY_READ);
-    grantUpstreams($token, $this->packagist);
-
-    getJson($this->repository->url('/p2/vendor/public.json'))->assertOk();
-
-    // resolves to gitlab for everyone, the token must not get the packagist package instead
-    getJson($this->repository->url('/p2/acme/private.json'))->assertNotFound();
-
-    expect(Package::query()->where('name', 'acme/private')->sole()->upstream_id)->toBe($this->gitlab->id);
-});
-
-it('gives upstream access to personal tokens', function (): void {
-    $user = personalToken(TokenAbility::REPOSITORY_READ);
-    grantUpstreams($user, $this->gitlab);
-
-    getJson($this->repository->url('/p2/acme/private.json'))->assertOk();
-    getJson($this->repository->url('/p2/vendor/public.json'))->assertNotFound();
-});
-
-it('gives upstream access in every repository the upstream is attached to', function (): void {
-    $other = mirroredRepository($this->gitlab, path: 'other');
-
-    $token = deployToken(TokenAbility::REPOSITORY_READ);
-    grantUpstreams($token, $this->gitlab);
-
-    getJson($other->url('/p2/acme/private.json'))->assertOk();
 });
 
 it('gives package access to individual mirrored packages', function (): void {
@@ -100,12 +63,10 @@ it('denies tokens without access', function (): void {
     getJson($this->repository->url('/p2/acme/private.json'))->assertNotFound();
 });
 
-it('does not let upstream access reach repositories without that upstream', function (): void {
-    $unrelated = Repository::factory()->create(['path' => 'unrelated']);
-    Package::factory()->for($unrelated)->name('acme/local')->create();
+it('does not give mirrored packages to tokens that can only access other packages', function (): void {
+    $local = Package::factory()->for($this->repository)->name('acme/local')->create();
 
-    $token = deployToken(TokenAbility::REPOSITORY_READ);
-    grantUpstreams($token, $this->gitlab);
+    deployToken(TokenAbility::REPOSITORY_READ, withPackages: [$local->id]);
 
-    getJson($unrelated->url('/p2/acme/local.json'))->assertNotFound();
+    getJson($this->repository->url('/p2/vendor/public.json'))->assertNotFound();
 });

@@ -49,24 +49,6 @@ return new class extends Migration
             $table->unique(['repository_id', 'upstream_id'], 'repository_upstream_unique');
         });
 
-        Schema::create('deploy_token_upstream', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('deploy_token_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('upstream_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-
-            $table->unique(['deploy_token_id', 'upstream_id'], 'deploy_token_upstream_unique');
-        });
-
-        Schema::create('upstream_user', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('upstream_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-
-            $table->unique(['user_id', 'upstream_id'], 'upstream_user_unique');
-        });
-
         Schema::create('mirror_metadata', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('upstream_id')->constrained()->cascadeOnDelete();
@@ -123,8 +105,6 @@ return new class extends Migration
 
         Schema::dropIfExists('mirror_dists');
         Schema::dropIfExists('mirror_metadata');
-        Schema::dropIfExists('upstream_user');
-        Schema::dropIfExists('deploy_token_upstream');
         Schema::dropIfExists('repository_upstream');
         Schema::dropIfExists('upstream_credentials');
         Schema::dropIfExists('upstreams');

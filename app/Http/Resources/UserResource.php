@@ -31,13 +31,6 @@ class UserResource extends JsonResource
             'permissions' => $this->role->permissions(),
             'repositories' => RepositoryResource::collection($this->whenLoaded('repositories')),
             'packages' => PackageResource::collection($this->whenLoaded('packages')),
-            'upstreams' => $this->whenLoaded('upstreams', fn (): array => $this->upstreams
-                ->map(fn ($upstream): array => [
-                    'id' => $upstream->id,
-                    'name' => $upstream->name,
-                ])
-                ->values()
-                ->all()),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

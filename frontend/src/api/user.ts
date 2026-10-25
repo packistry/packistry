@@ -15,13 +15,6 @@ export const user = z.object({
     authenticationSource: authenticationSource.optional().nullable(),
     repositories: repository.array().optional(),
     packages: packageSchema.array().optional(),
-    upstreams: z
-        .object({
-            id: z.coerce.string(),
-            name: z.string(),
-        })
-        .array()
-        .optional(),
     permissions: permission.array(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
@@ -54,7 +47,6 @@ export const storeUserInput = z.object({
     password: z.string(),
     repositories: z.string().array(),
     packages: z.string().array(),
-    upstreams: z.string().array(),
 })
 
 export type StoreUserInput = z.infer<typeof storeUserInput>
@@ -71,7 +63,6 @@ export const updateUserInput = z.object({
     password: z.string(),
     repositories: z.string().array(),
     packages: z.string().array(),
-    upstreams: z.string().array(),
 })
 
 export function updateUser({ id, ...input }: z.infer<typeof updateUserInput>) {

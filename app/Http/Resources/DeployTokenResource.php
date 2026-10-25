@@ -38,12 +38,6 @@ class DeployTokenResource extends JsonResource
                     'repository_id' => $package->repository_id,
                 ])
                 ->toArray()),
-            'upstreams' => $this->whenLoaded('upstreams', fn (): array => $this->upstreams
-                ->map(fn ($upstream): array => [
-                    'id' => $upstream->id,
-                    'name' => $upstream->name,
-                ])
-                ->toArray()),
             $this->mergeWhen($this->relationLoaded('token'), fn (): array => [
                 'abilities' => $this->token?->abilities,
                 'last_used_at' => $this->token?->last_used_at,

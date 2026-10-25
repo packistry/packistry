@@ -14,7 +14,6 @@ class StoreUserInput extends Input
     /**
      * @param  string[]  $repositories
      * @param  string[]  $packages
-     * @param  int[]|null  $upstreams
      */
     public function __construct(
         public string $name,
@@ -25,7 +24,6 @@ class StoreUserInput extends Input
         public string $password,
         public ?array $repositories = [],
         public ?array $packages = [],
-        public ?array $upstreams = [],
     ) {
         //
     }
@@ -40,8 +38,6 @@ class StoreUserInput extends Input
             'repositories.*' => ['integer', 'exists:repositories,id'],
             'packages' => ['array'],
             'packages.*' => ['integer', 'exists:packages,id'],
-            'upstreams' => ['array'],
-            'upstreams.*' => ['integer', 'exists:upstreams,id'],
         ];
     }
 }

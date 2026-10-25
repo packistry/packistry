@@ -24,7 +24,6 @@ export function AddUserDialog(props: DialogProps) {
             role: 'user',
             repositories: [],
             packages: [],
-            upstreams: [],
             password: '',
         },
         onSuccess() {

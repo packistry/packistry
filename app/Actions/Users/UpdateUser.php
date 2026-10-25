@@ -46,10 +46,6 @@ class UpdateUser
             $user->packages()->sync($input->packages);
         }
 
-        if (is_array($input->upstreams)) {
-            $user->upstreams()->sync($input->upstreams);
-        }
-
         return $user;
     }
 }

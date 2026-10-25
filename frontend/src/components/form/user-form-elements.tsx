@@ -4,7 +4,6 @@ import { UseFormReturn } from 'react-hook-form'
 import { FormRadioGroup } from '@/components/form/elements/form-radio-group'
 import { StoreUserInput, User } from '@/api'
 import { RepositoryPackageTree } from '@/components/form/elements/repository-package-tree'
-import { FormUpstreamCheckboxGroup } from '@/components/form/elements/form-upstream-checkbox-group'
 
 export function UserFormElements({ form, user }: { form: UseFormReturn<StoreUserInput>; user?: User }) {
     const role = form.watch('role')
@@ -58,10 +57,6 @@ export function UserFormElements({ form, user }: { form: UseFormReturn<StoreUser
                             }, {}) || {}
                         }
                         control={form.control}
-                    />
-                    <FormUpstreamCheckboxGroup
-                        control={form.control}
-                        description="Give user access to every package mirrored from these upstreams."
                     />
                 </div>
             )}

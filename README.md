@@ -68,7 +68,7 @@ Packistry caches the metadata (revalidated every 5 minutes) and downloads every 
 - **Types**: an upstream is either **Packagist** (no URL needed, with an optional GitHub token, recommended because GitHub limits anonymous dist downloads to 60 per hour) or a **Composer repository** (any Composer 2 repository, such as a GitLab group registry, Private Packagist, Satis or another Packistry).
 - **Credentials** of Composer repositories are configured per host and only sent to that host. A GitLab group typically needs an HTTP Basic credential for its host (a deploy token with `read_package_registry`).
 - **Filters** (`only` / `exclude`, e.g. `acme/*`) limit which packages an upstream is asked for. Use them for private upstreams, so lookups stay fast and the names of private packages are never sent to other upstreams like Packagist.
-- **Access**: tokens with access to a repository can download all of its mirrored packages. Deploy tokens, users and authentication sources can also be given access to specific upstreams. Upstreams that authenticate against their own host cannot be used by public repositories.
+- **Access**: upstreams are part of a repository, so access to a repository includes all of its mirrored packages. Mirrored packages can also be granted individually, like any other package. To give someone access to only some upstreams, create a repository with just those upstreams. Upstreams that authenticate against their own host cannot be used by public repositories.
 
 Clients only configure Packistry. Keeping packagist.org enabled is optional, it is then only used for packages Packistry does not know:
 

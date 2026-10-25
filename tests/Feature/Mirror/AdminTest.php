@@ -7,13 +7,11 @@ use App\Enums\Permission;
 use App\Enums\SourceProvider;
 use App\Enums\TokenAbility;
 use App\Import;
-use App\Models\DeployToken;
 use App\Models\Download;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Source;
 use App\Models\Upstream;
-use App\Models\User;
 use App\Sources\Client;
 use App\Sources\Project;
 use App\Sources\Tag;
@@ -27,7 +25,6 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\post;
 use function Pest\Laravel\postJson;
-use function Pest\Laravel\putJson;
 
 beforeEach(function (): void {
     Storage::fake();
@@ -121,46 +118,6 @@ it('counts local and mirrored packages separately on the dashboard', function ()
         ->assertOk()
         ->assertJsonPath('packages', 1)
         ->assertJsonPath('mirrored_packages', 2);
-});
-
-it('stores deploy tokens with upstream access', function (): void {
-    user(Permission::DEPLOY_TOKEN_CREATE);
-
-    $upstream = Upstream::factory()->create();
-
-    postJson('/api/deploy-tokens', [
-        'name' => 'ci',
-        'abilities' => [TokenAbility::REPOSITORY_READ->value],
-        'upstreams' => [$upstream->id],
-    ])
-        ->assertCreated()
-        ->assertJsonPath('token.upstreams', [['id' => $upstream->id, 'name' => $upstream->name]]);
-
-    expect(DeployToken::query()->sole()->upstreams()->pluck('upstreams.id')->all())->toBe([$upstream->id]);
-});
-
-it('stores and updates users with upstream access', function (): void {
-    user([Permission::USER_CREATE, Permission::USER_UPDATE]);
-
-    [$first, $second] = Upstream::factory()->count(2)->create()->all();
-
-    $id = postJson('/api/users', [
-        'name' => 'Jane',
-        'email' => 'jane@example.com',
-        'role' => 'user',
-        'password' => 'password',
-        'upstreams' => [$first->id],
-    ])->assertCreated()->json('id');
-
-    /** @var User $created */
-    $created = User::query()->findOrFail($id);
-    expect($created->upstreams()->pluck('upstreams.id')->all())->toBe([$first->id]);
-
-    putJson("/api/users/$id", [
-        'upstreams' => [$second->id],
-    ])
-        ->assertOk()
-        ->assertJsonPath('upstreams', [['id' => $second->id, 'name' => $second->name]]);
 });
 
 it('converts a mirrored package to local when a version is uploaded', function (): void {

@@ -15,15 +15,13 @@ class StoreDeployTokenInput extends Input
      * @param  string[]  $abilities
      * @param  string[]  $repositories
      * @param  int[]|null  $packages
-     * @param  int[]|null  $upstreams
      */
     public function __construct(
         public string $name,
         public array $abilities,
         public ?Carbon $expiresAt = null,
         public ?array $repositories = [],
-        public ?array $packages = null,
-        public ?array $upstreams = null,
+        public ?array $packages = null
     ) {
         //
     }
@@ -37,8 +35,6 @@ class StoreDeployTokenInput extends Input
             'abilities.*' => [new Enum(TokenAbility::class)],
             'packages' => ['nullable', 'array'],
             'packages.*' => ['integer', 'exists:packages,id'],
-            'upstreams' => ['nullable', 'array'],
-            'upstreams.*' => ['integer', 'exists:upstreams,id'],
         ];
     }
 }

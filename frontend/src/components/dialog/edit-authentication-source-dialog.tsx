@@ -25,7 +25,6 @@ export function EditAuthenticationSourceDialog({ authenticationSource, trigger }
             ...authenticationSource,
             defaultUserRepositories: authenticationSource.repositories?.map(({ id }) => id) || [],
             defaultUserPackages: authenticationSource.packages?.map(({ id }) => id) || [],
-            defaultUserUpstreams: authenticationSource.upstreams?.map(({ id }) => id) || [],
             clientSecret: '',
         },
         onSuccess() {

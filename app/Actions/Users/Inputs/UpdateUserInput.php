@@ -15,7 +15,6 @@ class UpdateUserInput extends Input
     /**
      * @param  string[]|Optional  $repositories
      * @param  string[]|Optional  $packages
-     * @param  int[]|Optional  $upstreams
      */
     public function __construct(
         public string|Optional $name,
@@ -24,7 +23,6 @@ class UpdateUserInput extends Input
         public Role|Optional $role = new Optional,
         public array|Optional $repositories = new Optional,
         public array|Optional $packages = new Optional,
-        public array|Optional $upstreams = new Optional,
         #[Password(6)]
         public ?string $password = null,
     ) {
@@ -41,8 +39,6 @@ class UpdateUserInput extends Input
             'repositories.*' => ['integer', 'exists:repositories,id'],
             'packages' => ['array'],
             'packages.*' => ['integer', 'exists:packages,id'],
-            'upstreams' => ['array'],
-            'upstreams.*' => ['integer', 'exists:upstreams,id'],
         ];
     }
 }

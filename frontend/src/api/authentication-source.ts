@@ -21,13 +21,6 @@ export const authenticationSource = z.object({
     defaultUserRole: role,
     repositories: repository.array().optional(),
     packages: packageSchema.array().optional(),
-    upstreams: z
-        .object({
-            id: z.coerce.string(),
-            name: z.string(),
-        })
-        .array()
-        .optional(),
     clientId: z.string(),
     discoveryUrl: z.string().nullable(),
     callbackUrl: z.string(),
@@ -69,7 +62,6 @@ export const storeAuthenticationSourceInput = z.object({
     provider: authenticationProvider,
     defaultUserRepositories: z.string().array(),
     defaultUserPackages: z.string().array(),
-    defaultUserUpstreams: z.string().array(),
     defaultUserRole: role,
     clientId: z.string(),
     clientSecret: z.string(),
@@ -92,7 +84,6 @@ export const updateAuthenticationSourceInput = z.object({
     provider: authenticationProvider,
     defaultUserRepositories: z.string().array(),
     defaultUserPackages: z.string().array(),
-    defaultUserUpstreams: z.string().array(),
     defaultUserRole: role,
     clientId: z.string(),
     clientSecret: z.string(),
