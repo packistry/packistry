@@ -5,8 +5,9 @@ import { ReactNode, useState } from 'react'
 import { useUpdateUpstream } from '@/api/hooks'
 import { useForm } from '@/hooks/useForm'
 import { Form } from '@/components/ui/form'
-import { Upstream } from '@/api/upstream'
-import { UpstreamFormElements } from '@/components/form/upstream-form-elements'
+import { isPackagist, UpdateUpstreamInput, Upstream } from '@/api/upstream'
+import { ComposerUpstreamFormElements } from '@/components/form/composer-upstream-form-elements'
+import { PackagistUpstreamFormElements } from '@/components/form/packagist-upstream-form-elements'
 import { DeleteUpstreamButton } from '@/components/button/delete-upstream-button'
 import { TestUpstreamButton } from '@/components/button/test-upstream-button'
 import { useAuth } from '@/auth'
@@ -25,39 +26,45 @@ export function EditUpstreamDialog({ upstream, trigger }: EditUpstreamDialogProp
 
     const { form, onSubmit, isPending } = useForm({
         mutation,
-        defaultValues: {
-            id: upstream.id,
-            name: upstream.name,
-            url: upstream.url,
-            only: upstream.only,
-            exclude: upstream.exclude,
-            credentials: (upstream.credentials || []).map((credential) => ({
-                ...credential,
-                username: credential.username || '',
-                secret: '',
-            })),
-        },
-        onSuccess() {
+        defaultValues: formValues(upstream),
+        onSuccess(updated) {
+            // secrets are never sent back, start from the saved upstream with empty secret fields
+            form.reset(formValues(updated))
             setIsDialogOpen(false)
         },
     })
 
+    // start from the saved upstream every time, unsaved changes of a cancelled edit are discarded
+    function onOpenChange(open: boolean) {
+        if (open) {
+            form.reset(formValues(upstream))
+        }
+
+        setIsDialogOpen(open)
+    }
+
     return (
         <Dialog
             open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
+            onOpenChange={onOpenChange}
         >
             <DialogTrigger asChild>{trigger ? trigger : <Button>Edit</Button>}</DialogTrigger>
             <DialogContent className="min-w-[1000px]">
                 <DialogHeader>
-                    <DialogTitle>Edit Upstream</DialogTitle>
+                    <DialogTitle>
+                        Edit {isPackagist(upstream) ? 'Packagist' : 'Composer repository'} upstream
+                    </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <UpstreamFormElements form={form} />
+                        {isPackagist(upstream) ? (
+                            <PackagistUpstreamFormElements form={form} />
+                        ) : (
+                            <ComposerUpstreamFormElements form={form} />
+                        )}
                         <div className="flex justify-between">
                             <div className="flex gap-2">
                                 <Button
@@ -75,4 +82,19 @@ export function EditUpstreamDialog({ upstream, trigger }: EditUpstreamDialogProp
             </DialogContent>
         </Dialog>
     )
+}
+
+function formValues(upstream: Upstream): UpdateUpstreamInput {
+    return {
+        id: upstream.id,
+        name: upstream.name,
+        url: upstream.url,
+        only: upstream.only,
+        exclude: upstream.exclude,
+        credentials: (upstream.credentials || []).map((credential) => ({
+            ...credential,
+            username: credential.username || '',
+            secret: '',
+        })),
+    }
 }

@@ -3,6 +3,15 @@ import { del, get, patch, post, put } from '@/api/axios'
 import { paginated, paginatedQuery, toQueryString } from '@/api/pagination'
 import { repository } from '@/api/repository'
 
+export const PACKAGIST_URL = 'https://repo.packagist.org'
+
+// Packagist dists are mostly GitHub zipballs, a token for the GitHub API raises its anonymous rate limit
+export const GITHUB_API_HOST = 'api.github.com'
+
+export function isPackagist(upstream: Pick<Upstream, 'url'>): boolean {
+    return upstream.url.replace(/\/+$/, '') === PACKAGIST_URL
+}
+
 export const upstreamCredentialTypes = ['http-basic', 'bearer', 'header'] as const
 
 export const upstreamCredentialType = z.enum(upstreamCredentialTypes)
@@ -131,50 +140,3 @@ export type SyncRepositoryUpstreamsInput = z.infer<typeof syncRepositoryUpstream
 export function syncRepositoryUpstreams({ repositoryId, ...input }: SyncRepositoryUpstreamsInput) {
     return put(repository, `/repositories/${repositoryId}/upstreams`, input)
 }
-
-export type UpstreamPreset = {
-    key: string
-    label: string
-    name: string
-    url: string
-    urlPlaceholder?: string
-    credential?: Omit<UpstreamCredentialInput, 'secret'>
-    description: string
-}
-
-export const upstreamPresets: UpstreamPreset[] = [
-    {
-        key: 'packagist',
-        label: 'Packagist',
-        name: 'Packagist',
-        url: 'https://repo.packagist.org',
-        credential: { host: 'api.github.com', type: 'bearer', username: null },
-        description:
-            'Mirror public packages from packagist.org. Add a GitHub token (no scopes needed) for api.github.com, without it GitHub only allows 60 dist downloads per hour.',
-    },
-    {
-        key: 'gitlab',
-        label: 'GitLab group',
-        name: 'GitLab',
-        url: 'https://gitlab.com/api/v4/group/<group id>/-/packages/composer/packages.json',
-        credential: { host: 'gitlab.com', type: 'http-basic', username: '' },
-        description:
-            'Mirror the Composer package registry of a GitLab group. Use a deploy token (read_package_registry) or a personal access token as HTTP Basic credential.',
-    },
-    {
-        key: 'private-packagist',
-        label: 'Private Packagist',
-        name: 'Private Packagist',
-        url: 'https://repo.packagist.com/<organization>',
-        credential: { host: 'repo.packagist.com', type: 'http-basic', username: 'token' },
-        description: 'Mirror a Private Packagist organization using an authentication token.',
-    },
-    {
-        key: 'composer',
-        label: 'Other Composer repository',
-        name: '',
-        url: '',
-        description:
-            'Any Composer 2 repository that provides a metadata-url, e.g. Satis or another Packistry instance.',
-    },
-]

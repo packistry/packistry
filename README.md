@@ -65,7 +65,8 @@ Upstreams are Composer repositories that Packistry mirrors, for example Packagis
 
 Packistry caches the metadata (revalidated every 5 minutes) and downloads every dist once. When an upstream is down, cached metadata and dists keep being served.
 
-- **Credentials** are configured per upstream and per host, and only sent to that host. A GitLab group typically needs an HTTP Basic credential for its host (a deploy token with `read_package_registry`), Packagist works without credentials but benefits from a GitHub token (bearer, host `api.github.com`) as GitHub limits anonymous dist downloads to 60 per hour.
+- **Types**: an upstream is either **Packagist** (no URL needed, with an optional GitHub token, recommended because GitHub limits anonymous dist downloads to 60 per hour) or a **Composer repository** (any Composer 2 repository, such as a GitLab group registry, Private Packagist, Satis or another Packistry).
+- **Credentials** of Composer repositories are configured per host and only sent to that host. A GitLab group typically needs an HTTP Basic credential for its host (a deploy token with `read_package_registry`).
 - **Filters** (`only` / `exclude`, e.g. `acme/*`) limit which packages an upstream is asked for. Use them for private upstreams, so lookups stay fast and the names of private packages are never sent to other upstreams like Packagist.
 - **Access**: tokens with access to a repository can download all of its mirrored packages. Deploy tokens, users and authentication sources can also be given access to specific upstreams. Upstreams that authenticate against their own host cannot be used by public repositories.
 
