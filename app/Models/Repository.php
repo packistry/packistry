@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
@@ -26,6 +27,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Package> $packages
  * @property-read int|null $packages_count
+ * @property-read Collection<int, Upstream> $upstreams
+ * @property-read int|null $upstreams_count
  *
  * @method static RepositoryFactory factory($count = null, $state = [])
  * @method static RepositoryBuilder newModelQuery()
@@ -49,6 +52,31 @@ class Repository extends Model
     public function packages(): HasMany
     {
         return $this->hasMany(Package::class);
+    }
+
+    /**
+     * @return BelongsToMany<Upstream, $this, RepositoryUpstream>
+     */
+    public function upstreams(): BelongsToMany
+    {
+        return $this->belongsToMany(Upstream::class)
+            ->using(RepositoryUpstream::class)
+            ->withPivot(['priority', 'enabled'])
+            ->withTimestamps()
+            ->orderByPivot('priority');
+    }
+
+    /**
+     * Enabled upstreams in resolution order.
+     *
+     * @return Collection<int, Upstream>
+     */
+    public function enabledUpstreams(): Collection
+    {
+        return once(fn () => $this->upstreams()
+            ->wherePivot('enabled', true)
+            ->with('credentials')
+            ->get());
     }
 
     public function url(string $url = ''): string

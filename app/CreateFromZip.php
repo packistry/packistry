@@ -46,6 +46,9 @@ class CreateFromZip
             throw new InvalidConstraintException($invalidConstraints);
         }
 
+        // a local version takes over a package that was mirrored from an upstream
+        $package->convertToLocal();
+
         $version ??= $decoded['version'] ?? throw new VersionNotFoundException('no version provided');
         $name = $decoded['name'] ?? throw new NameNotFoundException('no name provided');
 

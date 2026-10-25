@@ -17,6 +17,7 @@ import { PackageIcon } from 'lucide-react'
 import { is404 } from '@/api/axios'
 import { CopyCommandTooltip } from '@/components/ui/tooltip'
 import { PackageActionsDropdownMenu } from '@/components/dropdown-menu/package-actions-dropdown-menu'
+import { UpstreamCard } from '@/components/card/upstream-card'
 
 export const Route = createFileRoute('/_auth/packages/$packageId')({
     validateSearch: versionQuery,
@@ -66,13 +67,19 @@ function PackagesComponent() {
                 ) : (
                     <LoadingRepositoryCard className="w-1/2" />
                 )}
+                {query.data?.mirrorStatus && (
+                    <UpstreamCard
+                        className="w-1/2"
+                        pkg={query.data}
+                    />
+                )}
                 {query.data?.source ? (
                     <SourceCard
                         className="w-1/2"
                         source={query.data.source}
                     />
                 ) : (
-                    query.data?.source !== null && <LoadingSourceCard className="w-1/2" />
+                    query.data?.source !== null && !query.data?.mirrorStatus && <LoadingSourceCard className="w-1/2" />
                 )}
             </div>
             <SearchBar

@@ -18,9 +18,10 @@ readonly class PackageDownloadEvent
      */
     public function __construct(
         public Package $package,
-        public Version $version,
+        public ?Version $version,
         public ?string $ip,
-        public ?Token $token
+        public ?Token $token,
+        public ?string $versionName = null,
     ) {
         //
     }

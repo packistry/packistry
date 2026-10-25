@@ -6,7 +6,10 @@ import {
     RepositoryDropdownMenu,
     RepositoryDropdownMenuProps,
 } from '@/components/dropdown-menu/repository-dropdown-menu'
-import { packageQuery } from '@/api'
+import { packageQuery, PackageOrigin } from '@/api'
+import { OriginTabs } from '@/components/page/origin-tabs'
+import { useAuth } from '@/auth'
+import { UPSTREAM_READ } from '@/permission'
 import { Heading } from '@/components/page/heading'
 import { navigateOnSearch, SearchBar } from '@/components/page/search-bar'
 import { PackageTable } from '@/components/table/package-table'
@@ -23,7 +26,9 @@ export const Route = createFileRoute('/_auth/packages/')({
 
 function PackagesComponent() {
     const { open, ...search } = Route.useSearch()
-    const query = usePackages(search)
+    const { can } = useAuth()
+    const query = usePackages({ ...search, include: ['repository', 'upstream'] })
+    const origin = search.filters?.origin || 'local'
     const dialogProps = useSearchDialog({ open })
     const navigate = useNavigate()
 
@@ -34,6 +39,20 @@ function PackagesComponent() {
                 ...prev,
                 page: 1,
                 filters: { ...prev.filters, repositoryId: repo?.id },
+            }),
+        })
+    }
+
+    const onOriginSelected = (origin: PackageOrigin) => {
+        navigate({
+            to: '.',
+            search: (prev) => ({
+                ...prev,
+                page: 1,
+                filters:
+                    origin === 'local'
+                        ? { ...prev.filters, origin: undefined, upstreamId: undefined }
+                        : { ...prev.filters, origin },
             }),
         })
     }
@@ -49,11 +68,21 @@ function PackagesComponent() {
                     />
                 </div>
             </Heading>
-            <SearchBar
-                name="packages"
-                search={search.filters?.search}
-                onSearch={navigateOnSearch(navigate)}
-            />
+            <div className="flex items-center gap-4">
+                <div className="grow">
+                    <SearchBar
+                        name="packages"
+                        search={search.filters?.search}
+                        onSearch={navigateOnSearch(navigate)}
+                    />
+                </div>
+                {can(UPSTREAM_READ) && (
+                    <OriginTabs
+                        value={origin}
+                        onChange={onOriginSelected}
+                    />
+                )}
+            </div>
             <PackageTable
                 sort={search.sort}
                 query={query}

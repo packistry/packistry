@@ -30,6 +30,10 @@ export const AUTHENTICATION_SOURCE_CREATE = 'authentication_source_create'
 export const AUTHENTICATION_SOURCE_READ = 'authentication_source_read'
 export const AUTHENTICATION_SOURCE_UPDATE = 'authentication_source_update'
 export const AUTHENTICATION_SOURCE_DELETE = 'authentication_source_delete'
+export const UPSTREAM_CREATE = 'upstream_create'
+export const UPSTREAM_READ = 'upstream_read'
+export const UPSTREAM_UPDATE = 'upstream_update'
+export const UPSTREAM_DELETE = 'upstream_delete'
 export const BATCH_READ = 'batch_read'
 export const BATCH_DELETE = 'batch_delete'
 
@@ -64,6 +68,10 @@ export const permissions = [
     AUTHENTICATION_SOURCE_READ,
     AUTHENTICATION_SOURCE_UPDATE,
     AUTHENTICATION_SOURCE_DELETE,
+    UPSTREAM_CREATE,
+    UPSTREAM_READ,
+    UPSTREAM_UPDATE,
+    UPSTREAM_DELETE,
     BATCH_READ,
     BATCH_DELETE,
 ] as const

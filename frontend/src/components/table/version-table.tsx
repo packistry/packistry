@@ -31,7 +31,7 @@ export function VersionTable(props: Omit<PaginatedTableProps<UseQueryResult<Pagi
                     },
                     sorter: true,
                     render: (version) => {
-                        return format(version.createdAt, 'PPP')
+                        return version.createdAt ? format(version.createdAt, 'PPP') : '-'
                     },
                 },
                 {

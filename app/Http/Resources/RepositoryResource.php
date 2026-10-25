@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\Repository;
+use App\Models\Upstream;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Override;
@@ -32,6 +33,15 @@ class RepositoryResource extends JsonResource
             'updated_at' => $this->updated_at,
             'url' => $this->url(),
             'packages_count' => $this->whenCounted('packages'),
+            'upstreams' => $this->whenLoaded('upstreams', fn (): array => $this->upstreams
+                ->map(fn (Upstream $upstream): array => [
+                    'id' => $upstream->id,
+                    'name' => $upstream->name,
+                    'priority' => $upstream->pivot?->priority,
+                    'enabled' => $upstream->pivot?->enabled,
+                ])
+                ->values()
+                ->all()),
         ];
     }
 }

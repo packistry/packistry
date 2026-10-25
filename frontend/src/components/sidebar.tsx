@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
+    CloudDownloadIcon,
     CodeIcon,
     DatabaseIcon,
     DownloadIcon,
@@ -23,6 +24,7 @@ import {
     PERSONAL_TOKEN_READ,
     REPOSITORY_READ,
     SOURCE_READ,
+    UPSTREAM_READ,
     USER_READ,
 } from '@/permission'
 import { useAuth } from '@/auth'
@@ -39,6 +41,7 @@ const navItems: NavItem[] = [
     { name: 'Repositories', href: '/repositories', icon: DatabaseIcon, permission: REPOSITORY_READ },
     { name: 'Packages', href: '/packages', icon: PackageIcon, permission: PACKAGE_READ },
     { name: 'Sources', href: '/sources', icon: CodeIcon, permission: SOURCE_READ },
+    { name: 'Upstreams', href: '/upstreams', icon: CloudDownloadIcon, permission: UPSTREAM_READ },
     { name: 'Users', href: '/users', icon: UsersIcon, permission: USER_READ },
     { name: 'Deploy Tokens', href: '/deploy-tokens', icon: KeyIcon, permission: DEPLOY_TOKEN_READ },
     { name: 'Personal Tokens', href: '/personal-tokens', icon: UserKeyIcon, permission: PERSONAL_TOKEN_READ },

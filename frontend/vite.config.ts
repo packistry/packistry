@@ -9,7 +9,16 @@ export default defineConfig({
     plugins: [tailwindcss(), TanStackRouterVite({}), react()],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
+            '@': path.resolve(import.meta.dirname, './src'),
+        },
+    },
+    server: {
+        // keeps the API on the same origin as the app, like in production, so no CORS is involved
+        proxy: {
+            '/api': {
+                target: 'http://localhost',
+                changeOrigin: true,
+            },
         },
     },
 })

@@ -13,7 +13,8 @@ import { UseQueryResult } from '@tanstack/react-query'
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
-export const baseURL = import.meta.env.DEV ? 'http://localhost/api' : '/api'
+// same origin in production, proxied to the backend by the Vite dev server in development
+export const baseURL = '/api'
 
 export const axiosDefaults: CreateAxiosDefaults = {
     baseURL,
@@ -99,6 +100,17 @@ export async function post<T, D>(schema: z.ZodType<T>, path: string, data: D) {
 export async function patch<T, D>(schema: z.ZodType<T>, path: string, data?: D) {
     return await api
         .patch<z.ZodType<T>, AxiosResponse<z.ZodType<T>>, D>(path, data || ({} as D))
+        .then((response) => schema.parse(response.data))
+        .catch((err) => {
+            console.error(err)
+
+            throw err
+        })
+}
+
+export async function put<T, D>(schema: z.ZodType<T>, path: string, data?: D) {
+    return await api
+        .put<z.ZodType<T>, AxiosResponse<z.ZodType<T>>, D>(path, data || ({} as D))
         .then((response) => schema.parse(response.data))
         .catch((err) => {
             console.error(err)

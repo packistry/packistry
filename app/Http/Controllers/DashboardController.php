@@ -27,7 +27,8 @@ readonly class DashboardController extends Controller
         $dashboard = [];
 
         if ($user->can(Permission::PACKAGE_READ)) {
-            $dashboard['packages'] = Package::userScoped()->count();
+            $dashboard['packages'] = Package::userScoped()->local()->count();
+            $dashboard['mirrored_packages'] = Package::userScoped()->mirrored()->withoutGone()->count();
         }
 
         if ($user->can(Permission::REPOSITORY_READ)) {

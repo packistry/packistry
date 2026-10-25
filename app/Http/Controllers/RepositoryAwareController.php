@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TokenAbility;
 use App\Models\Contracts\Tokenable;
+use App\Models\Package;
 use App\Models\Repository;
 use Illuminate\Support\Facades\Auth;
 use RuntimeException;
@@ -37,6 +38,14 @@ abstract class RepositoryAwareController
                 ->tokenScoped()
                 ->firstOrFail();
         });
+    }
+
+    protected function tokenCanAccessPackage(Package $package): bool
+    {
+        return Package::query()
+            ->tokenScoped()
+            ->whereKey($package->id)
+            ->exists();
     }
 
     protected function authorize(TokenAbility $ability): void

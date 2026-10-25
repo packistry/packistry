@@ -23,6 +23,8 @@ Packistry is a self-hosted Composer repository designed to handle your PHP packa
     - **Human Access Control**: Create user accounts to assign and manage access to your private repositories, ensuring only authorized individuals can interact with sensitive content.
     - **Machine Access Control**: Generate deploy tokens to allow machines (e.g., build systems or CI/CD pipelines) to access private repositories, ensuring smooth, secure automation.
 
+- **Upstream Mirroring**: Serve packages from Packagist, GitLab groups, Private Packagist or any other Composer 2 repository through Packistry. Packistry caches their metadata and dists, so installs keep working while an upstream is down, and clients only need one repository and one Packistry token.
+
 - **Authentication Sources**: Packistry supports **Single Sign-On (SSO)** through OAuth 2.0 and OpenID Connect.
     - **OpenID Connect**: Authenticate using an OIDC provider, such as Okta or Microsoft Azure AD (Entra ID).
     - **GitHub**: Authenticate using your GitHub account.
