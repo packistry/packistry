@@ -7,6 +7,7 @@ namespace App;
 use App\Enums\PackageType;
 use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToOpenArchiveException;
+use App\Exceptions\InvalidConstraintException;
 use App\Exceptions\NameNotFoundException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
@@ -20,11 +21,17 @@ class CreateFromZip
 {
     use ComposerFromZip;
 
+    public function __construct(private readonly ConstraintValidator $constraintValidator)
+    {
+        //
+    }
+
     /**
      * @throws VersionNotFoundException
      * @throws ComposerJsonNotFoundException
      * @throws FailedToOpenArchiveException
      * @throws NameNotFoundException
+     * @throws InvalidConstraintException
      */
     public function create(
         Package $package,
@@ -32,6 +39,12 @@ class CreateFromZip
         ?string $version = null,
     ): Version {
         $decoded = $this->decodedComposerJsonFromZip($path);
+
+        $invalidConstraints = $this->constraintValidator->invalidConstraints($decoded);
+
+        if ($invalidConstraints !== []) {
+            throw new InvalidConstraintException($invalidConstraints);
+        }
 
         $version ??= $decoded['version'] ?? throw new VersionNotFoundException('no version provided');
         $name = $decoded['name'] ?? throw new NameNotFoundException('no name provided');
