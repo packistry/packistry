@@ -102,7 +102,9 @@ php artisan mirror:prune --unused-for=90
 php artisan downloads:prune --older-than=365
 ```
 
-Settings (environment variables, in seconds): `MIRROR_METADATA_TTL` (300), `MIRROR_NOT_FOUND_TTL` (600), `MIRROR_DOWN_TTL` (60), `MIRROR_ROOT_TTL` (86400), `MIRROR_CONNECT_TIMEOUT` (5), `MIRROR_TIMEOUT` (15), `MIRROR_DOWNLOAD_TIMEOUT` (300) and `MIRROR_DOWNLOAD_STATS` (`full`, `counts` or `off`).
+Packistry never connects to private or reserved addresses (loopback, private networks, cloud metadata endpoints) on behalf of an upstream, including its metadata urls, dist urls and redirects, and only mirrors zip dists. Allow internal registries, such as a self-hosted GitLab, with `MIRROR_ALLOWED_HOSTS=gitlab.internal,satis.internal`.
+
+Settings (environment variables, in seconds): `MIRROR_METADATA_TTL` (300), `MIRROR_NOT_FOUND_TTL` (600), `MIRROR_DOWN_TTL` (60), `MIRROR_ROOT_TTL` (86400), `MIRROR_CONNECT_TIMEOUT` (5), `MIRROR_TIMEOUT` (15), `MIRROR_DOWNLOAD_TIMEOUT` (300), `MIRROR_DOWNLOAD_STATS` (`full`, `counts` or `off`) and `MIRROR_ALLOWED_HOSTS` (comma separated, empty by default).
 
 ## Dependencies
 

@@ -30,6 +30,10 @@ return [
     'timeout' => (int) env('MIRROR_TIMEOUT', 15),
     'download_timeout' => (int) env('MIRROR_DOWNLOAD_TIMEOUT', 300),
 
+    // hosts that may resolve to private or reserved addresses, e.g. a self-hosted GitLab on the
+    // internal network (comma separated, * allows every host)
+    'allowed_hosts' => env('MIRROR_ALLOWED_HOSTS', ''),
+
     // full: record every download, counts: only increment counters, off: record nothing
     'download_stats' => env('MIRROR_DOWNLOAD_STATS', 'full'),
 

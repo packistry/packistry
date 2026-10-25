@@ -8,15 +8,22 @@ use App\Exceptions\UnsupportedUpstreamException;
 use App\Exceptions\UpstreamUnavailableException;
 use App\Models\Upstream;
 use App\Models\UpstreamCredential;
+use GuzzleHttp\Psr7\Uri;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\UriInterface;
 
 class UpstreamClient
 {
+    public function __construct(private readonly NetworkGuard $guard)
+    {
+        //
+    }
+
     /**
      * Credentials are attached per request based on the request host, so they are
      * also evaluated for every redirect hop and never leak to other hosts.
@@ -30,11 +37,14 @@ class UpstreamClient
         return Http::withUserAgent('Packistry ('.config('app.url').')')
             ->connectTimeout(config()->integer('mirror.connect_timeout'))
             ->timeout($timeout ?? config()->integer('mirror.timeout'))
-            ->withRequestMiddleware(function (RequestInterface $request) use ($credentials): RequestInterface {
-                /** @var UpstreamCredential|null $credential */
-                $credential = $credentials->get(Str::lower($request->getUri()->getHost()));
+            ->withMiddleware($this->guard->middleware())
+            ->withRequestMiddleware(function (RequestInterface $request) use ($credentials, $upstream): RequestInterface {
+                $uri = $request->getUri();
 
-                if ($credential === null) {
+                /** @var UpstreamCredential|null $credential */
+                $credential = $credentials->get(Str::lower($uri->getHost()));
+
+                if ($credential === null || ! $this->mayReceiveCredentials($uri, $upstream)) {
                     return $request;
                 }
 
@@ -134,6 +144,26 @@ class UpstreamClient
         $upstream->last_error = Str::limit($error, 1000);
         $upstream->last_error_at = now();
         $upstream->saveQuietly();
+    }
+
+    /**
+     * Credentials are only sent encrypted, or to exactly the scheme, host and port the upstream is configured with.
+     */
+    private function mayReceiveCredentials(UriInterface $uri, Upstream $upstream): bool
+    {
+        if ($uri->getScheme() === 'https') {
+            return true;
+        }
+
+        return $this->origin($uri) === $this->origin(new Uri($upstream->url));
+    }
+
+    private function origin(UriInterface $uri): string
+    {
+        $scheme = Str::lower($uri->getScheme());
+        $port = $uri->getPort() ?? ($scheme === 'https' ? 443 : 80);
+
+        return $scheme.'://'.Str::lower($uri->getHost()).':'.$port;
     }
 
     public static function resolveUrl(string $base, string $url): string

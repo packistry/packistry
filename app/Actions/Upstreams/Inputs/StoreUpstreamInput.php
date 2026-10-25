@@ -6,7 +6,6 @@ namespace App\Actions\Upstreams\Inputs;
 
 use App\Actions\Input;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
-use Spatie\LaravelData\Attributes\Validation\Url;
 
 class StoreUpstreamInput extends Input
 {
@@ -17,7 +16,6 @@ class StoreUpstreamInput extends Input
      */
     public function __construct(
         public string $name,
-        #[Url]
         public string $url,
         public ?array $only = null,
         public ?array $exclude = null,
@@ -33,6 +31,7 @@ class StoreUpstreamInput extends Input
     public static function rules(): array
     {
         return [
+            'url' => ['url:http,https'],
             'only.*' => ['nullable', 'string', 'max:255'],
             'exclude.*' => ['nullable', 'string', 'max:255'],
         ];

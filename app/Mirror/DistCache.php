@@ -78,7 +78,13 @@ readonly class DistCache
 
         /** @var string $url */
         $url = $dist['url'];
-        $type = is_string($dist['type'] ?? null) ? $dist['type'] : 'zip';
+
+        // only zip archives are mirrored, so whatever an upstream points to is never served unverified
+        if (($dist['type'] ?? 'zip') !== 'zip') {
+            $this->client->recordError($upstream, $message = "Dist of $name ($key) is not a zip archive, only zip dists are mirrored");
+
+            throw new UpstreamUnavailableException($message);
+        }
 
         $temp = tempnam(sys_get_temp_dir(), 'packistry-mirror-');
 
@@ -113,15 +119,13 @@ readonly class DistCache
                 throw new UpstreamUnavailableException($message);
             }
 
-            if ($type === 'zip' && ! $this->isZip($temp)) {
+            if (! $this->isZip($temp)) {
                 $this->client->recordError($upstream, $message = "Downloaded dist of $name ($key) is not a valid zip archive");
 
                 throw new UpstreamUnavailableException($message);
             }
 
-            $extension = (string) preg_replace('{[^a-z0-9]}', '', strtolower($type));
-            $extension = $extension === '' ? 'zip' : $extension;
-            $path = $upstream->storagePath("dists/$name/$key.$extension");
+            $path = $upstream->storagePath("dists/$name/$key.zip");
 
             $stream = fopen($temp, 'rb');
 

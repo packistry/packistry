@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Mirror\HostResolver;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,6 +17,8 @@ abstract class TestCase extends BaseTestCase
         $app = parent::createApplication();
 
         Hash::setRounds(4);
+
+        $app->instance(HostResolver::class, new FakeHostResolver);
 
         return $app;
     }
