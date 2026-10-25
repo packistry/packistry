@@ -9,6 +9,7 @@ use App\Models\MirrorMetadata;
 use App\Models\Upstream;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Number;
 
 class MirrorPrune extends Command
 {
@@ -55,7 +56,14 @@ class MirrorPrune extends Command
 
         $metadata = 0;
 
+        // metadata of a failing upstream is served stale without being revalidated,
+        // so how long ago it was checked says nothing about whether it is still used
+        $healthyUpstreams = Upstream::query()
+            ->whereNull('last_error')
+            ->select('id');
+
         MirrorMetadata::query()
+            ->whereIn('upstream_id', $healthyUpstreams)
             ->where(fn ($query) => $query
                 ->where('checked_at', '<', $before)
                 ->orWhereNull('checked_at'))
@@ -78,7 +86,7 @@ class MirrorPrune extends Command
 
         $verb = $dryRun ? 'would be' : 'were';
 
-        $this->info(sprintf('%d dist(s) (%s) %s removed.', $dists, $this->formatBytes($bytes), $verb));
+        $this->info(sprintf('%d dist(s) (%s) %s removed.', $dists, Number::fileSize($bytes, maxPrecision: 1), $verb));
         $this->info("$metadata metadata file(s) $verb removed.");
         $this->info("$orphans orphaned file(s) $verb removed.");
 
@@ -128,14 +136,5 @@ class MirrorPrune extends Command
         }
 
         return $removed;
-    }
-
-    private function formatBytes(int $bytes): string
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $power = $bytes > 0 ? (int) floor(log($bytes, 1024)) : 0;
-        $power = min($power, count($units) - 1);
-
-        return round($bytes / (1024 ** $power), 1).' '.$units[$power];
     }
 }

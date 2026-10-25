@@ -42,7 +42,10 @@ class DownloadsPrune extends Command
         } while ($ids->isNotEmpty());
 
         $this->info("$removed download record(s) were removed.");
-        $this->comment('Package and version totals are unchanged, do not run recalculate:total-downloads afterwards as it counts the remaining records.');
+        $this->comment(
+            'Package and version totals are unchanged, do not run recalculate:total-downloads afterwards '
+            .'as it counts the remaining records.'
+        );
 
         return self::SUCCESS;
     }

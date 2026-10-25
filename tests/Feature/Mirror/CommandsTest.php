@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\artisan;
+use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 use function Pest\Laravel\travel;
 
 beforeEach(function (): void {
@@ -166,7 +168,7 @@ it('prunes unused dists, metadata and orphaned files', function (): void {
     fakePackagistWithDist();
 
     getJson($repository->url('/p2/acme/package.json'))->assertOk();
-    Pest\Laravel\get($repository->url('/_mirror/acme/package/aaa'))->assertOk();
+    get($repository->url('/_mirror/acme/package/aaa'))->assertOk();
 
     Storage::put('_mirror/999/dists/old.zip', 'deleted upstream');
     Storage::put($upstream->storagePath('dists/stray.zip'), 'no row');
@@ -191,6 +193,30 @@ it('prunes unused dists, metadata and orphaned files', function (): void {
     expect(MirrorDist::query()->count())->toBe(0)
         ->and(MirrorMetadata::query()->count())->toBe(0)
         ->and(Storage::allFiles('_mirror'))->toBe([]);
+});
+
+it('keeps the metadata of a failing upstream when pruning', function (): void {
+    $upstream = Upstream::factory()->packagist()->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    fakePackagistWithDist();
+
+    getJson($repository->url('/p2/acme/package.json'))->assertOk();
+
+    travel(31)->days();
+
+    // served stale during the outage, so never revalidated
+    $upstream->forceFill([
+        'last_error' => 'Fetching https://repo.packagist.org/p2/acme/package.json failed with HTTP 503',
+        'last_error_at' => now(),
+    ])->save();
+
+    artisan('mirror:prune', ['--unused-for' => 30])->assertSuccessful();
+
+    /** @var MirrorMetadata $metadata */
+    $metadata = MirrorMetadata::query()->sole();
+
+    Storage::assertExists($metadata->body_path);
 });
 
 it('prunes old download records but keeps the totals', function (): void {
@@ -218,7 +244,7 @@ it('answers conditional requests for mirrored metadata', function (): void {
 
     expect($lastModified)->not->toBeNull();
 
-    Pest\Laravel\getJson($repository->url('/p2/acme/package.json'), ['If-Modified-Since' => (string) $lastModified])
+    getJson($repository->url('/p2/acme/package.json'), ['If-Modified-Since' => (string) $lastModified])
         ->assertStatus(304)
         ->assertContent('');
 
@@ -226,7 +252,7 @@ it('answers conditional requests for mirrored metadata', function (): void {
     travel(5)->seconds();
     Package::query()->sole()->touch();
 
-    Pest\Laravel\getJson($repository->url('/p2/acme/package.json'), ['If-Modified-Since' => (string) $lastModified])
+    getJson($repository->url('/p2/acme/package.json'), ['If-Modified-Since' => (string) $lastModified])
         ->assertOk()
         ->assertJsonPath('packages.acme/package.0.version', '1.0.0');
 
@@ -242,7 +268,7 @@ it('refreshes a mirrored package from the admin api', function (): void {
 
     fakePackagistWithDist('3.0.0');
 
-    Pest\Laravel\postJson("/api/packages/$package->id/refresh")
+    postJson("/api/packages/$package->id/refresh")
         ->assertOk()
         ->assertJsonPath('mirror_status', 'ok')
         ->assertJsonPath('latest_version', '3.0.0')
@@ -250,7 +276,7 @@ it('refreshes a mirrored package from the admin api', function (): void {
 
     $local = Package::factory()->for($repository)->name('acme/local')->create();
 
-    Pest\Laravel\postJson("/api/packages/$local->id/refresh")
+    postJson("/api/packages/$local->id/refresh")
         ->assertUnprocessable();
 });
 
@@ -265,7 +291,7 @@ it('does not report a refresh as successful when the upstream is down', function
 
     Http::fake(['*' => Http::failedConnection()]);
 
-    Pest\Laravel\postJson('/api/packages/'.Package::query()->sole()->id.'/refresh')
+    postJson('/api/packages/'.Package::query()->sole()->id.'/refresh')
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['package']);
 

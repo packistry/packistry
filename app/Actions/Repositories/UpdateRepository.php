@@ -35,7 +35,8 @@ class UpdateRepository
 
             if ($private->isNotEmpty()) {
                 throw ValidationException::withMessages([
-                    'public' => 'Repositories with authenticated upstreams cannot be public: '.$private->pluck('name')->implode(', '),
+                    'public' => 'Repositories with authenticated upstreams cannot be public: '
+                        .$private->pluck('name')->implode(', '),
                 ]);
             }
         }

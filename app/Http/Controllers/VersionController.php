@@ -92,7 +92,9 @@ readonly class VersionController extends Controller
         $search = $request->input('filter.search');
 
         if (is_string($search) && $search !== '') {
-            $versions = $versions->filter(fn (array $version): bool => Str::contains((string) $version['name'], $search, ignoreCase: true));
+            $versions = $versions->filter(
+                fn (array $version): bool => Str::contains((string) $version['name'], $search, ignoreCase: true)
+            );
         }
 
         $sort = $request->query('sort');

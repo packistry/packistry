@@ -48,8 +48,13 @@ readonly class Resolver
         return null;
     }
 
-    private function claim(Repository $repository, Upstream $upstream, string $name, MetadataResult $result, ?Package $existing): Package
-    {
+    private function claim(
+        Repository $repository,
+        Upstream $upstream,
+        string $name,
+        MetadataResult $result,
+        ?Package $existing,
+    ): Package {
         $package = $existing ?? new Package;
 
         $package->repository_id = $repository->id;

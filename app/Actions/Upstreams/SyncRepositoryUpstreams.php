@@ -31,7 +31,8 @@ class SyncRepositoryUpstreams
 
             if ($private->isNotEmpty()) {
                 throw ValidationException::withMessages([
-                    'upstreams' => 'Public repositories cannot use authenticated upstreams: '.$private->pluck('name')->implode(', '),
+                    'upstreams' => 'Public repositories cannot use authenticated upstreams: '
+                        .$private->pluck('name')->implode(', '),
                 ]);
             }
         }

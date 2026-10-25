@@ -143,9 +143,9 @@ class RepositoryController extends RepositoryAwareController
 
         $package->load([
             'versions' => fn (BuilderContract $query) => $dev
-                ? $query
+                ? $query->where(fn (BuilderContract $query) => $query
                     ->where('name', 'like', 'dev-%')
-                    ->orWhere('name', 'like', '%-dev')
+                    ->orWhere('name', 'like', '%-dev'))
                 : $query
                     ->where('name', 'not like', 'dev-%')
                     ->where('name', 'not like', '%-dev'),
@@ -187,7 +187,7 @@ class RepositoryController extends RepositoryAwareController
         }
 
         // the owning upstream no longer has the package, give the next upstream a chance
-        if ($result->isNotFound() && ! $dev && ! $reresolved) {
+        if ($result->isNotFound() && ! $reresolved && $this->ownerLostPackage($upstream, $package, $dev)) {
             $package->mirror_status = MirrorStatus::GONE;
             $package->save();
 
@@ -199,6 +199,18 @@ class RepositoryController extends RepositoryAwareController
         }
 
         abort(404);
+    }
+
+    /**
+     * Many registries have no dev metadata for a package, only missing stable metadata means it is gone.
+     */
+    private function ownerLostPackage(?Upstream $upstream, Package $package, bool $dev): bool
+    {
+        if ($upstream === null || ! $dev) {
+            return true;
+        }
+
+        return $this->metadata->get($upstream, $package->name)->isNotFound();
     }
 
     /**

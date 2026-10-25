@@ -20,7 +20,8 @@ class MirrorWarm extends Command
         {lock : Path to a composer.lock file}
         {--repository= : Path of the repository to warm, leave empty for the root repository}';
 
-    protected $description = 'Cache the metadata and dists of every package in a composer.lock, so they are available when an upstream is down';
+    protected $description = 'Cache the metadata and dists of every package in a composer.lock, '
+        .'so they are available when an upstream is down';
 
     public function handle(Resolver $resolver, DistCache $dists): int
     {
@@ -84,8 +85,14 @@ class MirrorWarm extends Command
     /**
      * @return array{string, bool}
      */
-    private function warm(Repository $repository, Resolver $resolver, DistCache $dists, string $name, string $version, mixed $dist): array
-    {
+    private function warm(
+        Repository $repository,
+        Resolver $resolver,
+        DistCache $dists,
+        string $name,
+        string $version,
+        mixed $dist,
+    ): array {
         /** @var Package|null $package */
         $package = $repository->packages()->where('name', $name)->first();
 

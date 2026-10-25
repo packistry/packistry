@@ -55,9 +55,14 @@ readonly class DistCache
             return $this->touch($stored);
         }
 
+        $timeout = config()->integer('mirror.download_timeout');
+
         try {
-            return Cache::lock("mirror:lock:dist:$upstream->id:$name:$key", config()->integer('mirror.download_timeout') + 30)
-                ->block(config()->integer('mirror.download_timeout'), fn (): ?MirrorDist => $this->stored($upstream, $name, $key) ?? $this->download($upstream, $name, $key));
+            return Cache::lock("mirror:lock:dist:$upstream->id:$name:$key", $timeout + 30)->block(
+                $timeout,
+                // another request may have downloaded it while we waited for the lock
+                fn (): ?MirrorDist => $this->stored($upstream, $name, $key) ?? $this->download($upstream, $name, $key)
+            );
         } catch (LockTimeoutException) {
             throw new UpstreamUnavailableException("Timed out waiting for download of $name ($key)");
         }
@@ -81,9 +86,7 @@ readonly class DistCache
 
         // only zip archives are mirrored, so whatever an upstream points to is never served unverified
         if (($dist['type'] ?? 'zip') !== 'zip') {
-            $this->client->recordError($upstream, $message = "Dist of $name ($key) is not a zip archive, only zip dists are mirrored");
-
-            throw new UpstreamUnavailableException($message);
+            $this->fail($upstream, "Dist of $name ($key) is not a zip archive, only zip dists are mirrored");
         }
 
         $temp = tempnam(sys_get_temp_dir(), 'packistry-mirror-');
@@ -105,24 +108,18 @@ readonly class DistCache
             }
 
             if (! $response->successful()) {
-                $this->client->recordError($upstream, $message = "Downloading $url failed with HTTP {$response->status()}");
-
-                throw new UpstreamUnavailableException($message);
+                $this->fail($upstream, "Downloading $url failed with HTTP {$response->status()}");
             }
 
             $shasum = is_string($dist['shasum'] ?? null) && $dist['shasum'] !== '' ? $dist['shasum'] : null;
             $hash = sha1_file($temp);
 
             if ($shasum !== null && $hash !== $shasum) {
-                $this->client->recordError($upstream, $message = "Downloaded dist of $name ($key) does not match shasum $shasum");
-
-                throw new UpstreamUnavailableException($message);
+                $this->fail($upstream, "Downloaded dist of $name ($key) does not match shasum $shasum");
             }
 
             if (! $this->isZip($temp)) {
-                $this->client->recordError($upstream, $message = "Downloaded dist of $name ($key) is not a valid zip archive");
-
-                throw new UpstreamUnavailableException($message);
+                $this->fail($upstream, "Downloaded dist of $name ($key) is not a valid zip archive");
             }
 
             $path = $upstream->storagePath("dists/$name/$key.zip");
@@ -232,5 +229,15 @@ readonly class DistCache
         $zip->close();
 
         return true;
+    }
+
+    /**
+     * @throws UpstreamUnavailableException
+     */
+    private function fail(Upstream $upstream, string $message): never
+    {
+        $this->client->recordError($upstream, $message);
+
+        throw new UpstreamUnavailableException($message);
     }
 }

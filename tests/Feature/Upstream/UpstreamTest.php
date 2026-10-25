@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\MirrorStatus;
 use App\Enums\Permission;
 use App\Enums\UpstreamCredentialType;
+use App\Models\MirrorMetadata;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Upstream;
@@ -141,6 +142,35 @@ it('updates and keeps secrets that are not resent', function (?User $user, int $
         ->username->toBe('deploy2')
         ->secret->toBe('old-secret');
 })->with(guestAndUsers(Permission::UPSTREAM_UPDATE));
+
+it('forgets cached metadata when the url changes', function (): void {
+    Storage::fake();
+    user(Permission::UPSTREAM_UPDATE);
+
+    $upstream = Upstream::factory()->url('https://old.test')->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    Http::fake([
+        'old.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'old.test/p2/acme/package.json' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'old')])),
+        'new.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'new.test/p2/acme/package.json' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('2.0.0', 'new')])),
+    ]);
+
+    getJson($repository->url('/p2/acme/package.json'))
+        ->assertJsonPath('packages.acme/package.0.version', '1.0.0');
+
+    putJson("/api/upstreams/$upstream->id", [
+        'name' => $upstream->name,
+        'url' => 'https://new.test',
+    ])->assertOk();
+
+    expect(MirrorMetadata::query()->count())->toBe(0)
+        ->and(Storage::allFiles($upstream->storagePath('metadata')))->toBe([]);
+
+    getJson($repository->url('/p2/acme/package.json'))
+        ->assertJsonPath('packages.acme/package.0.version', '2.0.0');
+});
 
 it('does not allow authenticating an upstream that is attached to a public repository', function (): void {
     user(Permission::UPSTREAM_UPDATE);

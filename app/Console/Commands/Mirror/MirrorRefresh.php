@@ -68,7 +68,12 @@ class MirrorRefresh extends Command
             }
         }
 
-        $this->table(['Result', 'Count'], collect($counts)->map(fn (int $count, string $result): array => [$result, $count])->values()->all());
+        $rows = collect($counts)
+            ->map(fn (int $count, string $result): array => [$result, $count])
+            ->values()
+            ->all();
+
+        $this->table(['Result', 'Count'], $rows);
 
         return $counts['unavailable'] > 0 ? self::FAILURE : self::SUCCESS;
     }

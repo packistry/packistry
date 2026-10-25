@@ -138,6 +138,10 @@ readonly class MetadataCache
             return $this->load($cached) ?? MetadataResult::unavailable();
         }
 
+        if ($response->status() === 404 && $cached instanceof MirrorMetadata && ! $this->rootAnswers($upstream)) {
+            return $this->stale($cached);
+        }
+
         if ($response->status() === 404) {
             $this->client->recordSuccess($upstream);
 
@@ -238,6 +242,21 @@ readonly class MetadataCache
         ];
     }
 
+    /**
+     * Some registries answer 404 instead of 401 or 403 once credentials stop working, so a 404 for a
+     * cached package only means it is gone when the upstream itself still answers.
+     */
+    private function rootAnswers(Upstream $upstream): bool
+    {
+        try {
+            $this->client->metadataUrl($upstream, force: true);
+        } catch (UpstreamUnavailableException|UnsupportedUpstreamException) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function cached(Upstream $upstream, string $name, bool $dev): ?MirrorMetadata
     {
         return MirrorMetadata::query()
@@ -279,9 +298,14 @@ readonly class MetadataCache
         return MetadataResult::found($data, $cached->fetched_at);
     }
 
+    /**
+     * Includes the upstream url, so not-found answers of a previous url are not reused after it changes.
+     */
     private function notFoundKey(Upstream $upstream, string $name, bool $dev): string
     {
-        return "mirror:not-found:$upstream->id:$name:".($dev ? 'dev' : 'stable');
+        $url = sha1($upstream->url);
+
+        return "mirror:not-found:$upstream->id:$url:$name:".($dev ? 'dev' : 'stable');
     }
 
     private function lockKey(Upstream $upstream, string $name, bool $dev): string

@@ -60,7 +60,8 @@ readonly class NetworkGuard
         foreach ($addresses as $address) {
             if (! $this->isPublicAddress($address)) {
                 throw new ConnectException(
-                    "Blocked request to $host ($address): private and reserved addresses are not allowed, add the host to MIRROR_ALLOWED_HOSTS to allow it",
+                    "Blocked request to $host ($address): private and reserved addresses are not allowed, "
+                        .'add the host to MIRROR_ALLOWED_HOSTS to allow it',
                     $request
                 );
             }

@@ -310,6 +310,66 @@ it('resolves again when the owning upstream no longer has the package', function
         ->mirror_status->toBe(MirrorStatus::OK);
 });
 
+it('resolves dev metadata again when the owning upstream no longer has the package', function (): void {
+    $gitlab = Upstream::factory()->url('https://gitlab.test/packages.json')->create();
+    $packagist = Upstream::factory()->packagist()->create();
+
+    $repository = mirroredRepository([$gitlab, $packagist], public: true);
+
+    Http::fake([
+        'gitlab.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'gitlab.test/p2/acme/package.json' => Http::sequence()
+            ->push(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'private')]))
+            ->push(null, 404),
+        'gitlab.test/p2/acme/package~dev.json' => Http::response(null, 404),
+        'repo.packagist.org/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'repo.packagist.org/p2/acme/package.json' => Http::response(
+            upstreamMetadata('acme/package', [upstreamVersion('3.0.0', 'public')])
+        ),
+        'repo.packagist.org/p2/acme/package~dev.json' => Http::response(
+            upstreamMetadata('acme/package', [upstreamVersion('dev-main', 'main')])
+        ),
+    ]);
+
+    getJson($repository->url('/p2/acme/package.json'))
+        ->assertJsonPath('packages.acme/package.0.version', '1.0.0');
+
+    travel(301)->seconds();
+
+    getJson($repository->url('/p2/acme/package~dev.json'))
+        ->assertOk()
+        ->assertJsonPath('packages.acme/package.0.version', 'dev-main');
+
+    expect(Package::query()->sole())
+        ->upstream_id->toBe($packagist->id);
+});
+
+it('keeps serving cached metadata when the upstream answers 404 because its credentials stopped working', function (): void {
+    $upstream = Upstream::factory()->url('https://gitlab.test/packages.json')->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    Http::fake([
+        'gitlab.test/packages.json' => Http::sequence()
+            ->push(['metadata-url' => '/p2/%package%.json'])
+            ->push(null, 401),
+        'gitlab.test/p2/acme/package.json' => Http::sequence()
+            ->push(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'aaa')]))
+            ->push(null, 404),
+    ]);
+
+    getJson($repository->url('/p2/acme/package.json'))->assertOk();
+
+    travel(301)->seconds();
+
+    getJson($repository->url('/p2/acme/package.json'))
+        ->assertOk()
+        ->assertJsonPath('packages.acme/package.0.version', '1.0.0');
+
+    expect(Package::query()->sole())
+        ->mirror_status->toBe(MirrorStatus::OK)
+        ->and($upstream->refresh()->last_error)->toContain('HTTP 401');
+});
+
 it('resolves dev-only packages through the dev metadata', function (): void {
     $upstream = Upstream::factory()->packagist()->create();
     $repository = mirroredRepository($upstream, public: true);
