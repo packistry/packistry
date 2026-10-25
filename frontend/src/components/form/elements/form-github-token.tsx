@@ -84,7 +84,8 @@ export function FormGithubToken({ form }: { form: UseFormReturn<StoreUpstreamInp
             </div>
             <p className="text-sm text-muted-foreground">
                 Packagist dists are mostly downloaded from GitHub, which allows only 60 anonymous downloads per hour. A
-                personal access token without any scopes raises that limit. It is only sent to {GITHUB_API_HOST}.
+                personal access token without any scopes raises that limit. It is only sent to {GITHUB_API_HOST}, and
+                makes the upstream private: public repositories cannot use it.
             </p>
             {typeof error === 'string' && <p className="text-sm font-medium text-destructive">{error}</p>}
         </div>

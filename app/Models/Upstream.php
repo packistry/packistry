@@ -110,16 +110,12 @@ class Upstream extends Model
     }
 
     /**
-     * An upstream is private when it authenticates against its own host,
-     * credentials for other hosts (e.g. a GitHub token for dists) do not count.
+     * An upstream with any credential is private. Credentials for other hosts count too: the upstream's
+     * metadata picks the dist urls, so it could point a GitHub token at a private repository.
      */
     public function isPrivate(): bool
     {
-        $host = $this->host();
-
-        return $this->credentials->contains(
-            fn (UpstreamCredential $credential): bool => $credential->host === $host
-        );
+        return $this->credentials->isNotEmpty();
     }
 
     public function storagePath(string $path = ''): string

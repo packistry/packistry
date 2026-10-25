@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\MirrorStatus;
+use App\Enums\Permission;
 use App\Enums\TokenAbility;
 use App\Enums\UpstreamCredentialType;
 use App\Models\Package;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 use function Pest\Laravel\travel;
 
 beforeEach(function (): void {
@@ -279,7 +281,7 @@ it('does not fall through to a lower priority upstream when a higher one is unav
     Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'packagist'));
 });
 
-it('resolves again when the owning upstream no longer has the package', function (): void {
+it('keeps a package with its upstream when that upstream no longer has it', function (): void {
     $gitlab = Upstream::factory()->url('https://gitlab.test/packages.json')->create();
     $packagist = Upstream::factory()->packagist()->create();
 
@@ -289,9 +291,9 @@ it('resolves again when the owning upstream no longer has the package', function
         'gitlab.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
         'gitlab.test/p2/acme/package.json' => Http::sequence()
             ->push(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'private')]))
-            ->push(null, 404),
-        'repo.packagist.org/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
-        'repo.packagist.org/p2/acme/package.json' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('3.0.0', 'public')])),
+            ->push(null, 404)
+            ->push(upstreamMetadata('acme/package', [upstreamVersion('1.1.0', 'private')])),
+        'repo.packagist.org/*' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('3.0.0', 'public')])),
     ]);
 
     getJson($repository->url('/p2/acme/package.json'))
@@ -299,18 +301,30 @@ it('resolves again when the owning upstream no longer has the package', function
 
     travel(301)->seconds();
 
-    getJson($repository->url('/p2/acme/package.json'))
-        ->assertJsonPath('packages.acme/package.0.version', '3.0.0');
+    // a public upstream must not take over the name, the 404 may be an expired token
+    getJson($repository->url('/p2/acme/package.json'))->assertNotFound();
 
     /** @var Package $package */
     $package = Package::query()->sole();
 
     expect($package)
-        ->upstream_id->toBe($packagist->id)
-        ->mirror_status->toBe(MirrorStatus::OK);
+        ->upstream_id->toBe($gitlab->id)
+        ->mirror_status->toBe(MirrorStatus::MISSING);
+
+    getJson($repository->url('/list.json'))->assertJsonPath('packageNames', []);
+
+    // it comes back once its upstream has it again
+    travel(601)->seconds();
+
+    getJson($repository->url('/p2/acme/package.json'))
+        ->assertJsonPath('packages.acme/package.0.version', '1.1.0');
+
+    expect($package->refresh()->mirror_status)->toBe(MirrorStatus::OK);
+
+    Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'packagist'));
 });
 
-it('resolves dev metadata again when the owning upstream no longer has the package', function (): void {
+it('keeps a package with its upstream when only dev metadata is requested', function (): void {
     $gitlab = Upstream::factory()->url('https://gitlab.test/packages.json')->create();
     $packagist = Upstream::factory()->packagist()->create();
 
@@ -322,13 +336,7 @@ it('resolves dev metadata again when the owning upstream no longer has the packa
             ->push(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'private')]))
             ->push(null, 404),
         'gitlab.test/p2/acme/package~dev.json' => Http::response(null, 404),
-        'repo.packagist.org/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
-        'repo.packagist.org/p2/acme/package.json' => Http::response(
-            upstreamMetadata('acme/package', [upstreamVersion('3.0.0', 'public')])
-        ),
-        'repo.packagist.org/p2/acme/package~dev.json' => Http::response(
-            upstreamMetadata('acme/package', [upstreamVersion('dev-main', 'main')])
-        ),
+        'repo.packagist.org/*' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('dev-main', 'main')])),
     ]);
 
     getJson($repository->url('/p2/acme/package.json'))
@@ -336,12 +344,66 @@ it('resolves dev metadata again when the owning upstream no longer has the packa
 
     travel(301)->seconds();
 
-    getJson($repository->url('/p2/acme/package~dev.json'))
-        ->assertOk()
-        ->assertJsonPath('packages.acme/package.0.version', 'dev-main');
+    getJson($repository->url('/p2/acme/package~dev.json'))->assertNotFound();
 
     expect(Package::query()->sole())
-        ->upstream_id->toBe($packagist->id);
+        ->upstream_id->toBe($gitlab->id)
+        ->mirror_status->toBe(MirrorStatus::MISSING);
+
+    Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'packagist'));
+});
+
+it('only moves a missing package to another upstream when an admin refreshes it', function (): void {
+    user([Permission::PACKAGE_UPDATE, Permission::UNSCOPED]);
+
+    $gitlab = Upstream::factory()->url('https://gitlab.test/packages.json')->create();
+    $packagist = Upstream::factory()->packagist()->create();
+
+    $repository = mirroredRepository([$gitlab, $packagist], public: true);
+
+    $package = Package::factory()
+        ->for($repository)
+        ->name('acme/package')
+        ->state([
+            'upstream_id' => $gitlab->id,
+            'mirror_status' => MirrorStatus::MISSING,
+        ])
+        ->create();
+
+    Http::fake([
+        'gitlab.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'gitlab.test/p2/*' => Http::response(null, 404),
+        'repo.packagist.org/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'repo.packagist.org/p2/acme/package.json' => Http::response(
+            upstreamMetadata('acme/package', [upstreamVersion('3.0.0', 'public')])
+        ),
+    ]);
+
+    postJson("/api/packages/$package->id/refresh")->assertOk();
+
+    expect($package->refresh())
+        ->upstream_id->toBe($packagist->id)
+        ->mirror_status->toBe(MirrorStatus::OK);
+});
+
+it('only serves the requested package from upstream metadata', function (): void {
+    $upstream = Upstream::factory()->packagist()->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    $metadata = upstreamMetadata('evil/package', [upstreamVersion('1.0.0', 'aaa')]);
+    $metadata['packages']['acme/private'] = [upstreamVersion('9.9.9', 'bbb')];
+    $metadata['security-advisories'] = [];
+
+    Http::fake([
+        'repo.packagist.org/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'repo.packagist.org/p2/evil/package.json' => Http::response($metadata),
+    ]);
+
+    getJson($repository->url('/p2/evil/package.json'))
+        ->assertOk()
+        ->assertJsonMissingPath('packages.acme/private')
+        ->assertJsonMissingPath('security-advisories')
+        ->assertJsonPath('packages.evil/package.0.version', '1.0.0');
 });
 
 it('keeps serving cached metadata when the upstream answers 404 because its credentials stopped working', function (): void {

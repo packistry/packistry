@@ -85,6 +85,42 @@ readonly class NetworkGuard
 
     private function isPublicAddress(string $address): bool
     {
-        return filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_GLOBAL_RANGE) !== false;
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_GLOBAL_RANGE) === false) {
+            return false;
+        }
+
+        // the local-use NAT64 prefix has no fixed layout, so the IPv4 address it reaches is unknown
+        if ($this->hasIpv6Prefix($address, '0064ff9b0001')) {
+            return false;
+        }
+
+        $embedded = $this->embeddedIpv4Address($address);
+
+        return $embedded === null || $this->isPublicAddress($embedded);
+    }
+
+    /**
+     * NAT64 (64:ff9b::/96) and IPv4-translated (::ffff:0:0:0/96) addresses reach the IPv4 address
+     * in their last 32 bits, which may be internal, while filter_var counts them as global.
+     */
+    private function embeddedIpv4Address(string $address): ?string
+    {
+        $isTranslated = $this->hasIpv6Prefix($address, '0064ff9b0000000000000000')
+            || $this->hasIpv6Prefix($address, '0000000000000000ffff0000');
+
+        if (! $isTranslated) {
+            return null;
+        }
+
+        return (string) inet_ntop(substr((string) inet_pton($address), 12));
+    }
+
+    private function hasIpv6Prefix(string $address, string $hexPrefix): bool
+    {
+        $packed = inet_pton($address);
+
+        return is_string($packed)
+            && strlen($packed) === 16
+            && str_starts_with(bin2hex($packed), $hexPrefix);
     }
 }

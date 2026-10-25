@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Upstreams;
 
 use App\Actions\Upstreams\Inputs\UpdateUpstreamInput;
+use App\Models\MirrorDist;
 use App\Models\MirrorMetadata;
 use App\Models\Upstream;
 use Illuminate\Support\Facades\Cache;
@@ -42,7 +43,7 @@ readonly class UpdateUpstream
             if ($upstream->isPrivate() && $upstream->repositories()->where('public', true)->exists()) {
                 throw ValidationException::withMessages([
                     'credentials' => 'This upstream is attached to a public repository, '
-                        .'it cannot authenticate against its own host.',
+                        .'it cannot have credentials.',
                 ]);
             }
 
@@ -51,8 +52,8 @@ readonly class UpdateUpstream
     }
 
     /**
-     * Metadata cached from the previous url must not be served as if it came from the new one. Mirrored
-     * packages stay, the next request fetches their metadata from the new url or resolves them again.
+     * Metadata and dists cached from the previous url must not be served as if they came from the new one.
+     * Mirrored packages stay, the next request fetches their metadata from the new url.
      */
     private function forgetPreviousUrl(Upstream $upstream): void
     {
@@ -63,9 +64,13 @@ readonly class UpdateUpstream
             ->where('upstream_id', $upstream->id)
             ->delete();
 
+        MirrorDist::query()
+            ->where('upstream_id', $upstream->id)
+            ->delete();
+
         DB::afterCommit(function () use ($upstream): void {
             Cache::forget("mirror:down:$upstream->id");
-            Storage::deleteDirectory($upstream->storagePath('metadata'));
+            Storage::deleteDirectory($upstream->storagePath());
         });
     }
 }

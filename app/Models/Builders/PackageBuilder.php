@@ -38,12 +38,12 @@ class PackageBuilder extends Builder
     }
 
     /**
-     * Excludes mirrored packages that are no longer available upstream.
+     * Local packages and mirrored packages that their upstream still has.
      */
-    public function withoutGone(): PackageBuilder
+    public function available(): PackageBuilder
     {
         return $this->where(fn (Builder $query) => $query
             ->whereNull('mirror_status')
-            ->orWhere('mirror_status', '!=', MirrorStatus::GONE->value));
+            ->orWhere('mirror_status', MirrorStatus::OK->value));
     }
 }

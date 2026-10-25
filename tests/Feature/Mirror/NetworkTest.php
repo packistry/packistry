@@ -66,7 +66,24 @@ it('blocks upstreams that resolve to private or reserved addresses', function (s
     'carrier-grade nat' => '100.64.0.1',
     'ipv6 loopback' => '::1',
     'ipv4 mapped ipv6' => '::ffff:127.0.0.1',
+    'nat64 to cloud metadata' => '64:ff9b::a9fe:a9fe',
+    'nat64 local use prefix' => '64:ff9b:1::a00:5',
+    'ipv4 translated' => '::ffff:0:a9fe:a9fe',
 ]);
+
+it('allows nat64 addresses of public hosts', function (): void {
+    dns()->map('repo.test', '64:ff9b::808:808');
+
+    $upstream = Upstream::factory()->url('https://repo.test')->create();
+    $repository = mirroredRepository($upstream, public: true);
+
+    Http::fake([
+        'repo.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
+        'repo.test/p2/acme/package.json' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'aaa')])),
+    ]);
+
+    getJson($repository->url('/p2/acme/package.json'))->assertOk();
+});
 
 it('blocks ip literals in upstream urls', function (): void {
     $upstream = Upstream::factory()->url('http://169.254.169.254/latest')->create();
@@ -269,4 +286,5 @@ it('only accepts http and https upstream urls', function (string $url): void {
     'gopher' => 'gopher://127.0.0.1:6379/_FLUSHALL',
     'ftp' => 'ftp://files.test/packages.json',
     'file' => 'file:///etc/passwd',
+    'credentials in the url' => 'https://deploy:token@gitlab.test/packages.json',
 ]);

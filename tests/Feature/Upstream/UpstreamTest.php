@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\MirrorStatus;
 use App\Enums\Permission;
 use App\Enums\UpstreamCredentialType;
+use App\Models\MirrorDist;
 use App\Models\MirrorMetadata;
 use App\Models\Package;
 use App\Models\Repository;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\deleteJson;
+use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\putJson;
@@ -143,16 +145,18 @@ it('updates and keeps secrets that are not resent', function (?User $user, int $
         ->secret->toBe('old-secret');
 })->with(guestAndUsers(Permission::UPSTREAM_UPDATE));
 
-it('forgets cached metadata when the url changes', function (): void {
+it('forgets cached metadata and dists when the url changes', function (): void {
     Storage::fake();
-    user(Permission::UPSTREAM_UPDATE);
 
     $upstream = Upstream::factory()->url('https://old.test')->create();
     $repository = mirroredRepository($upstream, public: true);
 
     Http::fake([
         'old.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
-        'old.test/p2/acme/package.json' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'old')])),
+        'old.test/p2/acme/package.json' => Http::response(
+            upstreamMetadata('acme/package', [upstreamVersion('1.0.0', 'old', 'https://old.test/dist/old.zip')])
+        ),
+        'old.test/dist/*' => Http::response((string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')),
         'new.test/packages.json' => Http::response(['metadata-url' => '/p2/%package%.json']),
         'new.test/p2/acme/package.json' => Http::response(upstreamMetadata('acme/package', [upstreamVersion('2.0.0', 'new')])),
     ]);
@@ -160,16 +164,57 @@ it('forgets cached metadata when the url changes', function (): void {
     getJson($repository->url('/p2/acme/package.json'))
         ->assertJsonPath('packages.acme/package.0.version', '1.0.0');
 
+    get($repository->url('/_mirror/acme/package/old'))->assertOk();
+
+    user(Permission::UPSTREAM_UPDATE);
+
     putJson("/api/upstreams/$upstream->id", [
         'name' => $upstream->name,
         'url' => 'https://new.test',
     ])->assertOk();
 
     expect(MirrorMetadata::query()->count())->toBe(0)
-        ->and(Storage::allFiles($upstream->storagePath('metadata')))->toBe([]);
+        ->and(MirrorDist::query()->count())->toBe(0)
+        ->and(Storage::allFiles($upstream->storagePath()))->toBe([]);
 
     getJson($repository->url('/p2/acme/package.json'))
         ->assertJsonPath('packages.acme/package.0.version', '2.0.0');
+});
+
+it('requires the secret again when the host of a credential changes', function (): void {
+    user(Permission::UPSTREAM_UPDATE);
+
+    $upstream = Upstream::factory()
+        ->url('https://gitlab.test/packages.json')
+        ->withCredential('gitlab.test', UpstreamCredentialType::BEARER, null, 'gitlab-token')
+        ->create();
+
+    /** @var UpstreamCredential $credential */
+    $credential = $upstream->credentials()->sole();
+
+    putJson("/api/upstreams/$upstream->id", [
+        'name' => $upstream->name,
+        'url' => 'https://other.test/packages.json',
+        'credentials' => [
+            ['id' => $credential->id, 'host' => 'other.test', 'type' => 'bearer'],
+        ],
+    ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['credentials.0.secret']);
+
+    expect($credential->refresh()->host)->toBe('gitlab.test');
+
+    putJson("/api/upstreams/$upstream->id", [
+        'name' => $upstream->name,
+        'url' => 'https://other.test/packages.json',
+        'credentials' => [
+            ['id' => $credential->id, 'host' => 'other.test', 'type' => 'bearer', 'secret' => 'other-token'],
+        ],
+    ])->assertOk();
+
+    expect($credential->refresh())
+        ->host->toBe('other.test')
+        ->secret->toBe('other-token');
 });
 
 it('does not allow authenticating an upstream that is attached to a public repository', function (): void {
@@ -190,14 +235,16 @@ it('does not allow authenticating an upstream that is attached to a public repos
 
     expect($upstream->credentials()->count())->toBe(0);
 
-    // credentials for other hosts (e.g. dists) are fine
+    // the upstream picks the dist urls, so credentials for other hosts count too
     putJson("/api/upstreams/$upstream->id", [
         'name' => $upstream->name,
         'url' => $upstream->url,
         'credentials' => [
             ['host' => 'api.github.com', 'type' => 'bearer', 'secret' => 'secret'],
         ],
-    ])->assertOk();
+    ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['credentials']);
 });
 
 it('destroys and keeps mirrored packages as gone', function (?User $user, int $status): void {
@@ -303,6 +350,12 @@ it('does not attach authenticated upstreams to public repositories', function ()
 
     putJson("/api/repositories/$repository->id/upstreams", [
         'upstreams' => [['id' => $packagist->id]],
+    ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['upstreams']);
+
+    putJson("/api/repositories/$repository->id/upstreams", [
+        'upstreams' => [['id' => Upstream::factory()->packagist()->create()->id]],
     ])->assertOk();
 });
 

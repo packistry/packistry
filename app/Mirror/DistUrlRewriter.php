@@ -9,39 +9,40 @@ use App\Models\Repository;
 class DistUrlRewriter
 {
     /**
-     * Point every dist url to Packistry. Works on minified metadata as well: an entry only
-     * carries a dist key when it differs from the previous entry, entries that inherit it
-     * share the same reference and thus the same rewritten url.
+     * Point every dist url of the package to Packistry. Works on minified metadata as well: an entry
+     * only carries a dist key when it differs from the previous entry, entries that inherit it share
+     * the same reference and thus the same rewritten url.
+     *
+     * Only the requested package is kept, anything else the upstream answers with is not served.
      *
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    public function rewrite(array $data, Repository $repository): array
+    public function rewrite(array $data, string $name, Repository $repository): array
     {
-        $packages = $data['packages'] ?? null;
+        $versions = $data['packages'][$name] ?? null;
+        $versions = is_array($versions) ? array_values($versions) : [];
 
-        if (! is_array($packages)) {
-            return $data;
-        }
+        foreach ($versions as $index => $version) {
+            $dist = is_array($version) ? ($version['dist'] ?? null) : null;
 
-        foreach ($packages as $name => $versions) {
-            if (! is_array($versions)) {
+            if (! is_array($dist) || ! is_string($dist['url'] ?? null)) {
                 continue;
             }
 
-            foreach ($versions as $index => $version) {
-                $dist = is_array($version) ? ($version['dist'] ?? null) : null;
-
-                if (! is_array($dist) || ! is_string($dist['url'] ?? null)) {
-                    continue;
-                }
-
-                $packages[$name][$index]['dist']['url'] = $repository->url("/_mirror/$name/".DistCache::key($dist));
-            }
+            $versions[$index]['dist']['url'] = $repository->url("/_mirror/$name/".DistCache::key($dist));
         }
 
-        $data['packages'] = $packages;
+        $rewritten = [
+            'packages' => [
+                $name => $versions,
+            ],
+        ];
 
-        return $data;
+        if (isset($data['minified'])) {
+            $rewritten['minified'] = $data['minified'];
+        }
+
+        return $rewritten;
     }
 }

@@ -31,9 +31,20 @@ class UpdateUpstreamInput extends Input
     public static function rules(): array
     {
         return [
-            'url' => ['url:http,https'],
+            // credentials in the url would bypass the rules for credentials, e.g. on public repositories
+            'url' => ['url:http,https', 'not_regex:{^[a-z][a-z0-9+.-]*://[^/?#]*@}i'],
             'only.*' => ['nullable', 'string', 'max:255'],
             'exclude.*' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function messages(): array
+    {
+        return [
+            'url.not_regex' => 'Add credentials as a credential instead of in the url.',
         ];
     }
 }
