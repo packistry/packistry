@@ -116,5 +116,9 @@ function UpstreamCell({ pkg }: { pkg: Pick<Package, 'mirrorStatus' | 'upstream'>
         return <Badge variant="outline">No longer available</Badge>
     }
 
+    if (pkg.mirrorStatus === 'missing') {
+        return <Badge variant="outline">Missing from {pkg.upstream?.name ?? 'its upstream'}</Badge>
+    }
+
     return pkg.upstream?.name ?? <span className="text-muted-foreground">Removed upstream</span>
 }

@@ -14,7 +14,6 @@ use App\Http\Resources\ComposerPackageResource;
 use App\Http\Resources\VersionResource;
 use App\Mirror\DistUrlRewriter;
 use App\Mirror\MetadataCache;
-use App\Mirror\MetadataResult;
 use App\Mirror\Resolver;
 use App\Models\Contracts\Tokenable;
 use App\Models\Package;
@@ -62,7 +61,7 @@ class RepositoryController extends RepositoryAwareController
         $packages = Package::query()
             ->tokenScoped()
             ->where('repository_id', $repository->id)
-            ->withoutGone()
+            ->available()
             ->orderBy('name')
             ->when($q, fn (BuilderContract $query) => $query
                 ->where('name', 'like', "$q%"))
@@ -91,7 +90,7 @@ class RepositoryController extends RepositoryAwareController
         $names = Package::query()
             ->tokenScoped()
             ->where('repository_id', $repository->id)
-            ->withoutGone()
+            ->available()
             ->orderBy('name')
             ->pluck('name');
 
@@ -156,7 +155,7 @@ class RepositoryController extends RepositoryAwareController
         return response()->json(new ComposerPackageResource($package));
     }
 
-    private function mirroredPackageMetadata(Package $package, bool $dev, bool $reresolved = false): JsonResponse
+    private function mirroredPackageMetadata(Package $package, bool $dev): JsonResponse
     {
         $repository = $this->repository();
 
@@ -165,11 +164,15 @@ class RepositoryController extends RepositoryAwareController
             ->with('credentials')
             ->find($package->upstream_id);
 
-        $result = $upstream === null
-            ? MetadataResult::notFound()
-            : $this->metadata->get($upstream, $package->name, $dev);
+        if ($upstream === null) {
+            abort(404);
+        }
+
+        $result = $this->metadata->get($upstream, $package->name, $dev);
 
         if ($result->isFound()) {
+            $this->markAvailable($package);
+
             // changes when the upstream content changes, or when the package moves to another upstream
             $lastModified = collect([$result->modifiedAt, $package->updated_at])->filter()->max();
 
@@ -183,30 +186,34 @@ class RepositoryController extends RepositoryAwareController
                 }
             }
 
-            return $response->setData($this->rewriter->rewrite($result->data, $repository));
+            return $response->setData($this->rewriter->rewrite($result->data, $package->name, $repository));
         }
 
-        // the owning upstream no longer has the package, give the next upstream a chance
-        if ($result->isNotFound() && ! $reresolved && $this->ownerLostPackage($upstream, $package, $dev)) {
-            $package->mirror_status = MirrorStatus::GONE;
+        // the package stays with its upstream: a 404 can also mean that credentials stopped
+        if ($result->isNotFound() && $this->upstreamLostPackage($upstream, $package, $dev)) {
+            $package->mirror_status = MirrorStatus::MISSING;
             $package->save();
-
-            $package = $this->resolver->resolve($repository, $package->name, $dev, $package);
-
-            if ($package instanceof Package && $this->tokenCanAccessPackage($package)) {
-                return $this->mirroredPackageMetadata($package, $dev, reresolved: true);
-            }
         }
 
         abort(404);
     }
 
-    /**
-     * Many registries have no dev metadata for a package, only missing stable metadata means it is gone.
-     */
-    private function ownerLostPackage(?Upstream $upstream, Package $package, bool $dev): bool
+    private function markAvailable(Package $package): void
     {
-        if ($upstream === null || ! $dev) {
+        if ($package->mirror_status === MirrorStatus::OK) {
+            return;
+        }
+
+        $package->mirror_status = MirrorStatus::OK;
+        $package->save();
+    }
+
+    /**
+     * Many registries have no dev metadata for a package, only missing stable metadata means it is missing.
+     */
+    private function upstreamLostPackage(Upstream $upstream, Package $package, bool $dev): bool
+    {
+        if (! $dev) {
             return true;
         }
 

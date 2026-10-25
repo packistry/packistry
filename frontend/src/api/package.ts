@@ -11,7 +11,7 @@ export const packageOrigin = z.enum(packageOrigins)
 
 export type PackageOrigin = z.infer<typeof packageOrigin>
 
-export const mirrorStatus = z.enum(['ok', 'gone'])
+export const mirrorStatus = z.enum(['ok', 'missing', 'gone'])
 
 export const packageSchema = z.object({
     id: z.coerce.string(),

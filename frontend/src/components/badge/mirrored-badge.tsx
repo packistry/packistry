@@ -18,6 +18,17 @@ export function MirroredBadge({ pkg }: { pkg: Pick<Package, 'mirrorStatus' | 'up
         )
     }
 
+    if (pkg.mirrorStatus === 'missing') {
+        return (
+            <Badge
+                variant="outline"
+                className="whitespace-nowrap"
+            >
+                Missing from {pkg.upstream?.name ?? 'its upstream'}
+            </Badge>
+        )
+    }
+
     return (
         <Badge
             variant="secondary"

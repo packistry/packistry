@@ -26,8 +26,8 @@ export function FormUpstreamCredentials({ form }: { form: UseFormReturn<StoreUps
             <div>
                 <p className="text-sm font-medium">Credentials</p>
                 <p className="text-sm text-muted-foreground">
-                    Credentials are only sent to their host. A credential for the upstream&apos;s own host makes it
-                    private, private upstreams cannot be used by public repositories.
+                    Credentials are only sent to their host. An upstream with credentials is private, private upstreams
+                    cannot be used by public repositories.
                 </p>
             </div>
             {fields.map((field, index) => {

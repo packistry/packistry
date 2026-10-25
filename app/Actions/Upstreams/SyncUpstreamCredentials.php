@@ -44,9 +44,18 @@ class SyncUpstreamCredentials
             /** @var UpstreamCredential|null $credential */
             $credential = $input->id === null ? null : $existing->get($input->id);
 
-            if ($credential === null && ($input->secret === null || $input->secret === '')) {
+            $hasSecret = $input->secret !== null && $input->secret !== '';
+
+            if ($credential === null && ! $hasSecret) {
                 throw ValidationException::withMessages([
                     "credentials.$index.secret" => 'A secret is required for new credentials.',
+                ]);
+            }
+
+            // a secret was given for one host, it is never sent to another one without entering it again
+            if ($credential !== null && $credential->host !== $host && ! $hasSecret) {
+                throw ValidationException::withMessages([
+                    "credentials.$index.secret" => 'Enter the secret again when changing the host of a credential.',
                 ]);
             }
 
@@ -56,7 +65,7 @@ class SyncUpstreamCredentials
             $credential->type = $input->type;
             $credential->username = $input->type->requiresUsername() ? $input->username : null;
 
-            if ($input->secret !== null && $input->secret !== '') {
+            if ($hasSecret) {
                 $credential->secret = $input->secret;
             }
 
