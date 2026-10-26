@@ -59,7 +59,7 @@ class VersionFactory extends Factory
      */
     public function fromDefaultZip(string $version): static
     {
-        return $this->fromZip(__DIR__.'/../../tests/Fixtures/gitea-jamie-test.zip', $version);
+        return $this->fromZip(__DIR__.'/../../tests/Fixtures/gitea-test.zip', $version);
     }
 
     /**

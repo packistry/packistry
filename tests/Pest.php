@@ -449,7 +449,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     url: 'https://gitea.com/api/v1/repos/vendor/test',
                 )
             ),
-            'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',
+            'archivePath' => __DIR__.'/Fixtures/gitea-test.zip',
         ],
         'github' => [
             'provider' => SourceProvider::GITHUB,
@@ -463,7 +463,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     url: 'https://api.github.com/repos/vendor/test',
                 )
             ),
-            'archivePath' => __DIR__.'/Fixtures/gitea-jamie-test.zip',
+            'archivePath' => __DIR__.'/Fixtures/gitea-test.zip',
         ],
         'gitlab' => [
             'provider' => SourceProvider::GITLAB,
@@ -479,7 +479,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     webUrl: 'https://gitlab.com/group/test',
                 )
             ),
-            'archivePath' => __DIR__.'/Fixtures/gitlab-jamie-test.zip',
+            'archivePath' => __DIR__.'/Fixtures/gitlab-test.zip',
         ],
         'bitbucket' => [
             'provider' => SourceProvider::BITBUCKET,
@@ -508,7 +508,7 @@ function providerPushEvents(string $refType = 'tags', string $ref = '1.0.0'): ar
                     )
                 )
             ),
-            'archivePath' => __DIR__.'/Fixtures/gitlab-jamie-test.zip',
+            'archivePath' => __DIR__.'/Fixtures/gitlab-test.zip',
         ],
     ];
 }
