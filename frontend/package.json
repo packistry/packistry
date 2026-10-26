@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@daypicker/react": "^10.0.1",
-    "@hookform/resolvers": "^5.7.1",
+    "@hookform/resolvers": "^6.0.0",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-checkbox": "^1.3.11",
     "@radix-ui/react-dialog": "^1.1.23",
