@@ -301,6 +301,10 @@ it('keeps a package with its upstream when that upstream no longer has it', func
 
     travel(301)->seconds();
 
+    // served while the upstream is revalidated in the background
+    getJson($repository->url('/p2/acme/package.json'))
+        ->assertJsonPath('packages.acme/package.0.version', '1.0.0');
+
     // a public upstream must not take over the name, the 404 may be an expired token
     getJson($repository->url('/p2/acme/package.json'))->assertNotFound();
 
@@ -344,6 +348,8 @@ it('keeps a package with its upstream when only dev metadata is requested', func
 
     travel(301)->seconds();
 
+    // the first request revalidates the cached stable metadata in the background
+    getJson($repository->url('/p2/acme/package~dev.json'))->assertNotFound();
     getJson($repository->url('/p2/acme/package~dev.json'))->assertNotFound();
 
     expect(Package::query()->sole())

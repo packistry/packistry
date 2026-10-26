@@ -7,6 +7,7 @@ namespace App\Mirror;
 use App\Enums\PackageType;
 use App\Exceptions\UnsupportedUpstreamException;
 use App\Exceptions\UpstreamUnavailableException;
+use App\Jobs\RevalidateMetadata;
 use App\Models\MirrorMetadata;
 use App\Models\Package;
 use App\Models\Upstream;
@@ -21,7 +22,8 @@ use Throwable;
 
 /**
  * Caches upstream package metadata (p2 files). Cached metadata is revalidated after the
- * configured ttl and keeps being served when the upstream is unavailable.
+ * configured ttl and keeps being served when the upstream is unavailable. Within the stale ttl
+ * after that, it is served right away and revalidated by a queued job.
  */
 readonly class MetadataCache
 {
@@ -46,6 +48,16 @@ readonly class MetadataCache
             return $this->stale($cached);
         }
 
+        if ($cached instanceof MirrorMetadata && $this->isServableWhileRevalidating($cached)) {
+            $result = $this->load($cached);
+
+            if ($result instanceof MetadataResult) {
+                RevalidateMetadata::dispatch($upstream, $name, $dev);
+
+                return $result;
+            }
+        }
+
         return $this->fetchLocked($upstream, $name, $dev);
     }
 
@@ -65,6 +77,23 @@ readonly class MetadataCache
         }
 
         return $this->fetchLocked($upstream, $name, $dev);
+    }
+
+    /**
+     * Revalidate expired metadata, unless another process is already fetching it.
+     */
+    public function revalidate(Upstream $upstream, string $name, bool $dev): void
+    {
+        Cache::lock($this->lockKey($upstream, $name, $dev), 30)
+            ->get(function () use ($upstream, $name, $dev): void {
+                $cached = $this->cached($upstream, $name, $dev);
+
+                if ($cached instanceof MirrorMetadata && $this->isFresh($cached)) {
+                    return;
+                }
+
+                $this->fetch($upstream, $name, $dev, $cached);
+            });
     }
 
     public function forget(Upstream $upstream, string $name): void
@@ -269,6 +298,13 @@ readonly class MetadataCache
     private function isFresh(MirrorMetadata $cached): bool
     {
         return $cached->checked_at?->gt(now()->subSeconds(config()->integer('mirror.metadata_ttl'))) ?? false;
+    }
+
+    private function isServableWhileRevalidating(MirrorMetadata $cached): bool
+    {
+        $window = config()->integer('mirror.metadata_ttl') + config()->integer('mirror.metadata_stale_ttl');
+
+        return $cached->checked_at?->gt(now()->subSeconds($window)) ?? false;
     }
 
     private function stale(?MirrorMetadata $cached): MetadataResult
