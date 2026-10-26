@@ -39,6 +39,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\TransientToken;
 use Spatie\LaravelData\Data;
 use Tests\TestCase;
 
@@ -72,6 +73,8 @@ function user(Permission|array $permissions = []): User
     $user = User::factory()->create();
 
     config()->set("authorization.{$user->role->value}", $permissions);
+
+    $user->withAccessToken(new TransientToken);
 
     app('auth')->guard('sanctum')->setUser($user);
     app('auth')->shouldUse('sanctum');
