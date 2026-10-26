@@ -278,3 +278,31 @@ it('denies package-scoped deploy token creating a new package', function (): voi
     post($repository->url('/test/test'), ['file' => $file])
         ->assertStatus(201);
 });
+
+it('rejects uploads whose composer.json names another package', function (): void {
+    Storage::fake();
+
+    $repository = repository(public: true, closure: fn (RepositoryFactory $factory) => $factory->has(
+        Package::factory()->state(['name' => 'acme/package'])
+    ));
+
+    deployToken(TokenAbility::REPOSITORY_WRITE, withAccess: true);
+
+    // the fixture zip is named test/test
+    $file = fn (): UploadedFile => UploadedFile::fake()
+        ->createWithContent(
+            name: 'project.zip',
+            content: (string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')
+        );
+
+    post($repository->url('/acme/package'), ['file' => $file()])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['name']);
+
+    post($repository->url('/acme/new-package'), ['file' => $file()])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['name']);
+
+    expect(Package::query()->pluck('name')->all())->toBe(['acme/package'])
+        ->and(Version::query()->count())->toBe(0);
+});

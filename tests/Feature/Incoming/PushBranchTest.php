@@ -141,7 +141,7 @@ it('creates dev version for correct repository', function (Repository $repositor
 
 it('overwrites dev version for same branch', function (Repository $repository, SourceProvider $provider, ...$args): void {
     $package = Package::factory()
-        ->name('vendor/test')
+        ->name('jamie/test')
         ->for($repository)
         ->provider($provider)
         ->create();

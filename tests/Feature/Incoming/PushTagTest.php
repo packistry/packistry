@@ -32,7 +32,7 @@ it('creates version for new tag', function (Repository $repository, SourceProvid
 
 it('overwrites version for same tag', function (Repository $repository, SourceProvider $provider, ...$args): void {
     $package = Package::factory()
-        ->name('vendor/test')
+        ->name('jamie/test')
         ->for($repository)
         ->provider($provider)
         ->create();

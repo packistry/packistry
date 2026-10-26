@@ -306,20 +306,22 @@ class RepositoryController extends RepositoryAwareController
         /** @var UploadedFile $file */
         $file = $request->file('file');
 
-        if (is_null($package)) {
-            $package = new Package;
-            $package->repository_id = $repository->id;
-            $package->type = PackageType::LIBRARY->value;
-            $package->name = $packageName;
+        $version = DB::transaction(function () use ($package, $repository, $packageName, $file, $request): Version {
+            if (is_null($package)) {
+                $package = new Package;
+                $package->repository_id = $repository->id;
+                $package->type = PackageType::LIBRARY->value;
+                $package->name = $packageName;
 
-            $package->save();
-        }
+                $package->save();
+            }
 
-        $version = $this->createFromZip->create(
-            package: $package,
-            path: $file->getRealPath(),
-            version: $request->input('version')
-        );
+            return $this->createFromZip->create(
+                package: $package,
+                path: $file->getRealPath(),
+                version: $request->input('version')
+            );
+        });
 
         return response()->json(new VersionResource($version), 201);
     }
