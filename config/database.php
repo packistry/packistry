@@ -43,6 +43,9 @@ return [
             'busy_timeout' => null,
             'journal_mode' => null,
             'synchronous' => null,
+            // take the write lock up front, so concurrent writers (e.g. queue workers reserving jobs)
+            // wait for each other instead of failing with "database is locked"
+            'transaction_mode' => 'IMMEDIATE',
         ],
 
         'mysql' => [
