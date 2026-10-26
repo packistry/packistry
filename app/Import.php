@@ -30,6 +30,7 @@ readonly class Import
                 package: $package,
                 path: $path,
                 version: $importable->version(),
+                imported: true,
             );
 
             $metadata = $version->metadata ?? [];

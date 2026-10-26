@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\CreateFromZip;
 use App\Exceptions\InvalidConstraintException;
+use App\Exceptions\PackageNameMismatchException;
 use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
@@ -43,12 +44,12 @@ it('does not overwrite the package name with an older version imported after a n
 
     try {
         // Import the newer version first — sets the correct name
-        $createFromZip->create($package, $newZip, '2.0.0');
+        $createFromZip->create($package, $newZip, '2.0.0', imported: true);
         $package->refresh();
         expect($package->name)->toBe('vendor/new-name');
 
         // Import the older version second — must NOT overwrite the name
-        $createFromZip->create($package, $oldZip, '1.0.0');
+        $createFromZip->create($package, $oldZip, '1.0.0', imported: true);
         $package->refresh();
         expect($package->name)->toBe('vendor/new-name');
     } finally {
@@ -71,17 +72,62 @@ it('updates the package name when a newer version is imported after an older one
 
     try {
         // Import the older version first
-        $createFromZip->create($package, $oldZip, '1.0.0');
+        $createFromZip->create($package, $oldZip, '1.0.0', imported: true);
         $package->refresh();
         expect($package->name)->toBe('vendor/old-name');
 
         // Import the newer version second — must update to the new name
-        $createFromZip->create($package, $newZip, '2.0.0');
+        $createFromZip->create($package, $newZip, '2.0.0', imported: true);
         $package->refresh();
         expect($package->name)->toBe('vendor/new-name');
     } finally {
         @unlink($oldZip);
         @unlink($newZip);
+    }
+});
+
+it('does not let an imported version rename the package to another vendor', function (): void {
+    Storage::fake();
+
+    $repository = Repository::factory()->create();
+    /** @var Package $package */
+    $package = Package::factory()->for($repository)->create(['name' => 'acme/initial']);
+
+    $createFromZip = app(CreateFromZip::class);
+
+    $firstZip = makeComposerZip('acme/package', '1.0.0');
+    $hijackZip = makeComposerZip('monolog/monolog', '9.0.0');
+
+    try {
+        $createFromZip->create($package, $firstZip, '1.0.0', imported: true);
+
+        expect(fn () => $createFromZip->create($package, $hijackZip, '9.0.0', imported: true))
+            ->toThrow(PackageNameMismatchException::class);
+
+        expect($package->refresh()->name)->toBe('acme/package')
+            ->and($package->versions()->count())->toBe(1);
+    } finally {
+        @unlink($firstZip);
+        @unlink($hijackZip);
+    }
+});
+
+it('does not let an upload rename the package', function (): void {
+    Storage::fake();
+
+    $repository = Repository::factory()->create();
+    /** @var Package $package */
+    $package = Package::factory()->for($repository)->create(['name' => 'acme/package']);
+
+    $zip = makeComposerZip('acme/other', '1.0.0');
+
+    try {
+        expect(fn () => app(CreateFromZip::class)->create($package, $zip, '1.0.0'))
+            ->toThrow(PackageNameMismatchException::class);
+
+        expect($package->refresh()->name)->toBe('acme/package');
+    } finally {
+        @unlink($zip);
     }
 });
 

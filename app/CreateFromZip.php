@@ -9,6 +9,7 @@ use App\Exceptions\ComposerJsonNotFoundException;
 use App\Exceptions\FailedToOpenArchiveException;
 use App\Exceptions\InvalidConstraintException;
 use App\Exceptions\NameNotFoundException;
+use App\Exceptions\PackageNameMismatchException;
 use App\Exceptions\VersionNotFoundException;
 use App\Models\Package;
 use App\Models\Version;
@@ -32,11 +33,13 @@ class CreateFromZip
      * @throws FailedToOpenArchiveException
      * @throws NameNotFoundException
      * @throws InvalidConstraintException
+     * @throws PackageNameMismatchException
      */
     public function create(
         Package $package,
         string $path,
         ?string $version = null,
+        bool $imported = false,
     ): Version {
         $decoded = $this->decodedComposerJsonFromZip($path);
 
@@ -53,11 +56,8 @@ class CreateFromZip
         $name = $decoded['name'] ?? throw new NameNotFoundException('no name provided');
 
         $currentOrder = Normalizer::versionOrder($version);
-        $latestOrder = $package->versions()->max('order');
 
-        if ($latestOrder === null || $currentOrder >= $latestOrder) {
-            $package->name = $name;
-        }
+        $this->applyName($package, $name, $currentOrder, $imported);
 
         $package->description = $decoded['description'] ?? null;
         $package->type = array_key_exists('type', $decoded) && $decoded['type'] !== '' && $decoded['type'] !== null
@@ -133,5 +133,47 @@ class CreateFromZip
         );
 
         return $createdVersion;
+    }
+
+    /**
+     * Imports start with their git project path as name, so their first version names the package.
+     *
+     * @throws PackageNameMismatchException
+     */
+    private function applyName(Package $package, string $name, string $order, bool $imported): void
+    {
+        if (Str::lower($name) === Str::lower($package->name)) {
+            return;
+        }
+
+        if (! $imported) {
+            throw new PackageNameMismatchException($name, $package->name);
+        }
+
+        if (! $package->versions()->exists()) {
+            $package->name = $name;
+
+            return;
+        }
+
+        if (! $this->isNewest($package, $order)) {
+            return;
+        }
+
+        if (! $this->hasSameVendor($name, $package->name)) {
+            throw new PackageNameMismatchException($name, $package->name);
+        }
+
+        $package->name = $name;
+    }
+
+    private function isNewest(Package $package, string $order): bool
+    {
+        return $order >= $package->versions()->max('order');
+    }
+
+    private function hasSameVendor(string $name, string $otherName): bool
+    {
+        return Str::lower(Str::before($name, '/')) === Str::lower(Str::before($otherName, '/'));
     }
 }
