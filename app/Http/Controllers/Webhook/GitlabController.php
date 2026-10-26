@@ -39,7 +39,7 @@ readonly class GitlabController extends WebhookController
             abort(401, 'secret missing');
         }
 
-        if ($secret !== decrypt($this->source()->secret)) {
+        if (! hash_equals((string) decrypt($this->source()->secret), $secret)) {
             abort(401, 'invalid secret');
         }
     }

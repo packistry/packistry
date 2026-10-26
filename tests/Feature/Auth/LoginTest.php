@@ -43,3 +43,19 @@ it('can not use local authentication with authentication source', function () {
 
     expect(auth()->check())->toBeFalse();
 });
+
+it('limits failed login attempts', function () {
+    $user = User::factory()
+        ->create();
+
+    foreach (range(1, 5) as $attempt) {
+        postJson('/api/login', ['email' => $user->email, 'password' => 'incorrect'])
+            ->assertUnprocessable();
+    }
+
+    postJson('/api/login', ['email' => $user->email, 'password' => 'password'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.email.0', fn (string $message): bool => str_starts_with($message, 'Too many login attempts.'));
+
+    expect(auth()->check())->toBeFalse();
+});
