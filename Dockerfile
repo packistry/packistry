@@ -7,9 +7,9 @@ LABEL org.opencontainers.image.licenses="GPL-3.0"
 RUN apk add --no-cache \
     $PHPIZE_DEPS \
     linux-headers ca-certificates curl gnupg git unzip supervisor bash \
-    oniguruma-dev libzip-dev libpng-dev libjpeg-turbo-dev icu-dev envsubst \
+    oniguruma-dev libzip-dev libpng-dev libjpeg-turbo-dev icu-dev postgresql-dev envsubst \
     && docker-php-ext-configure gd --enable-gd --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" pdo_mysql mbstring zip gd intl sockets pcntl
+    && docker-php-ext-install -j"$(nproc)" pdo_mysql pdo_pgsql mbstring zip gd intl sockets pcntl
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
