@@ -17,6 +17,7 @@ use App\Mirror\MetadataCache;
 use App\Mirror\Resolver;
 use App\Models\Contracts\Tokenable;
 use App\Models\Package;
+use App\Models\Repository;
 use App\Models\Upstream;
 use App\Models\Version;
 use App\Normalizer;
@@ -24,7 +25,6 @@ use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -289,13 +289,8 @@ class RepositoryController extends RepositoryAwareController
             ->where('name', $packageName)
             ->first();
 
-        if (
-            ! $token->isUnscoped()
-            && ! $this->tokenHasRepositoryAccess($token, $repository->id)
-        ) {
-            if (is_null($package) || ! $this->tokenHasPackageAccess($token, $package->id)) {
-                abort(404);
-            }
+        if (! $this->tokenCanWrite($token, $repository, $package)) {
+            abort(404);
         }
 
         $request->validate([
@@ -326,19 +321,16 @@ class RepositoryController extends RepositoryAwareController
         return response()->json(new VersionResource($version), 201);
     }
 
-    private function tokenHasRepositoryAccess(Tokenable $token, int $repositoryId): bool
+    private function tokenCanWrite(Tokenable $token, Repository $repository, ?Package $package): bool
     {
-        return DB::query()
-            ->fromSub($token->accessibleRepositoryIdsQuery(), 'accessible_repositories')
-            ->where('id', $repositoryId)
-            ->exists();
-    }
+        if ($token->isUnscoped()) {
+            return true;
+        }
 
-    private function tokenHasPackageAccess(Tokenable $token, int $packageId): bool
-    {
-        return DB::query()
-            ->fromSub($token->accessiblePackageIdsQuery(), 'accessible_packages')
-            ->where('id', $packageId)
-            ->exists();
+        if ($token->repositories()->whereKey($repository->id)->exists()) {
+            return true;
+        }
+
+        return $package !== null && $token->packages()->whereKey($package->id)->exists();
     }
 }

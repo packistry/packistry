@@ -82,12 +82,12 @@ it('creates new version for existing package', function (Repository $repository,
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_WRITE,
         guestStatus: 401,
-        personalTokenWithoutAccessStatus: 201,
+        personalTokenWithoutAccessStatus: 404,
         personalTokenWithAccessStatus: 201,
         unscopedPersonalTokenWithoutAccessStatus: 201,
-        deployTokenWithoutAccessStatus: 201,
+        deployTokenWithoutAccessStatus: 404,
         deployTokenWithAccessStatus: 201,
-        deployTokenWithoutPackagesStatus: 201,
+        deployTokenWithoutPackagesStatus: 404,
     ));
 
 it('creates new package and version when non existing', function (Repository $repository, ?Authenticatable $auth, int $status): void {
@@ -148,12 +148,12 @@ it('creates new package and version when non existing', function (Repository $re
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_WRITE,
         guestStatus: 401,
-        personalTokenWithoutAccessStatus: 201,
+        personalTokenWithoutAccessStatus: 404,
         personalTokenWithAccessStatus: 201,
         unscopedPersonalTokenWithoutAccessStatus: 201,
-        deployTokenWithoutAccessStatus: 201,
+        deployTokenWithoutAccessStatus: 404,
         deployTokenWithAccessStatus: 201,
-        deployTokenWithoutPackagesStatus: 201,
+        deployTokenWithoutPackagesStatus: 404,
     ));
 
 it('creates package in private repository', function (Repository $repository, ?Authenticatable $auth, int $status): void {
@@ -166,12 +166,12 @@ it('creates package in private repository', function (Repository $repository, ?A
     ->with(guestAndTokens(
         abilities: TokenAbility::REPOSITORY_WRITE,
         guestStatus: 401,
-        personalTokenWithoutAccessStatus: 422,
+        personalTokenWithoutAccessStatus: 404,
         personalTokenWithAccessStatus: 422,
         unscopedPersonalTokenWithoutAccessStatus: 422,
-        deployTokenWithoutAccessStatus: 422,
+        deployTokenWithoutAccessStatus: 404,
         deployTokenWithAccessStatus: 422,
-        deployTokenWithoutPackagesStatus: 422,
+        deployTokenWithoutPackagesStatus: 404,
     ));
 
 it('rejects version with constraints composer cannot parse', function (): void {
@@ -255,7 +255,9 @@ it('denies package-scoped deploy token upload for package without access', funct
         );
 
     post($repository->url('/test/test'), ['file' => $file])
-        ->assertStatus(201);
+        ->assertNotFound();
+
+    expect(Version::query()->count())->toBe(0);
 });
 
 it('denies package-scoped deploy token creating a new package', function (): void {
@@ -276,7 +278,33 @@ it('denies package-scoped deploy token creating a new package', function (): voi
         );
 
     post($repository->url('/test/test'), ['file' => $file])
-        ->assertStatus(201);
+        ->assertNotFound();
+
+    expect(Version::query()->count())->toBe(0);
+});
+
+it('does not let a package grant in a repository write to its other packages', function (): void {
+    Storage::fake();
+
+    $repository = repository(closure: fn (RepositoryFactory $factory) => $factory
+        ->has(Package::factory()->state(['name' => 'allowed/allowed']))
+        ->has(Package::factory()->state(['name' => 'test/test']))
+    );
+
+    /** @var Package $allowedPackage */
+    $allowedPackage = $repository->packages()->where('name', 'allowed/allowed')->firstOrFail();
+    personalToken(TokenAbility::REPOSITORY_WRITE)->packages()->sync([$allowedPackage->id]);
+
+    $file = UploadedFile::fake()
+        ->createWithContent(
+            name: 'project.zip',
+            content: (string) file_get_contents(__DIR__.'/../../Fixtures/project.zip')
+        );
+
+    post($repository->url('/test/test'), ['file' => $file])
+        ->assertNotFound();
+
+    expect(Version::query()->count())->toBe(0);
 });
 
 it('rejects uploads whose composer.json names another package', function (): void {
