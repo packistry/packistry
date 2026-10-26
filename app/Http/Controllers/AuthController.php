@@ -18,6 +18,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
@@ -34,11 +36,25 @@ class AuthController
             'password' => ['required'],
         ]);
 
+        $throttleKey = $this->throttleKey($request);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, maxAttempts: 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            throw ValidationException::withMessages([
+                'email' => ["Too many login attempts. Please try again in $seconds seconds."],
+            ]);
+        }
+
         if (! Auth::attempt([...$credentials, 'authentication_source_id' => null])) {
+            RateLimiter::hit($throttleKey);
+
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
+
+        RateLimiter::clear($throttleKey);
 
         $request->session()->regenerate();
 
@@ -52,9 +68,12 @@ class AuthController
         );
     }
 
-    public function logout(): JsonResponse
+    public function logout(Request $request): JsonResponse
     {
         Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json(null, 204);
     }
@@ -117,5 +136,10 @@ class AuthController
         } catch (Throwable) {
             return redirect('/login');
         }
+    }
+
+    private function throttleKey(Request $request): string
+    {
+        return Str::transliterate(Str::lower($request->string('email')->toString()).'|'.$request->ip());
     }
 }

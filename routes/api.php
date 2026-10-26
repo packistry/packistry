@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersionController;
 use App\Http\Controllers\Webhook;
 use App\Http\Middleware\ForceJson;
+use Laravel\Sanctum\Http\Middleware\AuthenticateSession;
 
 if (! function_exists('repositoryRoutes')) {
     function repositoryRoutes(): void
@@ -50,7 +51,7 @@ Route::middleware('web')->prefix('/api')->group(function (): void {
     Route::get('/auths/{authenticationSourceId}/redirect', [AuthController::class, 'redirect']);
     Route::get('/auths/{authenticationSourceId}/callback', [AuthController::class, 'callback']);
 
-    Route::middleware('auth:sanctum')->group(function (): void {
+    Route::middleware(['auth:sanctum', AuthenticateSession::class])->group(function (): void {
         Route::get('/dashboard', DashboardController::class);
         Route::apiResource('/personal-tokens', PersonalTokenController::class)
             ->only(['index', 'store', 'destroy']);
