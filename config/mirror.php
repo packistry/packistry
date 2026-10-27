@@ -17,6 +17,10 @@ return [
     // how long cached package metadata is served before revalidating upstream
     'metadata_ttl' => (int) env('MIRROR_METADATA_TTL', 300),
 
+    // how long expired metadata is still served right away while it is revalidated in the background,
+    // after that requests wait for the upstream again (0 always waits)
+    'metadata_stale_ttl' => (int) env('MIRROR_METADATA_STALE_TTL', 86400),
+
     // how long an upstream's discovered metadata-url is trusted
     'root_ttl' => (int) env('MIRROR_ROOT_TTL', 86400),
 
