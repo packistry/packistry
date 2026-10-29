@@ -44,9 +44,11 @@ RUN rm -rf frontend
 
 FROM base AS runner
 
+RUN apk upgrade --no-cache
+
 COPY --from=builder_api /var/www/html /var/www/html
 COPY --from=builder_frontend /frontend/dist /var/www/html/dist
-COPY --from=ghcr.io/roadrunner-server/roadrunner:2024.3.2 /usr/bin/rr /usr/local/bin/rr
+COPY --from=ghcr.io/roadrunner-server/roadrunner:3.0.1 /usr/bin/rr /usr/local/bin/rr
 
 COPY ./docker/supervisord.conf /etc/supervisord.tpl
 COPY ./docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini

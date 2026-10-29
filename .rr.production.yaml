@@ -10,7 +10,7 @@ http:
       exec_ttl: 30s
   static:
     dir: public
-  middleware: [ static, proxy_ip_parser, gzip ]
+  middleware: [ gzip, proxy_ip_parser, static ]
   trusted_subnets:
     [
       "10.0.0.0/8",
