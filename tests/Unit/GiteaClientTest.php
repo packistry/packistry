@@ -7,6 +7,7 @@ use App\Sources\Branch;
 use App\Sources\Gitea\GiteaClient;
 use App\Sources\Project;
 use App\Sources\Tag;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\LazyCollection;
 
 beforeEach(function () {
@@ -28,21 +29,45 @@ beforeEach(function () {
     ]);
 });
 
-it('accepts token with api scope', function () {
+it('accepts token with read and write repository scopes', function () {
     Http::fake([
-        'https://gitea.com/api/v1/repos/gitea/act_runner/hooks' => Http::response([], 422),
+        'https://gitea.com/api/v1/repositories/0' => Http::response(['message' => 'not found'], 404),
+        'https://gitea.com/api/v1/repos/packistry-token-check/*/hooks' => Http::response(['message' => 'not found'], 404),
     ]);
 
     $this->gitea->validateToken();
-})->throwsNoExceptions();
 
-it('rejects token without api scope', function () {
+    Http::assertSent(fn (Request $request): bool => $request->method() === 'POST'
+        && str_starts_with($request->url(), 'https://gitea.com/api/v1/repos/packistry-token-check/'));
+});
+
+it('rejects token that is invalid or lacks read repository scope', function (int $status) {
     Http::fake([
-        'https://gitea.com/api/v1/repos/gitea/act_runner/hooks' => Http::response([], 403),
+        'https://gitea.com/api/v1/repositories/0' => Http::response([], $status),
     ]);
 
-    $this->gitea->validateToken();
-})->throws(InvalidTokenException::class);
+    expect(fn () => $this->gitea->validateToken())
+        ->toThrow(function (InvalidTokenException $exception) {
+            expect($exception->missingScopes)->toBe(['read:repository']);
+        });
+
+    Http::assertSentCount(1);
+})->with([
+    'invalid token' => 401,
+    'missing scope' => 403,
+]);
+
+it('rejects token without write repository scope', function () {
+    Http::fake([
+        'https://gitea.com/api/v1/repositories/0' => Http::response(['message' => 'not found'], 404),
+        'https://gitea.com/api/v1/repos/packistry-token-check/*/hooks' => Http::response([], 403),
+    ]);
+
+    expect(fn () => $this->gitea->validateToken())
+        ->toThrow(function (InvalidTokenException $exception) {
+            expect($exception->missingScopes)->toBe(['write:repository']);
+        });
+});
 
 it('can fetch projects', function () {
     $projects = $this->gitea->projects('gitea/act_runner');
