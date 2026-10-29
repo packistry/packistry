@@ -15,7 +15,6 @@ use App\Models\MirrorDist;
 use App\Models\Package;
 use App\Models\Upstream;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MirrorController extends RepositoryAwareController
@@ -63,7 +62,7 @@ class MirrorController extends RepositoryAwareController
 
         $this->recordDownload($request, $package, $dist);
 
-        return Storage::download($dist->archive_path, basename($dist->archive_path));
+        return $this->streamArchive($dist->archive_path);
     }
 
     private function recordDownload(Request $request, Package $package, MirrorDist $dist): void
