@@ -124,13 +124,17 @@ class CreateFromZip
 
         $createdVersion->save();
 
-        /** @var string $contents */
-        $contents = file_get_contents($path);
+        $stream = fopen($path, 'rb');
 
-        Storage::disk()->put(
-            path: $createdVersion->archive_path,
-            contents: $contents
-        );
+        if ($stream === false) {
+            throw new FailedToOpenArchiveException("Failed to open $path");
+        }
+
+        try {
+            Storage::disk()->writeStream($createdVersion->archive_path, $stream);
+        } finally {
+            fclose($stream);
+        }
 
         return $createdVersion;
     }

@@ -8,8 +8,11 @@ use App\Models\Package;
 use App\Models\Repository;
 use App\Models\Version;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Laravel\Octane\RoadRunner\RoadRunnerClient;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 
 it('downloads a version', function (Repository $repository, ?Authenticatable $auth, int $status): void {
@@ -91,3 +94,34 @@ it('downloads version from private repository', function (Repository $repository
         deployTokenWithoutAccessStatus: 404,
         deployTokenWithoutPackagesStatus: 404,
     ));
+
+it('streams archives to RoadRunner in chunks under Octane', function (): void {
+    $path = __DIR__.'/../../Fixtures/project.zip';
+    $repository = repository(public: true);
+
+    Package::factory()
+        ->for($repository)
+        ->name('test/test')
+        ->has(
+            Version::factory()
+                ->fromZip($path, '1.0.0', $repository->archivePath(''))
+        )
+        ->create();
+
+    $_SERVER['LARAVEL_OCTANE'] = '1';
+
+    try {
+        $response = get($repository->url('/test/test/1.0.0'))->assertOk();
+    } finally {
+        unset($_SERVER['LARAVEL_OCTANE']);
+    }
+
+    /** @var StreamedResponse $streamed */
+    $streamed = $response->baseResponse;
+
+    // any other callback makes Octane buffer the whole archive in worker memory
+    $callback = RoadRunnerClient::resolveStreamResponseCallback($streamed);
+
+    expect($callback)->not->toBeNull()
+        ->and(implode('', iterator_to_array($callback(), false)))->toBe((string) file_get_contents($path));
+});

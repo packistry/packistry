@@ -265,7 +265,7 @@ class RepositoryController extends RepositoryAwareController
             token: $this->token()?->currentAccessToken()
         ));
 
-        return Storage::download($version->archive_path);
+        return $this->streamArchive($version->archive_path);
     }
 
     public function upload(Request $request): JsonResponse

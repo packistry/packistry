@@ -68,7 +68,10 @@ readonly class Import
 
         $path = $meta['uri'];
 
-        $response = $http->get($importable->zipUrl());
+        // sink the archive straight to the temporary file, so it is never held in memory
+        $response = $http->send('GET', $importable->zipUrl(), [
+            'sink' => $path,
+        ]);
 
         if ($response->failed()) {
             return throw new FailedToFetchArchiveException($response->body());
@@ -79,8 +82,6 @@ readonly class Import
         if (! Str::contains($contentType, ['application/zip', 'application/octet-stream'])) {
             return throw new ArchiveInvalidContentTypeException("Invalid content-type: $contentType");
         }
-
-        file_put_contents($path, $response->body());
 
         return [$temp, $path];
     }

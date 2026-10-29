@@ -28,8 +28,9 @@ it('stores', function (?User $user, int $status, SourceProvider $provider): void
     /** @var string $content */
     $content = file_get_contents(__DIR__.'/../../Fixtures/project.zip');
 
+    // a fresh response per import, a sink reads the body stream of a shared one only once
     Http::fake([
-        'https://fake.com/archive.zip' => Http::response($content, headers: ['content-type' => 'application/zip']),
+        'https://fake.com/archive.zip' => fn () => Http::response($content, headers: ['content-type' => 'application/zip']),
     ]);
 
     $clientClassString = $provider->clientClassString();
